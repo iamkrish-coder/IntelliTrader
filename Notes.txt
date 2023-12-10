@@ -1,0 +1,150 @@
+Anaconda and Python Document
+
+Install Anaconda default settings
+Run Anaconda Prompt
+Create a new Env
+    conda create --name bazooka python=3.7
+    conda activate bazooka
+
+conda install Scikit-learn
+conda install MatPlotLib
+conda install pandas
+
+
+To Update Anaconda (Severe)
+conda update anaconda
+conda install spyder=5.4.3
+
+
+Historical API frequency and limit on number of candles fetched
+
+minute : 60 days
+3minute : 100 days
+5minute : 100 days
+10minute : 100 days
+15minute : 200 days
+30minute : 200 days
+60minute : 400 days
+day : 2000 days
+
+
+variety	
+   regular	    Regular order
+   amo	        After Market Order
+   co	            Cover Order ?
+   iceberg	    Iceberg Order ?
+   auction	    Auction Order ?
+
+
+order_type	
+   MARKET	Market order
+ 	LIMIT	Limit order
+ 	SL	    Stoploss order ?
+ 	SL-M	Stoploss-market order ?
+
+product	
+   CNC	    Cash & Carry for equity ?
+ 	NRML	Normal for futures and options ?
+ 	MIS	    Margin Intraday Squareoff for futures and options ?
+
+if transaction == 'buy':
+    transaction_type = self.prop['kite'].TRANSACTION_TYPE_BUY
+elif transaction == 'sell':
+    transaction_type = self.prop['kite'].TRANSACTION_TYPE_SELL
+else:
+    self.prop['log'].error("The order placement does not have a specified action to buy or sell.")
+    exit()
+
+order_single = [{
+    "exchange":exchange,
+    "tradingsymbol": symbol,
+    "transaction_type": self.prop['kite'].transaction,
+    "quantity": quantity,
+    "order_type": otype,
+    "product": product,
+    "price": price,
+}]
+
+order_oco = [{
+    "exchange":"NSE",
+    "tradingsymbol": "SBIN",
+    "transaction_type": self.prop['kite'].transaction,
+    "quantity": 1,
+    "order_type": "LIMIT",
+    "product": "CNC",
+    "price": price
+    },{
+    "exchange":"NSE",
+    "tradingsymbol": "SBIN",
+    "transaction_type": self.prop['kite'].TRANSACTION_TYPE_SELL,
+    "quantity": 1,
+    "order_type": "LIMIT",
+    "product": "CNC",
+    "price": 480
+}]
+
+
+res = fetch.fetch_quote('NSE', 'AAVAS')
+
+res = fetch.fetch_ltp('NSE', 'AAVAS')
+
+res = fetch.fetch_positions()
+
+res = fetch.fetch_holdings()
+
+res = fetch.fetch_orders()
+logging.info(res)
+
+
+
+# Validations 
+if isinstance(data, pd.DataFrame):
+    # If data is a dictionary, convert it to a pandas Series using the 'close' key
+    data = pd.Series(data)
+elif isinstance(data, dict):
+    # If data is a dictionary, convert it to a pandas Series using the 'close' key
+    data = pd.Series(data)
+elif isinstance(data, (list, tuple)):
+    # If data is not a pandas DataFrame, convert it to a pandas Series
+    data = pd.Series(data)
+elif isinstance(data, (int, float)):
+    # If data is an integer or float, convert it to a pandas Series
+    data = pd.Series([data])
+else:
+    print("Calculating MACD...")
+
+
+    last_value = ema_line.iloc[-1]
+
+###############################################
+ATM Options Sample Output
+###############################################
+
+instrument_token             12254978
+exchange_token                  47871
+tradingsymbol       NIFTY2381019500CE
+name                            NIFTY
+last_price                        0.0
+expiry                     2023-08-10
+strike                        19500.0
+tick_size                        0.05
+lot_size                           50
+instrument_type                    CE
+segment                       NFO-OPT
+exchange                          NFO
+time_to_expiry                      4
+Name: 33, dtype: object
+
+instrument_token             12255234
+exchange_token                  47872
+tradingsymbol       NIFTY2381019500PE
+name                            NIFTY
+last_price                        0.0
+expiry                     2023-08-10
+strike                        19500.0
+tick_size                        0.05
+lot_size                           50
+instrument_type                    PE
+segment                       NFO-OPT
+exchange                          NFO
+time_to_expiry                      4
