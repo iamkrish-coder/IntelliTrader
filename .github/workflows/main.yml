@@ -13,6 +13,11 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4  # Update to the latest version that supports Node.js 16
+      with:
+        node-version: 16
+
     - name: Create Pull Request
       uses: actions/github-script@v4
       with:
