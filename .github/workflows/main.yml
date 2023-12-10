@@ -13,45 +13,46 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Get Open Pull Requests
-      id: get_prs
-      run: echo "::set-output name=pr_count::$(curl -s -H \"Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}\" https://api.github.com/repos/${{ github.repository }}/pulls?head=develop\&base=master | jq length)"
+    - name: Create Pull Request
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const title = 'Automated Merge from develop to master';
+          const body = 'This is an automated pull request.';
+          const head = 'develop';
+          const base = 'master';
 
-    - name: Create or Update Pull Request
-      id: create_or_update_pr
-      run: |
-        if [ ${{ steps.get_prs.outputs.pr_count }} -eq 0 ]; then
-          # Create a new pull request
-          pr_number=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -X POST \
-            -d '{"title":"Automated Merge from develop to master","body":"This is an automated pull request.","head":"develop","base":"master"}' \
-            https://api.github.com/repos/${{ github.repository }}/pulls | jq -r '.number')
-        else
-          # Get the pull request number
-          pr_number=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/pulls?head=develop\&base=master | jq -r '.[0].number')
+          const { data: pullRequest } = await github.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title,
+            body,
+            head,
+            base,
+          });
 
-          # Update the existing pull request branch
-          git push origin develop:refs/heads/master
-        fi
+          core.setOutput('pull_request_number', pullRequest.number);
 
-        echo "::set-output name=pr_number::$pr_number"
-
-    - name: Auto Approve and Merge Pull Request
-      if: steps.create_or_update_pr.outputs.pr_number != ''
-      uses: actions/github-script@v4
+    - name: Auto Approve Pull Request
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           await github.pulls.createReview({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number: steps.create_or_update_pr.outputs.pr_number,
+            pull_number: context.payload.pull_request.number,
             event: 'APPROVE',
           });
 
+    - name: Merge Pull Request
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
           await github.pulls.merge({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number: steps.create_or_update_pr.outputs.pr_number,
+            pull_number: context.payload.pull_request.number,
           });
