@@ -13,8 +13,13 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4  # Update to the latest version that supports Node.js 16
+      with:
+        node-version: 16
+
     - name: Create Pull Request
-      uses: actions/github-script@v6
+      uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -23,7 +28,7 @@ jobs:
           const head = 'develop';
           const base = 'master';
 
-          const { data: pullRequest } = await github.pulls.create({
+          const pr = await github.pulls.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
             title,
@@ -32,27 +37,27 @@ jobs:
             base,
           });
 
-          core.setOutput('pull_request_number', pullRequest.number);
+          core.setOutput('pull_request_number', pr.data.number);
 
     - name: Auto Approve Pull Request
-      uses: actions/github-script@v6
+      uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           await github.pulls.createReview({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
+            pull_number: core.getInput('pull_request_number'),
             event: 'APPROVE',
           });
 
     - name: Merge Pull Request
-      uses: actions/github-script@v6
+      uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           await github.pulls.merge({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
+            pull_number: core.getInput('pull_request_number'),
           });
