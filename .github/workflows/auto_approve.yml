@@ -1,0 +1,17 @@
+# This is a basic workflow that is manually triggered
+name: Auto approve
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on: pull_request_target
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    if: github.actor == 'iamkrish-coder'
+    steps:
+      - uses: hmarr/auto-approve-action@v3
+        with:
+          review-message: "The pull request has been marked as approved"
