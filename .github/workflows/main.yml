@@ -15,7 +15,9 @@ jobs:
 
     - name: Get Open Pull Requests
       id: get_prs
-      run: echo "::set-output name=pr_count::$(curl -s -H \"Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}\" https://api.github.com/repos/${{ github.repository }}/pulls?head=develop\&base=master | jq length)"
+      run: |
+        pr_count=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls?head=develop&base=master" | jq length)
+        echo "::set-output name=pr_count::$pr_count"
 
     - name: Debug PR Count
       run: echo "PR Count: ${{ steps.get_prs.outputs.pr_count }}"
