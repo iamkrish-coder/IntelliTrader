@@ -48,7 +48,7 @@ jobs:
             base,
           });
 
-          # Assign the pull request to the repository owner (self)
+          // Assign the pull request to the repository owner (self)
           await github.issues.addAssignees({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -56,7 +56,7 @@ jobs:
             assignees: [context.repo.owner],
           });
 
-          # Request the repository owner as a reviewer
+          // Request the repository owner as a reviewer
           await github.pulls.update({
             owner: context.repo.owner,
             repo: context.repo.repo,
