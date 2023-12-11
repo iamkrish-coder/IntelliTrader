@@ -57,11 +57,11 @@ jobs:
           });
 
           // Request the repository owner as a reviewer
-          await github.pulls.createReviewRequest({
+          await github.pulls.update({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: pr.data.number,
-            reviewers: [context.repo.owner],
+            review_requesters: [context.repo.owner],
           });
 
           core.setOutput('pull_request_number', pr.data.number);
