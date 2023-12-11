@@ -71,9 +71,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Bump Version
-      run: npx standard-version
-
     - name: Generate Changelog
       run: npx standard-version --skip.changelog
 
