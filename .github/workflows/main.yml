@@ -71,6 +71,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Configure Git
+      run: |
+        git config user.name "Srikrishnan"
+        git config user.email "krishnan.sri92@gmail.com"
+
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
     - name: Generate Changelog
       run: npx standard-version --skip.changelog
 
