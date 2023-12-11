@@ -1,4 +1,4 @@
-name: Auto Create and Assign Pull Request
+name: Pull Request Automation
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  auto-merge:
+  auto-create:
     runs-on: ubuntu-latest
 
     steps:
@@ -65,3 +65,29 @@ jobs:
           });
 
           core.setOutput('pull_request_number', pr.data.number);
+  
+  auto-generate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Bump Version
+      run: npx standard-version
+
+    - name: Generate Changelog
+      run: npx standard-version --skip.changelog
+
+
+    - name: Request Review
+      uses: actions/github-script@v4
+      with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { context, github } = require('@actions/github');
+            await github.pulls.createReviewRequest({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            reviewers: ['iamkrish-coder'],
+            });
+
+
