@@ -67,6 +67,7 @@ jobs:
           core.setOutput('pull_request_number', pr.data.number);
   
   auto-generate:
+    needs: auto-create
     runs-on: ubuntu-latest
 
     steps:
@@ -76,18 +77,23 @@ jobs:
     - name: Generate Changelog
       run: npx standard-version --skip.changelog
 
-
     - name: Request Review
       uses: actions/github-script@v4
       with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
             const { context, github } = require('@actions/github');
-            await github.pulls.createReviewRequest({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
-            reviewers: ['iamkrish-coder'],
-            });
+            const prNumber = context.payload.workflow_run.conclusion === 'success' 
+                ? context.workflow_run.outputs.pull_request_number 
+                : null;
+
+            if (prNumber) {
+                await github.pulls.createReviewRequest({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                reviewers: ['iamkrish-coder'],
+                });
+            }
 
 
