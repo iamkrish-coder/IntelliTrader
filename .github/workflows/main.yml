@@ -71,6 +71,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install Node.js and npm
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
     - name: Checkout Repository
       uses: actions/checkout@v2
     
