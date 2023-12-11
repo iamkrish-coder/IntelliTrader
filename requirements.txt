@@ -1,6 +1,6 @@
 appdirs==1.4.4
 attrs==23.1.0
-autobahn==19.11.2
+autobahn==20.12.3
 Automat==22.10.0
 beautifulsoup4==4.12.2
 certifi==2023.11.17
