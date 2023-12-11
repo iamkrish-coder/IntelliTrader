@@ -1,0 +1,35 @@
+name: Auto Create Pull Request
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Create Pull Request
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const title = 'Automated Merge from develop to master';
+          const body = 'This is an automated pull request.';
+          const head = 'develop';
+          const base = 'master';
+
+          const pr = await github.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title,
+            body,
+            head,
+            base,
+          });
+
+          core.setOutput('pull_request_number', pr.data.number);
