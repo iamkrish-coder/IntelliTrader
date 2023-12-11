@@ -18,8 +18,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { context, github, core } = require('@actions/github');
-
           const title = 'Automated Merge from develop to master';
           const body = 'This is an automated pull request.';
           const head = 'develop';
