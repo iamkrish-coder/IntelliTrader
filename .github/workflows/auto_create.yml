@@ -13,11 +13,31 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Create Pull Request
+    - name: Check Existing Pull Request
+      id: pr_check
       uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
+          const { context, github } = require('@actions/github');
+
+          const prList = await github.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: 'develop',
+            base: 'master',
+          });
+
+          core.setOutput('pr_exists', prList.data.length > 0);
+
+    - name: Create Pull Request
+      if: steps.pr_check.outputs.pr_exists != 'true'
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { context, github, core } = require('@actions/github');
+
           const title = 'Automated Merge from develop to master';
           const body = 'This is an automated pull request.';
           const head = 'develop';
@@ -30,6 +50,22 @@ jobs:
             body,
             head,
             base,
+          });
+
+          // Assign the pull request to the repository owner (self)
+          await github.issues.addAssignees({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: pr.data.number,
+            assignees: [context.repo.owner],
+          });
+
+          // Request the repository owner as a reviewer
+          await github.pulls.createReviewRequest({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: pr.data.number,
+            reviewers: [context.repo.owner],
           });
 
           core.setOutput('pull_request_number', pr.data.number);
