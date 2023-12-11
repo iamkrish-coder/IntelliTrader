@@ -19,7 +19,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const prList = await octokit.pulls.list({
+          const prList = await github.pulls.list({
             owner: context.repo.owner,
             repo: context.repo.repo,
             head: 'develop',
@@ -34,14 +34,12 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { octokit, context, core } = require('@actions/github');
-
           const title = 'Automated Merge from develop to master';
           const body = 'This is an automated pull request.';
           const head = 'develop';
           const base = 'master';
 
-          const pr = await octokit.pulls.create({
+          const pr = await github.pulls.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
             title,
@@ -51,7 +49,7 @@ jobs:
           });
 
           // Assign the pull request to the repository owner (self)
-          await octokit.issues.addAssignees({
+          await github.issues.addAssignees({
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: pr.data.number,
@@ -59,7 +57,7 @@ jobs:
           });
 
           // Request the repository owner as a reviewer
-          await octokit.pulls.createReviewRequest({
+          await github.pulls.createReviewRequest({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: pr.data.number,
