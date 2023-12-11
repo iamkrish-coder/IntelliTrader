@@ -19,8 +19,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { context, github } = require('@actions/github');
-
           const prList = await github.pulls.list({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -36,7 +34,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { context, github, core } = require('@actions/github');
+          const { github, core } = require('@actions/github');
 
           const title = 'Automated Merge from develop to master';
           const body = 'This is an automated pull request.';
