@@ -29,6 +29,7 @@ jobs:
           core.setOutput('pr_exists', prList.data.length > 0);
 
     - name: Create Pull Request
+      id: create_pr
       if: steps.pr_check.outputs.pr_exists != 'true'
       uses: actions/github-script@v4
       with:
@@ -75,7 +76,7 @@ jobs:
           const commitMessages = await github.pulls.listCommits({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number: pr.data.number,
+            pull_number: ${{ steps.create_pr.outputs.pull_request_number }},
           });
 
           const commitMessage = commitMessages.data[0].commit.message;
@@ -93,7 +94,7 @@ jobs:
             await github.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: pr.data.number,
+              issue_number: ${{ steps.create_pr.outputs.pull_request_number }},
               labels: [labelToAdd],
             });
           }
