@@ -76,9 +76,9 @@ jobs:
 
           // Define your label conditions based on commit message
           if (commitMessage.includes('adds') || commitMessage.includes('enhance') || commitMessage.includes('new') || commitMessage.includes('modify')) {
-            labelToAdd = 'Enhancement';
+            labelToAdd = 'enhancement';
           } else if (commitMessage.includes('fix') || commitMessage.includes('bug') || commitMessage.includes('error')) {
-            labelToAdd = 'Bug';
+            labelToAdd = 'bug';
           }
 
           // Request the repository owner as a reviewer
