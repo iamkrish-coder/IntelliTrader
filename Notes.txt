@@ -148,3 +148,25 @@ instrument_type                    PE
 segment                       NFO-OPT
 exchange                          NFO
 time_to_expiry                      4
+
+
+NSE historical data // Alternative zerodha historical subscription
+# Example usage:
+# symbol = 'TCS'
+# start_date = '2023-01-01'
+# end_date = '2023-12-31'
+# data = get_historical_data(symbol, start_date, end_date)
+# print(data)
+
+"""
+Get historical stock data from NSE for a given stock symbol.
+
+Parameters:
+- supports only daily timeframe
+- symbol (str): Stock symbol (e.g., 'TCS', 'RECLTD').
+- start_date (str): Start date in the format 'YYYY-MM-DD'.
+- end_date (str): End date in the format 'YYYY-MM-DD'.
+
+Returns:
+- pd.DataFrame: Historical stock data.
+"""
