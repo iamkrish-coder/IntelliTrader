@@ -9,6 +9,8 @@ from src.orders import Orders
 from src.ticker import Ticker
 from src.indicator import Indicator
 from src.strategy import Strategy
+from src.libs import Libs
+
 import os
 import glob
 import datetime
@@ -66,6 +68,7 @@ connection_kit = {
     "log" : trace
 }
 
+libs = Libs()
 help = Helper(connection_kit)
 fetch = Fetch(connection_kit)
 orders = Orders(connection_kit)
@@ -85,11 +88,11 @@ common_utils = {
 # Module Sample usage
 #######################
 
-historical_data_subscribed = False
+historical_data_subscribed = True
 
 # Input values
 exchange = 'NSE'
-symbol = 'SBICARD'
+symbol = 'SBIN'
 interval = '15minute'
 duration = 3
 
@@ -127,7 +130,16 @@ print("\nThe Last Traded Price (LTP) of {}:{} is {}\n".format(exchange, symbol, 
 
 ##### Fetch OHLC #####
 if historical_data_subscribed:
-    datasource = fetch.fetch_ohlc(exchange, symbol, interval, duration)
+    # datasource = fetch.fetch_ohlc(exchange, symbol, interval, duration) ## This is used only when paid subscription 
+    user_input_historical_data = {
+        'exchange'  : 'NSE',
+        'type'      : 'daily',
+        'symbol'    : 'RECLTD',
+        'interval'  : '15minute',
+        'start_date': '2023-12-01',
+        'end_date'  : '2023-12-31'
+    }
+    datasource = libs.execute_handler(user_input_historical_data)
     print("\nThe OHLC values for {}:{} on {} timeframe: \n{}".format(exchange, symbol, interval, datasource))
 
     ##### Indicators #####
@@ -141,6 +153,7 @@ if historical_data_subscribed:
     indicator.execute_handler('adx', datasource)
     indicator.execute_handler('stochastic', datasource)
     indicator.execute_handler('renko', datasource, 5)
+    indicator.execute_handler('bollinger', datasource)
 
 ##### Strategies #####
 strategy.execute_handler(common_utils, user_input)
