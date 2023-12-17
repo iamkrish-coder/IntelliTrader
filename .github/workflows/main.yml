@@ -64,6 +64,13 @@ jobs:
             review_requesters: [context.repo.owner],
           });
 
+          core.setOutput('pull_request_number', pr.data.number);
+
+    - name: Extract Commit Message and Add Labels
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
           // Extract commit message and assign labels based on it
           const commitMessages = await github.pulls.listCommits({
             owner: context.repo.owner,
@@ -90,5 +97,3 @@ jobs:
               labels: [labelToAdd],
             });
           }
-
-          core.setOutput('pull_request_number', pr.data.number);
