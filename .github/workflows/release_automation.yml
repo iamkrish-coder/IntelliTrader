@@ -14,6 +14,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Check for tags
+      id: check_tags
+      run: |
+        if [ -z "$(git tag -l)" ]; then
+          echo "No tags found in the repository."
+          echo "NO_TAGS=true" >> $GITHUB_ENV
+        else
+          echo "Tags found in the repository."
+          echo "NO_TAGS=false" >> $GITHUB_ENV
+        fi
+
     - name: Restore Node.js and semver cache
       uses: actions/cache@v2
       with:
@@ -23,7 +34,7 @@ jobs:
         key: node-semver-${{ runner.os }}-${{ hashFiles('**/*.json') }}
 
     - name: Install Node.js and semver
-      if: steps.restore-cache.outputs.cache-hit != 'true'
+      if: steps.restore-cache.outputs.cache-hit != 'true' && env.NO_TAGS != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install -y nodejs
@@ -34,26 +45,31 @@ jobs:
     - name: Get latest tag
       id: get_tag
       run: |
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-        echo "Latest Tag: $latest_tag"
-        echo "::set-output name=TAG::$latest_tag"
+        if [ "${{ env.NO_TAGS }}" != "true" ]; then
+          latest_tag=$(git describe --tags --abbrev=0)
+          echo "Latest Tag: $latest_tag"
+          echo "TAG=$latest_tag" >> $GITHUB_ENV
+        else
+          echo "No tags found; using default version 0.0.0."
+          echo "TAG=0.0.0" >> $GITHUB_ENV
+        fi
 
     - name: Increment version
       id: version
       run: |
-        current_version=${{ steps.get_tag.outputs.TAG }}
+        current_version=${{ env.TAG }}
         new_version=$(node -p "const semver = require('semver'); console.log(semver.inc('$current_version', 'patch'));")
         echo "Incremented Version: $new_version"
-        echo "::set-output name=NEW_VERSION::$new_version"
+        echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
     - name: Automatic Releases
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        automatic_release_tag: v${{ steps.version.outputs.NEW_VERSION }}
+        automatic_release_tag: v${{ env.NEW_VERSION }}
         draft: false
         prerelease: true
-        title: Release v${{ steps.version.outputs.NEW_VERSION }}
+        title: Release v${{ env.NEW_VERSION }}
 
     - name: Save Node.js and semver cache
       uses: actions/cache@v2
