@@ -13,6 +13,7 @@ from src.indicators.vwap import vwap
 from src.indicators.adx import adx
 from src.indicators.stochastic import stochastic
 from src.indicators.renko import renko
+from src.indicators.bollinger_bands import bollinger_bands
 
 class Indicator:
     def __init__(self, params):
@@ -40,7 +41,8 @@ class Indicator:
                 self.option_stochastic(dataset)
             case 'renko':
                 self.option_renko(dataset, period)
-                
+            case 'bollinger_bands':
+                self.option_bollinger_bands(dataset)               
             case _:
                 self.invalid_option(dataset)
 
@@ -222,6 +224,23 @@ class Indicator:
                     print(renko_bricks)
                 else:
                     self.prop['log'].error("Failed to calculate Renko") 
+                    return False
+            except Exception as e:
+                self.prop['log'].error("An exception occurred: {}".format(e))
+
+    def option_bollinger_bands(self, dataset):
+            try:
+                if dataset is not None and not dataset.empty:
+                    # Calculate Bollinger Bands
+                    pdf = pd.DataFrame(dataset)
+                    bollinger_bands = bollinger_bands(pdf)
+                    last_bollinger_band_value = bollinger_bands.iloc[-1]
+
+                    # Print the calculated Bollinger Band values
+                    print("\nBollinger Bands:")
+                    print(last_bollinger_band_value)
+                else:
+                    self.prop['log'].error("Failed to calculate Bollinger Band") 
                     return False
             except Exception as e:
                 self.prop['log'].error("An exception occurred: {}".format(e))
