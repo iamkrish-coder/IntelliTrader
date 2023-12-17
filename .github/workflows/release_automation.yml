@@ -33,12 +33,18 @@ jobs:
 
     - name: Get latest tag
       id: get_tag
-      run: echo "::set-output name=TAG::$(git describe --tags --abbrev=0)"
+      run: |
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+        echo "Latest Tag: $latest_tag"
+        echo "::set-output name=TAG::$latest_tag"
 
     - name: Increment version
       id: version
       run: |
-        echo "::set-output name=NEW_VERSION::$(node -p 'const semver = require("semver"); const currentVersion = process.env.TAG || "0.0.0"; console.log(semver.inc(currentVersion, "patch"));')"
+        current_version=${{ steps.get_tag.outputs.TAG }}
+        new_version=$(node -p "const semver = require('semver'); console.log(semver.inc('$current_version', 'patch'));")
+        echo "Incremented Version: $new_version"
+        echo "::set-output name=NEW_VERSION::$new_version"
 
     - name: Automatic Releases
       uses: marvinpinto/action-automatic-releases@v1.2.1
@@ -56,4 +62,3 @@ jobs:
           ~/.npm
           ~/.cache
         key: node-semver-${{ runner.os }}-${{ hashFiles('**/*.json') }}
-
