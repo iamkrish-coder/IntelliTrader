@@ -14,12 +14,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Restore Node.js and semver cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.npm
+          ~/.cache
+        key: node-semver-${{ runner.os }}-${{ hashFiles('**/*.json') }}
+
     - name: Install Node.js and semver
+      if: steps.restore-cache.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install -y nodejs
         sudo apt-get install -y npm
         npm install semver
+        echo "Cache not found, installed Node.js and semver"
 
     - name: Get latest tag
       id: get_tag
@@ -38,3 +48,12 @@ jobs:
         draft: false
         prerelease: true
         title: Release v${{ steps.version.outputs.NEW_VERSION }}
+
+    - name: Save Node.js and semver cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.npm
+          ~/.cache
+        key: node-semver-${{ runner.os }}-${{ hashFiles('**/*.json') }}
+
