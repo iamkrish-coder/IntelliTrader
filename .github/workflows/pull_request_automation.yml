@@ -63,30 +63,13 @@ jobs:
             pull_number: pr.data.number,
             review_requesters: [context.repo.owner],
           });
-
-          // Extract commit message and assign labels based on it
-          const commitMessages = await github.pulls.listCommits({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: pr.data.number,
-          });
-
-          const commitMessage = commitMessages.data[0].commit.message;
-          let labelToAdd = '';
-
-          // Define your label conditions based on commit message
-          if (commitMessage.includes('adds') || commitMessage.includes('enhance') || commitMessage.includes('new') || commitMessage.includes('modify')) {
-            labelToAdd = 'enhancement';
-          } else if (commitMessage.includes('fix') || commitMessage.includes('bug') || commitMessage.includes('error')) {
-            labelToAdd = 'bug';
-          }
-
-          // Request the repository owner as a reviewer
+          
+          // Add a label by default
           await github.pulls.update({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: pr.data.number,
-            labels: [labelToAdd],
+            labels: ['enhancement'],
           });
 
           core.setOutput('pull_request_number', pr.data.number);
