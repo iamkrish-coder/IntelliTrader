@@ -68,7 +68,9 @@ jobs:
           core.setOutput('pull_request_number', pr.data.number);
 
     - name: Wait for a moment
-      run: sleep 5s
+      run: |
+        echo "Waiting for 5 seconds..."
+        sleep 5
 
     - name: Extract Commit Message and Add Labels
       uses: actions/github-script@v4
