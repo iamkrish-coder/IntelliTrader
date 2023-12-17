@@ -17,13 +17,16 @@ jobs:
     - name: Check for tags
       id: check_tags
       run: |
-        if [ -z "$(git tag -l)" ]; then
+        tags=$(git tag -l)
+        echo "Tags found: $tags"
+        if [ -z "$tags" ]; then
           echo "No tags found in the repository."
           echo "NO_TAGS=true" >> $GITHUB_ENV
         else
           echo "Tags found in the repository."
           echo "NO_TAGS=false" >> $GITHUB_ENV
         fi
+
 
     - name: Restore Node.js and semver cache
       uses: actions/cache@v2
