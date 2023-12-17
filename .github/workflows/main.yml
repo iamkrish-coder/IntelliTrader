@@ -69,8 +69,7 @@ jobs:
 
     - name: Wait for a moment
       run: |
-        echo "Waiting for 5 seconds..."
-        sleep 5
+        until wait-for --timeout 5s echo "Waiting for 5 seconds..."; do echo "Retrying..."; done
 
     - name: Extract Commit Message and Add Labels
       uses: actions/github-script@v4
