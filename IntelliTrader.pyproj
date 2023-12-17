@@ -31,6 +31,7 @@
     <Compile Include="src\indicator.py" />
     <Compile Include="src\indicators\adx.py" />
     <Compile Include="src\indicators\atr.py" />
+    <Compile Include="src\indicators\bollinger_bands.py" />
     <Compile Include="src\indicators\ma.py" />
     <Compile Include="src\indicators\macd.py" />
     <Compile Include="src\indicators\renko.py" />
@@ -38,6 +39,12 @@
     <Compile Include="src\indicators\stochastic.py" />
     <Compile Include="src\indicators\vwap.py" />
     <Compile Include="src\indicators\williams_r.py" />
+    <Compile Include="src\libs.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\libs\nse_historical_data.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\modify.py" />
     <Compile Include="src\orders.py" />
     <Compile Include="src\strategies\options.py" />
@@ -51,6 +58,7 @@
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\indicators\" />
+    <Folder Include="src\libs\" />
     <Folder Include="src\strategies\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
