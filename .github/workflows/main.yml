@@ -81,14 +81,12 @@ jobs:
             labelToAdd = 'bug';
           }
 
-          // Add the label to the pull request
-          if (labelToAdd) {
-            await github.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.data.number,
-              labels: [labelToAdd],
-            });
-          }
+          // Request the repository owner as a reviewer
+          await github.pulls.update({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: pr.data.number,
+            labels: [labelToAdd],
+          });
 
           core.setOutput('pull_request_number', pr.data.number);
