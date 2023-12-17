@@ -64,6 +64,13 @@ jobs:
             review_requesters: [context.repo.owner],
           });
 
+          // Extract commit message and assign labels based on it
+          const commitMessages = await github.pulls.listCommits({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: pr.data.number,
+          });
+
           const commitMessage = commitMessages.data[0].commit.message;
           let labelToAdd = '';
 
