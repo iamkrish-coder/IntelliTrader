@@ -14,16 +14,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install Node.js and semver
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nodejs
+        sudo apt-get install -y npm
+        npm install semver
+
+    - name: Get latest tag
+      id: get_tag
+      run: echo "::set-output name=TAG::$(git describe --tags --abbrev=0)"
+
+    - name: Increment version
+      id: version
+      run: |
+        echo "::set-output name=NEW_VERSION::$(node -p 'const semver = require("semver"); const currentVersion = process.env.TAG || "0.0.0"; console.log(semver.inc(currentVersion, "patch"));')"
+
     - name: Automatic Releases
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
-        # GitHub secret token
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        # Git tag (for automatic releases)
-        automatic_release_tag: v1.0.0 # specify your tag or let it be generated automatically
-        # Should this release be marked as a draft?
-        draft: false # optional
-        # Should this release be marked as a pre-release?
-        prerelease: true # optional, default is true
-        # Release title (for automatic releases)
-        title: Release v1.0.0 # optional
+        automatic_release_tag: v${{ steps.version.outputs.NEW_VERSION }}
+        draft: false
+        prerelease: true
+        title: Release v${{ steps.version.outputs.NEW_VERSION }}
