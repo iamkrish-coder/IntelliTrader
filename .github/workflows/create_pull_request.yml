@@ -23,7 +23,7 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: master
-          delete-branch: true
+          delete-branch: false
           title: 'Automated Merge from develop to master'
           body: |
             This is an automated pull request.
