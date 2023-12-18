@@ -1,0 +1,40 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  createPullRequest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Development Build
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: develop
+          delete-branch: true
+          title: 'Automated Merge from develop to master'
+          body: |
+            This is an automated pull request.
+            - Updated with *today's* date
+
+          labels: |
+            enhancement
+          assignees: ${{ github.actor }}
+          reviewers: ${{ github.actor }}
+          team-reviewers: |
+            developers
+            qa-team
+          milestone: 1
+          draft: false
