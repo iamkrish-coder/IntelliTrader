@@ -25,7 +25,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="IntelliTrader.py" />
+    <Compile Include="src\aws\aws_secrets_manager.py" />
     <Compile Include="src\connection.py" />
+    <Compile Include="src\constants\constants.py" />
+    <Compile Include="src\enumerations\enums.py" />
     <Compile Include="src\fetch.py" />
     <Compile Include="src\helper.py" />
     <Compile Include="src\indicator.py" />
@@ -55,11 +58,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+    <Content Include="src\configuration\config.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Folder Include="src\configuration\" />
+    <Folder Include="src\constants\" />
+    <Folder Include="src\enumerations\" />
     <Folder Include="src\indicators\" />
     <Folder Include="src\libraries\" />
+    <Folder Include="src\aws\" />
     <Folder Include="src\strategies\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

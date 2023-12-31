@@ -14,13 +14,13 @@ class Connection:
     def __init__(self, params):
         self.prop = params
 
-    def broker_login(self, KiteConnect, KiteTicker, trace):
+    def broker_login(self, KiteConnect, KiteTicker, logging):
         # Assign properties
-        api_key = self.prop[0]
-        secret_key = self.prop[1]
-        user_id = self.prop[2]
-        user_pass = self.prop[3]
-        mfa_token = self.prop[4]
+        api_key = self.prop.get('api_key')
+        secret_key = self.prop.get('secret_key')
+        user_id = self.prop.get('user_id')
+        user_pass = self.prop.get('user_pass')
+        mfa_token = self.prop.get('mfa_token')
 
         kite = KiteConnect(api_key=api_key)
 
@@ -72,10 +72,10 @@ class Connection:
             initial_token = url_parts[1]
             request_token = initial_token.split('&')[0]
             Helper.write_text_output('request_token' + '_' + auth_date + '.txt', request_token)
-            trace.info("Kite request_token generated successfully")
+            logging.info("Kite request_token generated successfully")
         else:
             # Handle the case when the 'request_token=' delimiter is not found
-            trace.error("Kite 'request_token=' not found in the URL")
+            logging.error("Kite 'request_token=' not found in the URL")
             with open('./src/output/request_token' + '_' + auth_date + '.txt', 'r') as r_file:
                 request_token = r_file.readline()
                 r_file.close()
@@ -84,7 +84,7 @@ class Connection:
         data = kite.generate_session(request_token, api_secret=secret_key)
         access_token = data['access_token']
         Helper.write_text_output('access_token' + '_' + auth_date + '.txt', access_token)
-        trace.info("Kite access_token generated successfully")
+        logging.info("Kite access_token generated successfully")
 
         # Kite Ticker Subscription
         kite_ticker = KiteTicker(api_key, access_token)
