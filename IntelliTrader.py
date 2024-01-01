@@ -1,7 +1,4 @@
-# Import statements
-from asyncio.windows_events import NULL
-from kiteconnect import KiteConnect
-from kiteconnect import KiteTicker
+from kiteconnect import KiteConnect, KiteTicker
 from src.connection import Connection
 from src.helper import Helper
 from src.fetch import Fetch
@@ -11,7 +8,6 @@ from src.indicator import Indicator
 from src.strategy import Strategy
 from src.libs import Libs
 from src.constants.constants import *
-from src.enumerations.enums import *
 from src.aws.aws_secrets_manager import get_secret
 
 import json
@@ -21,161 +17,92 @@ import glob
 import pandas as pd
 import logging
 
-# Constants
-secret_name = SECRET_NAME
-region_name = REGION_NAME
+class IntelliTrader:
+    def __init__(self, secret_name, region_name):
+        self.secret_name = secret_name
+        self.region_name = region_name
+        self.secret_keys = self.get_secret_keys()
 
-# Enumerations 
+    def get_secret_keys(self):
+        secret_keys = json.loads(get_secret(self.secret_name, self.region_name))
+        return secret_keys
 
-# Configuration
-config_file_path = "./src/configuration/config.json"
-with open(config_file_path, "r") as config_file:
-    config = json.load(config_file)
+    def connection_to_broker(self):
+        api_key = self.secret_keys.get('api_key')
+        auth_date = datetime.datetime.now().strftime('%d%H')
+        access_token_file = f"{ACCESS_TOKEN_PATH + '_' + auth_date + '.txt'}"
+
+        # Establish connection
+        if os.path.isfile(access_token_file):
+            kite, kite_ticker, access_token = self.establish_old_connection(api_key)
+        else:
+            self.remove_old_tokens()
+            kite, kite_ticker, access_token = self.establish_new_connection()
+
+        # Initialize connection object
+        connection_object = {
+            "kite" : kite,
+            "kiteticker": kite_ticker,
+            "authorize" : access_token
+        }
+        return connection_object
     
-# Logging configuration
-logging.basicConfig(
-    level = getattr(logging, config["log_level"]),
-    format = '%(asctime)s [%(levelname)s] #%(lineno)s - %(module)s - Message: %(message)s', 
-    datefmt = '%Y-%m-%d %H:%M:%S')
-
-# Main
-def main():
-    # Retrieve the secret value from AWS Secret Manager Service
-    secret_keys =  json.loads(get_secret(secret_name, region_name))
-    API_KEY  = secret_keys.get('api_key') 
-    
-    auth_date = datetime.datetime.now().strftime('%d%H');
-    access_token_file = f"{config['access_token_path'] + '_' + auth_date +  '.txt'}"
-
-    if os.path.isfile(access_token_file):
-        # Generate trading session
-        access_token = open('./src/output/access_token' + '_' + auth_date +  '.txt','r').read()
-        kite = KiteConnect(API_KEY)
-        kite_ticker = KiteTicker(API_KEY, access_token)
+    def establish_old_connection(self, api_key):
+        auth_date = datetime.datetime.now().strftime('%d%H')
+        access_token = open(ACCESS_TOKEN_PATH + '_' + auth_date +  '.txt','r').read()
+        kite = KiteConnect(api_key)
+        kite_ticker = KiteTicker(api_key, access_token)
         kite.set_access_token(access_token)
-        logging.info("Connected to Kite with Ticker Data")
-    else:
-        # Remove old access token and request token before generating new one
-        old_access_token_files = glob.glob('./src/output/access_token*.txt')
-        for old_access_token_file in old_access_token_files:
-            try:
-                os.remove(old_access_token_file)
-            except Exception as e:
-                logging.error("An exception occurred: {}".format(e))
-                exit()
+        logging.info("Successfully connected to Kite APIs using cached credentials.")
+        return kite, kite_ticker, access_token
 
-        old_request_token_files = glob.glob('./src/output/request_token*.txt')
-        for old_request_token_file in old_request_token_files:
-            try:
-                os.remove(old_request_token_file)
-            except Exception as e:
-                logging.error("An exception occurred: {}".format(e))
-                exit()
-
-        # Begin a new connection
-        connect = Connection(secret_keys)
+    def establish_new_connection(self):
+        connect = Connection(self.secret_keys)
         kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker, logging)
         kite.set_access_token(access_token)
-        logging.info("Connected to Kite with Ticker Data")
+        logging.info("Successfully initiated a new connection to Kite APIs.")
+        return kite, kite_ticker, access_token
 
-    connection_kit = {
-        "kite" : kite,
-        "kiteticker": kite_ticker,
-        "authorize" : access_token,
-        "log" : logging
-    }
+    def remove_old_tokens(self):
+        old_access_token_files = glob.glob(ACCESS_TOKEN_PATH + '*.txt')
+        for old_access_token_file in old_access_token_files:
+            self.remove_file(old_access_token_file)
 
-    help = Helper(connection_kit)
-    fetch = Fetch(connection_kit)
-    orders = Orders(connection_kit)
-    ticker = Ticker(connection_kit)
-    indicator = Indicator(connection_kit)
-    strategy = Strategy(connection_kit)
-    libs = Libs(connection_kit)
+        old_request_token_files = glob.glob(REQUEST_TOKEN_PATH + '*.txt')
+        for old_request_token_file in old_request_token_files:
+            self.remove_file(old_request_token_file)
 
-    common_utils = {
-        'help' : help,
-        'fetch' : fetch,
-        'orders' : orders,
-        'ticker' : ticker,
-        'indicator' : indicator
-        } 
+    def remove_file(self, file_path):
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            self.handle_error(e, f"Unable to remove file: {file_path}")
 
-    #######################
-    # Module Sample usage
-    #######################
+    def handle_error(self, exception, message):
+        logging.error(f"An exception occurred: {exception}. {message}")
+        exit()
 
-    historical_data_subscribed = True
+    def initialize_modules(self, connection):
+        help_instance = Helper(connection)
+        fetch_instance = Fetch(connection)
+        orders_instance = Orders(connection)
+        ticker_instance = Ticker(connection)
+        indicator_instance = Indicator(connection)
+        strategy_instance = Strategy(connection)
+        libs_instance = Libs(connection)
 
-    # Input values
-    exchange = 'NSE'
-    symbol = 'SBIN'
-    interval = '15minute'
-    duration = 3
-
-    user_input = {
-        'exchange'  : 'NFO',
-        'type'      : 'options',
-        'action'    : 'buy',
-        'ticker'    : 'NIFTY',
-        'strike'    : ['CE', 'PE'],
-        'expiry'    : 0,   # current
-        'strikes'   : 5    # strikes offset from ATM
-    }
-
-    ##### Ticker #####
-    ticker_exchange = exchange  # NSE
-    ticker_symbol = symbol      # VOLTAS
-    ticker_mode = ''            # QUOTE | LTP | FULL
-    user_settings = {
-        'en_price' : 0,  # auto 
-        'tp_price' : 0,  # auto 
-        'sl_price' : 0,  # auto 
-        'tp_points': 0,  # configure
-        'sl_points': 0   # configure
-        }   
-
-    if ticker_exchange and ticker_symbol and ticker_mode:
-        itoken = fetch.stream_instrument_token_lookup(ticker_exchange, ticker_symbol)
-        ticker.connect_to_ticker(itoken, ticker_mode, user_settings)
-
-    ##### Fetch LTP #####
-    result_ltp = fetch.fetch_ltp(exchange, symbol)
-    key = exchange + ':' + symbol
-    ltp = result_ltp[key]['last_price']
-    print("\nThe Last Traded Price (LTP) of {}:{} is {}\n".format(exchange, symbol, ltp))
-
-    ##### Fetch OHLC #####
-    if historical_data_subscribed:
-        # datasource = fetch.fetch_ohlc(exchange, symbol, interval, duration) ## This is used only when paid subscription 
-        user_input_historical_data = {
-            'exchange'  : 'NSE',
-            'type'      : 'daily',
-            'symbol'    : 'SBIN',
-            'interval'  : '15minute',
-            'start_date': datetime.date(2023,12,29), 
-            'end_date'  : datetime.date(2023,12,31)
+        common_utils = {
+            'help': help_instance,
+            'fetch': fetch_instance,
+            'orders': orders_instance,
+            'ticker': ticker_instance,
+            'indicator': indicator_instance
         }
-        datasource = libs.execute_handler(user_input_historical_data)
-        print("\nThe OHLC values for {}:{} on {} timeframe: \n{}".format(exchange, symbol, interval, datasource))
 
-    #     ##### Indicators #####
-    #     indicator.execute_handler('macd', datasource)
-    #     indicator.execute_handler('rsi', datasource)
-    #     indicator.execute_handler('atr', datasource)
-    #     indicator.execute_handler('sma', datasource)
-    #     indicator.execute_handler('ema', datasource)
-    #     indicator.execute_handler('williams_r', datasource)
-    #     indicator.execute_handler('vwap', datasource)
-    #     indicator.execute_handler('adx', datasource)
-    #     indicator.execute_handler('stochastic', datasource)
-    #     indicator.execute_handler('renko', datasource, 5)
-    #     indicator.execute_handler('bollinger', datasource)
+def main():
+    app = IntelliTrader(SECRET_NAME, REGION_NAME)
+    connection = app.connection_to_broker()
+    app.initialize_modules(connection)
 
-    # ##### Strategies #####
-    # strategy.execute_handler(common_utils, user_input)
-
-
-# Other functions and classes
 if __name__ == "__main__":
     main()

@@ -1,6 +1,4 @@
 {
-  "user_credentials_local": "./configuration/user_credentials.txt",
-  "access_token_path": "./src/output/access_token",
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1"
