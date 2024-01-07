@@ -170,3 +170,8 @@ Parameters:
 Returns:
 - pd.DataFrame: Historical stock data.
 """
+
+
+fix: which represents bug fixes, and correlates to a SemVer patch.
+feat: which represents a new feature, and correlates to a SemVer minor.
+feat!:, or fix!:, refactor!:, etc., which represent a breaking change (indicated by the !) and will result in a SemVer major.
