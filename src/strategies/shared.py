@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import yfinance as yf
+import logging
 
 def get_underlying_ltp(self, ticker):
     stock = ticker if ticker not in ('NIFTY', 'BANKNIFTY') else None
@@ -13,7 +14,7 @@ def get_underlying_ltp(self, ticker):
     elif stock is not None:
         underlying = stock + '.NS'
     else:
-        self.prop['log'].error("The derivative instrument provided is invalid")
+        logging.error("The derivative instrument provided is invalid")
         return False
 
     hist_data = yf.download(underlying, period='5d')

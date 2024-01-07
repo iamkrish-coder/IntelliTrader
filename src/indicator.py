@@ -1,4 +1,5 @@
 from asyncio.windows_events import NULL
+import logging
 import os
 import datetime as dt
 import time
@@ -66,10 +67,10 @@ class Indicator:
                 print("\nMACD Histogram:")
                 print(macd_histogram)
             else:
-                self.prop['log'].error("Failed to calculate MACD") 
+                logging.error("Failed to calculate MACD") 
                 return False
         except Exception as e:
-            self.prop['log'].error("An exception occurred: {}".format(e))
+            logging.error("An exception occurred: {}".format(e))
 
     def option_rsi(self, dataset):
             try:
@@ -83,10 +84,10 @@ class Indicator:
                     print("\nRSI Line:")
                     print(rsi_line)
                 else:
-                    self.prop['log'].error("Failed to calculate RSI") 
+                    logging.error("Failed to calculate RSI") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_atr(self, dataset):
             try:
@@ -100,10 +101,10 @@ class Indicator:
                     print("\nATR Line:")
                     print(atr_line)
                 else:
-                    self.prop['log'].error("Failed to calculate ATR") 
+                    logging.error("Failed to calculate ATR") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_sma(self, dataset):
             try:
@@ -117,10 +118,10 @@ class Indicator:
                     print("\nSMA Line:")
                     print(sma_line)
                 else:
-                    self.prop['log'].error("Failed to calculate SMA") 
+                    logging.error("Failed to calculate SMA") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_ema(self, dataset):
             try:
@@ -134,10 +135,10 @@ class Indicator:
                     print("\nEMA Line:")
                     print(ema_line)
                 else:
-                    self.prop['log'].error("Failed to calculate EMA") 
+                    logging.error("Failed to calculate EMA") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_williams_r(self, dataset):
             try:
@@ -151,10 +152,10 @@ class Indicator:
                     print("\nWilliams %R Line:")
                     print(williams_r_line)
                 else:
-                    self.prop['log'].error("Failed to calculate Williams Range") 
+                    logging.error("Failed to calculate Williams Range") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_vwap(self, dataset):
             try:
@@ -168,10 +169,10 @@ class Indicator:
                     print("\nVWAP Line:")
                     print(vwap_line)
                 else:
-                    self.prop['log'].error("Failed to calculate VWAP") 
+                    logging.error("Failed to calculate VWAP") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_adx(self, dataset):
             try:
@@ -185,10 +186,10 @@ class Indicator:
                     print("\nADX Line:")
                     print(adx_line)
                 else:
-                    self.prop['log'].error("Failed to calculate ADX") 
+                    logging.error("Failed to calculate ADX") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_stochastic(self, dataset):
             try:
@@ -206,10 +207,10 @@ class Indicator:
                     print("\nStochastic Line %D:")
                     print(stochastic_line_d)
                 else:
-                    self.prop['log'].error("Failed to calculate Stochastic") 
+                    logging.error("Failed to calculate Stochastic") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_renko(self, dataset, period):
             try:
@@ -223,10 +224,10 @@ class Indicator:
                     print("\nRenko Bricks:")
                     print(renko_bricks)
                 else:
-                    self.prop['log'].error("Failed to calculate Renko") 
+                    logging.error("Failed to calculate Renko") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def option_bollinger_bands(self, dataset):
             try:
@@ -240,12 +241,12 @@ class Indicator:
                     print("\nBollinger Bands:")
                     print(last_bollinger_band_value)
                 else:
-                    self.prop['log'].error("Failed to calculate Bollinger Band") 
+                    logging.error("Failed to calculate Bollinger Band") 
                     return False
             except Exception as e:
-                self.prop['log'].error("An exception occurred: {}".format(e))
+                logging.error("An exception occurred: {}".format(e))
 
     def invalid_option(self, dataset):
         # Invalid indicator option provided
-        self.prop['log'].warn("The indicator option provided is not valid") 
+        logging.warn("The indicator option provided is not valid") 
         

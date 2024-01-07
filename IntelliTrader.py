@@ -9,6 +9,7 @@ from src.strategy import Strategy
 from src.libs import Libs
 from src.constants.constants import *
 from src.aws.aws_secrets_manager import get_secret
+from src.handlers import TickerHandler, DataHandler
 
 import json
 import datetime
@@ -58,7 +59,7 @@ class IntelliTrader:
 
     def establish_new_connection(self):
         connect = Connection(self.secret_keys)
-        kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker, logging)
+        kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker)
         kite.set_access_token(access_token)
         logging.info("Successfully initiated a new connection to Kite APIs.")
         return kite, kite_ticker, access_token
@@ -89,20 +90,63 @@ class IntelliTrader:
         ticker_instance = Ticker(connection)
         indicator_instance = Indicator(connection)
         strategy_instance = Strategy(connection)
-        libs_instance = Libs(connection)
+        libs_instance = Libs(connection)      
 
-        common_utils = {
+        package_utils = {
             'help': help_instance,
+            'libs': libs_instance,           
             'fetch': fetch_instance,
             'orders': orders_instance,
             'ticker': ticker_instance,
-            'indicator': indicator_instance
+            'indicator': indicator_instance,
+            'strategy': strategy_instance            
         }
 
+        # Create handler instances with the necessary dependencies
+        self.ticker_handler = TickerHandler(fetch_instance, ticker_instance)
+        self.data_handler = DataHandler(fetch_instance, libs_instance)
+
+    def read_input_configuration(self):
+        with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
+            config = json.load(f)
+        return config
+
 def main():
+    # Create an instance of IntelliTrader
     app = IntelliTrader(SECRET_NAME, REGION_NAME)
+
+    # Establish connection to the broker
     connection = app.connection_to_broker()
+
+    # Initialize application modules
     app.initialize_modules(connection)
 
+    # Read user preferences from configuration
+    user_preferences = app.read_input_configuration()
+
+    # Handle ticker based on user preferences
+    if user_preferences['ticker'] is True:  
+        app.ticker_handler.handle_ticker(
+            user_preferences['ticker_exchange'],
+            user_preferences['ticker_symbol'],
+            user_preferences['ticker_mode'],
+            user_preferences['user_settings']
+        )
+
+    # Fetch Last Traded Price (LTP) using user preferences
+    app.data_handler.fetch_ltp(
+        user_preferences['exchange'],
+        user_preferences['symbol']
+    )
+
+    # Fetch OHLC data using user preferences
+    app.data_handler.fetch_ohlc(
+        user_preferences['exchange'],
+        user_preferences['symbol'],
+        user_preferences['interval'],
+        user_preferences['duration']
+    )
+
+    
 if __name__ == "__main__":
     main()

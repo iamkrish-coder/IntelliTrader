@@ -1,5 +1,6 @@
 from src.helper import Helper
 import src.strategies.options as options
+import logging
 
 class Strategy:
     def __init__(self, params):
@@ -38,14 +39,14 @@ class Strategy:
                     case 'sell':
                         pass
                     case _:
-                        self.prop['log'].warn("The strategy type provided is not valid") 
+                        logging.warn("The strategy type provided is not valid") 
             else:
-                self.prop['log'].error("Failed to load Options Strategy") 
+                logging.error("Failed to load Options Strategy") 
                 return False
         except Exception as e:
-            self.prop['log'].error("An exception occurred: {}".format(e))
+            logging.error("An exception occurred: {}".format(e))
 
 
     def invalid_option(self, common_utils, user_input):
         # Invalid strategy option provided
-        self.prop['log'].warn("The strategy option provided is not valid") 
+        logging.warn("The strategy option provided is not valid") 

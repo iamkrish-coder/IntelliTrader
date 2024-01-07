@@ -1,3 +1,4 @@
+import logging
 from tkinter.tix import COLUMN
 import pandas as pd
 import os
@@ -13,10 +14,10 @@ class Fetch:
         instruments_dump = self.prop['kite'].instruments(exchange)
         if exchange is not None:
             Helper.write_csv_output('instruments' + '_' + exchange + '.csv', instruments_dump)
-            self.prop['log'].info('Instruments fetched for exchange %s', exchange)
+            logging.info('Instruments fetched for exchange %s', exchange)
         else:
             Helper.write_csv_output('instruments.csv', instruments_dump)
-            self.prop['log'].info('Instruments fetched successfully')
+            logging.info('Instruments fetched successfully')
         return instruments_dump
 
     # Lookup instrument token 
@@ -26,13 +27,13 @@ class Fetch:
             instrument_df = pd.DataFrame(nse_instruments_dump)
             try:
                 instrument_token = instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]
-                self.prop['log'].info('Instrument token %d obtained for symbol %s', instrument_token, symbol)
+                logging.info('Instrument token %d obtained for symbol %s', instrument_token, symbol)
                 return instrument_token
             except Exception as e:
-                self.prop['log'].warning("An exception occurred: {}".format(e))
+                logging.warning("An exception occurred: {}".format(e))
                 exit()
         else:
-            self.prop['log'].warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
+            logging.warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
             exit()
 
     # Lookup instrument token list (web streaming)
@@ -41,15 +42,16 @@ class Fetch:
             nse_instruments_dump = self.prop['kite'].instruments(exchange)
             instrument_df = pd.DataFrame(nse_instruments_dump)
             token_list = []
+            
             try:
                 for symbol in symbol_list:
                     token_list.append(int(instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]))
                 return token_list
             except Exception as e:
-                self.prop['log'].warning("An exception occurred: {}".format(e))
+                logging.warning("An exception occurred: {}".format(e))
                 exit()
         else:
-            self.prop['log'].warning('Please verify that the echange [%s] and symbol_list [%s] are present.' %(exchange) %(symbol_list))
+            logging.warning('Please verify that the exchange [%s] and symbol_list [%s] are present.' %(exchange) %(symbol_list))
             exit()
             
     # Fetch historical data for an exchange and symbol    
@@ -60,7 +62,7 @@ class Fetch:
             Helper.write_csv_output('historical_' + exchange + '_' + symbol +  '.csv', data)
             return data
         else:
-            self.prop['log'].warning('Please verify that the echange [%s], symbol [%s], interval[%d] and duration[%d] are present.' %(exchange) %(symbol) %(interval) %(duration))
+            logging.warning('Please verify that the echange [%s], symbol [%s], interval[%d] and duration[%d] are present.' %(exchange) %(symbol) %(interval) %(duration))
             exit()
 
     # Fetch extended historical data for an exchange and symbol with limits   
@@ -102,7 +104,7 @@ class Fetch:
             Helper.write_csv_output('historical_' + exchange + '_' + symbol + '_' + str(lookback_period_threshold) + '.csv', data)
             return data
         else:
-            self.prop['log'].warning('Please verify that the echange [%s], symbol [%s], period_start[%d] and interval[%d] are present.' %(exchange) %(symbol) %(period_start) %(interval))
+            logging.warning('Please verify that the echange [%s], symbol [%s], period_start[%d] and interval[%d] are present.' %(exchange) %(symbol) %(period_start) %(interval))
             exit()
 
     # Fetch quote
@@ -111,7 +113,7 @@ class Fetch:
             quote = self.prop['kite'].quote(exchange + ':' + symbol)
             return quote
         else:
-            self.prop['log'].warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
+            logging.warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
             exit()
 
     # Fetch ltp 
@@ -120,7 +122,7 @@ class Fetch:
             last_traded_price = self.prop['kite'].ltp(exchange + ':' + symbol)
             return last_traded_price
         else:
-            self.prop['log'].warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
+            logging.warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
             exit()
 
     # Fetch orders 

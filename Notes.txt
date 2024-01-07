@@ -52,7 +52,7 @@ if transaction == 'buy':
 elif transaction == 'sell':
     transaction_type = self.prop['kite'].TRANSACTION_TYPE_SELL
 else:
-    self.prop['log'].error("The order placement does not have a specified action to buy or sell.")
+    logging.error("The order placement does not have a specified action to buy or sell.")
     exit()
 
 order_single = [{

@@ -1,3 +1,4 @@
+import logging
 import pyotp
 import time
 import datetime
@@ -14,7 +15,7 @@ class Connection:
     def __init__(self, params):
         self.prop = params
 
-    def broker_login(self, KiteConnect, KiteTicker, logging):
+    def broker_login(self, KiteConnect, KiteTicker):
         # Assign properties
         api_key = self.prop.get('api_key')
         secret_key = self.prop.get('secret_key')

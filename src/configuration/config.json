@@ -1,5 +1,20 @@
 {
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
-  "region_name": "ap-south-1"
-}
+  "region_name": "ap-south-1",
+  "ticker": "false",
+  "exchange": "NSE",
+  "symbol": "SBIN",
+  "interval": "15minute",
+  "duration": "3",
+  "ticker_exchange": "NSE",
+  "ticker_symbol": [ "TATAMOTORS" ],
+  "ticker_mode": "ltp",
+  "user_settings": {
+    "en_price": "0",
+    "tp_price": "0",
+    "sl_price": "0",
+    "tp_points": "10",
+    "sl_points": "10"
+  }
+  }
