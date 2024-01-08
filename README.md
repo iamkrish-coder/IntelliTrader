@@ -34,7 +34,17 @@
 
 - **CNC:** Cash & Carry for equity
 - **NRML:** Normal for futures and options
-- **MIS:** Margin Intraday Squareoff for futures and options
+- **MIS:** Margin Intraday Squareoff for futures and options.
+  
+### Commit Message Convention
+
+fix: Represents bug fixes, correlates to a SemVer patch.
+feat: Represents a new feature, correlates to a SemVer minor.
+feat!:, fix!:, refactor!:, etc.: Represents a breaking change (indicated by the !) and will result in a SemVer major.
+feat(lang): add Polish language
+feat(api)!: send an email to the customer when a product is shipped
+docs: correct spelling of CHANGELOG
+revert: let us never again speak of the noodle incident
 
 ### Order Placement Example
 
@@ -131,11 +141,3 @@ time_to_expiry: 4
 # data = get_historical_data(symbol, start_date, end_date)
 # print(data)
 
-Commit Message Convention
-fix: Represents bug fixes, correlates to a SemVer patch.
-feat: Represents a new feature, correlates to a SemVer minor.
-feat!:, fix!:, refactor!:, etc.: Represents a breaking change (indicated by the !) and will result in a SemVer major.
-feat(lang): add Polish language
-feat(api)!: send an email to the customer when a product is shipped
-docs: correct spelling of CHANGELOG
-revert: let us never again speak of the noodle incident
