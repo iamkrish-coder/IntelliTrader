@@ -12,4 +12,9 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # using the `org/team_slug` or `/team_slug` syntax to add git team as reviewers
+          reviewers: |
+            iamkrish_coder
+            iamkrish_coder
+            iamkrish_coder
+          assignees: iamkrish_coder, assignee2, assignee3
           skipKeywords: wip, draft
