@@ -38,13 +38,13 @@
   
 ### Commit Message Convention
 
-## fix: Represents bug fixes, correlates to a SemVer patch.
-## feat: Represents a new feature, correlates to a SemVer minor.
-## feat!:, fix!:, refactor!:, etc.: Represents a breaking change (indicated by the !) and will result in a SemVer major.
-## feat(lang): add Polish language
-## feat(api)!: send an email to the customer when a product is shipped
-## docs: correct spelling of CHANGELOG
-## revert: let us never again speak of the noodle incident
+#### fix: Represents bug fixes, correlates to a SemVer patch.
+#### feat: Represents a new feature, correlates to a SemVer minor.
+#### feat!:, fix!:, refactor!: Represents a breaking change (indicated by the !) and will result in a SemVer major.
+#### feat(lang): add Polish language
+#### feat(api)!: send an email to the customer when a product is shipped
+#### docs: correct spelling of CHANGELOG
+#### revert: let us never again speak of the noodle incident
 
 ### Order Placement Example
 
