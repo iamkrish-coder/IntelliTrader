@@ -46,6 +46,8 @@
 #### docs: correct spelling of CHANGELOG
 #### revert: let us never again speak of the noodle incident
 
+-----------------------------------------------------------------------------------------------------------------
+
 ### Order Placement Example
 
 ```python
