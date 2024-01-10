@@ -57,13 +57,10 @@
     <Compile Include="src\ticker.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".github\workflows\actions.yml" />
     <Content Include="requirements.txt" />
     <Content Include="src\configuration\config.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include=".github\" />
-    <Folder Include=".github\workflows\" />
     <Folder Include="src\" />
     <Folder Include="src\configuration\" />
     <Folder Include="src\constants\" />
