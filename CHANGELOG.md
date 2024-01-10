@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.2.0...v0.3.0) (2024-01-10)
+
+
+### Features
+
+* Add auto approve mechanism ([569a908](https://github.com/iamkrish-coder/IntelliTrader-v2/commit/569a908a351d41846a1aca8a79ea3143400586f4))
+
+
+### Bug Fixes
+
+* Remove the commit message from yaml ([ee8b857](https://github.com/iamkrish-coder/IntelliTrader-v2/commit/ee8b85796ab0f73484fdde187bb460993fedd559))
+
 ## [0.2.0](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.1.0...v0.2.0) (2024-01-10)
 
 
