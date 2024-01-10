@@ -19,6 +19,14 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           branch: feature-build
+          title: 'Feature Patch'
+          body: |
+                    Updates to IntelliTrader
+                    - Srikrishnan 
+                    - Auto-generated Pull Request on push to Develop
+          commit-message: |
+
+
           delete-branch: true
           labels: |
             enhancement
