@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.3.0...v0.3.1) (2024-01-10)
+
+
+### Bug Fixes
+
+* Remove auto approve broken action ([6febc99](https://github.com/iamkrish-coder/IntelliTrader-v2/commit/6febc99853fb5c53a393e978b640323815b3c9d5))
+
 ## [0.3.0](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.2.0...v0.3.0) (2024-01-10)
 
 
