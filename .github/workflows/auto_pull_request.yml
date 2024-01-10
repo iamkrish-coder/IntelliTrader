@@ -7,7 +7,7 @@ jobs:
   PR:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: master
       - name: Reset master branch
@@ -15,6 +15,13 @@ jobs:
           git fetch origin develop:develop
           git reset --hard develop
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
           branch: feature-build
+          delete-branch: true
+          labels: |
+            enhancement
+            automated pull request
+          assignees: iamkrish-coder
+          reviewers: iamkrish-coder
+          draft: false
