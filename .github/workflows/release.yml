@@ -1,4 +1,4 @@
-# .github/workflows/release.yml
+# .github/workflows/release.yml - Creates Release on Merge to Master
 name: Release
 
 on:
