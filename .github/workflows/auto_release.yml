@@ -1,0 +1,26 @@
+name: auto_release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto_release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Auto Release
+      uses: release-please/action@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        release-type: simple
+        default-branch: master
+
