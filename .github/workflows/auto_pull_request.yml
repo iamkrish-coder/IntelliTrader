@@ -25,3 +25,10 @@ jobs:
           assignees: iamkrish-coder
           reviewers: iamkrish-coder
           draft: false
+      - name: Create or Update Project Card
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        uses: peter-evans/create-or-update-project-card@v2
+        with:
+          project-name: IntelliTrader
+          column-name: Done
+          issue-number: ${{ steps.cpr.outputs.pull-request-number }}
