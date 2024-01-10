@@ -23,7 +23,7 @@ jobs:
 
     - name: Execute Auto-Merge Script
       run: |
-        cd ${{ github.workspace }}
+        cd .github/workflows
         node auto-merge.js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
