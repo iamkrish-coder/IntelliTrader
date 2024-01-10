@@ -22,7 +22,9 @@ jobs:
       run: npm install @octokit/rest
 
     - name: Execute Auto-Merge Script
-      run: node auto-merge.js
+      run: |
+        cd ${{ github.workspace }}
+        node auto-merge.js
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
