@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.4.0...v0.5.0) (2024-01-14)
+
+
+### Features
+
+* modified strategy code to add base strategy class and abstract methods ([8e87f01](https://github.com/iamkrish-coder/IntelliTrader/commit/8e87f01ae21db281e869cf5f26336b241a3fba05))
+
 ## [0.4.0](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.3.1...v0.4.0) (2024-01-14)
 
 
