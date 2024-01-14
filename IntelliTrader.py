@@ -6,7 +6,6 @@ from src.orders import Orders
 from src.ticker import Ticker
 from src.indicator import Indicator
 from src.strategy import Strategy
-from src.libs import Libs
 from src.constants.constants import *
 from src.aws.aws_secrets_manager import get_secret
 from src.handlers import TickerHandler, DataHandler
@@ -90,11 +89,9 @@ class IntelliTrader:
         ticker_instance = Ticker(connection)
         indicator_instance = Indicator(connection)
         strategy_instance = Strategy(connection)
-        libs_instance = Libs(connection)      
 
         package_utils = {
             'help': help_instance,
-            'libs': libs_instance,           
             'fetch': fetch_instance,
             'orders': orders_instance,
             'ticker': ticker_instance,
@@ -104,7 +101,7 @@ class IntelliTrader:
 
         # Create handler instances with the necessary dependencies
         self.ticker_handler = TickerHandler(fetch_instance, ticker_instance)
-        self.data_handler = DataHandler(fetch_instance, libs_instance)
+        self.data_handler = DataHandler(fetch_instance)
 
     def read_input_configuration(self):
         with open(CONFIGURATION_PATH + '/config.json', 'r') as f:

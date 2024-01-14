@@ -30,6 +30,7 @@
     <Compile Include="src\constants\constants.py" />
     <Compile Include="src\enumerations\enums.py" />
     <Compile Include="src\fetch.py" />
+    <Compile Include="src\handlers.py" />
     <Compile Include="src\helper.py" />
     <Compile Include="src\indicator.py" />
     <Compile Include="src\indicators\adx.py" />
@@ -43,9 +44,6 @@
     <Compile Include="src\indicators\vwap.py" />
     <Compile Include="src\indicators\williams_r.py" />
     <Compile Include="src\libraries\nse_data.py" />
-    <Compile Include="src\libs.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="src\libraries\backtest.py">
       <SubType>Code</SubType>
     </Compile>

@@ -1,9 +1,11 @@
-import logging
-from tkinter.tix import COLUMN
-import pandas as pd
 import os
+import logging
+import pandas as pd
 import datetime as dt
+import src.libraries.backtest as backtest
+import src.libraries.nse_data as nsedata
 from src.helper import Helper
+from tkinter.tix import COLUMN
 
 class Fetch:
     def __init__(self, params):
@@ -139,3 +141,13 @@ class Fetch:
     def fetch_holdings(self):
         holdings = self.prop['kite'].holdings()
         return holdings
+
+    # Fetch backtest data
+    def fetch_backtest_data(self, user_input):
+        match user_input['type']:
+            case 'daily':
+                return(backtest.get_daily_historical_data(nsedata, user_input))
+            case 'multi':
+                backtest.get_multiple_historical_data(user_input)                
+            case _:
+                self.invalid_option(user_input)
