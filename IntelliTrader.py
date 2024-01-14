@@ -8,7 +8,8 @@ from src.indicator import Indicator
 from src.strategy import Strategy
 from src.constants.constants import *
 from src.aws.aws_secrets_manager import get_secret
-from src.handlers import TickerHandler, DataHandler
+from src.handlers import Handler
+from src.strategies import strategy_manager
 
 import json
 import datetime
@@ -82,7 +83,7 @@ class IntelliTrader:
         logging.error(f"An exception occurred: {exception}. {message}")
         exit()
 
-    def initialize_modules(self, connection):
+    def init_modules(self, connection):
         help_instance = Helper(connection)
         fetch_instance = Fetch(connection)
         orders_instance = Orders(connection)
@@ -90,7 +91,7 @@ class IntelliTrader:
         indicator_instance = Indicator(connection)
         strategy_instance = Strategy(connection)
 
-        package_utils = {
+        modules = {
             'help': help_instance,
             'fetch': fetch_instance,
             'orders': orders_instance,
@@ -98,10 +99,10 @@ class IntelliTrader:
             'indicator': indicator_instance,
             'strategy': strategy_instance            
         }
-
-        # Create handler instances with the necessary dependencies
-        self.ticker_handler = TickerHandler(fetch_instance, ticker_instance)
-        self.data_handler = DataHandler(fetch_instance)
+        return modules
+        
+        # # Create handler instance
+        # self.handler = Handler(modules)
 
     def read_input_configuration(self):
         with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
@@ -116,33 +117,42 @@ def main():
     connection = app.connection_to_broker()
 
     # Initialize application modules
-    app.initialize_modules(connection)
+    modules = app.init_modules(connection)
 
     # Read user preferences from configuration
-    user_preferences = app.read_input_configuration()
+    configuration = app.read_input_configuration()
 
-    # Handle ticker based on user preferences
-    if user_preferences['ticker'] is True:  
-        app.ticker_handler.handle_ticker(
-            user_preferences['ticker_exchange'],
-            user_preferences['ticker_symbol'],
-            user_preferences['ticker_mode'],
-            user_preferences['user_settings']
-        )
+    # # Fetch ticker data 
+    # if configuration['ticker'] is True:  
+    #     app.handler.fetch_ticker_data(
+    #         configuration['ticker_exchange'],
+    #         configuration['ticker_symbol'],
+    #         configuration['ticker_mode'],
+    #         configuration['user_settings']
+    #     )
 
-    # Fetch Last Traded Price (LTP) using user preferences
-    app.data_handler.fetch_ltp(
-        user_preferences['exchange'],
-        user_preferences['symbol']
-    )
+    # # Fetch Last Traded Price (LTP)
+    # app.handler.fetch_ltp(
+    #     configuration['exchange'],
+    #     configuration['symbol']
+    # )
 
-    # Fetch OHLC data using user preferences
-    app.data_handler.fetch_ohlc(
-        user_preferences['exchange'],
-        user_preferences['symbol'],
-        user_preferences['interval'],
-        user_preferences['duration']
-    )
+    # # Fetch OHLC data 
+    # app.handler.fetch_ohlc(
+    #     configuration['exchange'],
+    #     configuration['symbol'],
+    #     configuration['interval'],
+    #     configuration['duration']
+    # )
+
+    # Get the selected strategy from user preferences
+    strategy = configuration.get('strategy', 'default')
+
+    # Instantiate the Strategy Manager
+    strategy_manager_instance = strategy_manager.StrategyManager(connection, strategy, modules)
+
+    # Execute the selected strategy
+    strategy_manager_instance.load_strategy(configuration)
 
     
 if __name__ == "__main__":
