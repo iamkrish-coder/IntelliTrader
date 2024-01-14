@@ -16,5 +16,6 @@
     "sl_price": "0",
     "tp_points": "10",
     "sl_points": "10"
-  }
-  }
+  },
+  "strategy": "options"
+}
