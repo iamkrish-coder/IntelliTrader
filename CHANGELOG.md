@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.3.1...v0.4.0) (2024-01-14)
+
+
+### Features
+
+* Update issue templates ([9a86702](https://github.com/iamkrish-coder/IntelliTrader-v2/commit/9a86702d4fc1b9478246315ff7f33734db4dfe1b))
+
 ## [0.3.1](https://github.com/iamkrish-coder/IntelliTrader-v2/compare/v0.3.0...v0.3.1) (2024-01-10)
 
 
