@@ -49,9 +49,13 @@
     </Compile>
     <Compile Include="src\modify.py" />
     <Compile Include="src\orders.py" />
-    <Compile Include="src\strategies\options.py" />
+    <Compile Include="src\strategies\base_strategy.py" />
+    <Compile Include="src\strategies\options_strategy.py" />
     <Compile Include="src\strategies\shared.py" />
-    <Compile Include="src\strategy.py" />
+    <Compile Include="src\strategies\strategy_manager.py" />
+    <Compile Include="src\strategies\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\ticker.py" />
   </ItemGroup>
   <ItemGroup>

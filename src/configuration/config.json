@@ -2,20 +2,31 @@
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
-  "ticker": "false",
-  "exchange": "NSE",
-  "symbol": "SBIN",
-  "interval": "15minute",
-  "duration": "3",
-  "ticker_exchange": "NSE",
-  "ticker_symbol": [ "TATAMOTORS" ],
-  "ticker_mode": "ltp",
-  "user_settings": {
+  "trade": "true",
+  "trade_params": {
+    "exchange": "NSE",
+    "symbol": "SBIN",
+    "interval": "15minute",
+    "duration": "3",
     "en_price": "0",
     "tp_price": "0",
     "sl_price": "0",
     "tp_points": "10",
     "sl_points": "10"
   },
-  "strategy": "options"
+  "ticker": "false",
+  "ticker_params": {
+    "ticker_exchange": "NSE",
+    "ticker_symbol": [ "TATAMOTORS" ],
+    "ticker_mode": "ltp"
+  },
+  "strategy": "options",
+  "OptionsStrategy_params": {
+    "ticker": "false",
+    "strike": "",
+    "exchange": "NSE",
+    "symbol": "SBIN",
+    "expiry": "",
+    "offset": ""
+  }
 }
