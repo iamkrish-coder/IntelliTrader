@@ -12,6 +12,9 @@ class Interval(Enum):
 
 class Symbol(Enum):
     SBIN = 'SBIN'
+    
+class Strategy(Enum):
+    OPTIONS = 'OptionsStrategy'
 
 # Specify which names should be imported when using "from constants import *"
-__all__ = ['Exchange', 'Interval', 'Symbol']
+__all__ = ['Exchange', 'Interval', 'Symbol', 'Strategy']

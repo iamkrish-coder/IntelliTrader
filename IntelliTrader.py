@@ -5,7 +5,6 @@ from src.fetch import Fetch
 from src.orders import Orders
 from src.ticker import Ticker
 from src.indicator import Indicator
-from src.strategy import Strategy
 from src.constants.constants import *
 from src.aws.aws_secrets_manager import get_secret
 from src.handlers import Handler
@@ -89,15 +88,13 @@ class IntelliTrader:
         orders_instance = Orders(connection)
         ticker_instance = Ticker(connection)
         indicator_instance = Indicator(connection)
-        strategy_instance = Strategy(connection)
 
         modules = {
             'help': help_instance,
             'fetch': fetch_instance,
             'orders': orders_instance,
             'ticker': ticker_instance,
-            'indicator': indicator_instance,
-            'strategy': strategy_instance            
+            'indicator': indicator_instance
         }
         return modules
         
