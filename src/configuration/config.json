@@ -20,7 +20,7 @@
     "ticker_symbol": [ "TATAMOTORS" ],
     "ticker_mode": "ltp"
   },
-  "strategy": "options",
+  "strategy": "stockoptions",
   "OptionsStrategy_params": {
     "ticker": "false",
     "strike": "",

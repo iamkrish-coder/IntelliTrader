@@ -149,7 +149,7 @@ def main():
     strategy_manager_instance = strategy_manager.StrategyManager(connection, strategy, modules)
 
     # Execute the selected strategy
-    strategy_manager_instance.load_strategy(configuration)
+    strategy_manager_instance.load_strategy(configuration )
 
     
 if __name__ == "__main__":
