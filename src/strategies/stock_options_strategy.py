@@ -2,7 +2,7 @@
 from src.strategies.base_strategy import BaseStrategy
 import src.strategies.shared as shared
 
-class OptionsStrategy(BaseStrategy):
+class StockOptionsStrategy(BaseStrategy):
     def __init__(self, connection):
         super().__init__(connection)
 
