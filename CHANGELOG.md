@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.1...v0.5.2) (2024-01-19)
+
+
+### Bug Fixes
+
+* Refactored code to develop strategy ([7097f6c](https://github.com/iamkrish-coder/IntelliTrader/commit/7097f6ccfd157436f7ec3d8d8b4a4b020369fd31))
+
 ## [0.5.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.0...v0.5.1) (2024-01-15)
 
 
