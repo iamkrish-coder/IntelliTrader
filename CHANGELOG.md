@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.2...v0.5.3) (2024-01-21)
+
+
+### Features
+
+* Added dynamic strategy loading based on user input from configuration. Modify abstract classes and their implementation. ([714844c](https://github.com/iamkrish-coder/IntelliTrader/commit/714844c5617b40978394cd6c005cd0c89d14e3fd))
+
 ## [0.5.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.1...v0.5.2) (2024-01-19)
 
 
