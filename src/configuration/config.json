@@ -3,6 +3,7 @@
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
   "trade": "true",
+  "datasource": "!real-time",
   "trade_params": {
     "exchange": "NSE",
     "symbol": "SBIN",
@@ -20,8 +21,8 @@
     "ticker_symbol": [ "TATAMOTORS" ],
     "ticker_mode": "ltp"
   },
-  "strategy": "stockoptions",
-  "OptionsStrategy_params": {
+  "strategy": "1",
+  "strategy_1_params": {
     "ticker": "false",
     "strike": "",
     "exchange": "NSE",

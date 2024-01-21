@@ -25,3 +25,30 @@ class Handler:
         }
         datasource = self.modules['fetch'].fetch_backtest_data(user_input_for_backtest_data)
         print("\nThe OHLC values for {}:{} on {} timeframe: \n{}".format(exchange, symbol, interval, datasource))
+
+
+    # # Create handler instance
+    # self.handler = Handler(modules)
+
+    # # Fetch ticker data 
+    # if configuration['ticker'] is True:  
+    #     app.handler.fetch_ticker_data(
+    #         configuration['ticker_exchange'],
+    #         configuration['ticker_symbol'],
+    #         configuration['ticker_mode'],
+    #         configuration['user_settings']
+    #     )
+
+    # # Fetch Last Traded Price (LTP)
+    # app.handler.fetch_ltp(
+    #     configuration['exchange'],
+    #     configuration['symbol']
+    # )
+
+    # # Fetch OHLC data 
+    # app.handler.fetch_ohlc(
+    #     configuration['exchange'],
+    #     configuration['symbol'],
+    #     configuration['interval'],
+    #     configuration['duration']
+    # )

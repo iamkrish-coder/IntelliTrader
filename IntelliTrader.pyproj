@@ -50,7 +50,7 @@
     <Compile Include="src\modify.py" />
     <Compile Include="src\orders.py" />
     <Compile Include="src\strategies\base_strategy.py" />
-    <Compile Include="src\strategies\stock_options_strategy.py" />
+    <Compile Include="src\strategies\stock_options.py" />
     <Compile Include="src\strategies\shared.py" />
     <Compile Include="src\strategies\strategy_manager.py" />
     <Compile Include="src\strategies\__init__.py">

@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /configuration/user_credentials.txt
 /src/output
+/src/data/Historical

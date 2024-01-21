@@ -2,12 +2,19 @@
 from src.strategies.base_strategy import BaseStrategy
 import src.strategies.shared as shared
 
-class StockOptionsStrategy(BaseStrategy):
-    def __init__(self, connection):
-        super().__init__(connection)
+class StockOptions(BaseStrategy):
+    def __init__(self, connection, modules, ticker, strike, exchange, symbol, expiry, offset):
+        super().__init__(connection, modules)
+        self.ticker = ticker
+        self.strike = strike
+        self.exchange = exchange
+        self.symbol = symbol
+        self.expiry = expiry
+        self.offset = offset
 
     def execute_strategy(self, dataset):
         if dataset:
+            print("Strategy Execute: Stock-Options")
             # common_utils = dataset['common_utils']
             # user_input = dataset['user_input']
 
