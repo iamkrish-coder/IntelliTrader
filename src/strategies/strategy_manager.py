@@ -3,21 +3,30 @@ import src.strategies as strategies
 from src.enumerations.enums import Strategy
 
 class StrategyManager:
-    def __init__(self, connection, strategy, modules):
+    def __init__(self, connection, modules):
         self.connection = connection
-        self.strategy_name = strategy
         self.modules = modules
         
-    def load_strategy(self, dataset):
+    def initialize_strategy(self, configuration, dataset):
         try:
-            strategy_enum = getattr(Strategy, self.strategy_name.upper())  
-            strategy_class_name = strategy_enum.value.strip() 
+            strategy_id = int(configuration.get("strategy"))
+            strategy_enum = Strategy(strategy_id)
+            strategy_enum_name = strategy_enum.name
+            strategy_class_name = self.modules['help'].convert_enum_to_class_name(strategy_enum_name)
             strategy_class = getattr(strategies, strategy_class_name, None)
             
-            if strategy_class is None:
-                print(f"Strategy class '{strategy_class_name}' not found in the strategies module.")
-            else:
-                strategy_instance = strategy_class(self.connection)
+            if strategy_class:
+                # If the strategy requires additional parameters, check and pass them
+                params_key = f"strategy_{strategy_enum.value}_params"
+                strategy_params = configuration.get(params_key, {})
+
+                # Instantiate the strategy with connection and parameters
+                strategy_instance = strategy_class(self.connection, self.modules, **strategy_params)
+                
+                # Execute the strategy
                 strategy_instance.execute_strategy(dataset)
+            else:
+                print(f"Strategy class '{strategy_class_name}' not found in the strategies module.")
+
         except Exception as e:
             print(f"An error occurred: {e}")

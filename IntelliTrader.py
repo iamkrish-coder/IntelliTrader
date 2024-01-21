@@ -1,3 +1,4 @@
+from sys import modules
 from kiteconnect import KiteConnect, KiteTicker
 from src.connection import Connection
 from src.helper import Helper
@@ -98,9 +99,6 @@ class IntelliTrader:
         }
         return modules
         
-        # # Create handler instance
-        # self.handler = Handler(modules)
-
     def read_input_configuration(self):
         with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
             config = json.load(f)
@@ -116,41 +114,26 @@ def main():
     # Initialize application modules
     modules = app.init_modules(connection)
 
+
     # Read user preferences from configuration
     configuration = app.read_input_configuration()
 
-    # # Fetch ticker data 
-    # if configuration['ticker'] is True:  
-    #     app.handler.fetch_ticker_data(
-    #         configuration['ticker_exchange'],
-    #         configuration['ticker_symbol'],
-    #         configuration['ticker_mode'],
-    #         configuration['user_settings']
-    #     )
+    # Fetch historical dataset using libraries (Testing Purpose)
+    datasource_mode = configuration.get('datasource')
+    if datasource_mode == '!real-time':
+        print("Data Source Mode: Historical (Backtest)")
 
-    # # Fetch Last Traded Price (LTP)
-    # app.handler.fetch_ltp(
-    #     configuration['exchange'],
-    #     configuration['symbol']
-    # )
+    # Fetch live dataset using Broker API
+    # TODO: Utilize the Handler to dynamically retrieve real-time datasets for the relevant instruments as needed.
 
-    # # Fetch OHLC data 
-    # app.handler.fetch_ohlc(
-    #     configuration['exchange'],
-    #     configuration['symbol'],
-    #     configuration['interval'],
-    #     configuration['duration']
-    # )
-
-    # Get the selected strategy from user preferences
-    strategy = configuration.get('strategy', 'default')
+    # Get the selected strategy ID from user preferences
+    strategy_id = configuration.get('strategy', '')
 
     # Instantiate the Strategy Manager
-    strategy_manager_instance = strategy_manager.StrategyManager(connection, strategy, modules)
+    strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)
 
-    # Execute the selected strategy
-    strategy_manager_instance.load_strategy(configuration )
-
+    # Initialize the selected strategy
+    strategy_manager_instance.initialize_strategy(configuration, None)
     
 if __name__ == "__main__":
     main()

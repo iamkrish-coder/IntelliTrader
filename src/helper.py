@@ -27,7 +27,11 @@ class Helper:
             os.mkdir(path)
             csv_data = pd.DataFrame(data)
             csv_data.to_csv(path + '/' + filename, index=False)
-
+    
+    def convert_enum_to_class_name(self, enum_name):
+        words = str(enum_name).split('_')
+        converted = ''.join(word.capitalize() for word in words)
+        return converted
 
 
 
