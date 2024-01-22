@@ -80,7 +80,7 @@ kiwisolver==1.4.5
 matplotlib-inline==0.1.6
 nest-asyncio==1.5.8
 parso==0.8.3
-Pillow==10.1.0
+Pillow==10.2.0
 platformdirs==4.1.0
 prompt-toolkit==3.0.43
 psutil==5.9.7
