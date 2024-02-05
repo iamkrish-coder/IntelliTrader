@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.3...v0.6.0) (2024-02-05)
+
+
+### Features
+
+* pre-build for backtesting feature ([dd5554b](https://github.com/iamkrish-coder/IntelliTrader/commit/dd5554bc04a73b220953d5ad41f1cdf38d06cbe8))
+
 ## [0.5.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.2...v0.5.3) (2024-01-21)
 
 
