@@ -114,26 +114,14 @@ def main():
     # Initialize application modules
     modules = app.init_modules(connection)
 
-
     # Read user preferences from configuration
     configuration = app.read_input_configuration()
 
-    # Fetch historical dataset using libraries (Testing Purpose)
-    datasource_mode = configuration.get('datasource')
-    if datasource_mode == '!real-time':
-        print("Data Source Mode: Historical (Backtest)")
-
-    # Fetch live dataset using Broker API
-    # TODO: Utilize the Handler to dynamically retrieve real-time datasets for the relevant instruments as needed.
-
-    # Get the selected strategy ID from user preferences
-    strategy_id = configuration.get('strategy', '')
-
     # Instantiate the Strategy Manager
     strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)
-
     # Initialize the selected strategy
-    strategy_manager_instance.initialize_strategy(configuration, None)
-    
+    strategy_manager_instance.initialize_strategy(configuration)
+
+
 if __name__ == "__main__":
     main()

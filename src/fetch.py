@@ -2,8 +2,8 @@ import os
 import logging
 import pandas as pd
 import datetime as dt
-import src.libraries.backtest as backtest
 import src.libraries.nse_data as nsedata
+import requests
 from src.helper import Helper
 from tkinter.tix import COLUMN
 
@@ -142,12 +142,44 @@ class Fetch:
         holdings = self.prop['kite'].holdings()
         return holdings
 
+    # --------------------------------------------------------------------------------------
+        # BACKTESTING PURPOSE ONLY
+    # --------------------------------------------------------------------------------------
+
     # Fetch backtest data
-    def fetch_backtest_data(self, user_input):
-        match user_input['type']:
-            case 'daily':
-                return(backtest.get_daily_historical_data(nsedata, user_input))
-            case 'multi':
-                backtest.get_multiple_historical_data(user_input)                
-            case _:
-                self.invalid_option(user_input)
+    def fetch_backtest_data(self, user_input):        
+        if(user_input['backtest_timeframe'] == 'latest'):
+            return(self.fetch_backtest_today_data(nsedata, user_input))
+        else:
+            return(self.fetch_backtest_multi_data(user_input))
+                
+    def fetch_backtest_latest_data(nsedata, dataset):
+        # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty
+        if 'symbol' not in dataset or not dataset:
+            print("Symbol not found in the dataset or the dataset is empty.") 
+            return None
+    
+        try:
+            nse_api = nsedata.NSE()
+            df = nse_api.getHistoricalData(dataset['symbol'], 'EQ', dataset['start_date'], dataset['end_date'])
+            if df is not None:
+                selected_columns = ['open', 'high', 'low', 'close', 'volume']
+                df_subset = df[selected_columns]
+                return df_subset
+            else:
+                print("Error fetching data or data is empty.")
+        except Exception as e:
+            print(f"Error fetching data for {dataset['symbol']}: {str(e)}")
+            return None
+
+    def fetch_backtest_multi_data(self, exchange, symbol, interval, duration):
+        user_input_for_backtest_data = {
+            'exchange': exchange,
+            'type': 'daily',
+            'symbol': symbol,
+            'interval': interval,
+            'start_date': dt.date(2023, 12, 29),
+            'end_date': dt.date(2023, 12, 31)
+        }
+        datasource = self.modules['fetch'].fetch_backtest_data(user_input_for_backtest_data)
+        print("\nThe OHLC values for {}:{} on {} timeframe: \n{}".format(exchange, symbol, interval, datasource))

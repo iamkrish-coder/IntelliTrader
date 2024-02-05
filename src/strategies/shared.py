@@ -24,7 +24,7 @@ def get_underlying_ltp(self, ticker):
 def get_options(dump, ticker, strike, exchange):
     contracts = []
     for instrument in dump:
-        if instrument['name']==ticker and instrument['instrument_type']==strike:
+        if instrument['name'] == ticker or instrument['tradingsymbol'] == ticker and instrument['instrument_type'] == strike:
             contracts.append(instrument)
     return pd.DataFrame(contracts)
 
@@ -35,7 +35,7 @@ def get_options_with_expiry(contracts, expiry_span):
         expiry_eta = next_expiry_in_days[expiry_span]
     else:
         min_day_count = None 
-    return (contracts[contracts["time_to_expiry"] == expiry_eta]).reset_index(drop=True)
+    return (contracts[contracts['time_to_expiry'] == expiry_eta]).reset_index(drop=True)
 
 def get_options_ce_atm(contracts, current_index_price):
     return abs(contracts['strike'] - current_index_price).argmin()
