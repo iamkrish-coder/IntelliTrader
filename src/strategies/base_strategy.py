@@ -8,5 +8,9 @@ class BaseStrategy(ABC):
         self.modules = modules
         
     @abstractmethod
-    def execute_strategy(self, dataset):
+    def execute_live_strategy(self):
+        raise NotImplementedError("Subclasses must implement this method")
+
+    @abstractmethod
+    def execute_backtest_strategy(self, backtest_parameters):
         raise NotImplementedError("Subclasses must implement this method")

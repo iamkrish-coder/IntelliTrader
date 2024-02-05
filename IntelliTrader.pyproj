@@ -44,12 +44,10 @@
     <Compile Include="src\indicators\vwap.py" />
     <Compile Include="src\indicators\williams_r.py" />
     <Compile Include="src\libraries\nse_data.py" />
-    <Compile Include="src\libraries\backtest.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="src\modify.py" />
     <Compile Include="src\orders.py" />
     <Compile Include="src\strategies\base_strategy.py" />
+    <Compile Include="src\strategies\stock_delivery.py" />
     <Compile Include="src\strategies\stock_options.py" />
     <Compile Include="src\strategies\shared.py" />
     <Compile Include="src\strategies\strategy_manager.py" />

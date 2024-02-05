@@ -7,12 +7,15 @@ class StrategyManager:
         self.connection = connection
         self.modules = modules
         
-    def initialize_strategy(self, configuration, dataset):
-        try:
+    def initialize_strategy(self, configuration):
+        try:         
+            auto_trade = configuration.get("auto_trade").lower()
+            auto_backtest = configuration.get("backtest").lower()
+            
             strategy_id = int(configuration.get("strategy"))
             strategy_enum = Strategy(strategy_id)
             strategy_enum_name = strategy_enum.name
-            strategy_class_name = self.modules['help'].convert_enum_to_class_name(strategy_enum_name)
+            strategy_class_name = self.modules["help"].convert_enum_to_class_name(strategy_enum_name)
             strategy_class = getattr(strategies, strategy_class_name, None)
             
             if strategy_class:
@@ -24,7 +27,13 @@ class StrategyManager:
                 strategy_instance = strategy_class(self.connection, self.modules, **strategy_params)
                 
                 # Execute the strategy
-                strategy_instance.execute_strategy(dataset)
+                if auto_trade == 'true':
+                    strategy_instance.execute_live_strategy()               
+                elif auto_backtest == 'true' and auto_trade == 'false':
+                   auto_params = configuration.get("backtest_params")
+                   strategy_instance.execute_backtest_strategy(auto_params)               
+                else:
+                    print("No auto trade or backtest configuration found.")
             else:
                 print(f"Strategy class '{strategy_class_name}' not found in the strategies module.")
 
