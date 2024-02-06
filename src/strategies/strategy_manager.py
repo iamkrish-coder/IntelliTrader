@@ -10,7 +10,7 @@ class StrategyManager:
     def initialize_strategy(self, configuration):
         try:         
             auto_trade = configuration.get("auto_trade").lower()
-            auto_backtest = configuration.get("backtest").lower()
+            auto_virtual = configuration.get("virtual").lower()
             
             strategy_id = int(configuration.get("strategy"))
             strategy_enum = Strategy(strategy_id)
@@ -28,12 +28,12 @@ class StrategyManager:
                 
                 # Execute the strategy
                 if auto_trade == 'true':
-                    strategy_instance.execute_live_strategy()               
-                elif auto_backtest == 'true' and auto_trade == 'false':
-                   auto_params = configuration.get("backtest_params")
-                   strategy_instance.execute_backtest_strategy(auto_params)               
+                    strategy_instance.execute_live_strategy()                   # Live Trade
+                elif auto_virtual == 'true' and auto_trade == 'false':
+                   auto_params = configuration.get("virtual_params")           # Virtual Trade
+                   strategy_instance.execute_virtual_strategy(auto_params)               
                 else:
-                    print("No auto trade or backtest configuration found.")
+                    print("No auto trade or virtual configuration found.")     # No Trade
             else:
                 print(f"Strategy class '{strategy_class_name}' not found in the strategies module.")
 

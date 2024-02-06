@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Viewer</title>
+</head>
+<body>
+    <h1>Configuration Viewer</h1>
+    <table border="1">
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        {% for key, value in config.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>
+                {% if key == 'auto_trade_params' %}
+                <ul>
+                    {% for k, v in value.items() %}
+                    <li>{{ k }}: {{ v }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                {{ value }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+

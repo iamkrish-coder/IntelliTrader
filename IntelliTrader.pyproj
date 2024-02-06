@@ -30,7 +30,7 @@
     <Compile Include="src\constants\constants.py" />
     <Compile Include="src\enumerations\enums.py" />
     <Compile Include="src\fetch.py" />
-    <Compile Include="src\handlers.py" />
+    <Compile Include="src\handlers\virtual_strategy_handler.py" />
     <Compile Include="src\helper.py" />
     <Compile Include="src\indicator.py" />
     <Compile Include="src\indicators\adx.py" />
@@ -41,6 +41,7 @@
     <Compile Include="src\indicators\renko.py" />
     <Compile Include="src\indicators\rsi.py" />
     <Compile Include="src\indicators\stochastic.py" />
+    <Compile Include="src\indicators\supertrend.py" />
     <Compile Include="src\indicators\vwap.py" />
     <Compile Include="src\indicators\williams_r.py" />
     <Compile Include="src\libraries\nse_data.py" />
@@ -59,6 +60,7 @@
   <ItemGroup>
     <Content Include="requirements.txt" />
     <Content Include="src\configuration\config.json" />
+    <Content Include="src\templates\index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
@@ -68,6 +70,8 @@
     <Folder Include="src\indicators\" />
     <Folder Include="src\libraries\" />
     <Folder Include="src\aws\" />
+    <Folder Include="src\handlers\" />
+    <Folder Include="src\templates\" />
     <Folder Include="src\strategies\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

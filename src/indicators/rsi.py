@@ -1,13 +1,20 @@
 import numpy as np
+import json
+from datetime import datetime, timezone
 
 def rsi(dataset, period=14):
     # Check if dataset contains the required columns
-    data = dataset['close'] if 'close' in dataset else None
-    # Check if data has sufficient length for RSI calculations
-    if len(data) < period:
+    if 'close' not in dataset or 'date' not in dataset:
         return None
 
-    close_prices = [float(x) for x in data]
+    symbol = dataset['symbol']
+    close_prices = [float(x) for x in dataset['close']]
+    timestamps = dataset['date']
+
+    # Check if data has sufficient length for RSI calculations
+    if len(close_prices) < period:
+        return None
+
     deltas = np.diff(close_prices)
     seed = deltas[:period + 1]
     up_periods = []
@@ -27,5 +34,17 @@ def rsi(dataset, period=14):
 
     rs = np.array(up_periods) / np.array(down_periods)
     rsi_line = 100 - (100 / (1 + rs))
+
+    # Correlate RSI values with timestamps
+    rsi_with_timestamps = list(zip(timestamps[period:], rsi_line))
+    rsi_with_timestamps = [(ts.replace(tzinfo=None), round(rsi, 2)) for ts, rsi in rsi_with_timestamps]
     
-    return rsi_line
+    # Assuming rsi_with_timestamps is your list of tuples
+    rsi_dict = {
+                "rsi_line": {str(ts): rsi for ts, rsi in rsi_with_timestamps},
+                "rsi_latest_value": {str(rsi_with_timestamps[-1][0]): rsi_with_timestamps[-1][1]}
+                }
+
+    # Convert the dictionary to JSON format
+    rsi = json.dumps(rsi_dict)
+    return rsi

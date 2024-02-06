@@ -1,9 +1,8 @@
 # ENUMS
-
 from enum import Enum
 
 class Exchange(Enum):
-    NSE = 'NSE',
+    NSE = 'NSE'
     BSE = 'BSE'
 
 class Interval(Enum):

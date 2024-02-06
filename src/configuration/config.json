@@ -20,12 +20,10 @@
     "ticker_symbol": [ "TATAMOTORS" ],
     "ticker_mode": "ltp"
   },
-  "backtest": "true",
-  "backtest_params": {
-    "backtest_timeframe": "15m",
-    "backtest_start_date": "2022-10-10",
-    "backtest_end_date": "2022-10-11",
-    "symbol": "_ALL_",
+  "virtual": "true",
+  "virtual_params": {
+    "virtual_timeframe": "15m",
+    "symbol": "default",
     "exchange": "NSE",
     "max_allocation": "1L",
     "quantity": "per_capital",

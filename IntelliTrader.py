@@ -8,7 +8,6 @@ from src.ticker import Ticker
 from src.indicator import Indicator
 from src.constants.constants import *
 from src.aws.aws_secrets_manager import get_secret
-from src.handlers import Handler
 from src.strategies import strategy_manager
 
 import json
@@ -119,6 +118,7 @@ def main():
 
     # Instantiate the Strategy Manager
     strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)
+    
     # Initialize the selected strategy
     strategy_manager_instance.initialize_strategy(configuration)
 

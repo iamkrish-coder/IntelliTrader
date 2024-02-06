@@ -1,11 +1,15 @@
 import os
 import logging
+from turtle import st
 import pandas as pd
 import datetime as dt
 import src.libraries.nse_data as nsedata
 import requests
 from src.helper import Helper
 from tkinter.tix import COLUMN
+from src.constants.constants import *
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 class Fetch:
     def __init__(self, params):
@@ -143,22 +147,22 @@ class Fetch:
         return holdings
 
     # --------------------------------------------------------------------------------------
-        # BACKTESTING PURPOSE ONLY
+        # BACKTESTING - FUTURE PURPOSE ONLY
     # --------------------------------------------------------------------------------------
 
     # Fetch backtest data
-    def fetch_backtest_data(self, user_input):        
-        if(user_input['backtest_timeframe'] == 'latest'):
-            return(self.fetch_backtest_today_data(nsedata, user_input))
+    def fetch_backtest_data(self, args):        
+        if(args['backtest_timeframe'] == 'latest'):
+            return(self.fetch_backtest_latest_data(nsedata, args))
         else:
-            return(self.fetch_backtest_multi_data(user_input))
+            return(self.fetch_backtest_historical_data(args))
                 
     def fetch_backtest_latest_data(nsedata, dataset):
         # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty
         if 'symbol' not in dataset or not dataset:
             print("Symbol not found in the dataset or the dataset is empty.") 
             return None
-    
+        
         try:
             nse_api = nsedata.NSE()
             df = nse_api.getHistoricalData(dataset['symbol'], 'EQ', dataset['start_date'], dataset['end_date'])
@@ -172,14 +176,66 @@ class Fetch:
             print(f"Error fetching data for {dataset['symbol']}: {str(e)}")
             return None
 
-    def fetch_backtest_multi_data(self, exchange, symbol, interval, duration):
-        user_input_for_backtest_data = {
-            'exchange': exchange,
-            'type': 'daily',
-            'symbol': symbol,
-            'interval': interval,
-            'start_date': dt.date(2023, 12, 29),
-            'end_date': dt.date(2023, 12, 31)
-        }
-        datasource = self.modules['fetch'].fetch_backtest_data(user_input_for_backtest_data)
-        print("\nThe OHLC values for {}:{} on {} timeframe: \n{}".format(exchange, symbol, interval, datasource))
+    def fetch_backtest_historical_data(self, args):
+        stock_historical_data = {}
+        filter_stocks = args['stock_list']
+        filter_data_interval = args['backtest_timeframe']
+        filter_start_date = args['backtest_start_date']
+        filter_end_date = args['backtest_end_date']
+        
+        # Determine the directory based on the filter_data_interval
+        match filter_data_interval.lower():
+            case '1m':
+                directory = HISTORICAL_DATA_PATH_1M
+            case '3m':
+                directory = HISTORICAL_DATA_PATH_3M
+            case '5m':
+                directory = HISTORICAL_DATA_PATH_5M
+            case '10m':
+                directory = HISTORICAL_DATA_PATH_10M
+            case '15m':
+                directory = HISTORICAL_DATA_PATH_15M
+            case '30m':
+                directory = HISTORICAL_DATA_PATH_30M
+            case '60m':
+                directory = HISTORICAL_DATA_PATH_60M
+            case '1d':
+                directory = HISTORICAL_DATA_PATH_1D        
+            case _:
+                self.invalid_option(filter_data_interval.lower())
+       
+        # Use read_csv_files_in_directory for parallel file reading
+        stock_historical_data = self.read_csv_files_in_directory(directory, filter_stocks, filter_start_date, filter_end_date)
+        return stock_historical_data
+
+
+    def read_csv_file(self, filepath, filter_stocks, filter_start_date, filter_end_date):
+        stock_name = os.path.basename(filepath).split('.')[0]
+        if stock_name in filter_stocks:
+            logging.info('Reading file %s', filepath)
+            stock_data = pd.read_csv(filepath)
+            stock_data['date'] = pd.to_datetime(stock_data['date'])
+            stock_data = stock_data[(stock_data['date'] >= filter_start_date) & (stock_data['date'] <= filter_end_date)]
+            return stock_name, stock_data
+
+    def read_csv_files_in_directory(self, directory, filter_stocks, filter_start_date, filter_end_date):
+        collect_historical_data = {}
+        
+        # Get the list of files that end with ".csv" and match filter_stocks
+        files = [os.path.join(directory, filename) for filename in os.listdir(directory) 
+            if filename.endswith(".csv") and os.path.basename(filename).split('.')[0] in filter_stocks]
+    
+        # Use ProcessPoolExecutor for parallel processing
+        with ProcessPoolExecutor() as executor:
+            # Use functools.partial to create a partial function with fixed arguments
+            partial_read_csv_file = partial(self.read_csv_file, filter_stocks = filter_stocks, filter_start_date = filter_start_date, filter_end_date = filter_end_date)
+        
+            # Use executor.map to map the partial function to each file in parallel
+            results = executor.map(partial_read_csv_file, files)
+    
+        # Iterate over the results and populate stock_historical_data dictionary
+        for stock_name, stock_data in results:
+            collect_historical_data[stock_name] = stock_data
+    
+        return collect_historical_data
+
