@@ -12,5 +12,5 @@ class BaseStrategy(ABC):
         raise NotImplementedError("Subclasses must implement this method")
 
     @abstractmethod
-    def execute_backtest_strategy(self, backtest_parameters):
+    def execute_virtual_strategy(self, virtual_parameters):
         raise NotImplementedError("Subclasses must implement this method")
