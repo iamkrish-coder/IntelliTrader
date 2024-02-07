@@ -4,6 +4,7 @@ import logging
 import datetime as dt
 import time
 from src.helper import Helper
+
 logging.basicConfig(level=logging.DEBUG)
 
 class Ticker:
@@ -14,7 +15,7 @@ class Ticker:
 
     # Callback for successful connection.
     def on_connect(self, ws, response):
-        logging.info("Successfully connected. Response: {}".format(response))
+        logging.info(f"Successfully connected. Response: {response}")
         ticker_token = self.tokens
         ws.subscribe(ticker_token)
 
@@ -25,25 +26,25 @@ class Ticker:
         elif self.mode.lower() == "full":
             ticker_mode = ws.MODE_FULL
         else:
-            logging.warn("No ticker mode is defined: {}".format(ticker_mode))
+            logging.warn(f"No ticker mode is defined: {ticker_mode}")
 
         ws.set_mode(ticker_mode, ticker_token)
-        logging.info("Subscribe to tokens in Full/LTP/Quote mode: {}".format(ticker_token))
+        logging.info(f"Subscribe to tokens in Full/LTP/Quote mode: {ticker_token}")
 
 
     # Callback when current connection is closed.
     def on_close(self, ws, code, reason):
-        logging.info("Connection closed: {code} - {reason}".format(code=code, reason=reason))
+        logging.info(f"Connection closed: {code} - {reason}")
         # Reconnection will not happen after executing `ws.stop()`
         # ws.stop()
 
     # Callback when connection closed with error.
     def on_error(self, ws, code, reason):
-        logging.info("Connection error: {code} - {reason}".format(code=code, reason=reason))
+        logging.info(f"Connection error: {code} - {reason}")
 
     # Callback when reconnect is on progress
     def on_reconnect(self, ws, attempts_count):
-        logging.info("Reconnecting: {}".format(attempts_count))
+        logging.info(f"Reconnecting: {attempts_count}")
         
     # Callback when all reconnect failed (exhausted max retries)
     def on_noreconnect(self, ws):
@@ -52,7 +53,7 @@ class Ticker:
     # Callback for tick reception.
     def on_ticks(self, ws, ticks):
         if len(ticks) > 0:
-            #logging.info("Current mode: {}".format(ticks[0]["mode"]))
+            #logging.info(f"Current mode: {ticks[0]['mode']}")
             self.ticker_data.extend(ticks)
             self.process_ticker_data(ws)
 
@@ -61,7 +62,7 @@ class Ticker:
     def process_ticker_data(self, ws):  
         begin_time = time.time()
         for tick in self.ticker_data:
-            print("Ticks: {}".format(tick))
+            logging.info(f"Ticks: {tick}")
             time.sleep(2)
 
             # if dt.datetime.now().time() >= self.exit_time:

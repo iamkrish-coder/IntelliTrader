@@ -1,11 +1,14 @@
 # strategies/options_strategy.py
 from ast import arg
 from src.strategies.base_strategy import BaseStrategy
-from src.handlers.virtual_strategy_handler import VirtualStrategyHandler
+from turtle import st
+from src.constants.constants import *
+from src.enumerations.enums import *
 import os
-import pandas
+import pandas as pd
 import time
 import json
+import logging
 
 class StockDelivery(BaseStrategy):
     def __init__(self, connection, modules, timeframe, ticker, strike, exchange, symbol, expiry, offset):
@@ -15,9 +18,8 @@ class StockDelivery(BaseStrategy):
         pass
 
     def execute_virtual_strategy(self, args):
-        start_time = time.time()                                 
-        virtual_handler = VirtualStrategyHandler()
-        
+        start_time = time.time()                 
+              
         # Extracting arguments into variables
         symbol = args['symbol']
         exchange = args['exchange']
@@ -30,9 +32,10 @@ class StockDelivery(BaseStrategy):
         trail_profit = args['trail_profit']
         trail_stop_loss = args['trail_stop_loss']
 
-        # Get the symbols from Baskets to run virtual 
-        stock_list = virtual_handler.get_stock_baskets(exchange, symbol)
-        print(sorted(stock_list))
+        # Get the symbols from Baskets to run virtual Trade
+        stock_list = self.get_stock_basket(exchange, symbol)
+        print(stock_list)
+        # Get Live data for symbols in Stock Basket
         
 
         # Compute the Indicator Values
@@ -43,7 +46,7 @@ class StockDelivery(BaseStrategy):
 
         # filtered_stocks = []
         # rsi_data = json.loads(rsi)
-        # print(rsi_data)
+        # logging.info(rsi_data)
 
 
         # Execute Virtual Trade on filtered stocks
@@ -54,4 +57,22 @@ class StockDelivery(BaseStrategy):
 
         end_time = time.time()
         execution_time = end_time - start_time
-        print("Execution time:", execution_time, "seconds")
+        logging.info(f"Execution time: {execution_time} seconds")
+
+    def get_stock_basket(self, exchange, symbol):
+        stock_basket = []       
+        if(exchange.upper() == Exchange.NSE.value):
+            if(symbol.upper() == "DEFAULT"):
+               symbols_list = pd.read_csv(DEFAULT_BASKET)
+               stock_basket = symbols_list['Symbol'].tolist()
+            else:
+                stock_basket.append(symbol.upper())
+        elif(exchange.upper() == Exchange.BSE.value):
+            if(symbol.upper() == "DEFAULT"):
+                stock_basket = pd.read_csv(DEFAULT_BASKET)
+            else:
+                stock_basket.append(symbol.upper())
+        else:
+            logging.info(f"Invalid Exchange {exchange}")
+                    
+        return stock_basket        

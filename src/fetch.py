@@ -20,7 +20,7 @@ class Fetch:
         instruments_dump = self.prop['kite'].instruments(exchange)
         if exchange is not None:
             Helper.write_csv_output('instruments' + '_' + exchange + '.csv', instruments_dump)
-            logging.info('Instruments fetched for exchange %s', exchange)
+            logging.info(f'Instruments fetched for exchange {exchange}')
         else:
             Helper.write_csv_output('instruments.csv', instruments_dump)
             logging.info('Instruments fetched successfully')
@@ -33,13 +33,13 @@ class Fetch:
             instrument_df = pd.DataFrame(nse_instruments_dump)
             try:
                 instrument_token = instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]
-                logging.info('Instrument token %d obtained for symbol %s', instrument_token, symbol)
+                logging.info(f'Instrument token {instrument_token} obtained for symbol {symbol}')
                 return instrument_token
             except Exception as e:
-                logging.warning("An exception occurred: {}".format(e))
+                logging.warning(f"An exception occurred: {e}")
                 exit()
         else:
-            logging.warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
+            logging.warning(f'Please verify that the exchange {exchange} and symbol {symbol} are present.')
             exit()
 
     # Lookup instrument token list (web streaming)
@@ -160,7 +160,7 @@ class Fetch:
     def fetch_backtest_latest_data(nsedata, dataset):
         # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty
         if 'symbol' not in dataset or not dataset:
-            print("Symbol not found in the dataset or the dataset is empty.") 
+            logging.info("Symbol not found in the dataset or the dataset is empty.") 
             return None
         
         try:
@@ -171,9 +171,9 @@ class Fetch:
                 df_subset = df[selected_columns]
                 return df_subset
             else:
-                print("Error fetching data or data is empty.")
+                logging.info("Error fetching data or data is empty.")
         except Exception as e:
-            print(f"Error fetching data for {dataset['symbol']}: {str(e)}")
+            logging.info(f"Error fetching data for {dataset['symbol']}: {str(e)}")
             return None
 
     def fetch_backtest_historical_data(self, args):
@@ -212,7 +212,7 @@ class Fetch:
     def read_csv_file(self, filepath, filter_stocks, filter_start_date, filter_end_date):
         stock_name = os.path.basename(filepath).split('.')[0]
         if stock_name in filter_stocks:
-            logging.info('Reading file %s', filepath)
+            logging.info(f'Reading file {filepath}')
             stock_data = pd.read_csv(filepath)
             stock_data['date'] = pd.to_datetime(stock_data['date'])
             stock_data = stock_data[(stock_data['date'] >= filter_start_date) & (stock_data['date'] <= filter_end_date)]

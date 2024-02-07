@@ -30,7 +30,8 @@
     <Compile Include="src\constants\constants.py" />
     <Compile Include="src\enumerations\enums.py" />
     <Compile Include="src\fetch.py" />
-    <Compile Include="src\handlers\virtual_strategy_handler.py" />
+    <Compile Include="src\handlers\virtual_strategy_handler - Copy.py" />
+    <Compile Include="src\handlers\live_strategy_handler.py" />
     <Compile Include="src\helper.py" />
     <Compile Include="src\indicator.py" />
     <Compile Include="src\indicators\adx.py" />

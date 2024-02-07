@@ -143,15 +143,15 @@ class Indicator:
                 last_signal_value = signal_line.iloc[-1]
                 last_histogram_value = macd_histogram.iloc[-1]
 
-                # Print the calculated MACD values
-                print("\nMACD Line:")
-                print(macd_line)
+                # logging.info the calculated MACD values
+                logging.info("\nMACD Line:")
+                logging.info(macd_line)
 
-                print("\nSignal Line:")
-                print(signal_line)  
+                logging.info("\nSignal Line:")
+                logging.info(signal_line)  
 
-                print("\nMACD Histogram:")
-                print(macd_histogram)
+                logging.info("\nMACD Histogram:")
+                logging.info(macd_histogram)
             else:
                 logging.error("Failed to calculate MACD") 
                 return False
@@ -166,9 +166,9 @@ class Indicator:
                 atr_line = atr(pdf)
                 last_atr_value = atr_line[-1]
 
-                # Print the calculated ATR values
-                print("\nATR Line:")
-                print(atr_line)
+                # logging.info the calculated ATR values
+                logging.info("\nATR Line:")
+                logging.info(atr_line)
             else:
                 logging.error("Failed to calculate ATR") 
                 return False
@@ -183,9 +183,9 @@ class Indicator:
                 williams_r_line = williams_r(pdf)
                 last_williams_r_value = williams_r_line[-1]
 
-                # Print the calculated Williams %R values
-                print("\nWilliams %R Line:")
-                print(williams_r_line)
+                # logging.info the calculated Williams %R values
+                logging.info("\nWilliams %R Line:")
+                logging.info(williams_r_line)
             else:
                 logging.error("Failed to calculate Williams Range") 
                 return False
@@ -200,9 +200,9 @@ class Indicator:
                 vwap_line = vwap(pdf)
                 last_vwap_value = vwap_line.iloc[-1]
 
-                # Print the calculated VWAP values
-                print("\nVWAP Line:")
-                print(vwap_line)
+                # logging.info the calculated VWAP values
+                logging.info("\nVWAP Line:")
+                logging.info(vwap_line)
             else:
                 logging.error("Failed to calculate VWAP") 
                 return False
@@ -217,9 +217,9 @@ class Indicator:
                 adx_line = adx(pdf)
                 last_adx_value = adx_line.iloc[-1]
 
-                # Print the calculated ADX values
-                print("\nADX Line:")
-                print(adx_line)
+                # logging.info the calculated ADX values
+                logging.info("\nADX Line:")
+                logging.info(adx_line)
             else:
                 logging.error("Failed to calculate ADX") 
                 return False
@@ -235,12 +235,12 @@ class Indicator:
                 last_stochastic_k_value = stochastic_line_k.iloc[-1]
                 last_stochastic_d_value = stochastic_line_d.iloc[-1]
 
-                # Print the calculated Stochastic values
-                print("\nStochastic Line %K:")
-                print(stochastic_line_k)
+                # logging.info the calculated Stochastic values
+                logging.info("\nStochastic Line %K:")
+                logging.info(stochastic_line_k)
                     
-                print("\nStochastic Line %D:")
-                print(stochastic_line_d)
+                logging.info("\nStochastic Line %D:")
+                logging.info(stochastic_line_d)
             else:
                 logging.error("Failed to calculate Stochastic") 
                 return False
@@ -255,9 +255,9 @@ class Indicator:
                 renko_bricks = renko(pdf, period)
                 last_renko_brick = renko_bricks.iloc[-1]
 
-                # Print the calculated Renko values
-                print("\nRenko Bricks:")
-                print(renko_bricks)
+                # logging.info the calculated Renko values
+                logging.info("\nRenko Bricks:")
+                logging.info(renko_bricks)
             else:
                 logging.error("Failed to calculate Renko") 
                 return False
@@ -272,9 +272,9 @@ class Indicator:
                 bollinger_bands = bollinger_bands(pdf)
                 last_bollinger_band_value = bollinger_bands.iloc[-1]
 
-                # Print the calculated Bollinger Band values
-                print("\nBollinger Bands:")
-                print(last_bollinger_band_value)
+                # logging.info the calculated Bollinger Band values
+                logging.info("\nBollinger Bands:")
+                logging.info(last_bollinger_band_value)
             else:
                 logging.error("Failed to calculate Bollinger Band") 
                 return False

@@ -27,7 +27,7 @@ class Orders:
             )
             if "order_id" in response:
                 order_id = response["order_id"]
-                logging.info("Market order placed successfully. Order ID:", order_id)
+                logging.info(f"Market order placed successfully. Order ID: {order_id}")
             else:
                 error_message = response["error_type"] + ": " + response["message"]
                 logging.error("Market order placement failed. Error:", error_message)
@@ -57,12 +57,12 @@ class Orders:
             )
             if "order_id" in response:
                 order_id = response["order_id"]
-                logging.info("Limit order placed successfully. Order ID:", order_id)
+                logging.info(f"Limit order placed successfully. Order ID: {order_id}")
             else:
                 error_message = response["error_type"] + ": " + response["message"]
-                logging.error("Limit order placement failed. Error:", error_message)
+                logging.error(f"Limit order placement failed. Error: {error_message}")
         except Exception as e:
-            logging.info("Order placement failed: {}".format(e))
+            logging.info(f"Order placement failed: {e}")
 
     # Place a gtt limit order for a stock with given order details
     def create_gtt_order(self, gtt_type, symbol, exchange, trigger_values, last_price, order_list):
@@ -71,18 +71,18 @@ class Orders:
             gtt_trigger_type = 'GTT_TYPE_SINGLE'
             try:
                 single_gtt = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
-                logging.info("Single leg gtt order trigger_id : {}".format(single_gtt['trigger_id']))
+                logging.info(f"Single leg gtt order trigger_id: {single_gtt['trigger_id']}")
             except Exception as e:
-                logging.error("Error placing single leg gtt order: {}".format(e))
+                logging.error(f"Error placing single leg gtt order: {e}")
         
         # Place two-leg(OCO) gtt order
         elif gtt_type == 'oco':            
             gtt_trigger_type = 'GTT_TYPE_OCO'
             try:
                 gtt_oco = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
-                logging.info("GTT OCO trigger_id : {}".format(gtt_oco['trigger_id']))
+                logging.info(f"GTT OCO trigger_id: {gtt_oco['trigger_id']}")
             except Exception as e:
-                logging.info("Error placing gtt oco order: {}".format(e))
+                logging.info(f"Error placing gtt oco order: {e}")
 
         else:
             logging.warn("Error placing gtt order, gtt type is not defined")
