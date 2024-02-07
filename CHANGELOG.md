@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.6.0...v0.6.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* update all print statements to logging wit fstrings ([1081439](https://github.com/iamkrish-coder/IntelliTrader/commit/1081439ec08256fcc10bda617c9510d43a199921))
+
 ## [0.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.5.3...v0.6.0) (2024-02-05)
 
 
