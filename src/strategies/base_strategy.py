@@ -14,3 +14,7 @@ class BaseStrategy(ABC):
     @abstractmethod
     def execute_virtual_strategy(self, virtual_parameters):
         raise NotImplementedError("Subclasses must implement this method")
+    
+    @abstractmethod
+    def get_stock_basket(self, exchange, symbol):
+        raise NotImplementedError("Subclasses must implement this method")

@@ -22,7 +22,7 @@
   },
   "virtual": "true",
   "virtual_params": {
-    "virtual_timeframe": "15m",
+    "virtual_timeframe": "15minute",
     "symbol": "default",
     "exchange": "NSE",
     "max_allocation": "1L",
@@ -35,7 +35,7 @@
   },
   "strategy": "3",
   "strategy_3_params": {
-    "timeframe": "15m",
+    "timeframe": "15minute",
     "ticker": "true",
     "strike": [ "CE", "PE" ],
     "exchange": "NSE",

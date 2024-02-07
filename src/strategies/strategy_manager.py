@@ -1,4 +1,5 @@
 # strategies/strategy_manager.py
+import logging
 import src.strategies as strategies
 from src.enumerations.enums import Strategy
 
@@ -33,9 +34,9 @@ class StrategyManager:
                    auto_params = configuration.get("virtual_params")           # Virtual Trade
                    strategy_instance.execute_virtual_strategy(auto_params)               
                 else:
-                    print("No auto trade or virtual configuration found.")     # No Trade
+                    logging.info("No auto trade or virtual configuration found.")     # No Trade
             else:
-                print(f"Strategy class '{strategy_class_name}' not found in the strategies module.")
+                logging.info(f"Strategy class {strategy_class_name} not found in the strategies module.")
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logging.info(f"An error occurred: {e}")
