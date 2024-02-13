@@ -19,10 +19,10 @@ class Fetch:
     def fetch_instruments(self, exchange=None):
         instruments_dump = self.prop['kite'].instruments(exchange)
         if exchange is not None:
-            Helper.write_csv_output(f'instruments_{exchange}.csv', instruments_dump)
+            Helper().write_csv_output(f'instruments_{exchange}.csv', instruments_dump)
             logging.info(f'Instruments fetched for exchange {exchange}')
         else:
-            Helper.write_csv_output('instruments.csv', instruments_dump)
+            Helper().write_csv_output('instruments.csv', instruments_dump)
             logging.info('Instruments fetched successfully')
         return instruments_dump
 
@@ -65,10 +65,10 @@ class Fetch:
         if exchange and symbol and interval and duration:
             instrument_token = self.instrument_token_lookup(exchange, symbol)
             data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))
-            Helper.write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
+            Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
             return data
         else:
-            logging.warning(f'Please verify that the echange [{exchange}], symbol [{symbol}], interval[{interval}] and duration[{duration}] are present.')
+            logging.warning(f'Please verify that the exchange [{exchange}], symbol [{symbol}], interval[{interval}] and duration[{duration}] are present.')
             exit()
 
     # Fetch extended historical data for an exchange and symbol with limits   
@@ -107,7 +107,7 @@ class Fetch:
                     data = data._append(pd.DataFrame(self.prop['kite'].historical_data(instrument_token, start_date, end_date, interval)), ignore_index=True)
                     start_date = end_date
     
-            Helper.write_csv_output(f'historical_{exchange}_{symbol}_{lookback_period_threshold}.csv', data)
+            Helper().write_csv_output(f'historical_{exchange}_{symbol}_{lookback_period_threshold}.csv', data)
             return data
         else:
             logging.warning(f'Please verify that the echange [{exchange}], symbol [{symbol}], period_start[{period_start}] and interval[{interval}] are present.')
