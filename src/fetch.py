@@ -19,10 +19,10 @@ class Fetch:
     def fetch_instruments(self, exchange=None):
         instruments_dump = self.prop['kite'].instruments(exchange)
         if exchange is not None:
-            Helper.write_csv_output('instruments' + '_' + exchange + '.csv', instruments_dump)
+            Helper().write_csv_output(f'instruments_{exchange}.csv', instruments_dump)
             logging.info(f'Instruments fetched for exchange {exchange}')
         else:
-            Helper.write_csv_output('instruments.csv', instruments_dump)
+            Helper().write_csv_output('instruments.csv', instruments_dump)
             logging.info('Instruments fetched successfully')
         return instruments_dump
 
@@ -54,10 +54,10 @@ class Fetch:
                     token_list.append(int(instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]))
                 return token_list
             except Exception as e:
-                logging.warning("An exception occurred: {}".format(e))
+                logging.warning(f"An exception occurred: {e}")
                 exit()
         else:
-            logging.warning('Please verify that the exchange [%s] and symbol_list [%s] are present.' %(exchange) %(symbol_list))
+            logging.warning(f'Please verify that the exchange [{exchange}] and symbol_list [{symbol_list}] are present.')
             exit()
             
     # Fetch historical data for an exchange and symbol    
@@ -65,10 +65,10 @@ class Fetch:
         if exchange and symbol and interval and duration:
             instrument_token = self.instrument_token_lookup(exchange, symbol)
             data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))
-            Helper.write_csv_output('historical_' + exchange + '_' + symbol +  '.csv', data)
+            Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
             return data
         else:
-            logging.warning('Please verify that the echange [%s], symbol [%s], interval[%d] and duration[%d] are present.' %(exchange) %(symbol) %(interval) %(duration))
+            logging.warning(f'Please verify that the exchange [{exchange}], symbol [{symbol}], interval[{interval}] and duration[{duration}] are present.')
             exit()
 
     # Fetch extended historical data for an exchange and symbol with limits   
@@ -107,28 +107,28 @@ class Fetch:
                     data = data._append(pd.DataFrame(self.prop['kite'].historical_data(instrument_token, start_date, end_date, interval)), ignore_index=True)
                     start_date = end_date
     
-            Helper.write_csv_output('historical_' + exchange + '_' + symbol + '_' + str(lookback_period_threshold) + '.csv', data)
+            Helper().write_csv_output(f'historical_{exchange}_{symbol}_{lookback_period_threshold}.csv', data)
             return data
         else:
-            logging.warning('Please verify that the echange [%s], symbol [%s], period_start[%d] and interval[%d] are present.' %(exchange) %(symbol) %(period_start) %(interval))
+            logging.warning(f'Please verify that the echange [{exchange}], symbol [{symbol}], period_start[{period_start}] and interval[{interval}] are present.')
             exit()
 
     # Fetch quote
     def fetch_quote(self, exchange, symbol):
         if exchange and symbol:
-            quote = self.prop['kite'].quote(exchange + ':' + symbol)
+            quote = self.prop['kite'].quote(f'{exchange}:{symbol}')
             return quote
         else:
-            logging.warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
+            logging.warning(f'Please verify that the echange [{exchange}] and symbol [{symbol}] are present.')
             exit()
 
     # Fetch ltp 
     def fetch_ltp(self, exchange, symbol):
         if exchange and symbol:
-            last_traded_price = self.prop['kite'].ltp(exchange + ':' + symbol)
+            last_traded_price = self.prop['kite'].ltp(f'{exchange}:{symbol}')
             return last_traded_price
         else:
-            logging.warning('Please verify that the echange [%s] and symbol [%s] are present.' %(exchange) %(symbol))
+            logging.warning(f'Please verify that the echange [{exchange}] and symbol [{symbol}] are present.')
             exit()
 
     # Fetch orders 
@@ -238,4 +238,3 @@ class Fetch:
             collect_historical_data[stock_name] = stock_data
     
         return collect_historical_data
-

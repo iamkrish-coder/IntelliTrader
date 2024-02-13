@@ -72,7 +72,8 @@ class Connection:
         if len(url_parts) > 1:
             initial_token = url_parts[1]
             request_token = initial_token.split('&')[0]
-            Helper.write_text_output('request_token' + '_' + auth_date + '.txt', request_token)
+            token_str = str(request_token)
+            Helper().write_text_output('request_token' + '_' + auth_date + '.txt', token_str)
             logging.info("Kite request_token generated successfully")
         else:
             # Handle the case when the 'request_token=' delimiter is not found
@@ -84,7 +85,8 @@ class Connection:
         # Access token generation
         data = kite.generate_session(request_token, api_secret=secret_key)
         access_token = data['access_token']
-        Helper.write_text_output('access_token' + '_' + auth_date + '.txt', access_token)
+        token_str = str(access_token)
+        Helper().write_text_output('access_token' + '_' + auth_date + '.txt', token_str)
         logging.info("Kite access_token generated successfully")
 
         # Kite Ticker Subscription

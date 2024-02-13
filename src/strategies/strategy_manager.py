@@ -10,7 +10,7 @@ class StrategyManager:
         
     def initialize_strategy(self, configuration):
         try:         
-            auto_trade = configuration.get("auto_trade").lower()
+            live_trade = configuration.get("live_trade").lower()
             auto_virtual = configuration.get("virtual").lower()
             
             strategy_id = int(configuration.get("strategy"))
@@ -28,9 +28,9 @@ class StrategyManager:
                 strategy_instance = strategy_class(self.connection, self.modules, **strategy_params)
                 
                 # Execute the strategy
-                if auto_trade == 'true':
-                    strategy_instance.execute_live_strategy()                   # Live Trade
-                elif auto_virtual == 'true' and auto_trade == 'false':
+                if live_trade == 'true':
+                    strategy_instance.execute_live_strategy()                  # Live Trade
+                elif auto_virtual == 'true' and live_trade == 'false':
                    auto_params = configuration.get("virtual_params")           # Virtual Trade
                    strategy_instance.execute_virtual_strategy(auto_params)               
                 else:

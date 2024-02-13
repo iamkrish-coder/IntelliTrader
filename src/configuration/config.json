@@ -2,8 +2,8 @@
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
-  "auto_trade": "false",
-  "auto_trade_params": {
+  "live_trade": "false",
+  "live_trade_params": {
     "exchange": "NSE",
     "symbol": "SBIN",
     "interval": "15minute",
