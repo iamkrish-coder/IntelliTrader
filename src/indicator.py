@@ -15,7 +15,6 @@ from src.indicators.stochastic import stochastic
 from src.indicators.renko import renko
 from src.indicators.bollinger_bands import bollinger_bands
 from src.helper import Helper
-from asyncio.windows_events import NULL
 
 class Indicator:
     def __init__(self, params):
@@ -54,15 +53,21 @@ class Indicator:
 
     # RSI 
     def option_rsi(self, dataset, period):
-        rsi_result = {}    
         try:
+            rsi_values = {}
             if dataset is not None:
                 # Calculate RSI
-                for stock_name, stock_data in dataset.items():
-                    pdf = pd.DataFrame(stock_data)
-                    rsi_result = rsi(pdf, period)
-                   
-                return rsi_result
+                pdf = pd.DataFrame(dataset)
+                rsi_historical = rsi(pdf)
+                rsi_current = rsi_historical[-1]
+                rsi_values = {
+                    "historical": rsi_historical,
+                    "current": rsi_current
+                }
+                # Log the calculated RSI values                              
+                logging.info(f"RSI: {rsi_values}") 
+
+                return rsi_values
             else:
                 logging.error("Failed to calculate RSI") 
                 return False
@@ -74,11 +79,18 @@ class Indicator:
         try:
             if dataset is not None:
                 # Calculate WMA
-                for stock_name, stock_data in dataset.items():
-                    pdf = pd.DataFrame(stock_data)
-                    wma_result = ma.wma(pdf, period)
-                    
-                return wma_result
+                pdf = pd.DataFrame(dataset)
+                wma_historical = ma.wma(pdf, period)
+                wma_current = wma_historical[-1]
+                wma_values = {
+                    "historical": wma_historical,
+                    "current": wma_current
+                }
+                
+                # Log the calculated WMA values                                             
+                logging.info(f"WMA: {wma_values}") 
+                
+                return wma_values
             else:
                 logging.error("Failed to calculate WMA") 
                 return False
@@ -88,13 +100,21 @@ class Indicator:
     # SMA            
     def option_sma(self, dataset, period):
         try:
+            sma_values = {}
             if dataset is not None:
                 # Calculate SMA
-                for stock_name, stock_data in dataset.items():
-                    pdf = pd.DataFrame(stock_data)
-                    sma_result = ma.sma(pdf, period)
-                    
-                return sma_result
+                pdf = pd.DataFrame(dataset)
+                sma_historical = ma.sma(pdf, period)
+                sma_current = sma_historical[-1]
+                sma_values = {
+                    "historical": sma_historical,
+                    "current": sma_current
+                }
+                
+                # Log the calculated SMA values                             
+                logging.info(f"SMA: {sma_values}") 
+                
+                return sma_values
             else:
                 logging.error("Failed to calculate SMA") 
                 return False
@@ -104,13 +124,21 @@ class Indicator:
     # EMA
     def option_ema(self, dataset, period):
         try:
+            ema_values = {}
             if dataset is not None:
                 # Calculate EMA
-                for stock_name, stock_data in dataset.items():
-                    pdf = pd.DataFrame(stock_data)
-                    ema_result = ma.ema(pdf, period)
-                    
-                return ema_result
+                pdf = pd.DataFrame(dataset)
+                ema_historical = ma.ema(pdf, period)
+                ema_curret = ema_historical[-1]
+                ema_values = {
+                    "historical": ema_historical,
+                    "current": ema_curret
+                }
+                
+                # Log the calculated EMA values                
+                logging.info(f"EMA: {ema_values}") 
+                
+                return ema_values
             else:
                 logging.error("Failed to calculate EMA") 
                 return False
@@ -120,163 +148,219 @@ class Indicator:
     # SUPERTREND
     def option_supertrend(self, dataset, period):
         try:
+            supertrend_values = {}
             if dataset is not None:
                 # Calculate SUPERTREND
-                for stock_name, stock_data in dataset.items():
-                    pdf = pd.DataFrame(stock_data)
-                    supertrend_result = supertrend(pdf, period)
-
-                return supertrend_result
+                pdf = pd.DataFrame(dataset)
+                supertrend_historical = supertrend(pdf, period)
+                supertrend_current = supertrend_historical[-1]
+                supertrend_values = {
+                    "historical": supertrend_historical,
+                    "current": supertrend_current
+                }
+                
+                # Log the calculated Supertrend values
+                logging.info(f"Supertrend: {supertrend_values}") 
+                
+                return supertrend_values
             else:
                 logging.error("Failed to calculate SUPERTREND")
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_macd(self, dataset):
+    # MACD
+    def option_macd(self, dataset, period):
         try:
-            if dataset is not None and not dataset.empty:
+            macd_values = {}
+            if dataset is not None:
                 # Calculate MACD
                 pdf = pd.DataFrame(dataset)
-                macd_line, signal_line, macd_histogram = macd(pdf)
-                last_macd_value = macd_line.iloc[-1]
-                last_signal_value = signal_line.iloc[-1]
-                last_histogram_value = macd_histogram.iloc[-1]
+                macd_line, signal_line, macd_histogram = macd(pdf, period)
+                macd_values = {
+                    "macd_line": macd_line,
+                    "signal_line": signal_line,
+                    "macd_histogram": macd_histogram
+                }
 
-                # logging.info the calculated MACD values
-                logging.info("\nMACD Line:")
-                logging.info(macd_line)
+                # Log the calculated MACD values
+                logging.info(f"MACD: {macd_values}")
 
-                logging.info("\nSignal Line:")
-                logging.info(signal_line)  
-
-                logging.info("\nMACD Histogram:")
-                logging.info(macd_histogram)
+                return macd_values
             else:
-                logging.error("Failed to calculate MACD") 
+                logging.error("Failed to calculate MACD")
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_atr(self, dataset):
+    # ATR
+    def option_atr(self, dataset, period):
         try:
+            atr_values = {}
             if dataset is not None and not dataset.empty:
                 # Calculate ATR
                 pdf = pd.DataFrame(dataset)
-                atr_line = atr(pdf)
-                last_atr_value = atr_line[-1]
+                atr_historical = atr(pdf, period)
+                atr_current = atr_historical[-1]
+                atr_values = {
+                    "historical": atr_historical,
+                    "current": atr_current
+                }
 
                 # logging.info the calculated ATR values
-                logging.info("\nATR Line:")
-                logging.info(atr_line)
+                logging.info(f"ATR: {atr_values}")
+
+                return atr_values
             else:
                 logging.error("Failed to calculate ATR") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_williams_r(self, dataset):
+    # WILLIAMS %R
+    def option_williams_r(self, dataset, period):
         try:
+            williams_values = {}
             if dataset is not None and not dataset.empty:
                 # Calculate Williams %R
                 pdf = pd.DataFrame(dataset)
-                williams_r_line = williams_r(pdf)
-                last_williams_r_value = williams_r_line[-1]
+                williams_r_historical = williams_r(pdf, period)
+                williams_r_current = williams_r_historical[-1]
+                williams_values = {
+                    "historical": williams_r_historical,
+                    "current": williams_r_current
+                }
 
                 # logging.info the calculated Williams %R values
-                logging.info("\nWilliams %R Line:")
-                logging.info(williams_r_line)
+                logging.info(f"Williams %R: {williams_values}")
+                
+                return williams_values
             else:
                 logging.error("Failed to calculate Williams Range") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_vwap(self, dataset):
+    # VWAP
+    def option_vwap(self, dataset, period):
         try:
+            vwap_values = {}
             if dataset is not None and not dataset.empty:
                 # Calculate VWAP
                 pdf = pd.DataFrame(dataset)
-                vwap_line = vwap(pdf)
-                last_vwap_value = vwap_line.iloc[-1]
-
+                vwap_historical = vwap(pdf, period) 
+                vwap_current = vwap_historical.iloc[-1]
+                vwap_values = {
+                    "historical": vwap_historical,
+                    "current": vwap_current
+                }
+                
                 # logging.info the calculated VWAP values
-                logging.info("\nVWAP Line:")
-                logging.info(vwap_line)
+                logging.info(f"VWAP: {vwap_values}")
+
+                return vwap_values
             else:
                 logging.error("Failed to calculate VWAP") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_adx(self, dataset):
+    # ADX
+    def option_adx(self, dataset, period):
         try:
+            adx_values = {}
             if dataset is not None and not dataset.empty:
                 # Calculate ADX
                 pdf = pd.DataFrame(dataset)
-                adx_line = adx(pdf)
-                last_adx_value = adx_line.iloc[-1]
+                adx_historical = adx(pdf, period) 
+                adx_current = adx_historical.iloc[-1]
+                adx_values = {
+                    "historical": adx_historical,
+                    "current": adx_current
+                }
+                
+                # Log the calculated ADX values
+                logging.info(f"ADX: {adx_values}")
 
-                # logging.info the calculated ADX values
-                logging.info("\nADX Line:")
-                logging.info(adx_line)
+                return adx_values
             else:
                 logging.error("Failed to calculate ADX") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_stochastic(self, dataset):
+    # STOCHASTIC
+    def option_stochastic(self, dataset, period):
         try:
+            stochastic_values = {}
             if dataset is not None and not dataset.empty:
                 # Calculate Stochastic
                 pdf = pd.DataFrame(dataset)
-                stochastic_line_k, stochastic_line_d = stochastic(pdf)
-                last_stochastic_k_value = stochastic_line_k.iloc[-1]
-                last_stochastic_d_value = stochastic_line_d.iloc[-1]
+                stochastic_k_current = stochastic_line_k.iloc[-1]
+                stochastic_d_current = stochastic_line_d.iloc[-1]
+                stochastic_line_k, stochastic_line_d = stochastic(pdf, period)
+                stochastic_values = {
+                    "current_k": stochastic_k_current,
+                    "current_d": stochastic_d_current,
+                }
 
                 # logging.info the calculated Stochastic values
-                logging.info("\nStochastic Line %K:")
-                logging.info(stochastic_line_k)
-                    
-                logging.info("\nStochastic Line %D:")
-                logging.info(stochastic_line_d)
+                logging.info(f"Stochastic: {stochastic_values}")
+                
+                return stochastic_values
             else:
                 logging.error("Failed to calculate Stochastic") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
-
+    
+    # RENKO
     def option_renko(self, dataset, period):
         try:
+            renko_values = {}
             if dataset is not None and not dataset.empty:
-                # Calculate Renko
+                # Calculate Renko Bricks
                 pdf = pd.DataFrame(dataset)
-                renko_bricks = renko(pdf, period)
-                last_renko_brick = renko_bricks.iloc[-1]
-
-                # logging.info the calculated Renko values
-                logging.info("\nRenko Bricks:")
-                logging.info(renko_bricks)
+                renko_historical = renko(pdf, period)  
+                renko_current = renko_historical.iloc[-1]
+                renko_values = {
+                    "historical": renko_historical,
+                    "current": renko_current
+                }
+                
+                # Log the calculated Renko values
+                logging.info(f"Renko Bricks: {renko_values}")
+                
+                return renko_values
             else:
                 logging.error("Failed to calculate Renko") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
-    def option_bollinger_bands(self, dataset):
+    # BOLLINGER BANDS        
+    def option_bollinger_bands(self, dataset, period):
         try:
+            bollinger_values = {}
             if dataset is not None and not dataset.empty:
                 # Calculate Bollinger Bands
                 pdf = pd.DataFrame(dataset)
-                bollinger_bands = bollinger_bands(pdf)
-                last_bollinger_band_value = bollinger_bands.iloc[-1]
+                upper_band, middle_band, lower_band = bollinger_bands(pdf, period)
+                bollinger_values = {
+                    "upper_band": upper_band.tolist(), 
+                    "middle_band": middle_band.tolist(),
+                    "lower_band": lower_band.tolist()
+                }
 
-                # logging.info the calculated Bollinger Band values
-                logging.info("\nBollinger Bands:")
-                logging.info(last_bollinger_band_value)
+                # Logging the calculated Bollinger Bands values
+                logging.info(f"Bollinger Bands: {bollinger_values}")
+                logging.info(f"Upper Band: {bollinger_values['upper_band'][-1]}")
+                logging.info(f"Middle Band: {bollinger_values['middle_band'][-1]}")
+                logging.info(f"Lower Band: {bollinger_values['lower_band'][-1]}")
+                
+                return bollinger_values
             else:
-                logging.error("Failed to calculate Bollinger Band") 
+                logging.error("Failed to calculate Bollinger Bands") 
                 return False
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
