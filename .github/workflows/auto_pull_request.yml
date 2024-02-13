@@ -14,24 +14,19 @@ jobs:
         run: |
           git fetch origin develop:develop
           git reset --hard develop
-      - name: Get commit messages
-        id: commit_messages
-        run: |
-          COMMIT_MESSAGES=$(git log --format=%B develop..HEAD)
-          echo "::set-output name=messages::${COMMIT_MESSAGES}"
+      - name: Get latest commit message
+        id: latest_commit
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
       - name: Auto Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
           branch: feature-build
-          title: ${{ steps.commit_messages.outputs.messages }}
+          title: ${{ steps.latest_commit.outputs.message }}
           body: |
-            Updates to IntelliTrader
-            - Srikrishnan 
-            - Auto-generated Pull Request on push to Develop
-
-            Commits:
-            ${{ steps.commit_messages.outputs.messages }}
+                    Updates to IntelliTrader
+                    - Srikrishnan 
+                    - Auto-generated Pull Request on push to Develop
           delete-branch: true
           labels: |
             enhancement
