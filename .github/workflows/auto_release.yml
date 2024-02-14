@@ -15,12 +15,11 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2.5.0
 
     - name: Auto Release
       uses: google-github-actions/release-please-action@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         release-type: simple
-        default-branch: master
-
+        target-branch: master
