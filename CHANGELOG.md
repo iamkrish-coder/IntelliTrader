@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.6.2...v0.6.3) (2024-02-14)
+
+
+### Bug Fixes
+
+* auto release actions ([687e7f7](https://github.com/iamkrish-coder/IntelliTrader/commit/687e7f73139f637ae3f82fd47613ad33b3ccb03f))
+
 ## [0.6.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.6.1...v0.6.2) (2024-02-13)
 
 
