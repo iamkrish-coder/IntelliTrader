@@ -1,6 +1,17 @@
 import numpy as np
 
 def rsi(dataset, period=14):
+    """
+    Calculate the Relative Strength Index (RSI) based on the provided dataset.
+
+    Parameters:
+    - dataset (pd.DataFrame): A pandas DataFrame containing OHLCV (Open, High, Low, Close, Volume) values.
+    - period (int): The number of periods to consider for RSI calculation. Default is 14.
+
+    Returns:
+    - list: A list of closing prices (float) calculated based on the dataset.
+    """
+    
     # Check if dataset contains the required columns
     data = dataset['close'] if 'close' in dataset else None
     
@@ -30,6 +41,5 @@ def rsi(dataset, period=14):
             down_periods.append((down_periods[-1] * (period - 1) - delta) / period)
 
     rs = np.array(up_periods) / np.array(down_periods)
-    rsi = 100 - (100 / (1 + rs))
-    
+    rsi = (100 - (100 / (1 + rs))).tolist()
     return rsi
