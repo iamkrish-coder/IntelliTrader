@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.8.0...v0.8.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* add new package ([c9470cd](https://github.com/iamkrish-coder/IntelliTrader/commit/c9470cd506fbfd51ba6d29c047c7ff099a47e87e))
+* auto approve and merge ([f21026c](https://github.com/iamkrish-coder/IntelliTrader/commit/f21026c67907db4b45180a8d8c474b21899d4ac3))
+
 ## [0.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.2...v0.8.0) (2024-02-15)
 
 
