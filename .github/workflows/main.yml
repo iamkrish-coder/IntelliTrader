@@ -1,4 +1,4 @@
-name: Approve and Merge PR
+name: Approve and Merge
 
 on:
   pull_request:
@@ -37,16 +37,19 @@ jobs:
 
       - name: Approve PR
         if: steps.check_conditions.outputs.approved == 'true'
-        uses: reviewdog/action-approve@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          approved: true
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
+            --data '{"event": "APPROVE"}'
 
       - name: Merge PR
         if: steps.check_conditions.outputs.approved == 'true'
         run: |
-          git config --global user.name 'Your Name'
-          git config --global user.email 'youremail@example.com'
+          git config --global user.name 'Srikrishnan'
+          git config --global user.email 'krishnan.sri92@gmail.com'
           git fetch origin pull/${{ github.event.pull_request.number }}/head:PR_BRANCH
           git checkout PR_BRANCH
           git merge master --no-edit

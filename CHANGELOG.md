@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.8.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.8.0...v0.8.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* add new package ([c9470cd](https://github.com/iamkrish-coder/IntelliTrader/commit/c9470cd506fbfd51ba6d29c047c7ff099a47e87e))
+* auto approve and merge ([f21026c](https://github.com/iamkrish-coder/IntelliTrader/commit/f21026c67907db4b45180a8d8c474b21899d4ac3))
+
+## [0.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.2...v0.8.0) (2024-02-15)
+
+
+### Features
+
+* add shared methods for strategies ([a734f2a](https://github.com/iamkrish-coder/IntelliTrader/commit/a734f2acc343a04b0de69e208f0b125ac335cf15))
+
+
+### Bug Fixes
+
+* update base strategy ([0e2ce96](https://github.com/iamkrish-coder/IntelliTrader/commit/0e2ce963aaeb11779c1859a17404ab7d7efbbb07))
+
+## [0.7.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.1...v0.7.2) (2024-02-15)
+
+
+### Bug Fixes
+
+* automerge ([c42c967](https://github.com/iamkrish-coder/IntelliTrader/commit/c42c9677facd41dbadd7ba6f650cfcb6460d15ae))
+* Remove handlers ([b6ac742](https://github.com/iamkrish-coder/IntelliTrader/commit/b6ac7422a2475ed17b12dffd646eec83088e1ccc))
+
 ## [0.7.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.0...v0.7.1) (2024-02-15)
 
 
