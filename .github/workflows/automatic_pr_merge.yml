@@ -1,0 +1,27 @@
+name: Automatic PR Merge
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Merge PR
+        run: |
+          git config --global user.name 'Srikrishnan P'
+          git config --global user.email 'krishnan.sri92@gmail.com
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:PR_BRANCH
+          git checkout PR_BRANCH
+          git merge master --no-edit
+          git push origin PR_BRANCH
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
