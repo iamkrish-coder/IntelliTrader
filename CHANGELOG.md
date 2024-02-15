@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.0...v0.7.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* add auto merge action ([d1721f9](https://github.com/iamkrish-coder/IntelliTrader/commit/d1721f9a58d791aa7df921763a97feb3d809dceb))
+
 ## [0.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.6.3...v0.7.0) (2024-02-15)
 
 
