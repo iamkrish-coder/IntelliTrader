@@ -46,7 +46,6 @@ jobs:
             enhancement
             automated pull request
           assignees: iamkrish-coder
-          reviewers: iamkrish-coder
           draft: false
 
       - name: Auto-approve Pull Request
