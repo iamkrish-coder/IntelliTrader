@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.6.3...v0.7.0) (2024-02-15)
+
+
+### Features
+
+* Add Supertrend indicator ([5cefe6a](https://github.com/iamkrish-coder/IntelliTrader/commit/5cefe6a43c9fc4b5525fa241d39e9355ef9f1dcc))
+
 ## [0.6.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.6.2...v0.6.3) (2024-02-14)
 
 
