@@ -3,20 +3,25 @@ on:
   push:
     branches:
       - develop
+
 jobs:
   PR:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           ref: master
+      
       - name: Reset master branch
         run: |
           git fetch origin develop:develop
           git reset --hard develop
+      
       - name: Get latest commit message
         id: latest_commit
         run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      
       - name: Auto Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
@@ -24,22 +29,33 @@ jobs:
           branch: feature-build
           title: ${{ steps.latest_commit.outputs.message }}
           body: |
-                    Updates to IntelliTrader
-                    - Srikrishnan 
-                    - Auto-generated Pull Request on push to Develop
- 
-                    - Commit Message Convention
-                    fix: Represents bug fixes, correlates to a SemVer patch.
-                    feat: Represents a new feature, correlates to a SemVer minor.
-                    feat!:, fix!:, refactor!: Represents a breaking change (indicated by the !) and will result in a SemVer major.
-                    feat(lang): add Polish language
-                    feat(api)!: send an email to the customer when a product is shipped
-                    docs: correct spelling of CHANGELOG
-                    revert: let us never again speak of the noodle incident
+            Updates to IntelliTrader
+            - Srikrishnan 
+            - Auto-generated Pull Request on push to Develop
 
+            - Commit Message Convention
+            fix: Represents bug fixes, correlates to a SemVer patch.
+            feat: Represents a new feature, correlates to a SemVer minor.
+            feat!:, fix!:, refactor!: Represents a breaking change (indicated by the !) and will result in a SemVer major.
+            feat(lang): add Polish language
+            feat(api)!: send an email to the customer when a product is shipped
+            docs: correct spelling of CHANGELOG
+            revert: let us never again speak of the noodle incident
           delete-branch: true
           labels: |
             enhancement
             automated pull request
           assignees: iamkrish-coder
+          reviewers: iamkrish-coder
           draft: false
+
+      - name: Auto-approve Pull Request
+        if: success()
+        run: |
+          TOKEN=${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER=$(echo "${{ steps.cpr.outputs.pull-request }}" | cut -d'/' -f7)
+          curl -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews" \
+            -d "{\"event\":\"APPROVE\"}"
