@@ -52,9 +52,9 @@ jobs:
         if: success()
         run: |
           TOKEN=${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER=$(echo "${{ steps.cpr.outputs.pull-request }}" | cut -d'/' -f7)
+          PR_NUMBER=${PULL_REQUEST_NUMBER}
           curl -X POST \
-            -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews" \
-            -d "{\"event\":\"APPROVE\"}"
+          -H "Authorization: token $TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/iamkrish-coder/IntelliTrader/pulls/${PR_NUMBER}/reviews" \
+          -d "{\"event\":\"APPROVE\"}"
