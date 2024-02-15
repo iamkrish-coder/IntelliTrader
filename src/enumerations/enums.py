@@ -69,32 +69,32 @@ class WilliamsR(Enum):
     WILLIAMSR_200 = 200
    
 class Supertrend(Enum):
-    SUPERTREND_4_2 = (4, 2)
-    SUPERTREND_7_3 = (7, 3)
-    SUPERTREND_10_3 = (10, 3)
-    SUPERTREND_14_3 = (14, 3)
-    SUPERTREND_20_2 = (20, 2)
-    SUPERTREND_50_10 = (50, 10)
+    SUPERTREND_4_2 = [4, 2]
+    SUPERTREND_7_3 = [7, 3]
+    SUPERTREND_10_3 = [10, 3]
+    SUPERTREND_14_3 = [14, 3]
+    SUPERTREND_20_2 = [20, 2]
+    SUPERTREND_50_10 = [50, 10]
     
 class BollingerBands(Enum):
-    BOLLINGERBANDS_20_2 = (20, 2)
-    BOLLINGERBANDS_14_1 = (14, 1)
-    BOLLINGERBANDS_30_3 = (30, 3)
-    BOLLINGERBANDS_50_2 = (50, 2)
-    BOLLINGERBANDS_100_5 = (100, 5)
+    BOLLINGERBANDS_20_2 = [20, 2]
+    BOLLINGERBANDS_14_1 = [14, 1]
+    BOLLINGERBANDS_30_3 = [30, 3]
+    BOLLINGERBANDS_50_2 = [50, 2]
+    BOLLINGERBANDS_100_5 = [100, 5]
     
 class MACD(Enum):
-    MACD_12_26_9 = (12, 26, 9)
-    MACD_8_17_9 = (8, 17, 9)
-    MACD_5_13_9 = (5, 13, 9)
-    MACD_10_20_5 = (10, 20, 5)
-    MACD_14_28_7 = (14, 28, 7)
+    MACD_12_26_9 = [12, 26, 9]
+    MACD_8_17_9 = [8, 17, 9]
+    MACD_5_13_9 = [5, 13, 9]
+    MACD_10_20_5 = [10, 20, 5]
+    MACD_14_28_7 = [14, 28, 7]
     
 class Stochastic(Enum):
-    STOCHASTIC_5_3_3 = (5, 3, 3)
-    STOCHASTIC_10_3_3 = (10, 3, 3)
-    STOCHASTIC_14_3_3 = (14, 3, 3)
-    STOCHASTIC_20_5_5 = (20, 5, 5)
-    STOCHASTIC_50_14_14 = (50, 14, 14)
+    STOCHASTIC_5_3_3 = [5, 3, 3]
+    STOCHASTIC_10_3_3 = [10, 3, 3]
+    STOCHASTIC_14_3_3 = [14, 3, 3]
+    STOCHASTIC_20_5_5 = [20, 5, 5]
+    STOCHASTIC_50_14_14 = [50, 14, 14]
 
 
