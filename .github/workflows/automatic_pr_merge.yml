@@ -1,4 +1,4 @@
-name: Automatic PR Merge
+name: Approve and Merge PR
 
 on:
   pull_request:
@@ -8,17 +8,23 @@ on:
       - reopened
 
 jobs:
-  merge:
+  approve_and_merge:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Approve PR
+        uses: reviewdog/action-approve@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          approved: true
+
       - name: Merge PR
         run: |
-          git config --global user.name 'Srikrishnan P'
-          git config --global user.email 'krishnan.sri92@gmail.com
+          git config --global user.name 'Your Name'
+          git config --global user.email 'youremail@example.com'
           git fetch origin pull/${{ github.event.pull_request.number }}/head:PR_BRANCH
           git checkout PR_BRANCH
           git merge master --no-edit
