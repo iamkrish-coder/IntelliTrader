@@ -15,13 +15,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Check PR conditions
+        id: check_conditions
+        run: |
+          PR_TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
+          PR_LABELS=$(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH")
+          PR_USER=$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")
+
+          # Check if the PR title contains 'automated pull request'
+          if [[ "$PR_TITLE" == *"automated pull request"* ]]; then
+            echo "::set-output name=approved::true"
+          # Check if the PR is labeled 'automated pull request'
+          elif [[ "$PR_LABELS" == *"automated pull request"* ]]; then
+            echo "::set-output name=approved::true"
+          # Check if the PR was created by a bot
+          elif [[ "$PR_USER" == "YourBotUsername" ]]; then
+            echo "::set-output name=approved::true"
+          else
+            echo "::set-output name=approved::false"
+          fi
+
       - name: Approve PR
+        if: steps.check_conditions.outputs.approved == 'true'
         uses: reviewdog/action-approve@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           approved: true
 
       - name: Merge PR
+        if: steps.check_conditions.outputs.approved == 'true'
         run: |
           git config --global user.name 'Your Name'
           git config --global user.email 'youremail@example.com'
