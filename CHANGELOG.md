@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.1...v0.7.2) (2024-02-15)
+
+
+### Bug Fixes
+
+* automerge ([c42c967](https://github.com/iamkrish-coder/IntelliTrader/commit/c42c9677facd41dbadd7ba6f650cfcb6460d15ae))
+* Remove handlers ([b6ac742](https://github.com/iamkrish-coder/IntelliTrader/commit/b6ac7422a2475ed17b12dffd646eec83088e1ccc))
+
 ## [0.7.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.7.0...v0.7.1) (2024-02-15)
 
 
