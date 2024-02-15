@@ -1,8 +1,9 @@
 # strategies/base_strategy.py
 from abc import ABC, abstractmethod
 from sys import modules
+from src.strategies.shared import Shared
 
-class BaseStrategy(ABC):
+class BaseStrategy(ABC, Shared):
     def __init__(self, connection, modules):
         self.connection = connection
         self.modules = modules
@@ -15,6 +16,3 @@ class BaseStrategy(ABC):
     def execute_virtual_strategy(self, virtual_parameters):
         raise NotImplementedError("Subclasses must implement this method")
     
-    @abstractmethod
-    def get_stock_basket(self, exchange, symbol):
-        raise NotImplementedError("Subclasses must implement this method")
