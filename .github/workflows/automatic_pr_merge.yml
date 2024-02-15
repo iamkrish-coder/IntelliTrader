@@ -1,0 +1,33 @@
+name: Approve and Merge PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  approve_and_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Approve PR
+        uses: reviewdog/action-approve@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          approved: true
+
+      - name: Merge PR
+        run: |
+          git config --global user.name 'Your Name'
+          git config --global user.email 'youremail@example.com'
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:PR_BRANCH
+          git checkout PR_BRANCH
+          git merge master --no-edit
+          git push origin PR_BRANCH
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
