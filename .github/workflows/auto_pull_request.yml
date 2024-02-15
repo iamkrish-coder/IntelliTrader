@@ -47,8 +47,3 @@ jobs:
             automated pull request
           assignees: iamkrish-coder
           draft: false
-
-      - name: Auto-merge Pull Request
-        if: success()
-        run: |
-          gh pr merge ${{ steps.cpr.outputs.pull-request }} --squash --auto --merge
