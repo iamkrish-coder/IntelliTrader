@@ -42,5 +42,4 @@ jobs:
             enhancement
             automated pull request
           assignees: iamkrish-coder
-          reviewers: github-bot
           draft: false
