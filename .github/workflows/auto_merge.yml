@@ -1,12 +1,13 @@
 name: Auto Merge
-
 on:
-  pull_request
+  pull_request:
 
 jobs:
-  auto-approve:
+  auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - uses: Yproximite/auto-approve-and-merge-dependabot-action@v1
+      - uses: actions/checkout@v2
+      - uses: buluma/dependabot-auto-merge-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: minor
+          github-token: ${{ secrets.mytoken }}
