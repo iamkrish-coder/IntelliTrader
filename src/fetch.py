@@ -66,6 +66,7 @@ class Fetch:
             instrument_token = self.instrument_token_lookup(exchange, symbol)
             data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))
             Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
+            logging.info(f'OHLC fetched for exchange:symbol {exchange}:{symbol}')
             return data
         else:
             logging.warning(f'Please verify that the exchange [{exchange}], symbol [{symbol}], interval[{interval}] and duration[{duration}] are present.')
@@ -108,6 +109,7 @@ class Fetch:
                     start_date = end_date
     
             Helper().write_csv_output(f'historical_{exchange}_{symbol}_{lookback_period_threshold}.csv', data)
+            logging.info(f'OHLC fetched for exchange:symbol {exchange}:{symbol}')
             return data
         else:
             logging.warning(f'Please verify that the echange [{exchange}], symbol [{symbol}], period_start[{period_start}] and interval[{interval}] are present.')
@@ -117,6 +119,7 @@ class Fetch:
     def fetch_quote(self, exchange, symbol):
         if exchange and symbol:
             quote = self.prop['kite'].quote(f'{exchange}:{symbol}')
+            logging.info(f'Quote fetched for exchange:symbol {exchange}:{symbol}')          
             return quote
         else:
             logging.warning(f'Please verify that the echange [{exchange}] and symbol [{symbol}] are present.')
@@ -126,6 +129,7 @@ class Fetch:
     def fetch_ltp(self, exchange, symbol):
         if exchange and symbol:
             last_traded_price = self.prop['kite'].ltp(f'{exchange}:{symbol}')
+            logging.info(f'LTP fetched for exchange:symbol {exchange}:{symbol}')                    
             return last_traded_price
         else:
             logging.warning(f'Please verify that the echange [{exchange}] and symbol [{symbol}] are present.')

@@ -28,3 +28,11 @@ class Helper:
         words = str(enum_name).split('_')
         converted = ''.join(word.capitalize() for word in words)
         return converted
+
+    def get_execution_time(self, start_time, end_time):
+        return end_time - start_time
+        # start_time = time.time()                 
+        # end_time = time.time()
+        # execution_time = end_time - start_time
+        # logging.info(f"Execution time: {execution_time} seconds")
+   

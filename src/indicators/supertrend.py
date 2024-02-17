@@ -27,5 +27,7 @@ def supertrend(dataset, period=[7, 3]):
         elif dataset['close'].iloc[i - 1] > dataset['upper_band'].iloc[i - 1]:
             dataset.loc[dataset.index[i], 'supertrend'] = dataset.loc[dataset.index[i], 'lower_band']
 
-    supertrend = dataset['supertrend'].dropna().tolist()
+    supertrend_values = dataset['supertrend'].dropna().tolist()
+    supertrend = [round(value, 2) for value in supertrend_values]
+
     return supertrend

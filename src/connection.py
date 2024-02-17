@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from src.helper import Helper
+from selenium.common.exceptions import TimeoutException
 
 class Connection:
     def __init__(self, params):
@@ -28,70 +29,66 @@ class Connection:
         # Initialize browser service
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
 
-        # Auto enter login information
-        driver.get(kite.login_url())
-        driver.implicitly_wait(10)
+        try:
+            # Auto enter login information
+            driver.get(kite.login_url())
 
-        # Username input
-        username = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="userid"]'))
-        )
-        username.send_keys(user_id)
+            # Username input
+            username = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="userid"]'))
+            )
+            username.send_keys(user_id)
 
-        # Password input
-        password = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))
-        )
-        password.send_keys(user_pass)
+            # Password input
+            password = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="password"]'))
+            )
+            password.send_keys(user_pass)
 
-        driver.implicitly_wait(10)
+            # Submit button
+            submit = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="container"]/div/div/div[2]/form/div[4]/button'))
+                
+            )
+            submit.click()
 
-        # Submit button
-        submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/div/div/div[2]/form/div[4]/button'))
-        )
-        submit.click()
+            # MFA / external TOTP
+            totp = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/div[2]/div/div/form/div[1]/input'))
+            )
+            authkey = pyotp.TOTP(mfa_token)
+            totp.send_keys(authkey.now())
 
-        # MFA / external TOTP
-        totp = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/div[2]/div/div/form/div[1]/input'))
-        )
-        authkey = pyotp.TOTP(mfa_token)
-        totp.send_keys(authkey.now())
+            auth_date = datetime.datetime.now().strftime('%d%H')
+            sleep(3)
 
-        continue_btn = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/div[2]/div/div/form/div[2]/button'))
-        )
+            # Request token generation
+            url = driver.current_url
+            url_parts = url.split('request_token=')
+            if len(url_parts) > 1:
+                initial_token = url_parts[1].split('&')[0]
+                token_str = str(initial_token)
+                Helper().write_text_output('request_token' + '_' + auth_date + '.txt', token_str)
+                logging.info("Kite request_token generated successfully")
+            else:
+                logging.error("Kite 'request_token=' not found in the URL")
 
-        time.sleep(5)
-        auth_date = datetime.datetime.now().strftime('%d%H');
+            # Access token generation
+            data = kite.generate_session(initial_token, api_secret=secret_key)
+            access_token = data['access_token']
+            token_str = str(access_token)
+            Helper().write_text_output('access_token' + '_' + auth_date + '.txt', token_str)
+            logging.info("Kite access_token generated successfully")
 
-        # Request token generation
-        url = driver.current_url
-        url_parts = url.split('request_token=')
-        if len(url_parts) > 1:
-            initial_token = url_parts[1]
-            request_token = initial_token.split('&')[0]
-            token_str = str(request_token)
-            Helper().write_text_output('request_token' + '_' + auth_date + '.txt', token_str)
-            logging.info("Kite request_token generated successfully")
-        else:
-            # Handle the case when the 'request_token=' delimiter is not found
-            logging.error("Kite 'request_token=' not found in the URL")
-            with open('./src/output/request_token' + '_' + auth_date + '.txt', 'r') as r_file:
-                request_token = r_file.readline()
-                r_file.close()
+            # Kite Ticker Subscription
+            kite_ticker = KiteTicker(api_key, access_token)
 
-        # Access token generation
-        data = kite.generate_session(request_token, api_secret=secret_key)
-        access_token = data['access_token']
-        token_str = str(access_token)
-        Helper().write_text_output('access_token' + '_' + auth_date + '.txt', token_str)
-        logging.info("Kite access_token generated successfully")
+            return kite, kite_ticker, access_token
 
-        # Kite Ticker Subscription
-        kite_ticker = KiteTicker(api_key, access_token)
+        except Exception as e:
+            logging.error(f"Error during broker login: {e}")
+            raise
 
-        driver.quit()
-
-        return kite, kite_ticker, access_token
+        finally:
+            if driver:
+                driver.quit()

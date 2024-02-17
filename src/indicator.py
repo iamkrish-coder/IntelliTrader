@@ -58,15 +58,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate RSI
                 pdf = pd.DataFrame(dataset)
-                rsi_historical = rsi(pdf)
-                rsi_current = rsi_historical[-1]
-                rsi_values = {
-                    "historical": rsi_historical,
-                    "current": rsi_current
-                }
-                # Log the calculated RSI values                              
-                logging.info(f"RSI: {rsi_values}") 
-
+                rsi_values = rsi(pdf)
                 return rsi_values
             else:
                 logging.error("Failed to calculate RSI") 
@@ -80,16 +72,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate WMA
                 pdf = pd.DataFrame(dataset)
-                wma_historical = ma.wma(pdf, period)
-                wma_current = wma_historical[-1]
-                wma_values = {
-                    "historical": wma_historical,
-                    "current": wma_current
-                }
-                
-                # Log the calculated WMA values                                             
-                logging.info(f"WMA: {wma_values}") 
-                
+                wma_values = ma.wma(pdf, period)
                 return wma_values
             else:
                 logging.error("Failed to calculate WMA") 
@@ -104,16 +87,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate SMA
                 pdf = pd.DataFrame(dataset)
-                sma_historical = ma.sma(pdf, period)
-                sma_current = sma_historical[-1]
-                sma_values = {
-                    "historical": sma_historical,
-                    "current": sma_current
-                }
-                
-                # Log the calculated SMA values                             
-                logging.info(f"SMA: {sma_values}") 
-                
+                sma_values = ma.sma(pdf, period)
                 return sma_values
             else:
                 logging.error("Failed to calculate SMA") 
@@ -128,16 +102,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate EMA
                 pdf = pd.DataFrame(dataset)
-                ema_historical = ma.ema(pdf, period)
-                ema_curret = ema_historical[-1]
-                ema_values = {
-                    "historical": ema_historical,
-                    "current": ema_curret
-                }
-                
-                # Log the calculated EMA values                
-                logging.info(f"EMA: {ema_values}") 
-                
+                ema_values = ma.ema(pdf, period)
                 return ema_values
             else:
                 logging.error("Failed to calculate EMA") 
@@ -152,16 +117,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate SUPERTREND
                 pdf = pd.DataFrame(dataset)
-                supertrend_historical = supertrend(pdf, period)
-                supertrend_current = supertrend_historical[-1]
-                supertrend_values = {
-                    "historical": supertrend_historical,
-                    "current": supertrend_current
-                }
-                
-                # Log the calculated Supertrend values
-                logging.info(f"Supertrend: {supertrend_values}") 
-                
+                supertrend_values = supertrend(pdf, period)
                 return supertrend_values
             else:
                 logging.error("Failed to calculate SUPERTREND")
@@ -182,10 +138,6 @@ class Indicator:
                     "signal_line": signal_line,
                     "macd_histogram": macd_histogram
                 }
-
-                # Log the calculated MACD values
-                logging.info(f"MACD: {macd_values}")
-
                 return macd_values
             else:
                 logging.error("Failed to calculate MACD")
@@ -200,16 +152,7 @@ class Indicator:
             if dataset is not None and not dataset.empty:
                 # Calculate ATR
                 pdf = pd.DataFrame(dataset)
-                atr_historical = atr(pdf, period)
-                atr_current = atr_historical[-1]
-                atr_values = {
-                    "historical": atr_historical,
-                    "current": atr_current
-                }
-
-                # logging.info the calculated ATR values
-                logging.info(f"ATR: {atr_values}")
-
+                atr_values = atr(pdf, period)
                 return atr_values
             else:
                 logging.error("Failed to calculate ATR") 
@@ -224,16 +167,7 @@ class Indicator:
             if dataset is not None and not dataset.empty:
                 # Calculate Williams %R
                 pdf = pd.DataFrame(dataset)
-                williams_r_historical = williams_r(pdf, period)
-                williams_r_current = williams_r_historical[-1]
-                williams_values = {
-                    "historical": williams_r_historical,
-                    "current": williams_r_current
-                }
-
-                # logging.info the calculated Williams %R values
-                logging.info(f"Williams %R: {williams_values}")
-                
+                williams_values = williams_r(pdf, period)
                 return williams_values
             else:
                 logging.error("Failed to calculate Williams Range") 
@@ -248,16 +182,7 @@ class Indicator:
             if dataset is not None and not dataset.empty:
                 # Calculate VWAP
                 pdf = pd.DataFrame(dataset)
-                vwap_historical = vwap(pdf, period) 
-                vwap_current = vwap_historical.iloc[-1]
-                vwap_values = {
-                    "historical": vwap_historical,
-                    "current": vwap_current
-                }
-                
-                # logging.info the calculated VWAP values
-                logging.info(f"VWAP: {vwap_values}")
-
+                vwap_values = vwap(pdf, period) 
                 return vwap_values
             else:
                 logging.error("Failed to calculate VWAP") 
@@ -272,16 +197,7 @@ class Indicator:
             if dataset is not None and not dataset.empty:
                 # Calculate ADX
                 pdf = pd.DataFrame(dataset)
-                adx_historical = adx(pdf, period) 
-                adx_current = adx_historical.iloc[-1]
-                adx_values = {
-                    "historical": adx_historical,
-                    "current": adx_current
-                }
-                
-                # Log the calculated ADX values
-                logging.info(f"ADX: {adx_values}")
-
+                adx_values = adx(pdf, period) 
                 return adx_values
             else:
                 logging.error("Failed to calculate ADX") 
@@ -296,17 +212,11 @@ class Indicator:
             if dataset is not None and not dataset.empty:
                 # Calculate Stochastic
                 pdf = pd.DataFrame(dataset)
-                stochastic_k_current = stochastic_line_k.iloc[-1]
-                stochastic_d_current = stochastic_line_d.iloc[-1]
                 stochastic_line_k, stochastic_line_d = stochastic(pdf, period)
                 stochastic_values = {
-                    "current_k": stochastic_k_current,
-                    "current_d": stochastic_d_current,
+                    "k": stochastic_line_k,
+                    "d": stochastic_line_d,
                 }
-
-                # logging.info the calculated Stochastic values
-                logging.info(f"Stochastic: {stochastic_values}")
-                
                 return stochastic_values
             else:
                 logging.error("Failed to calculate Stochastic") 
@@ -321,16 +231,7 @@ class Indicator:
             if dataset is not None and not dataset.empty:
                 # Calculate Renko Bricks
                 pdf = pd.DataFrame(dataset)
-                renko_historical = renko(pdf, period)  
-                renko_current = renko_historical.iloc[-1]
-                renko_values = {
-                    "historical": renko_historical,
-                    "current": renko_current
-                }
-                
-                # Log the calculated Renko values
-                logging.info(f"Renko Bricks: {renko_values}")
-                
+                renko_values = renko(pdf, period)  
                 return renko_values
             else:
                 logging.error("Failed to calculate Renko") 
@@ -351,13 +252,6 @@ class Indicator:
                     "middle_band": middle_band.tolist(),
                     "lower_band": lower_band.tolist()
                 }
-
-                # Logging the calculated Bollinger Bands values
-                logging.info(f"Bollinger Bands: {bollinger_values}")
-                logging.info(f"Upper Band: {bollinger_values['upper_band'][-1]}")
-                logging.info(f"Middle Band: {bollinger_values['middle_band'][-1]}")
-                logging.info(f"Lower Band: {bollinger_values['lower_band'][-1]}")
-                
                 return bollinger_values
             else:
                 logging.error("Failed to calculate Bollinger Bands") 
