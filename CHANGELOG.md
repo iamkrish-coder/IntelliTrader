@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.8.1...v0.9.0) (2024-02-18)
+
+
+### Features
+
+* Renamed src to source ([faadad9](https://github.com/iamkrish-coder/IntelliTrader/commit/faadad9dd1be7632a5d165fd4924ca2118203218))
+* sample strategy conditions added and fixed connection xpath for continue button during login ([043eb9a](https://github.com/iamkrish-coder/IntelliTrader/commit/043eb9aca70f9cee1835f679e159f57c91922924))
+
 ## [0.8.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.8.0...v0.8.1) (2024-02-15)
 
 
