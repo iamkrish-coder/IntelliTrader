@@ -1,9 +1,9 @@
 # strategies/options_strategy.py
 from ast import arg
-from src.strategies.base_strategy import BaseStrategy
+from source.strategies.base_strategy import BaseStrategy
 from turtle import st
-from src.constants.constants import *
-from src.enumerations.enums import *
+from source.constants.constants import *
+from source.enumerations.enums import *
 import os
 import pandas as pd
 import time

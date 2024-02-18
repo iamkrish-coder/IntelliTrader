@@ -1,7 +1,7 @@
 # strategies/strategy_manager.py
 import logging
-import src.strategies as strategies
-from src.enumerations.enums import Strategy
+import source.strategies as strategies
+from source.enumerations.enums import Strategy
     
 class StrategyManager:
     def __init__(self, connection, modules):

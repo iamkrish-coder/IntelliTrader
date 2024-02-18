@@ -1,7 +1,7 @@
 # strategies/base_strategy.py
 from abc import ABC, abstractmethod
 from sys import modules
-from src.strategies.shared import Shared
+from source.strategies.shared import Shared
 
 class BaseStrategy(ABC, Shared):
     def __init__(self, connection, modules):

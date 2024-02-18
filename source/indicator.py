@@ -3,18 +3,18 @@ import os
 import datetime as dt
 import time
 import pandas as pd
-import src.indicators.ma as ma
-from src.indicators.rsi import rsi
-from src.indicators.supertrend import supertrend
-from src.indicators.macd import macd
-from src.indicators.atr import atr
-from src.indicators.williams_r import williams_r
-from src.indicators.vwap import vwap
-from src.indicators.adx import adx
-from src.indicators.stochastic import stochastic
-from src.indicators.renko import renko
-from src.indicators.bollinger_bands import bollinger_bands
-from src.helper import Helper
+import source.indicators.ma as ma
+from source.indicators.rsi import rsi
+from source.indicators.supertrend import supertrend
+from source.indicators.macd import macd
+from source.indicators.atr import atr
+from source.indicators.williams_r import williams_r
+from source.indicators.vwap import vwap
+from source.indicators.adx import adx
+from source.indicators.stochastic import stochastic
+from source.indicators.renko import renko
+from source.indicators.bollinger_bands import bollinger_bands
+from source.helper import Helper
 
 class Indicator:
     def __init__(self, params):

@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from src.helper import Helper
+from source.helper import Helper
 from selenium.common.exceptions import TimeoutException
 
 class Connection:

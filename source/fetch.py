@@ -3,11 +3,11 @@ import logging
 from turtle import st
 import pandas as pd
 import datetime as dt
-import src.libraries.nse_data as nsedata
+import source.libraries.nse_data as nsedata
 import requests
-from src.helper import Helper
+from source.helper import Helper
 from tkinter.tix import COLUMN
-from src.constants.constants import *
+from source.constants.constants import *
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 
