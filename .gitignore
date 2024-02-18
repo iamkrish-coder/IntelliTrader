@@ -362,5 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /configuration/user_credentials.txt
-/src/output
-/src/data/Historical
+/source/output
+/source/data/Historical
+/source/data
+/source/output

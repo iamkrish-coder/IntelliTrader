@@ -1,15 +1,15 @@
 # strategies/strategy_manager.py
 import logging
-import src.strategies as strategies
-from src.enumerations.enums import Strategy
-
+import source.strategies as strategies
+from source.enumerations.enums import Strategy
+    
 class StrategyManager:
     def __init__(self, connection, modules):
         self.connection = connection
         self.modules = modules
         
     def initialize_strategy(self, configuration):
-        try:         
+        try:
             live_trade = configuration.get("live_trade").lower()
             auto_virtual = configuration.get("virtual").lower()
             

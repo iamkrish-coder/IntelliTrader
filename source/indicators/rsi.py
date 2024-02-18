@@ -41,5 +41,6 @@ def rsi(dataset, period=14):
             down_periods.append((down_periods[-1] * (period - 1) - delta) / period)
 
     rs = np.array(up_periods) / np.array(down_periods)
-    rsi = (100 - (100 / (1 + rs))).tolist()
+    rsi = np.round(100 - (100 / (1 + rs)), 2).tolist()
+
     return rsi

@@ -1,6 +1,6 @@
 # strategies/options_strategy.py
-from src.strategies.base_strategy import BaseStrategy
-import src.strategies.shared as shared
+from source.strategies.base_strategy import BaseStrategy
+import source.strategies.shared as shared
 import logging
 
 class StockOptions(BaseStrategy):

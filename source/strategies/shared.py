@@ -5,8 +5,8 @@ import numpy as np
 import datetime as dt
 import yfinance as yf
 import logging
-from src.constants.constants import *
-from src.enumerations.enums import *
+from source.constants.constants import *
+from source.enumerations.enums import *
 
 class Shared:
     def __init__(self, connection, modules):

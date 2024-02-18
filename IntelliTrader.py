@@ -1,14 +1,14 @@
 from sys import modules
 from kiteconnect import KiteConnect, KiteTicker
-from src.connection import Connection
-from src.helper import Helper
-from src.fetch import Fetch
-from src.orders import Orders
-from src.ticker import Ticker
-from src.indicator import Indicator
-from src.constants.constants import *
-from src.aws.aws_secrets_manager import get_secret
-from src.strategies import strategy_manager
+from source.connection import Connection
+from source.helper import Helper
+from source.fetch import Fetch
+from source.orders import Orders
+from source.ticker import Ticker
+from source.indicator import Indicator
+from source.constants.constants import *
+from source.aws.aws_secrets_manager import get_secret
+from source.strategies import strategy_manager
 
 import json
 import datetime
