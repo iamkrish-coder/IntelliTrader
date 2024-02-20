@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.9.0...v1.0.0) (2024-02-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* Add landing page
+
+### Features
+
+* Add landing page ([52d39d9](https://github.com/iamkrish-coder/IntelliTrader/commit/52d39d958d5cb624397cbec0360065ce23ac8d09))
+
 ## [0.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.8.1...v0.9.0) (2024-02-18)
 
 
