@@ -154,5 +154,5 @@ def InitializeWebInterface(intelliTraderInstance):
 
 if __name__ == "__main__":
     intelliTraderInstance = IntelliTrader(SECRET_NAME, REGION_NAME)
-    InitializeWebInterface(intelliTraderInstance)
+    # InitializeWebInterface(intelliTraderInstance)
     InitializeCoreSystem(intelliTraderInstance)

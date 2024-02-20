@@ -38,11 +38,11 @@ class StrategyManager:
                     
                 elif virtual_trade == 'true' and live_trade == 'false':
                     # Load Default Configs
-                    virtual_trade_params = configuration.get("virtual_trade_params")              
+                    virtual_trade_params = configuration.get("virtual_trade_params")          
                     market_params = configuration.get("marktet_params")
                     
                     # Instantiate Strategy Method
-                    strategy_instance.execute_virtual_strategy(virtual_trade_params, market_params)      
+                    strategy_instance.execute_virtual_strategy(configuration, virtual_trade_params, market_params)      
                     
                 else:
                     logging.info("No Virtual trade or Live configuration found.")       

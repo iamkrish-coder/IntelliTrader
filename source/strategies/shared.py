@@ -35,10 +35,10 @@ class Shared:
         return stock_basket
   
 
-    def get_local_market_sentiment():
+    def get_local_market_sentiment(self):
         pass
 
-    def get_global_market_sentiment():
+    def get_global_market_sentiment(self):
         pass
     
     def get_underlying_ltp(ticker):

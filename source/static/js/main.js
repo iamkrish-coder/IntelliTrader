@@ -78,7 +78,7 @@ $(document).ready(function() {
 	// Market Countdown on Landing Page
 	if (now.getHours() < 9 || (now.getHours() === 15 && now.getMinutes() > 30) || now.getHours() > 15) {
 		// Post Market Hours
-		marketOpen.setDate(marketOpen.getDate() + 1);
+		marketOpen.setDate(marketOpen.getDate());
 		targetDate = marketOpen
 	}
 	else if ((now.getHours() === 9 && now.getMinutes() < 15)) {
