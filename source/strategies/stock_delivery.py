@@ -17,62 +17,141 @@ class StockDelivery(BaseStrategy):
     def execute_live_strategy(self):
         pass
 
-    def execute_virtual_strategy(self, args):
-        start_time = time.time()                 
-              
-        # Extracting arguments into variables
-        symbol = args['symbol']
-        exchange = args['exchange']
-        virtual_timeframe = args['virtual_timeframe']
-        max_allocation = args['max_allocation']
-        quantity = args['quantity']
-        tpsl_method = args['tpsl_method']
-        target = args['target']
-        stop_loss = args['stop_loss']
-        trail_profit = args['trail_profit']
-        trail_stop_loss = args['trail_stop_loss']
+    def execute_virtual_strategy(self, v_args, m_args):
+        start_time = time.time()      
+        
+        ###########################################
+        # Declare variables
+        ###########################################
 
-        # Get the symbols from Baskets to run virtual Trade
-        stock_list = self.get_stock_basket(exchange, symbol)
-        print(stock_list)
-        # Get Live data for symbols in Stock Basket
+        instruments_list = []
+        watchlist_stocks = []
+        local_indices = []
+        global_indices = []
+        stock_alerts = []
+        
+        stock_data = {}
+        indicator_data = {}
+        ohlcv_data = {}
+        
+        ###########################################
+        # Extracting arguments into variables
+        ###########################################
+        
+        # Virtual Trade Params
+        symbol = v_args['symbol']
+        exchange = v_args['exchange']
+        historical_data_subscription = v_args['historical_data_subscription']
+        interval = v_args['interval']
+        duration = int(v_args['duration'])
+        max_allocation = v_args['max_allocation']
+        quantity = v_args['quantity']
+        tpsl_method = v_args['tpsl_method']
+        target = v_args['target']
+        stop_loss = v_args['stop_loss']
+        trail_profit = v_args['trail_profit']
+        trail_stop_loss = v_args['trail_stop_loss']
+
+        # Market Params
+        market_trend_study  = m_args['market_trend_study']
         
 
-        # Compute the Indicator Values
-        # rsi = self.modules['indicator'].use_indicator('rsi', data, 8)
-        # wma5 = self.modules['indicator'].use_indicator('wma', data, 5)
-        # wma20 = self.modules['indicator'].use_indicator('wma', data, 20)
-        # supertrend = self.modules['indicator'].use_indicator('supertrend', data, [4, 2])
-
-        # filtered_stocks = []
-        # rsi_data = json.loads(rsi)
-        # logging.info(rsi_data)
+        ###########################################
+        # Market Trend Study
+        ###########################################  
+        if market_trend_study:
+            
+            local_market_sentiment = self.get_local_market_sentiment()
+            global_market_sentiment = self.get_global_market_sentiment()
 
 
-        # Execute Virtual Trade on filtered stocks
+        ###########################################
+        # Get Live Data
+        ###########################################
 
-        # Store the result of Virtual Trade
+        stock_basket = self.get_stock_basket(exchange, symbol)
+        instruments_list = self.modules['fetch'].fetch_instruments(exchange)  
+        watchlist_stocks = [instrument for instrument in instruments_list if instrument['tradingsymbol'] in stock_basket]
 
-        # Display the result of Virtual Trade
+        for stock in watchlist_stocks:
+            trading_symbol = stock['tradingsymbol']
+            instrument_quote = self.modules['fetch'].fetch_quote(exchange, trading_symbol)
 
+            # Extract relevant information and store it
+            stock_data[trading_symbol] = {
+                'summary_data': stock,
+                'quote_data': instrument_quote
+            }
+            
+            if historical_data_subscription:
+                datasource = self.modules['fetch'].fetch_ohlc(exchange, trading_symbol, interval, duration)
+            else: 
+                pass
+
+            # Process Indicator and Candle Data                    
+            ohlcv_data['open'] = datasource['open'].tolist()
+            ohlcv_data['high'] = datasource['high'].tolist()
+            ohlcv_data['low'] = datasource['low'].tolist()
+            ohlcv_data['close'] = datasource['close'].tolist()
+            ohlcv_data['volume'] = datasource['volume'].tolist()
+
+            indicator_data['rsi'] = self.get_indicator_values('rsi', datasource, RSI.RSI_8.value)
+            indicator_data['wma5'] = self.get_indicator_values('wma', datasource, WMA.WMA_5.value)
+            indicator_data['wma20'] = self.get_indicator_values('wma', datasource, WMA.WMA_21.value)
+            indicator_data['supertrend'] = self.get_indicator_values('supertrend', datasource,  Supertrend.SUPERTREND_4_2.value)
+
+            # Evaluate Strategy conditions based on obtained Candle and Indicator data
+            primary_conditions = self.evaluate_strategy_conditions(indicator_data, ohlcv_data)
+            if primary_conditions:
+                # Check Secondary Conditions
+                print(f"Conditions Met: Stock Alert : {trading_symbol}")
+                stock_alerts.append(trading_symbol)
+                pass
+            else:
+                continue
+
+
+        print(stock_alerts)            
         end_time = time.time()
         execution_time = end_time - start_time
         logging.info(f"Execution time: {execution_time} seconds")
 
-    def get_stock_basket(self, exchange, symbol):
-        stock_basket = []       
-        if(exchange.upper() == Exchange.NSE.value):
-            if(symbol.upper() == "DEFAULT"):
-               symbols_list = pd.read_csv(DEFAULT_BASKET)
-               stock_basket = symbols_list['Symbol'].tolist()
-            else:
-                stock_basket.append(symbol.upper())
-        elif(exchange.upper() == Exchange.BSE.value):
-            if(symbol.upper() == "DEFAULT"):
-                stock_basket = pd.read_csv(DEFAULT_BASKET)
-            else:
-                stock_basket.append(symbol.upper())
+        
+
+
+    ###########################################
+    # Evaluate Strategy Conditions
+    ###########################################
+        
+    def evaluate_strategy_conditions(self, ohlcv_data, indicator_data):
+
+        open = ohlcv_data['close']
+        close = ohlcv_data['close']
+        close = ohlcv_data['close']
+        close = ohlcv_data['close']
+
+        rsi = indicator_data['rsi']
+        wma5 = indicator_data['wma5']
+        wma20 = indicator_data['wma20']
+        supertrend = indicator_data['supertrend']
+        
+        # Condition 1
+        condition1 = wma5[-1] > wma20[-1]
+
+        # Condition 2
+        condition2 = close[-1] > supertrend[-1]
+
+        # Condition 3
+        condition3 = close[-2] <= supertrend[-2]
+
+        # Condition 4
+        condition4 = rsi[-1] > 60
+
+        # Condition 5
+        condition5 = rsi[-2] <= 60
+
+        # Final Strategy Condition
+        if condition1 and condition2 and condition3 and condition4 and condition5:
+            return True
         else:
-            logging.info(f"Invalid Exchange {exchange}")
-                    
-        return stock_basket        
+            return False

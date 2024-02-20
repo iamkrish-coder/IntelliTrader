@@ -33,8 +33,14 @@ class Shared:
         else:
             logging.info(f"Invalid Exchange {exchange}")            
         return stock_basket
+  
 
+    def get_local_market_sentiment():
+        pass
 
+    def get_global_market_sentiment():
+        pass
+    
     def get_underlying_ltp(ticker):
         stock = ticker if ticker not in ('NIFTY', 'BANKNIFTY') else None
 

@@ -9,6 +9,7 @@ from source.indicator import Indicator
 from source.constants.constants import *
 from source.aws.aws_secrets_manager import get_secret
 from source.strategies import strategy_manager
+from flask import Flask, render_template, request, redirect, session
 
 import json
 import datetime
@@ -22,7 +23,13 @@ class IntelliTrader:
         self.secret_name = secret_name
         self.region_name = region_name
         self.secret_keys = self.get_secret_keys()
-
+        self.configuration = self.read_input_configuration()
+        
+    def read_input_configuration(self):
+        with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
+            config = json.load(f)
+        return config
+        
     def get_secret_keys(self):
         secret_keys = json.loads(get_secret(self.secret_name, self.region_name))
         return secret_keys
@@ -97,13 +104,9 @@ class IntelliTrader:
             'indicator': indicator_instance
         }
         return modules
-        
-    def read_input_configuration(self):
-        with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
-            config = json.load(f)
-        return config
 
-def main():
+
+def InitializeCoreSystem(intelliTraderInstance):
     # Create an instance of IntelliTrader
     app = IntelliTrader(SECRET_NAME, REGION_NAME)
 
@@ -123,5 +126,33 @@ def main():
     strategy_manager_instance.initialize_strategy(configuration)
 
 
+def InitializeWebInterface(intelliTraderInstance):
+    # Create a Flask app instance
+    app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), TEMPLATES_PATH),
+                static_url_path='/source/static',
+                static_folder=os.path.join(os.path.dirname(__file__), STATIC_FILE_PATH))
+    
+    # Sample settings data (you'll replace this with your actual settings)
+    configuration = intelliTraderInstance.read_input_configuration()
+
+    # Define the route for the index page
+    @app.route('/')
+    def index():
+        # Render the index.html template
+        return render_template('index.html', settings=configuration)
+
+    @app.route('/scan', methods=['POST'])
+    def initialize_core():
+        if request.method == 'POST':
+            # Call your backend function here
+            InitializeCoreSystem(intelliTraderInstance) 
+            return 'Core function executed successfully'
+
+    # Run the app
+    app.run(debug=True)
+    
+
 if __name__ == "__main__":
-    main()
+    intelliTraderInstance = IntelliTrader(SECRET_NAME, REGION_NAME)
+    InitializeWebInterface(intelliTraderInstance)
+    InitializeCoreSystem(intelliTraderInstance)
