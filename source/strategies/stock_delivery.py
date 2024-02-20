@@ -14,10 +14,10 @@ class StockDelivery(BaseStrategy):
     def __init__(self, connection, modules, timeframe, ticker, strike, exchange, symbol, expiry, offset):
         super().__init__(connection, modules)
         
-    def execute_live_strategy(self):
+    def execute_live_strategy(self, args, v_args, m_args):
         pass
 
-    def execute_virtual_strategy(self, v_args, m_args):
+    def execute_virtual_strategy(self, args, v_args, m_args):
         start_time = time.time()      
         
         ###########################################
@@ -53,14 +53,13 @@ class StockDelivery(BaseStrategy):
         trail_stop_loss = v_args['trail_stop_loss']
 
         # Market Params
-        market_trend_study  = m_args['market_trend_study']
+        market_trend_study  = args['market_trend_study']
         
 
         ###########################################
         # Market Trend Study
         ###########################################  
         if market_trend_study:
-            
             local_market_sentiment = self.get_local_market_sentiment()
             global_market_sentiment = self.get_global_market_sentiment()
 
@@ -99,9 +98,11 @@ class StockDelivery(BaseStrategy):
             indicator_data['wma5'] = self.get_indicator_values('wma', datasource, WMA.WMA_5.value)
             indicator_data['wma20'] = self.get_indicator_values('wma', datasource, WMA.WMA_21.value)
             indicator_data['supertrend'] = self.get_indicator_values('supertrend', datasource,  Supertrend.SUPERTREND_4_2.value)
+            indicator_data['truerange'] = self.get_indicator_values('truerange', datasource, TrueRange.TRUERANGE_14.value')
+            indicator_data['averagetruerange'] = self.get_indicator_values('averagetruerange', datasource, AverageTrueRange.AVERAGETRUERANGE_14.value')
 
             # Evaluate Strategy conditions based on obtained Candle and Indicator data
-            primary_conditions = self.evaluate_strategy_conditions(indicator_data, ohlcv_data)
+            primary_conditions = self.evaluate_strategy_conditions(ohlcv_data, indicator_data)
             if primary_conditions:
                 # Check Secondary Conditions
                 print(f"Conditions Met: Stock Alert : {trading_symbol}")
@@ -109,7 +110,6 @@ class StockDelivery(BaseStrategy):
                 pass
             else:
                 continue
-
 
         print(stock_alerts)            
         end_time = time.time()
@@ -125,10 +125,11 @@ class StockDelivery(BaseStrategy):
         
     def evaluate_strategy_conditions(self, ohlcv_data, indicator_data):
 
-        open = ohlcv_data['close']
+        open = ohlcv_data['open']
+        high = ohlcv_data['high']
+        low = ohlcv_data['low']
         close = ohlcv_data['close']
-        close = ohlcv_data['close']
-        close = ohlcv_data['close']
+        volume = ohlcv_data['volume']
 
         rsi = indicator_data['rsi']
         wma5 = indicator_data['wma5']

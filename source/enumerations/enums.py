@@ -26,7 +26,7 @@ class RSI(Enum):
     RSI_8 = 8   
     RSI_10 = 10
     RSI_14 = 14
-    RSI_20 = 20
+    RSI_21 = 21
 
 class WMA(Enum):
     WMA_5 = 5
@@ -61,9 +61,10 @@ class EMA(Enum):
 
 class WilliamsR(Enum):
     WILLIAMSR_5 = 5
+    WILLIAMSR_8 = 8  
     WILLIAMSR_10 = 10
     WILLIAMSR_14 = 14
-    WILLIAMSR_20 = 20
+    WILLIAMSR_21 = 21
     WILLIAMSR_50 = 50
     WILLIAMSR_100 = 100
     WILLIAMSR_200 = 200
@@ -97,4 +98,22 @@ class Stochastic(Enum):
     STOCHASTIC_20_5_5 = [20, 5, 5]
     STOCHASTIC_50_14_14 = [50, 14, 14]
 
+class TrueRange(Enum):
+    TRUERANGE_5 = 14
+    TRUERANGE_8 = 8
+    TRUERANGE_10 = 10
+    TRUERANGE_14 = 14
+    TRUERANGE_21 = 21
+    TRUERANGE_50 = 50
+    TRUERANGE_100 = 100
+    TRUERANGE_200 = 200
 
+class AverageTrueRange(Enum):
+    AVERAGETRUERANGE_5 = 14
+    AVERAGETRUERANGE_8 = 8
+    AVERAGETRUERANGE_10 = 10
+    AVERAGETRUERANGE_14 = 14
+    AVERAGETRUERANGE_21 = 21
+    AVERAGETRUERANGE_50 = 50
+    AVERAGETRUERANGE_100 = 100
+    AVERAGETRUERANGE_200 = 200

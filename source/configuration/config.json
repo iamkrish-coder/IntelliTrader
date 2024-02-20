@@ -44,7 +44,7 @@
     "exchange": "NSE",
     "historical_data_subscription": "true",
     "interval": "5minute",
-    "duration": "2",
+    "duration": "1",
     "max_allocation": "1L",
     "quantity": "per_capital",
     "tpsl_method": "percentage/absolute/points",
