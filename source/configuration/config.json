@@ -2,6 +2,24 @@
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
+  "market_trend_study": "true",
+  "marktet_index_params": {
+    "index_1": "NIFTY 50",
+    "index_2": "SENSEX",
+    "index_3": "BANK NIFTY",
+    "index_4": "NIFTY NEXT 50",
+    "index_5": "NIFTY MIDCAP 100",
+    "index_6": "NIFTY SMALLCAP 100",
+    "index_7": "INDIAVIX",
+    "index_8": "Dow Jones Industrial Average (DJIA)",
+    "index_9": "S&P 500",
+    "index_10": "NASDAQ Composite",
+    "index_11": "FTSE 100",
+    "index_12": "DAX",
+    "index_13": "CAC 40",
+    "index_14": "Nikkei 225",
+    "index_15": "Hang Seng Index"
+  },
   "live_trade": "false",
   "live_trade_params": {
     "exchange": "NSE",
@@ -20,11 +38,13 @@
     "ticker_symbol": [ "TATAMOTORS" ],
     "ticker_mode": "ltp"
   },
-  "virtual": "true",
-  "virtual_params": {
-    "virtual_timeframe": "15minute",
+  "virtual_trade": "true",
+  "virtual_trade_params": {
     "symbol": "default",
     "exchange": "NSE",
+    "historical_data_subscription": "true",
+    "interval": "5minute",
+    "duration": "2",
     "max_allocation": "1L",
     "quantity": "per_capital",
     "tpsl_method": "percentage/absolute/points",
