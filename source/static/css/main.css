@@ -1,10 +1,3 @@
-/*
-Imminent - Coming Soon Template by Themewagon
-Version: 1.0
-Author: ThemeWagon
-Author URI: http://www.themewagon.com
-*/
-
 
 /* =Common Styles
 -------------------------------------------------------------- */
@@ -39,7 +32,7 @@ img {
 body {
 	background: #fff;
 	color: #666666;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Chakra Petch', sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-webkit-text-size-adjust: 100%;
 }
@@ -52,7 +45,7 @@ section { overflow: hidden; }
 /* =Typography
 -------------------------------------------------------------- */
 a {
-    text-decoration: none;
+	text-decoration: none;
 }
 
 h1, h2 { margin: 0; }
@@ -63,10 +56,11 @@ h1 {
 	line-height: 80px;
 	letter-spacing: -0.08em;
 	color: #161a1b; 
+	letter-spacing: 0.5px;
 }
 
 h2 {
-	font-size: 18px;
+	font-size: 25px;
 	font-weight: 800;
 	line-height: 1em;
 	letter-spacing: 0.2em;
@@ -81,11 +75,13 @@ h2 {
 	letter-spacing: initial;
 	font-weight: 100;
 	text-transform: uppercase;
+
 }
 
 #countdown div {
 	display:inline-block;
-    margin: 0 34px;
+	margin: 0 34px;
+	margin-top: 75px;
 }
 
 .sub-title {
@@ -149,11 +145,14 @@ h2 {
 }
 
 
-.sphere img{
+.sphere img {
 	-webkit-transform: scale(0.7);
 	-moz-transform: scale(0.7);
 	-ms-transform: scale(0.7,0.7);
 	transform: scale(0.7);
+	margin-top: 25px;
+	margin-bottom: 25px;
+	opacity: 0.5;
 }
 
 /* Text */
@@ -163,7 +162,7 @@ h2 {
 	width: 100%;
 	position: absolute;
 	z-index: 2;
-	top: 10%;
+	font-family: 'Chakra Petch', sans-serif; /* Use your custom font */
 }
 
 .line {
@@ -340,6 +339,7 @@ h2 {
 		-moz-transform: scale(0.6);
 		-ms-transform: scale(0.6,0.6);
 		transform: scale(0.6);
+
 	}
 	/* POSITIONING */
 	.depth-5 {
@@ -567,11 +567,16 @@ h2 {
 	/* HERO */
 	h1 { font-size: 120px; line-height: 120px; }
 
-	#countdown div span {font-size: 34px; line-height: 34px;}
+	#countdown div span {
+		font-size: 34px;
+		line-height: 34px;
+	}
 	
 	.sub-title { font-size: 20px; line-height: 20px; margin-top: 20px; }
 	/* TITLE & CONTACT */
-	.title { top: 15%;}
+	.title {
+		top: 15%;
+	}
 	.contact { bottom: 8%; }
 	.contact .icons { margin-bottom: 12px; }
 	/* SIZES */
@@ -924,57 +929,57 @@ h2 {
 
 @-webkit-keyframes wave {
   0% {
-    -webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    -moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
   }
 
   100% {
-    -webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    -moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
   }
 }
 
 @-moz-keyframes wave {
   0% {
-    -webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    -moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
   }
 
   100% {
-    -webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    -moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
   }
 }
 
 @-ms-keyframes wave {
   0% {
-    -webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    -moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
   }
 
   100% {
-    -webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    -moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
   }
 }
 
 @keyframes wave {
   0% {
-    -webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    -moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
-    transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-webkit-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	-moz-transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
+	transform: rotateZ(0deg) translate3d(0,10%,0) rotateZ(0deg);
   }
 
   100% {
-    -webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    -moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
-    transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-webkit-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	-moz-transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
+	transform: rotateZ(360deg) translate3d(0,10%,0) rotateZ(-360deg);
   }
 }
 
