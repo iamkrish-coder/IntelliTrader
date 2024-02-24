@@ -1,7 +1,9 @@
 // Example custom JavaScript code
-document.addEventListener('DOMContentLoaded', function () {
 
-    // Show countdown to Market Open
-
-
+$(document).ready(function () {
+	$("#BtnGetStarted").click(function () {
+		alert("Helo")
+		// Navigate to a new page
+		window.location.href = "https://google.com";
+	});
 });

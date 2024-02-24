@@ -14,7 +14,7 @@ function initializeSite() {
 
 	//OUTLINE DIMENSION AND CENTER
 	(function() {
-	    function centerInit(){
+		function centerInit(){
 
 			var sphereContent = $('.sphere'),
 				sphereHeight = sphereContent.height(),
@@ -33,9 +33,9 @@ function initializeSite() {
 				"margin-top" : heroTopMargin+"px"
 			});
 
-	    }
+		}
 
-	    $(document).ready(centerInit);
+		$(document).ready(centerInit);
 		$(window).resize(centerInit);
 	})();
 
@@ -58,10 +58,10 @@ $(window).load(function(){
 });
 
 $(document).ready(function() {
-    // Get the current date
-    var now = new Date();
+	// Get the current date
+	var now = new Date();
 
-    // Create a target date for market opening at 9:15 AM
+	// Create a target date for market opening at 9:15 AM
 	var targetDate;
 
 	var marketOpen = new Date();
@@ -98,16 +98,16 @@ $(document).ready(function() {
 		targetDate = formatDate(lastDateOfYear);
 	}
 
-    // Pass the calculated target date to the countdown plugin
-    $('#countdown').countdown({
+	// Pass the calculated target date to the countdown plugin
+	$('#countdown').countdown({
 		date: targetDate,
-        render: function(data) {
-            var el = $(this.el);
-            el.empty()
-                .append("<div>" + this.leadingZeros(data.days, 2) + " <span>days</span></div>")
-                .append("<div>" + this.leadingZeros(data.hours, 2) + " <span>hrs</span></div>")
-                .append("<div>" + this.leadingZeros(data.min, 2) + " <span>min</span></div>")
-                .append("<div>" + this.leadingZeros(data.sec, 2) + " <span>sec</span></div>");
-        }
-    });
+		render: function(data) {
+			var el = $(this.el);
+			el.empty()
+				.append("<div>" + this.leadingZeros(data.days, 2) + " <span>days</span></div>")
+				.append("<div>" + this.leadingZeros(data.hours, 2) + " <span>hrs</span></div>")
+				.append("<div>" + this.leadingZeros(data.min, 2) + " <span>min</span></div>")
+				.append("<div>" + this.leadingZeros(data.sec, 2) + " <span>sec</span></div>");
+		}
+	});
 });
