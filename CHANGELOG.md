@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.0.0...v1.1.0) (2024-02-20)
+
+
+### Features
+
+* Patch 1.1 for strategy 2.0 ([d798e07](https://github.com/iamkrish-coder/IntelliTrader/commit/d798e07b5c4065e3c84352badf3e9e263e073b9f))
+
 ## [1.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v0.9.0...v1.0.0) (2024-02-20)
 
 
