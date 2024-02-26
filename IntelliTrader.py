@@ -18,6 +18,7 @@ import glob
 import pandas as pd
 import logging
 
+
 class IntelliTrader:
     def __init__(self, secret_name, region_name):
         self.secret_name = secret_name
@@ -90,10 +91,10 @@ class IntelliTrader:
         exit()
 
     def init_modules(self, connection):
-        help_instance = Helper(connection)
-        fetch_instance = Fetch(connection)
-        orders_instance = Orders(connection)
-        ticker_instance = Ticker(connection)
+        help_instance      = Helper(connection)
+        fetch_instance     = Fetch(connection)
+        orders_instance    = Orders(connection)
+        ticker_instance    = Ticker(connection)
         indicator_instance = Indicator(connection)
 
         modules = {
@@ -154,5 +155,7 @@ def InitializeWebInterface(intelliTraderInstance):
 
 if __name__ == "__main__":
     intelliTraderInstance = IntelliTrader(SECRET_NAME, REGION_NAME)
-    # InitializeWebInterface(intelliTraderInstance)
+    # Website
+    # InitializeWebInterface(intelliTraderInstance) 
+    # Application
     InitializeCoreSystem(intelliTraderInstance)

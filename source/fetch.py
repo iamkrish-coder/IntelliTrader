@@ -1,10 +1,11 @@
 import os
 import logging
-from turtle import st
 import pandas as pd
 import datetime as dt
 import source.libraries.nse_data as nsedata
 import requests
+import calendar
+from turtle import st
 from source.helper import Helper
 from tkinter.tix import COLUMN
 from source.constants.constants import *
@@ -61,20 +62,119 @@ class Fetch:
             exit()
             
     # Fetch historical data for an exchange and symbol    
-    def fetch_ohlc(self, exchange, symbol, interval='5minute', duration=1):
+    def fetch_ohlc(self, exchange, symbol, interval='5minute', duration=3, depth=3):
+        
+        data = pd.DataFrame()
         if exchange and symbol and interval and duration:
             instrument_token = self.instrument_token_lookup(exchange, symbol)
-            data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))
-            Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
-            logging.info(f'OHLC fetched for exchange:symbol {exchange}:{symbol}')
-            return data
+            
+            if interval == 'day':
+                # Fetch Daily Data
+                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))   
+                
+                print(data)
+                exit()
+
+            elif interval == 'week':
+                # Fetch Weekly Data
+                interval = 'day'
+                duration = int(self.get_duration_week(depth))                
+                if duration:
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))    
+                    data = self.aggregate_to_weekly(data)
+                else:
+                    logging.warning("Duration is not specified.")
+                    
+            elif interval == 'month':
+                # Fetch Monthly Data
+                interval = 'day'
+                duration = int(self.get_duration_month(depth))
+                if duration:
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), interval))   
+                    data = self.aggregate_to_monthly(data)
+                else:
+                    logging.warning("Duration is not specified.")
+                    
+            else:
+                # Fetch Data Other Timeframes
+                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(int(duration)), dt.date.today(), interval)) 
+            
+            if data is None or data.empty:
+                logging.warning(f"No data found for exchange:symbol {exchange}:{symbol}")
+                exit()
+            else:    
+                Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
+                logging.info(f'OHLC fetched for exchange:symbol {exchange}:{symbol}')
+                return data
         else:
             logging.warning(f'Please verify that the exchange [{exchange}], symbol [{symbol}], interval[{interval}] and duration[{duration}] are present.')
             exit()
 
+    def get_duration_week(self, depth=1):
+        today = dt.date.today()
+        current_year = today.year
+        current_month = today.month
+        current_day = today.weekday()
+        
+        duration = 0
+        for i in range(0, depth):
+            days_in_week = 7
+            if i == 0:
+                days_in_current_week = today.weekday() + 1
+                duration = days_in_current_week
+            else:
+                duration += days_in_week
+
+        return duration
+
+        
+    def get_duration_month(self, depth=1):
+        today = dt.date.today()
+        current_year = today.year
+        current_month = today.month
+        current_day = today.day
+        
+        # Get the number of days in the current month
+        duration = 0
+        for i in range(1, depth):
+            month = 12 if current_month - i == 0 else current_month - i
+            days_in_month = calendar.monthrange(current_year, month )[1]
+            if i == 0:
+                weekends_in_month = (int(current_day) // 7) * 2
+                duration = current_day
+            else:
+                weekends_in_month = (int(days_in_month) // 7) * 2
+                duration += days_in_month
+        
+        return duration
+
+
+    def aggregate_to_weekly(self, daily_data):      
+        daily_data['date'] = pd.to_datetime(daily_data['date'])
+        daily_data.set_index('date', inplace=True)
+
+        if not isinstance(daily_data.index, pd.DatetimeIndex):
+            daily_data.index = pd.to_datetime(daily_data.index)
+
+        # Resample the daily data to weekly OHLC data
+        weekly_data = daily_data.resample('W').agg({'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'})
+        return weekly_data
+
+    def aggregate_to_monthly(self, daily_data):
+        daily_data['date'] = pd.to_datetime(daily_data['date'])
+        daily_data.set_index('date', inplace=True)
+
+        if not isinstance(daily_data.index, pd.DatetimeIndex):
+            daily_data.index = pd.to_datetime(daily_data.index)
+
+        # Resample the daily data to monthly OHLC data
+        monthly_data = daily_data.resample('M').agg({'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'})
+        return monthly_data
+
+
     # Fetch extended historical data for an exchange and symbol with limits   
-    def fetch_ohlc_extended(self, exchange, symbol, period_start, interval):
-        if exchange and symbol and period_start and interval:
+    def fetch_ohlc_extended(self, exchange, symbol, interval, duration=1):
+        if exchange and symbol and interval and duration:
             instrument_token = self.instrument_token_lookup(exchange, symbol)
             match interval:
                 case "minute":
@@ -96,12 +196,13 @@ class Fetch:
                 case _:
                     lookback_period_threshold = 1
 
-            start_date = dt.datetime.strptime(period_start, '%d-%m-%Y')
+            start_date = dt.date.today()-dt.timedelta(duration)
             end_date = dt.date.today()
+            
             data = pd.DataFrame(columns=['date', 'open', 'high', 'low', 'close', 'volume'])
             while True:
-                if start_date.date() >= (dt.date.today() - dt.timedelta(lookback_period_threshold)):
-                    data = data._append(pd.DataFrame(self.prop['kite'].historical_data(instrument_token, start_date, dt.date.today(), interval)), ignore_index=True)
+                if start_date.date() >= (end_date - dt.timedelta(lookback_period_threshold)):
+                    data = data._append(pd.DataFrame(self.prop['kite'].historical_data(instrument_token, start_date, end_date, interval)), ignore_index=True)
                     break
                 else:
                     end_date = start_date + dt.timedelta(lookback_period_threshold)
@@ -112,7 +213,7 @@ class Fetch:
             logging.info(f'OHLC fetched for exchange:symbol {exchange}:{symbol}')
             return data
         else:
-            logging.warning(f'Please verify that the echange [{exchange}], symbol [{symbol}], period_start[{period_start}] and interval[{interval}] are present.')
+            logging.warning(f'Please verify that the exchange [{exchange}], symbol [{symbol}], start_date[{start_date}] and interval[{interval}] are present.')
             exit()
 
     # Fetch quote
@@ -122,7 +223,7 @@ class Fetch:
             logging.info(f'Quote fetched for exchange:symbol {exchange}:{symbol}')          
             return quote
         else:
-            logging.warning(f'Please verify that the echange [{exchange}] and symbol [{symbol}] are present.')
+            logging.warning(f'Please verify that the exchange [{exchange}] and symbol [{symbol}] are present.')
             exit()
 
     # Fetch ltp 
@@ -132,7 +233,7 @@ class Fetch:
             logging.info(f'LTP fetched for exchange:symbol {exchange}:{symbol}')                    
             return last_traded_price
         else:
-            logging.warning(f'Please verify that the echange [{exchange}] and symbol [{symbol}] are present.')
+            logging.warning(f'Please verify that the exchange [{exchange}] and symbol [{symbol}] are present.')
             exit()
 
     # Fetch orders 

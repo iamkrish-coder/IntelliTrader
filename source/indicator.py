@@ -14,6 +14,8 @@ from source.indicators.adx import adx
 from source.indicators.stochastic import stochastic
 from source.indicators.renko import renko
 from source.indicators.bollinger_bands import bollinger_bands
+from source.indicators.truerange import truerange
+from source.indicators.average_truerange import average_truerange
 from source.helper import Helper
 
 class Indicator:
@@ -33,21 +35,25 @@ class Indicator:
             case 'supertrend':
                 return(self.option_supertrend(dataset, period))
             case 'macd':
-                return(self.option_macd(dataset))                
+                return(self.option_macd(dataset, period))                
             case 'atr':
-                return(self.option_atr(dataset))
+                return(self.option_atr(dataset, period))
             case 'williams_r':
-                return(self.option_williams_r(dataset))
+                return(self.option_williams_r(dataset, period))
             case 'vwap':
-                return(self.option_vwap(dataset))
+                return(self.option_vwap(dataset, period))
             case 'adx':
-                return(self.option_adx(dataset))
+                return(self.option_adx(dataset, period))
             case 'stochastic':
-                return(self.option_stochastic(dataset))
+                return(self.option_stochastic(dataset, period))
             case 'renko':
                 return(self.option_renko(dataset, period))
             case 'bollinger_bands':
-                return(self.option_bollinger_bands(dataset))               
+                return(self.option_bollinger_bands(dataset, period))
+            case 'truerange':
+                return(self.option_truerange(dataset, period))                 
+            case 'average_truerange':
+                return(self.option_average_truerange(dataset, period))                   
             case _:
                 self.invalid_option(dataset)
 
@@ -259,6 +265,36 @@ class Indicator:
         except Exception as e:
             logging.error("An exception occurred: {}".format(e))
 
+    # TRUE RANGE 
+    def option_truerange(self, dataset, period):
+        try:
+            truerange_values = {}
+            if dataset is not None:
+                # Calculate True Range
+                pdf = pd.DataFrame(dataset)
+                truerange_values = truerange(pdf)
+                return truerange_values
+            else:
+                logging.error("Failed to calculate True Range") 
+                return False
+        except Exception as e:
+            logging.error("An exception occurred: {}".format(e))
+
+    # ATR
+    def option_average_truerange(self, dataset, period):
+        try:
+            average_truerange_values = {}
+            if dataset is not None and not dataset.empty:
+                # Calculate Average Truerange
+                pdf = pd.DataFrame(dataset)
+                average_truerange_values = average_truerange(pdf, period)
+                return average_truerange_values
+            else:
+                logging.error("Failed to calculate Average True Range") 
+                return False
+        except Exception as e:
+            logging.error("An exception occurred: {}".format(e))
+            
     def invalid_option(self, dataset):
         # Invalid indicator option provided
         logging.warn("The indicator option provided is not valid") 

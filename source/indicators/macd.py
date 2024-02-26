@@ -1,8 +1,15 @@
 import pandas as pd
+import numpy as np
 
-def macd(dataset, short_period=12, long_period=26, signal_period=9):
+def macd(dataset, period=[12, 26, 9]):
+    
+    short_period = period[0] 
+    long_period = period[1]
+    signal_period = period[2]
+    
     # Check if dataset contains the required columns
     data = dataset['close'] if 'close' in dataset else None
+    
     if data is not None and not data.empty:
         # Check if data has sufficient length for MACD calculations
         if len(data) < long_period:
@@ -23,4 +30,11 @@ def macd(dataset, short_period=12, long_period=26, signal_period=9):
         # Calculate the MACD histogram
         macd_histogram = macd_line - signal_line
 
+        # Round the values to 2 decimal places
+        macd_line = np.round(macd_line, 2)
+        signal_line = np.round(signal_line, 2)
+        macd_histogram = np.round(macd_histogram, 2)
+
         return macd_line, signal_line, macd_histogram
+    else:
+        return None, None, None
