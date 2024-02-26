@@ -34,6 +34,7 @@
     <Compile Include="source\indicator.py" />
     <Compile Include="source\indicators\adx.py" />
     <Compile Include="source\indicators\atr.py" />
+    <Compile Include="source\indicators\average_truerange.py" />
     <Compile Include="source\indicators\bollinger_bands.py" />
     <Compile Include="source\indicators\ma.py" />
     <Compile Include="source\indicators\macd.py" />
@@ -41,6 +42,7 @@
     <Compile Include="source\indicators\rsi.py" />
     <Compile Include="source\indicators\stochastic.py" />
     <Compile Include="source\indicators\supertrend.py" />
+    <Compile Include="source\indicators\truerange.py" />
     <Compile Include="source\indicators\vwap.py" />
     <Compile Include="source\indicators\williams_r.py" />
     <Compile Include="source\libraries\nse_data.py" />
@@ -73,7 +75,6 @@
     <Content Include="source\indicators\__pycache__\williams_r.cpython-312.pyc" />
     <Content Include="source\libraries\__pycache__\backtest.cpython-312.pyc" />
     <Content Include="source\libraries\__pycache__\nse_data.cpython-312.pyc" />
-    <Content Include="source\static\css\styles.css" />
     <Content Include="source\static\css\fonts\parallax\fontawesome-webfont.eot" />
     <Content Include="source\static\css\fonts\parallax\fontawesome-webfont.svg" />
     <Content Include="source\static\css\fonts\parallax\fontawesome-webfont.ttf" />

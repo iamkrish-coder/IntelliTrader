@@ -41,6 +41,73 @@ class Shared:
     def get_global_market_sentiment(self):
         pass
     
+    def process_custom_candles(self, candles_custom):
+        ohlcv_custom_data = {}
+        # Today Candles
+        ohlcv_custom_data['open']                  = candles_custom.get('open', []).tolist()
+        ohlcv_custom_data['high']                  = candles_custom.get('high', []).tolist()
+        ohlcv_custom_data['low']                   = candles_custom.get('low', []).tolist()
+        ohlcv_custom_data['close']                 = candles_custom.get('close', []).tolist()
+        ohlcv_custom_data['volume']                = candles_custom.get('volume', []).tolist()
+
+        return ohlcv_custom_data
+
+
+    def process_current_candles(self, candles_current):
+        ohlcv_current_data = {}
+        # Today Candles
+        ohlcv_current_data['open']                  = candles_current.get('open', []).tolist()
+        ohlcv_current_data['high']                  = candles_current.get('high', []).tolist()
+        ohlcv_current_data['low']                   = candles_current.get('low', []).tolist()
+        ohlcv_current_data['close']                 = candles_current.get('close', []).tolist()
+        ohlcv_current_data['volume']                = candles_current.get('volume', []).tolist()
+            
+        return ohlcv_current_data
+    
+    def process_daily_candles(self, candles_daily):
+        ohlcv_daily_data = {}
+        # Daily Candles
+        ohlcv_daily_data['open']            = candles_daily.get('open', []).tolist()
+        ohlcv_daily_data['high']            = candles_daily.get('high', []).tolist()
+        ohlcv_daily_data['low']             = candles_daily.get('low', []).tolist()
+        ohlcv_daily_data['close']           = candles_daily.get('close', []).tolist()
+        ohlcv_daily_data['volume']          = candles_daily.get('volume', []).tolist()
+            
+        return ohlcv_daily_data
+    
+    def process_weekly_candles(self, candles_weekly):
+        ohlcv_weekly_data = {}
+        # Weekly Candles
+        ohlcv_weekly_data['open']           = candles_weekly.get('open', []).tolist()
+        ohlcv_weekly_data['high']           = candles_weekly.get('high', []).tolist()
+        ohlcv_weekly_data['low']            = candles_weekly.get('low', []).tolist()
+        ohlcv_weekly_data['close']          = candles_weekly.get('close', []).tolist()
+        ohlcv_weekly_data['volume']         = candles_weekly.get('volume', []).tolist()
+            
+        return ohlcv_weekly_data
+    
+    def process_monthly_candles(self, candles_monthly):
+        ohlcv_monthly_data = {}
+        # Monthly Candles
+        ohlcv_monthly_data['open']          = candles_monthly.get('open', []).tolist()
+        ohlcv_monthly_data['high']          = candles_monthly.get('high', []).tolist()
+        ohlcv_monthly_data['low']           = candles_monthly.get('low', []).tolist()
+        ohlcv_monthly_data['close']         = candles_monthly.get('close', []).tolist()
+        ohlcv_monthly_data['volume']        = candles_monthly.get('volume', []).tolist()
+            
+        return ohlcv_monthly_data
+
+
+
+
+
+
+
+
+
+
+
+
     def get_underlying_ltp(ticker):
         stock = ticker if ticker not in ('NIFTY', 'BANKNIFTY') else None
 
