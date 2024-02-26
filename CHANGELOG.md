@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.3.0...v1.4.0) (2024-02-26)
+
+
+### Features
+
+* Push project file changes to exclude deprecated folders ([ebc9be9](https://github.com/iamkrish-coder/IntelliTrader/commit/ebc9be9bc2999328079e3adb26aa93b16ab3a5ba))
+
 ## [1.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.2.0...v1.3.0) (2024-02-26)
 
 
