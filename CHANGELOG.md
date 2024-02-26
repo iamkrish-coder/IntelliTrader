@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.2.0...v1.3.0) (2024-02-26)
+
+
+### Features
+
+* Add landing page CSS ([f3be85b](https://github.com/iamkrish-coder/IntelliTrader/commit/f3be85b460a8e76eb91d4bab88a624901f6d9b6b))
+
 ## [1.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.1.0...v1.2.0) (2024-02-26)
 
 
