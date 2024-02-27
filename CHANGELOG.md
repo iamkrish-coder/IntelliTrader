@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.4.0...v1.5.0) (2024-02-27)
+
+
+### Features
+
+* Get Market Holidays ([96af418](https://github.com/iamkrish-coder/IntelliTrader/commit/96af41818c829e877d9c0ea52a24232004f2697a))
+
 ## [1.4.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.3.0...v1.4.0) (2024-02-26)
 
 
