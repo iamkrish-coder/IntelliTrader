@@ -24,6 +24,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include=".github\workflows\auto_issues.yml" />
     <Compile Include="IntelliTrader.py" />
     <Compile Include="source\aws\aws_secrets_manager.py" />
     <Compile Include="source\connection.py" />
