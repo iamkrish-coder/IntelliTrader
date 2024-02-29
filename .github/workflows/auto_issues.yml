@@ -19,12 +19,9 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         with:
           filename: .github/ISSUE_TEMPLATE/feature_request.md
-          title: ${{ contains(github.event.head_commit.message, 'feat') || contains(github.event.head_commit.message, 'refactor') ? 'Feature Request' : 'Bug' }}
+          title: 'Feature Request'
           assignees: iamkrish-coder
-          labels: ${{ contains(github.event.head_commit.message, 'feat') || contains(github.event.head_commit.message, 'refactor') ? 'enhancement' : 'bug' }}
+          labels: 'enhancement'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-permissions:
-  contents: read
-  issues: write
