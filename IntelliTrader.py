@@ -10,6 +10,7 @@ from source.constants.constants import *
 from source.aws.aws_secrets_manager import get_secret
 from source.strategies import strategy_manager
 from flask import Flask, render_template, request, redirect, session
+import webbrowser
 
 import json
 import datetime
@@ -149,13 +150,22 @@ def InitializeWebInterface(intelliTraderInstance):
             InitializeCoreSystem(intelliTraderInstance) 
             return 'Core function executed successfully'
 
-    # Run the app
-    app.run(debug=True)
+    # Define the host and port for the Flask application
+    host = '127.0.0.1'
+    port = 5000
+
+    # Open the browser automatically with the Flask application URL
+    url = f'http://{host}:{port}/'
+    webbrowser.open(url)
+
+    # Run the Flask application
+    app.run(host=host, port=port)
     
 
 if __name__ == "__main__":
     intelliTraderInstance = IntelliTrader(SECRET_NAME, REGION_NAME)
     # Website
     InitializeWebInterface(intelliTraderInstance) 
+    
     # Application
     InitializeCoreSystem(intelliTraderInstance)
