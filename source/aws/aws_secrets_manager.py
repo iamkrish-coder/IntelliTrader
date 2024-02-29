@@ -18,7 +18,7 @@ def get_secret(secret, region):
     try:
         response = client.get_secret_value(SecretId=secret)
         secret_data = response['SecretString']
-        logging.info(f"Retrieved secret: {secret_data}")
+        logging.info(f"Retrieving Secret Keys From AWS Secrets Manager ...COMPLETE!")
         return secret_data
     except ClientError as e:
         logging.error(f"Error retrieving secret: {e}")

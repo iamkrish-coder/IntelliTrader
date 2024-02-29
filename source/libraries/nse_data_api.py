@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 from io import BytesIO
 
-class NSE():
+class NSEDataApi():
     def __init__(self, timeout=10):
         self.base_url = 'https://www.nseindia.com'
         self.session = requests.sessions.Session()

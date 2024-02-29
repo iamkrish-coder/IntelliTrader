@@ -36,12 +36,12 @@ class Helper:
         # execution_time = end_time - start_time
         # logging.info(f"Execution time: {execution_time} seconds")
    
-    def format_json_output_print(self, json_data, label, prettier = False, indent=4):
+    def format_json_output_print(self, dictionary_data, label, prettier=False, indent=4):
         """
         Formats JSON data into a human-readable string.
 
         Parameters:
-        - json_data (str): JSON data as a string.
+        - dictionary_data (str): JSON data as a string.
         - indent (int): Number of spaces to use for indentation (default is 4).
 
         Returns:
@@ -49,13 +49,15 @@ class Helper:
         """
         
         try:
+            
             # Convert the dictionary back to a formatted JSON string
             if prettier:
-                formatted_json = json.dumps(json_data, indent=indent)
+                formatted_json = json.dumps(dictionary_data, indent=indent)
             else:
-                formatted_json = json_data
+                formatted_json = dictionary_data
                 
             print(f"\n ******** {label} ********\n")
             print(formatted_json)
+
         except Exception as e:
-            return f"Error occurred while formatting JSON data: {str(e)}"
+            print(f"Error occurred while formatting data: {str(e)}")

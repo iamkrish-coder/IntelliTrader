@@ -31,9 +31,10 @@ class StrategyManager:
                     market_trade        = configuration.get("market_trade")
                     market_trade_params = configuration.get("market_trade_params") if market_trade else None
                     strategy_params     = configuration.get(f"strategy_{strategy_enum.value}_params")
+                    common_params       = configuration.get(f"common_params")
 
                     # Instantiate Strategy Method
-                    strategy_instance.execute_live_strategy(live_trade_params, market_trade_params, strategy_params)
+                    strategy_instance.execute_live_strategy(live_trade_params, market_trade_params, strategy_params, common_params)
                     
                 elif virtual_trade == True and live_trade == False:
 
@@ -42,9 +43,10 @@ class StrategyManager:
                     market_trade         = configuration.get("market_trade")
                     market_trade_params  = configuration.get("market_trade_params") if market_trade else None
                     strategy_params      = configuration.get(f"strategy_{strategy_enum.value}_params")
+                    common_params       = configuration.get(f"common_params")
                     
                     # Instantiate Strategy Method
-                    strategy_instance.execute_virtual_strategy(virtual_trade_params, market_trade_params, strategy_params)      
+                    strategy_instance.execute_virtual_strategy(virtual_trade_params, market_trade_params, strategy_params, common_params)
                     
                 else:
                     logging.info("No Virtual trade or Live configuration found.")       

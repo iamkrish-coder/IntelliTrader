@@ -1,10 +1,10 @@
 from queue import Empty
 import requests
 from bs4 import BeautifulSoup
+import datetime as dt
 
-def fetch_market_holidays(url):
+def market_holidays(url):
     # Send a GET request to the URL
-    
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
     }
@@ -26,13 +26,14 @@ def fetch_market_holidays(url):
                 columns = row.find_all('td')
                 if columns:
                     holiday_weekday = columns[0].text.strip()
-                    holiday_date = columns[1].text.strip()
+                    holiday_date = columns[1].text.strip() 
                     holiday_description = columns[2].text.strip()
+                    holiday_date = dt.datetime.strptime(holiday_date, '%d %b %Y').date()
+
                     holidays.append({'date': holiday_date, 'description': holiday_description})
                 else:
                     break
                 
-            
             return holidays
         else:
             print("Holiday calendar data not found on the webpage.")
