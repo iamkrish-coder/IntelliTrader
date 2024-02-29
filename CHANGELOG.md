@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.5.0...v1.6.0) (2024-02-29)
+
+
+### Features
+
+* open browser automatically when I start the application ([8919be3](https://github.com/iamkrish-coder/IntelliTrader/commit/8919be3ce347987c5cb3f20d0f639d9eae3f9166))
+
 ## [1.5.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.4.0...v1.5.0) (2024-02-27)
 
 
