@@ -31,9 +31,9 @@ def macd(dataset, period=[12, 26, 9]):
         macd_histogram = macd_line - signal_line
 
         # Round the values to 2 decimal places
-        macd_line = np.round(macd_line, 2)
-        signal_line = np.round(signal_line, 2)
-        macd_histogram = np.round(macd_histogram, 2)
+        macd_line = np.round(macd_line, 2).tolist()
+        signal_line = np.round(signal_line, 2).tolist()
+        macd_histogram = np.round(macd_histogram, 2).tolist()
 
         return macd_line, signal_line, macd_histogram
     else:

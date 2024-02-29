@@ -69,16 +69,16 @@ class Connection:
                 initial_token = url_parts[1].split('&')[0]
                 token_str = str(initial_token)
                 Helper().write_text_output('request_token' + '_' + auth_date + '.txt', token_str)
-                logging.info("Kite request_token generated successfully")
+                logging.info("Generate Kite Request Token ...COMPLETE!")
             else:
-                logging.error("Kite 'request_token=' not found in the URL")
+                logging.error("Kite Request Token Not Found")
 
             # Access token generation
             data = kite.generate_session(initial_token, api_secret=secret_key)
             access_token = data['access_token']
             token_str = str(access_token)
             Helper().write_text_output('access_token' + '_' + auth_date + '.txt', token_str)
-            logging.info("Kite access_token generated successfully")
+            logging.info("Generate Kite Access Token ...COMPLETE!")
 
             # Kite Ticker Subscription
             kite_ticker = KiteTicker(api_key, access_token)

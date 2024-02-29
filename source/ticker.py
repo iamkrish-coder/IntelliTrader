@@ -5,8 +5,6 @@ import datetime as dt
 import time
 from source.helper import Helper
 
-logging.basicConfig(level=logging.DEBUG)
-
 class Ticker:
     def __init__(self, params):
         self.prop = params

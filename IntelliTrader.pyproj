@@ -45,7 +45,8 @@
     <Compile Include="source\indicators\truerange.py" />
     <Compile Include="source\indicators\vwap.py" />
     <Compile Include="source\indicators\williams_r.py" />
-    <Compile Include="source\libraries\nse_data.py" />
+    <Compile Include="source\libraries\nse_data_api.py" />
+    <Compile Include="source\libraries\market_holidays_api.py" />
     <Compile Include="source\modify.py" />
     <Compile Include="source\orders.py" />
     <Compile Include="source\strategies\base_strategy.py" />

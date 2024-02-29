@@ -5,6 +5,7 @@ import numpy as np
 import datetime as dt
 import yfinance as yf
 import logging
+import calendar
 from source.constants.constants import *
 from source.enumerations.enums import *
 
@@ -41,21 +42,9 @@ class Shared:
     def get_global_market_sentiment(self):
         pass
     
-    def process_custom_candles(self, candles_custom):
-        ohlcv_custom_data = {}
-        # Today Candles
-        ohlcv_custom_data['open']                  = candles_custom.get('open', []).tolist()
-        ohlcv_custom_data['high']                  = candles_custom.get('high', []).tolist()
-        ohlcv_custom_data['low']                   = candles_custom.get('low', []).tolist()
-        ohlcv_custom_data['close']                 = candles_custom.get('close', []).tolist()
-        ohlcv_custom_data['volume']                = candles_custom.get('volume', []).tolist()
-
-        return ohlcv_custom_data
-
-
     def process_current_candles(self, candles_current):
         ohlcv_current_data = {}
-        # Today Candles
+        # Current Interval Candles
         ohlcv_current_data['open']                  = candles_current.get('open', []).tolist()
         ohlcv_current_data['high']                  = candles_current.get('high', []).tolist()
         ohlcv_current_data['low']                   = candles_current.get('low', []).tolist()
@@ -97,11 +86,56 @@ class Shared:
             
         return ohlcv_monthly_data
 
+    def process_same_day_candles(self, candles_same_day):
+        ohlcv_same_day_data = {}
+        # Same Day Candles
+        ohlcv_same_day_data['open']                  = candles_same_day.get('open', []).tolist()
+        ohlcv_same_day_data['high']                  = candles_same_day.get('high', []).tolist()
+        ohlcv_same_day_data['low']                   = candles_same_day.get('low', []).tolist()
+        ohlcv_same_day_data['close']                 = candles_same_day.get('close', []).tolist()
+        ohlcv_same_day_data['volume']                = candles_same_day.get('volume', []).tolist()
+
+        return ohlcv_same_day_data
 
 
+    
+    def get_duration_week(self, depth=1):
+        today = dt.date.today()
+        current_year = today.year
+        current_month = today.month
+        current_day = today.weekday()
+        
+        duration = 0
+        for i in range(0, depth):
+            days_in_week = 7
+            if i == 0:
+                days_in_current_week = today.weekday() + 1
+                duration = days_in_current_week
+            else:
+                duration += days_in_week
 
+        return duration
 
-
+        
+    def get_duration_month(self, depth=1):
+        today = dt.date.today()
+        current_year = today.year
+        current_month = today.month
+        current_day = today.day
+        
+        # Get the number of days in the current month
+        duration = 0
+        for i in range(1, depth):
+            month = 12 if current_month - i == 0 else current_month - i
+            days_in_month = calendar.monthrange(current_year, month )[1]
+            if i == 0:
+                weekends_in_month = (int(current_day) // 7) * 2
+                duration = current_day
+            else:
+                weekends_in_month = (int(days_in_month) // 7) * 2
+                duration += days_in_month
+        
+        return duration
 
 
 

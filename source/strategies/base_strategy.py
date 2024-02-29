@@ -9,11 +9,11 @@ class BaseStrategy(ABC, Shared):
         self.modules = modules
         
     @abstractmethod
-    def execute_live_strategy(self, virtual_parameters):
+    def execute_live_strategy(self, live_parameters, market_parameters, strategy_parameters, common_parameters):
         raise NotImplementedError("Subclasses must implement this method")
 
     @abstractmethod
-    def execute_virtual_strategy(self, virtual_parameters, market_parameters, strategy_parameters):
+    def execute_virtual_strategy(self, virtual_parameters, market_parameters, strategy_parameters, common_parameters):
         raise NotImplementedError("Subclasses must implement this method")
     
     @abstractmethod

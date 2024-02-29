@@ -1,6 +1,7 @@
 # strategies/options_strategy.py
 from ast import arg
 from ctypes import alignment
+from msilib.schema import CustomAction
 from numpy import histogram
 from source.indicators.macd import macd
 from source.strategies.base_strategy import BaseStrategy
@@ -12,33 +13,34 @@ import pandas as pd
 import time
 import json
 import logging
+import asyncio
 
 class StockDelivery(BaseStrategy):
     def __init__(self, connection, modules):
-        super().__init__(connection, modules)
-        
-    def execute_live_strategy(self, v_args, m_args, s_args):
+        super().__init__(connection, modules) 
+
+    def execute_live_strategy(self, v_args, m_args, s_args, c_args):
         pass
 
-    def execute_virtual_strategy(self, v_args, m_args, s_args):
+    def execute_virtual_strategy(self, v_args, m_args, s_args, c_args):
         start_time = time.time()      
         
         ###########################################
         # Declare variables
         ###########################################
 
-        instruments_list = []
-        watchlist_stocks = []
-        local_indices    = []
-        global_indices   = []
-        stock_alerts     = []
+        instruments_list   = []
+        watchlist_stocks   = []
+        local_indices      = []
+        global_indices     = []
+        stock_alerts       = []
         
-        stock_data             = {}
-        indicator_data         = {}
-        ohlcv_today_data       = {}
-        ohlcv_daily_data       = {}
-        ohlcv_weekly_data      = {}
-        ohlcv_monthly_data     = {}
+        stock_data         = {}
+        indicator_data     = {}
+        ohlcv_today_data   = {}
+        ohlcv_daily_data   = {}
+        ohlcv_weekly_data  = {}
+        ohlcv_monthly_data = {}
         
         
         ###########################################
@@ -46,29 +48,33 @@ class StockDelivery(BaseStrategy):
         ###########################################
         
         # Virtual Trade Parameters
-        symbol                       = v_args.get('symbol')
-        exchange                     = v_args.get('exchange')
-        historical_data_subscription = v_args.get('historical_data_subscription')
-        interval                     = v_args.get('interval')    
-        duration                     = int(v_args.get('duration', 0))  # Default value is 0 if 'duration' is missing
-        max_allocation               = v_args.get('max_allocation')
-        quantity                     = v_args.get('quantity')
-        tpsl_method                  = v_args.get('tpsl_method')
-        target                       = v_args.get('target')
-        stop_loss                    = v_args.get('stop_loss')
-        trail_profit                 = v_args.get('trail_profit')
-        trail_stop_loss              = v_args.get('trail_stop_loss')
+        self.symbol                       = v_args.get('symbol')
+        self.exchange                     = v_args.get('exchange')
+        self.historical_data_subscription = v_args.get('historical_data_subscription')
+        max_allocation                    = v_args.get('max_allocation')
+        quantity                          = v_args.get('quantity')
+        tpsl_method                       = v_args.get('tpsl_method')
+        target                            = v_args.get('target')
+        stop_loss                         = v_args.get('stop_loss')
+        trail_profit                      = v_args.get('trail_profit')
+        trail_stop_loss                   = v_args.get('trail_stop_loss')
 
         # Multi Timeframe
-        multi_timeframe              = m_args.get('multi_timeframe', {})
-        daily_interval               = multi_timeframe.get('daily_interval')
-        weekly_interval              = multi_timeframe.get('weekly_interval')
-        monthly_interval             = multi_timeframe.get('monthly_interval')
+        multi_timeframe = m_args.get('multi_timeframe', {})
+        self.DAILY      = multi_timeframe.get('daily_interval')
+        self.WEEKLY     = multi_timeframe.get('weekly_interval')
+        self.MONTHLY    = multi_timeframe.get('monthly_interval')
+
+        # Strategy Parameters
+        self.TIMEFRAME = s_args.get('timeframe')
 
         # Market Parameters
         market_params  = m_args.get('market_params')
         market_indices = m_args.get('market_indices')
 
+        # Common Parameters
+        prettier = c_args.get('prettier_print')
+        
         ###########################################
         # Market Trend Study
         ###########################################  
@@ -81,8 +87,8 @@ class StockDelivery(BaseStrategy):
         # Get Live Data
         ###########################################
 
-        stock_basket     = self.get_stock_basket(exchange, symbol)
-        instruments_list = self.modules['fetch'].fetch_instruments(exchange)  
+        stock_basket     = self.get_stock_basket(self.exchange, self.symbol)
+        instruments_list = self.modules['fetch'].fetch_instruments(self.exchange)  
         watchlist_stocks = [instrument for instrument in instruments_list if instrument['tradingsymbol'] in stock_basket]
 
         # Loop through stocks
@@ -91,50 +97,36 @@ class StockDelivery(BaseStrategy):
             if self.trading_symbol is None:
                 continue
     
-            instrument_quote = self.modules['fetch'].fetch_quote(exchange, self.trading_symbol)
-    
-            # Extract relevant information and store it
-            stock_data[self.trading_symbol] = {
-                'summary_data': stock,
-                'quote_data': instrument_quote
-            }
+            self.instrument_token = self.modules['fetch'].instrument_token_lookup(self.exchange, self.trading_symbol)
 
-            # Get Current data
-            if historical_data_subscription:
-
-                candles_same_day_5     = self.modules['fetch'].fetch_ohlc(exchange, self.trading_symbol, '5minute', 2)
-                candles_same_day_15    = self.modules['fetch'].fetch_ohlc(exchange, self.trading_symbol, '15minute', 2)               
-                candles_current        = self.modules['fetch'].fetch_ohlc(exchange, self.trading_symbol, interval, duration)
-                candles_daily          = self.modules['fetch'].fetch_ohlc(exchange, self.trading_symbol, daily_interval, 5)
-                candles_weekly         = self.modules['fetch'].fetch_ohlc(exchange, self.trading_symbol, weekly_interval, duration)
-                candles_monthly        = self.modules['fetch'].fetch_ohlc(exchange, self.trading_symbol, monthly_interval, duration)                   
-            else:
-                pass
-
-            print(candles_daily)
-            exit()
+            # # Extract relevant information and store it
+            # instrument_quote = self.modules['fetch'].fetch_quote(self.exchange, self.trading_symbol)           
+            # stock_data[self.trading_symbol] = {
+            #     'token_data': self.instrument_token,
+            #     'quote_data': instrument_quote,
+            #     'summary_data': stock
+            # }
             
-
-            # Process Indicator and Candle Data
-            ohlcv_same_day_5_data    = self.process_same_day_candles(candles_same_day_5)
-            ohlcv_same_day_15_data   = self.process_same_day_candles(candles_same_day_15)
-            ohlcv_current_data     = self.process_current_candles(candles_current)
-            ohlcv_daily_data       = self.process_daily_candles(candles_daily)
-            ohlcv_weekly_data      = self.process_weekly_candles(candles_weekly)
-            ohlcv_monthly_data     = self.process_monthly_candles(candles_monthly)
-            
-
+            candles = asyncio.run(self.get_candlestick_data())
+            candles_current, candles_daily, candles_weekly, candles_monthly, candles_same_day_5m, candles_same_day_15m = candles
 
             # Display Output of Candle Data <Debug> 
-            prettier = False
+            # self.modules['help'].format_json_output_print(candles_current, "Today", prettier)
+            # self.modules['help'].format_json_output_print(candles_daily, "Daily", prettier)
+            # self.modules['help'].format_json_output_print(candles_weekly, "Weekly", prettier)
+            # self.modules['help'].format_json_output_print(candles_monthly, "Monthly", prettier)
+            # self.modules['help'].format_json_output_print(candles_same_day_5m, "Same Day 5M", prettier)
+            # self.modules['help'].format_json_output_print(candles_same_day_15m, "Same Day 15M", prettier)
             
-            # self.modules['help'].format_json_output_print(ohlcv_today_data, "Today", prettier)
-            # self.modules['help'].format_json_output_print(ohlcv_daily_data, "Daily", prettier)
-            # self.modules['help'].format_json_output_print(ohlcv_weekly_data, "Weekly", prettier)
-            # self.modules['help'].format_json_output_print(ohlcv_monthly_data, "Monthly", prettier)
+            # Candlestick Processed Data
+            ohlcv_current_data      = self.process_current_candles(candles_current)
+            ohlcv_daily_data        = self.process_daily_candles(candles_daily)
+            ohlcv_weekly_data       = self.process_weekly_candles(candles_weekly)
+            ohlcv_monthly_data      = self.process_monthly_candles(candles_monthly)
+            ohlcv_same_day_5m_data  = self.process_same_day_candles(candles_same_day_5m)
+            ohlcv_same_day_15m_data = self.process_same_day_candles(candles_same_day_15m)
 
-
-            # Indicators values
+            # Indicators Data
             indicator_data['rsi']               = self.get_indicator_values('rsi', ohlcv_current_data, RSI.RSI_8.value)
             indicator_data['wma5']              = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_5.value)
             indicator_data['wma20']             = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_21.value)
@@ -145,7 +137,7 @@ class StockDelivery(BaseStrategy):
             
 
             # Evaluate Strategy conditions based on obtained Candle and Indicator Data
-            conditions_met = self.evaluate_strategy_conditions(ohlcv_same_day_5_data, ohlcv_same_day_15_data, ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, indicator_data)
+            conditions_met = self.evaluate_strategy_conditions(ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data)
             if conditions_met:
                 # Check Secondary Conditions
                 print(f"Conditions Met: Stock Alert: {self.trading_symbol}")
@@ -154,28 +146,55 @@ class StockDelivery(BaseStrategy):
                 continue
 
         print(stock_alerts)
+        
+        # Secondary condition check - 3M / 1M - Live Streaming Data
+        # Candle Green 
+        # Candle Red - Wait
+        
+        # All condition met?  Buy Signal
+        # Code to Buy - Limit Order / Market Order / Qty / Capital Allocation
+        # Monitor Trade - Profit / Trail Profit / Trail Stop Loss -> main CORE
+        # Stop Loss Hit / Profit Hit / Trailing Profit Hit -> Sell Signal -> Execute Sell Trade
+
+        # Service in python - To Run and Monitor Software Application
+        
+        # Cloud - AWS Service - Migrate AWS 
+        # Testing AWS 
+
         end_time = time.time()
         execution_time = end_time - start_time
         logging.info(f"Execution time: {execution_time} seconds")
+
+
+    async def get_candlestick_data(self):
+      """
+      Asynchronously fetches OHLC data for different timeframes.
+      """
+      if self.historical_data_subscription:
+        tasks = [
+          self.fetch_ohlc_async(self.exchange, self.trading_symbol, self.instrument_token, self.timeframe)
+          for self.timeframe in [self.TIMEFRAME, self.DAILY, self.WEEKLY, self.MONTHLY, MINUTE_5M, MINUTE_15M]
+        ]
+        candles = await asyncio.gather(*tasks)
+        return candles
+      
+      else:
+        pass
+
+    async def fetch_ohlc_async(self, exchange, symbol, token, timeframe):
+      """
+      Fetches OHLC data asynchronously for the given timeframe.
+      """
+      loop = asyncio.get_running_loop()  # Get the current event loop
+      candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, exchange, symbol, token, timeframe)
+      return candles
 
 
     ###########################################
     # Evaluate Strategy Conditions
     ###########################################
         
-    def evaluate_strategy_conditions(self, ohlcv_same_day_5_data, ohlcv_same_day_15_data, ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, indicator_data):
-
-        open_5                    = ohlcv_same_day_5_data.get('open')
-        high_5                    = ohlcv_same_day_5_data.get('high')
-        low_5                     = ohlcv_same_day_5_data.get('low')
-        close_5                   = ohlcv_same_day_5_data.get('close')
-        volume_5                  = ohlcv_same_day_5_data.get('volume')
-        
-        open_15                   = ohlcv_same_day_15_data.get('open')
-        high_15                   = ohlcv_same_day_15_data.get('high')
-        low_15                    = ohlcv_same_day_15_data.get('low')
-        close_15                  = ohlcv_same_day_15_data.get('close')
-        volume_15                 = ohlcv_same_day_15_data.get('volume')
+    def evaluate_strategy_conditions(self, ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data):
 
         open                      = ohlcv_current_data.get('open')
         high                      = ohlcv_current_data.get('high')
@@ -201,6 +220,18 @@ class StockDelivery(BaseStrategy):
         close_monthly             = ohlcv_monthly_data.get('close')
         volume_monthly            = ohlcv_monthly_data.get('volume')        
 
+        open_5m                   = ohlcv_same_day_5m_data.get('open')
+        high_5m                   = ohlcv_same_day_5m_data.get('high')
+        low_5m                    = ohlcv_same_day_5m_data.get('low')
+        close_5m                  = ohlcv_same_day_5m_data.get('close')
+        volume_5m                 = ohlcv_same_day_5m_data.get('volume')
+        
+        open_15m                  = ohlcv_same_day_15m_data.get('open')
+        high_15m                  = ohlcv_same_day_15m_data.get('high')
+        low_15m                   = ohlcv_same_day_15m_data.get('low')
+        close_15m                 = ohlcv_same_day_15m_data.get('close')
+        volume_15m                = ohlcv_same_day_15m_data.get('volume')
+
         rsi                       = indicator_data.get('rsi')
         wma5                      = indicator_data.get('wma5')
         wma20                     = indicator_data.get('wma20')
@@ -212,58 +243,43 @@ class StockDelivery(BaseStrategy):
         macd_line                 = macd['macd_line']
         macd_signal               = macd['signal_line']
         
+
         # Define strategy conditions
 
         try:
             conditions = {
-                'condition1': rsi[-1] > 55,
-                'condition2': close[-1] > (open[-1] * 1.01),
-                'condition3': volume[-1] > 200000,
-                'condition4': close[-1] > 2000,
-                'condition5': close[-1] > close_daily[-2],                                           
-                'condition6': truerange[-1] > average_truerange[-1],
-                'condition7': truerange[-1] > 8,
-                'condition8': close[-1] > close_weekly[-2],                                            
-                'condition9': close[-1] > close_monthly[-2], 
-                'condition10': close_weekly[-1] > close_weekly[-2],                                                      
-                'condition11': close_monthly[-1] > close_monthly[-2],
-                'condition12': close[-1] > ((open[-1] + high_daily[-2] + close_daily[-2]) / 3),
-                'condition13': macd_histogram[-1] > 0,
-                'condition14': macd_line[-1] > macd_signal[-1],
-                'condition15': close[-1] > high_daily[-2],
-                'condition16': close[-1] > open_5[0]
-                # 'condition17': close[-1] > supertrend[-1],
-                # 'condition18': close[-2] <= supertrend[-2],
-                # 'condition19': rsi[-1] > 60,
-                # 'condition20': rsi[-2] <= 60,
-                # 'condition21': wma5[-1] > wma20[-1]
+                '1': rsi[-1] > 55,
+                # '2': close[-1] > (open[-1] * 1.01),
+                # '3': volume[-1] > 200000,
+                # '4': close[-1] > 2000,
+                # '5': close[-1] > close_daily[-2],                    
+                # '6': truerange[-1] > average_truerange[-1],
+                # '7': truerange[-1] > 8,
+                # '8': close[-1] > close_weekly[-2],                                   
+                # '9': close[-1] > close_monthly[-2], 
+                # '10': close_weekly[-1] > close_weekly[-2],                                                    
+                # '11': close_monthly[-1] > close_monthly[-2],
+                # '12': close[-1] > ((open[-1] + high_daily[-2] + close_daily[-2]) / 3),
+                # '13': macd_histogram[-1] > 0,
+                # '14': macd_line[-1] > macd_signal[-1],
+                # '15': close[-1] > high_daily[-2],
+                # '16': close[-1] > open_5m[0],
+                # '17': close[-1] > supertrend[-1],
+                # '18': close[-2] <= supertrend[-2],
+                # '19': rsi[-1] > 60,
+                # '20': rsi[-2] <= 60,
+                # '21': wma5[-1] > wma20[-1]
             }
         except Exception as e:
-            logging.FATAL(f"Fatal Error: {e}")
-            
-        
-
-
-        # Secondary condition check - 3M / 1M
-        # Candle Green 
-        # Candle Red - Wait
-        
-        # All condition met?  Buy Signal
-        # Code to Buy - Limit Order / Market Order / Qty / Capital Allocation
-        # Monitor Trade - Profit / Trail Profit / Trail Stop Loss -> main CORE
-        # Stop Loss Hit / Profit Hit / Trailing Profit Hit -> Sell Signal -> Execute Sell Trade
-
-        # Service in python - To Run and Monitor Software Application
-        
-        # Cloud - AWS Service - Migrate AWS 
-        # Testing AWS 
+            logging.ERROR(f"Error: {e}")
 
         
-        # Log and display each condition check
-        print(f"\nEvaluating Strategy: {self.trading_symbol}\n")
+        # Log and display each C check
+        print(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}\n")
         for condition_id, condition_check in conditions.items():
-            logging.info(f"{condition_id}: {condition_check}")
+            logging.info(f":::::::Condition::::::: {condition_id} Status: {condition_check}")
 
+        print()
         # Final Strategy Condition
         if all(conditions.values()):
             return True

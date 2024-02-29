@@ -19,6 +19,7 @@ import glob
 import pandas as pd
 import logging
 
+logging.basicConfig(level=logging.INFO)
 
 class IntelliTrader:
     def __init__(self, secret_name, region_name):
@@ -62,14 +63,14 @@ class IntelliTrader:
         kite = KiteConnect(api_key)
         kite_ticker = KiteTicker(api_key, access_token)
         kite.set_access_token(access_token)
-        logging.info("Successfully connected to Kite APIs using cached credentials.")
+        logging.info("Connection to Kite Connect API ...COMPLETE!")
         return kite, kite_ticker, access_token
 
     def establish_new_connection(self):
         connect = Connection(self.secret_keys)
         kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker)
         kite.set_access_token(access_token)
-        logging.info("Successfully initiated a new connection to Kite APIs.")
+        logging.info("New Connection Request to Kite Connect API ...COMPLETE!")       
         return kite, kite_ticker, access_token
 
     def remove_old_tokens(self):
@@ -108,9 +109,9 @@ class IntelliTrader:
         return modules
 
 
-def InitializeCoreSystem(intelliTraderInstance):
-    # Create an instance of IntelliTrader
-    app = IntelliTrader(SECRET_NAME, REGION_NAME)
+def InitializeCoreSystem(_IntelliTrader_):
+    # Create app instance
+    app = _IntelliTrader_
 
     # Establish connection to the broker
     connection = app.connection_to_broker()
@@ -128,14 +129,15 @@ def InitializeCoreSystem(intelliTraderInstance):
     strategy_manager_instance.initialize_strategy(configuration)
 
 
-def InitializeWebInterface(intelliTraderInstance):
+def InitializeWebInterface(_IntelliTrader_):
     # Create a Flask app instance
+    app = _IntelliTrader_
     app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), TEMPLATES_PATH),
                 static_url_path='/source/static',
                 static_folder=os.path.join(os.path.dirname(__file__), STATIC_FILE_PATH))
     
     # Sample settings data (you'll replace this with your actual settings)
-    configuration = intelliTraderInstance.read_input_configuration()
+    configuration = app.read_input_configuration()
 
     # Define the route for the index page
     @app.route('/')
@@ -147,7 +149,7 @@ def InitializeWebInterface(intelliTraderInstance):
     def initialize_core():
         if request.method == 'POST':
             # Call your backend function here
-            InitializeCoreSystem(intelliTraderInstance) 
+            InitializeCoreSystem(app) 
             return 'Core function executed successfully'
 
     # Define the host and port for the Flask application
@@ -163,9 +165,9 @@ def InitializeWebInterface(intelliTraderInstance):
     
 
 if __name__ == "__main__":
-    intelliTraderInstance = IntelliTrader(SECRET_NAME, REGION_NAME)
+    _IntelliTrader_ = IntelliTrader(SECRET_NAME, REGION_NAME)
     # Website
-    InitializeWebInterface(intelliTraderInstance) 
+    # InitializeWebInterface(_IntelliTrader_) 
     
     # Application
-    InitializeCoreSystem(intelliTraderInstance)
+    InitializeCoreSystem(_IntelliTrader_)

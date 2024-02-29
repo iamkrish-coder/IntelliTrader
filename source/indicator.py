@@ -155,7 +155,7 @@ class Indicator:
     def option_atr(self, dataset, period):
         try:
             atr_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate ATR
                 pdf = pd.DataFrame(dataset)
                 atr_values = atr(pdf, period)
@@ -170,7 +170,7 @@ class Indicator:
     def option_williams_r(self, dataset, period):
         try:
             williams_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate Williams %R
                 pdf = pd.DataFrame(dataset)
                 williams_values = williams_r(pdf, period)
@@ -185,7 +185,7 @@ class Indicator:
     def option_vwap(self, dataset, period):
         try:
             vwap_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate VWAP
                 pdf = pd.DataFrame(dataset)
                 vwap_values = vwap(pdf, period) 
@@ -200,7 +200,7 @@ class Indicator:
     def option_adx(self, dataset, period):
         try:
             adx_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate ADX
                 pdf = pd.DataFrame(dataset)
                 adx_values = adx(pdf, period) 
@@ -215,7 +215,7 @@ class Indicator:
     def option_stochastic(self, dataset, period):
         try:
             stochastic_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate Stochastic
                 pdf = pd.DataFrame(dataset)
                 stochastic_line_k, stochastic_line_d = stochastic(pdf, period)
@@ -234,7 +234,7 @@ class Indicator:
     def option_renko(self, dataset, period):
         try:
             renko_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate Renko Bricks
                 pdf = pd.DataFrame(dataset)
                 renko_values = renko(pdf, period)  
@@ -249,7 +249,7 @@ class Indicator:
     def option_bollinger_bands(self, dataset, period):
         try:
             bollinger_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate Bollinger Bands
                 pdf = pd.DataFrame(dataset)
                 upper_band, middle_band, lower_band = bollinger_bands(pdf, period)
@@ -272,7 +272,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate True Range
                 pdf = pd.DataFrame(dataset)
-                truerange_values = truerange(pdf)
+                truerange_values = truerange(pdf, period)
                 return truerange_values
             else:
                 logging.error("Failed to calculate True Range") 
@@ -284,7 +284,7 @@ class Indicator:
     def option_average_truerange(self, dataset, period):
         try:
             average_truerange_values = {}
-            if dataset is not None and not dataset.empty:
+            if dataset is not None:
                 # Calculate Average Truerange
                 pdf = pd.DataFrame(dataset)
                 average_truerange_values = average_truerange(pdf, period)
