@@ -160,6 +160,7 @@
     <Folder Include="source\indicators\__pycache__\" />
     <Folder Include="source\libraries\" />
     <Folder Include="source\libraries\__pycache__\" />
+    <Folder Include="source\queue\" />
     <Folder Include="source\static\" />
     <Folder Include="source\static\css\" />
     <Folder Include="source\static\css\fonts\" />
