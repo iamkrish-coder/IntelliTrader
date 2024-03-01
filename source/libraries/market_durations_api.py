@@ -8,6 +8,7 @@ class MarketDurations:
 
     def calculate_all_durations(self):
         all_durations = {
+            'sameday': self.get_duration_sameday(self.depth),
             'minute': self.get_duration_minutes(self.depth),
             'hour': self.get_duration_hour(self.depth),
             'day': self.get_duration_day(self.depth),
@@ -16,6 +17,44 @@ class MarketDurations:
         }
         
         return all_durations
+
+    def get_duration_sameday(self, depth=1):
+        
+        duration_in_days = 0       
+        min_duration     = 1
+        trading_holidays = self.get_market_holidays()  
+        today            = dt.date.today()
+        
+        for i in range(0, min_duration):
+            current_year     = today.year
+            current_month    = today.month
+            current_weekday  = today.weekday()
+
+            if current_weekday == 5:            # Saturday
+                today -= dt.timedelta(days=1)   # Move back to Friday
+                duration_in_days += 1
+            elif current_weekday == 6:          # Sunday
+                today -= dt.timedelta(days=2)   # Move back to Friday
+                duration_in_days += 2
+
+            # Update the duration for each working day
+            duration_in_days += 1
+            today -= dt.timedelta(days=1)
+            
+            # Iterate over the trading holidays and check if they fall within the depth or min_duration
+            for holiday in trading_holidays:
+                holiday_date = holiday['date']
+                current_holiday = (today - holiday_date).days
+            
+                # Check if the holiday is not on a Saturday (5) or Sunday (6)
+                if current_holiday < 0:
+                    break
+            
+                if current_holiday >= 0 and current_holiday <= min_duration \
+                        and holiday_date.weekday() != 5 and holiday_date.weekday() != 6:
+                    duration_in_days += 1
+
+        return duration_in_days
 
     def get_duration_minutes(self, depth):
         

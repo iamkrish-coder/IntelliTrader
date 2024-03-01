@@ -22,13 +22,14 @@ class StockDelivery(BaseStrategy):
     def execute_live_strategy(self, v_args, m_args, s_args, c_args):
         pass
 
+    ###########################################
+    # Virtual Strategy
+    ###########################################
+
     def execute_virtual_strategy(self, v_args, m_args, s_args, c_args):
         start_time = time.time()      
         
-        ###########################################
         # Declare variables
-        ###########################################
-
         instruments_list   = []
         watchlist_stocks   = []
         local_indices      = []
@@ -41,12 +42,7 @@ class StockDelivery(BaseStrategy):
         ohlcv_daily_data   = {}
         ohlcv_weekly_data  = {}
         ohlcv_monthly_data = {}
-        
-        
-        ###########################################
-        # Extracting arguments into variables
-        ###########################################
-        
+               
         # Virtual Trade Parameters
         self.symbol                       = v_args.get('symbol')
         self.exchange                     = v_args.get('exchange')
@@ -75,18 +71,13 @@ class StockDelivery(BaseStrategy):
         # Common Parameters
         prettier = c_args.get('prettier_print')
         
-        ###########################################
         # Market Trend Study
-        ###########################################  
         if market_params:
             local_market_sentiment  = self.get_local_market_sentiment()
             global_market_sentiment = self.get_global_market_sentiment()
 
 
-        ###########################################
         # Get Live Data
-        ###########################################
-
         stock_basket     = self.get_stock_basket(self.exchange, self.symbol)
         instruments_list = self.modules['fetch'].fetch_instruments(self.exchange)  
         watchlist_stocks = [instrument for instrument in instruments_list if instrument['tradingsymbol'] in stock_basket]
@@ -98,15 +89,6 @@ class StockDelivery(BaseStrategy):
                 continue
     
             self.instrument_token = self.modules['fetch'].instrument_token_lookup(self.exchange, self.trading_symbol)
-
-            # # Extract relevant information and store it
-            # instrument_quote = self.modules['fetch'].fetch_quote(self.exchange, self.trading_symbol)           
-            # stock_data[self.trading_symbol] = {
-            #     'token_data': self.instrument_token,
-            #     'quote_data': instrument_quote,
-            #     'summary_data': stock
-            # }
-            
             candles = asyncio.run(self.get_candlestick_data())
             candles_current, candles_daily, candles_weekly, candles_monthly, candles_same_day_5m, candles_same_day_15m = candles
 
@@ -118,7 +100,7 @@ class StockDelivery(BaseStrategy):
             # self.modules['help'].format_json_output_print(candles_same_day_5m, "Same Day 5M", prettier)
             # self.modules['help'].format_json_output_print(candles_same_day_15m, "Same Day 15M", prettier)
             
-            # Candlestick Processed Data
+            # Candlestick Processing
             ohlcv_current_data      = self.process_current_candles(candles_current)
             ohlcv_daily_data        = self.process_daily_candles(candles_daily)
             ohlcv_weekly_data       = self.process_weekly_candles(candles_weekly)
@@ -126,28 +108,20 @@ class StockDelivery(BaseStrategy):
             ohlcv_same_day_5m_data  = self.process_same_day_candles(candles_same_day_5m)
             ohlcv_same_day_15m_data = self.process_same_day_candles(candles_same_day_15m)
 
-            # Indicators Data
-            indicator_data['rsi']               = self.get_indicator_values('rsi', ohlcv_current_data, RSI.RSI_8.value)
-            indicator_data['wma5']              = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_5.value)
-            indicator_data['wma20']             = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_21.value)
-            indicator_data['supertrend']        = self.get_indicator_values('supertrend', ohlcv_current_data, Supertrend.SUPERTREND_4_2.value)
-            indicator_data['truerange']         = self.get_indicator_values('truerange', ohlcv_current_data, TrueRange.TRUERANGE_14.value)
-            indicator_data['average_truerange'] = self.get_indicator_values('average_truerange', ohlcv_current_data, AverageTrueRange.AVERAGETRUERANGE_14.value)
-            indicator_data['macd']              = self.get_indicator_values('macd', ohlcv_current_data, MACD.MACD_12_26_9.value)
-            
+            # Indicators Data          
+            indicator_data = self.calculate_indicators(ohlcv_current_data)
 
             # Evaluate Strategy conditions based on obtained Candle and Indicator Data
             conditions_met = self.evaluate_strategy_conditions(ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data)
             if conditions_met:
-                # Check Secondary Conditions
-                print(f"Conditions Met: Stock Alert: {self.trading_symbol}")
+                print(f"\nStock Alert: {self.trading_symbol}")
                 stock_alerts.append(self.trading_symbol)
             else:
                 continue
 
         print(stock_alerts)
         
-        # Secondary condition check - 3M / 1M - Live Streaming Data
+        # Secondary condition check - 3M / 1M - Live Streaming Data RabbitMQ
         # Candle Green 
         # Candle Red - Wait
         
@@ -165,7 +139,34 @@ class StockDelivery(BaseStrategy):
         execution_time = end_time - start_time
         logging.info(f"Execution time: {execution_time} seconds")
 
+    ###########################################
+    # Calculate Indicators Data
+    ###########################################
+        
+    def calculate_indicators(self, ohlcv_current_data):
+      """
+      Calculates and stores various technical indicators for the given OHLCV data.
 
+      Args:
+          ohlcv_current_data (pandas.DataFrame): The OHLCV data
+
+      Returns:
+          dict: A dictionary containing calculated indicator values.
+      """
+      indicator_data = {}
+      indicator_data['rsi'] = self.get_indicator_values('rsi', ohlcv_current_data, RSI.RSI_8.value)
+      indicator_data['wma5'] = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_5.value)
+      indicator_data['wma20'] = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_21.value)
+      indicator_data['supertrend'] = self.get_indicator_values('supertrend', ohlcv_current_data, Supertrend.SUPERTREND_4_2.value)
+      indicator_data['truerange'] = self.get_indicator_values('truerange', ohlcv_current_data, TrueRange.TRUERANGE_14.value)
+      indicator_data['average_truerange'] = self.get_indicator_values('average_truerange', ohlcv_current_data, AverageTrueRange.AVERAGETRUERANGE_14.value)
+      indicator_data['macd'] = self.get_indicator_values('macd', ohlcv_current_data, MACD.MACD_12_26_9.value)
+      return indicator_data
+
+    ###########################################
+    # Async Processing
+    ###########################################
+        
     async def get_candlestick_data(self):
       """
       Asynchronously fetches OHLC data for different timeframes.
@@ -173,7 +174,7 @@ class StockDelivery(BaseStrategy):
       if self.historical_data_subscription:
         tasks = [
           self.fetch_ohlc_async(self.exchange, self.trading_symbol, self.instrument_token, self.timeframe)
-          for self.timeframe in [self.TIMEFRAME, self.DAILY, self.WEEKLY, self.MONTHLY, MINUTE_5M, MINUTE_15M]
+          for self.timeframe in [self.TIMEFRAME, self.DAILY, self.WEEKLY, self.MONTHLY, SAMEDAY_5M, SAMEDAY_15M]
         ]
         candles = await asyncio.gather(*tasks)
         return candles
@@ -274,7 +275,7 @@ class StockDelivery(BaseStrategy):
             logging.ERROR(f"Error: {e}")
 
         
-        # Log and display each C check
+        # Log and display each Condition check
         print(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}\n")
         for condition_id, condition_check in conditions.items():
             logging.info(f":::::::Condition::::::: {condition_id} Status: {condition_check}")

@@ -73,6 +73,6 @@
     "offset": "1"
   },
   "common_params": {
-    "prettier_print": true
+    "prettier_print": false
   }
 }
