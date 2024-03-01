@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.6.0...v1.6.1) (2024-03-01)
+
+
+### Features
+
+* Auto Issues Actions ([920ef3d](https://github.com/iamkrish-coder/IntelliTrader/commit/920ef3d2a3feeae327ad1c510508be56e8a7527f))
+
+
+### Bug Fixes
+
+* auto issues updated ([3e816a9](https://github.com/iamkrish-coder/IntelliTrader/commit/3e816a937a4f4ef617fd81522fe03155b04a7de7))
+* durations for same day refactored ([f084198](https://github.com/iamkrish-coder/IntelliTrader/commit/f0841982e242ee277480c7e20517185b45f0eeac))
+
 ## [1.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.5.0...v1.6.0) (2024-02-29)
 
 
