@@ -8,6 +8,8 @@ from source.strategies.base_strategy import BaseStrategy
 from turtle import st
 from source.constants.constants import *
 from source.enumerations.enums import *
+from source.queue.redisPublisher import RedisPublisher
+
 import os
 import pandas as pd
 import time
@@ -15,10 +17,14 @@ import json
 import logging
 import asyncio
 
+
+
 class StockDelivery(BaseStrategy):
     def __init__(self, connection, modules):
         super().__init__(connection, modules) 
-
+        self.queue = Queues.STRATEGY_1_ALERTS.name
+        self.publisher = RedisPublisher(self.queue)
+        
     def execute_live_strategy(self, v_args, m_args, s_args, c_args):
         pass
 
@@ -27,6 +33,19 @@ class StockDelivery(BaseStrategy):
     ###########################################
 
     def execute_virtual_strategy(self, v_args, m_args, s_args, c_args):
+        """
+        Executes a virtual trading strategy using provided arguments.
+
+        Parameters:
+        - v_args (dict): Virtual trading arguments including initial capital, virtual account settings, etc.
+        - m_args (dict): Market data arguments including OHLCV data, indicators, etc.
+        - s_args (dict): Strategy-specific arguments including strategy parameters, rules, etc.
+        - c_args (dict): Additional contextual arguments if needed.
+
+        Returns:
+        - result (dict): Dictionary containing the result of the virtual strategy execution.
+          Example keys: 'profit_loss', 'trades_executed', 'strategy_performance', etc.
+        """        
         start_time = time.time()      
         
         # Declare variables
@@ -116,24 +135,12 @@ class StockDelivery(BaseStrategy):
             if conditions_met:
                 print(f"\nStock Alert: {self.trading_symbol}")
                 stock_alerts.append(self.trading_symbol)
+                
+                # Publish the trading symbol to a Redis channel named 'stock_alerts'    
+                self.publisher.publish_message(self.trading_symbol)               
             else:
-                continue
+                continue     
 
-        print(stock_alerts)
-        
-        # Secondary condition check - 3M / 1M - Live Streaming Data RabbitMQ
-        # Candle Green 
-        # Candle Red - Wait
-        
-        # All condition met?  Buy Signal
-        # Code to Buy - Limit Order / Market Order / Qty / Capital Allocation
-        # Monitor Trade - Profit / Trail Profit / Trail Stop Loss -> main CORE
-        # Stop Loss Hit / Profit Hit / Trailing Profit Hit -> Sell Signal -> Execute Sell Trade
-
-        # Service in python - To Run and Monitor Software Application
-        
-        # Cloud - AWS Service - Migrate AWS 
-        # Testing AWS 
 
         end_time = time.time()
         execution_time = end_time - start_time
@@ -196,7 +203,21 @@ class StockDelivery(BaseStrategy):
     ###########################################
         
     def evaluate_strategy_conditions(self, ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data):
+        """
+        Evaluates the trading strategy conditions based on provided data.
 
+        Parameters:
+        - ohlcv_current_data (DataFrame): OHLCV data for the current timeframe.
+        - ohlcv_daily_data (DataFrame): OHLCV data for the daily timeframe.
+        - ohlcv_weekly_data (DataFrame): OHLCV data for the weekly timeframe.
+        - ohlcv_monthly_data (DataFrame): OHLCV data for the monthly timeframe.
+        - ohlcv_same_day_5m_data (DataFrame): OHLCV data for the same day with 5-minute intervals.
+        - ohlcv_same_day_15m_data (DataFrame): OHLCV data for the same day with 15-minute intervals.
+        - indicator_data (DataFrame): Additional indicator data used for evaluation.
+
+        Returns:
+        - conditions_met (bool): True if strategy conditions are met, False otherwise.
+        """
         open                      = ohlcv_current_data.get('open')
         high                      = ohlcv_current_data.get('high')
         low                       = ohlcv_current_data.get('low')
@@ -280,7 +301,6 @@ class StockDelivery(BaseStrategy):
         for condition_id, condition_check in conditions.items():
             logging.info(f":::::::Condition::::::: {condition_id} Status: {condition_check}")
 
-        print()
         # Final Strategy Condition
         if all(conditions.values()):
             return True
