@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.6.1...v1.7.0) (2024-03-02)
+
+
+### Features
+
+* Implement Redis Queue to capture and store Alerts of stock on Memory ([af21445](https://github.com/iamkrish-coder/IntelliTrader/commit/af21445bcea9dc1a3f8ae61aa5e789c4c693430a))
+
 ## [1.6.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.6.0...v1.6.1) (2024-03-01)
 
 
