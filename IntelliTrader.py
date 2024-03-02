@@ -7,11 +7,13 @@ from source.orders import Orders
 from source.ticker import Ticker
 from source.indicator import Indicator
 from source.constants.constants import *
+from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
 from source.strategies import strategy_manager
+from source.strategies import action_manager
 from flask import Flask, render_template, request, redirect, session
-import webbrowser
 
+import webbrowser
 import json
 import datetime
 import os
@@ -122,13 +124,19 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Read user preferences from configuration
     configuration = app.read_input_configuration()
 
+    # Instantiate the Action Manager
+    channel_names = [queue.name for queue in Queues]
+    action_manager_instance = action_manager.ActionManager(channel_names)
+    
+    # Start monitoring queues
+    action_manager_instance.monitor_queues()
+
     # Instantiate the Strategy Manager
     strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)
     
     # Initialize the selected strategy
     strategy_manager_instance.initialize_strategy(configuration)
-
-
+    
 def InitializeWebInterface(_IntelliTrader_):
     # Create a Flask app instance
     app = _IntelliTrader_

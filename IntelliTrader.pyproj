@@ -49,12 +49,16 @@
     <Compile Include="source\libraries\market_holidays_api.py" />
     <Compile Include="source\modify.py" />
     <Compile Include="source\orders.py" />
+    <Compile Include="source\queue\redisPublisher.py" />
+    <Compile Include="source\queue\redisSubscriber.py" />
+    <Compile Include="source\strategies\action_manager.py" />
     <Compile Include="source\strategies\base_strategy.py" />
+    <Compile Include="source\strategies\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="source\strategies\shared.py" />
     <Compile Include="source\strategies\stock_delivery.py" />
-    <Compile Include="source\strategies\stock_options.py" />
     <Compile Include="source\strategies\strategy_manager.py" />
-    <Compile Include="source\strategies\__init__.py" />
     <Compile Include="source\ticker.py" />
   </ItemGroup>
   <ItemGroup>

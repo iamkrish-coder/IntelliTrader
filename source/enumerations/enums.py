@@ -13,10 +13,18 @@ class Symbol(Enum):
     SBIN  = 'SBIN'
     IRCTC = 'IRCTC'
 
+class Queues(Enum):
+    STRATEGY_1_ALERTS = 1
+    STRATEGY_2_ALERTS = 2
+    STRATEGY_3_ALERTS = 3
+    STRATEGY_4_ALERTS = 4
+    STRATEGY_5_ALERTS = 5
+    STRATEGY_6_ALERTS = 6
+    
 class Strategy(Enum):
-    STOCK_OPTIONS  = 1
-    STOCK_FUTURES  = 2   
-    STOCK_DELIVERY = 3
+    STOCK_DELIVERY = 1
+    STOCK_OPTIONS  = 2
+    STOCK_FUTURES  = 3   
     STOCK_INTRADAY = 4
     INDEX_OPTIONS  = 5
     INDEX_FUTURES  = 6 
