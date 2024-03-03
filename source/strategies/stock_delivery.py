@@ -8,7 +8,7 @@ from source.strategies.base_strategy import BaseStrategy
 from turtle import st
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.queue.redisPublisher import RedisPublisher
+# from source.queue.redisPublisher import RedisPublisher
 
 import os
 import pandas as pd
@@ -16,15 +16,14 @@ import time
 import json
 import logging
 import asyncio
-
-
+import boto3
+import uuid
 
 class StockDelivery(BaseStrategy):
     def __init__(self, connection, modules):
         super().__init__(connection, modules) 
-        self.queue = Queues.STRATEGY_1_ALERTS.name
-        self.publisher = RedisPublisher(self.queue)
-        
+        self.sqs = boto3.client('sqs', region_name=REGION_NAME)
+
     def execute_live_strategy(self, v_args, m_args, s_args, c_args):
         pass
 
@@ -110,7 +109,7 @@ class StockDelivery(BaseStrategy):
                 continue
             self.instrument_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules['fetch'].instrument_token_lookup(self.trading_exchange, self.trading_symbol)
 
-            logging.info(f"\nFetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+            logging.info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
             candles = asyncio.run(self.get_candlestick_data())
             candles_current, candles_daily, candles_weekly, candles_monthly, candles_same_day_5m, candles_same_day_15m = candles         
 
@@ -121,7 +120,6 @@ class StockDelivery(BaseStrategy):
             ohlcv_monthly_data      = self.process_monthly_candles(candles_monthly)
             ohlcv_same_day_5m_data  = self.process_same_day_candles(candles_same_day_5m)
             ohlcv_same_day_15m_data = self.process_same_day_candles(candles_same_day_15m)
-
 
             # Indicators Data          
             indicator_data = self.calculate_indicators(ohlcv_current_data)
@@ -136,20 +134,41 @@ class StockDelivery(BaseStrategy):
 
 
             # Evaluate Strategy conditions based on obtained Candle and Indicator Data
-            conditions_met = self.evaluate_strategy_conditions(ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data)
+            conditions_met = self.evaluate_primary_strategy_conditions(ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data)
             if conditions_met:
-                stock_alerts.append(self.trading_symbol)                
-                # Publish the stock alert to a Redis queue  
+                stock_alerts.append(self.trading_symbol) 
+                
+                # Publish the stock alert to a queue  
                 message = f"{self.trading_exchange},{self.trading_symbol},{self.instrument_token}" 
-                self.publisher.publish_message(message)               
+                
+                queue_response = self.publish_message(message)   
+                logging.info(f":::::::: Message ID :::::::: {queue_response['MessageId']}")
+
             else:
                 continue     
 
 
-        end_time = time.time()
-        execution_time = end_time - start_time
-        logging.info(f"Execution time: {execution_time} seconds")
+        # end_time = time.time()
+        # execution_time = end_time - start_time
+        # logging.info(f"Execution time: {execution_time} seconds")
 
+    ###########################################
+    # Publish Stock Alert 
+    ###########################################
+        
+    def publish_message(self, message):
+        # Publish messages to the queue
+        # Generate a unique message group ID using UUID
+        message_group_id = str(uuid.uuid4())   
+        
+        response = self.sqs.send_message(
+            QueueUrl    = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
+            MessageBody = message,
+            MessageGroupId = message_group_id
+        )
+        logging.info(f"Message Published {message}")       
+        return response
+    
     ###########################################
     # Calculate Indicators Data
     ###########################################
@@ -206,7 +225,7 @@ class StockDelivery(BaseStrategy):
     # Evaluate Strategy Conditions
     ###########################################
         
-    def evaluate_strategy_conditions(self, ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data):
+    def evaluate_primary_strategy_conditions(self, ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data):
         """
         Evaluates the trading strategy conditions based on provided data.
 
@@ -300,12 +319,11 @@ class StockDelivery(BaseStrategy):
 
         
         # Log and display each Condition check
-        logging.info(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}")
+        logging.info(f"Evaluating Strategy {self.trading_symbol}")
         for condition_id, condition_check in conditions.items():
-            logging.info(f":::::::Condition::::::: {condition_id} Status: {condition_check}")
+            logging.info(f"::::::: Condition ::::::: {condition_id} Status: {condition_check}")
 
-        print()
-        
+       
         # Final Strategy Condition
         if all(conditions.values()):
             return True

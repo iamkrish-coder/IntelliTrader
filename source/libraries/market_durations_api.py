@@ -30,7 +30,10 @@ class MarketDurations:
             current_month    = today.month
             current_weekday  = today.weekday()
 
-            if current_weekday == 5:            # Saturday
+            if current_weekday == 0:            # Monday
+                today -= dt.timedelta(days=3)   # Move back to Friday
+                duration_in_days += 3
+            elif current_weekday == 5:          # Saturday
                 today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
@@ -68,7 +71,10 @@ class MarketDurations:
             current_month    = today.month
             current_weekday  = today.weekday()
 
-            if current_weekday == 5:            # Saturday
+            if current_weekday == 0:            # Monday
+                today -= dt.timedelta(days=3)   # Move back to Friday
+                duration_in_days += 3
+            elif current_weekday == 5:          # Saturday
                 today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
@@ -105,8 +111,11 @@ class MarketDurations:
             current_year     = today.year
             current_month    = today.month
             current_weekday  = today.weekday()
-
-            if current_weekday == 5:            # Saturday
+            
+            if current_weekday == 0:            # Monday
+                today -= dt.timedelta(days=3)   # Move back to Friday
+                duration_in_days += 3
+            elif current_weekday == 5:          # Saturday
                 today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
@@ -143,8 +152,11 @@ class MarketDurations:
             current_year     = today.year
             current_month    = today.month
             current_weekday  = today.weekday()
-
-            if current_weekday == 5:            # Saturday
+            
+            if current_weekday == 0:            # Monday
+                today -= dt.timedelta(days=3)   # Move back to Friday
+                duration_in_days += 3
+            elif current_weekday == 5:          # Saturday
                 today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
