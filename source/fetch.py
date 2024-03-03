@@ -78,8 +78,14 @@ class Fetch:
                 # Fetch Minutes Data
                 duration = duration['sameday']
                 
-                if 'sameday5minute' in timeframe:
-                    timeframe = '5minute'
+                if 'sameday1minute' in timeframe:
+                    timeframe = 'minute'
+                elif 'sameday2minute' in timeframe:
+                    timeframe = '2minute'                    
+                elif 'sameday3minute' in timeframe:
+                    timeframe = '3minute'
+                elif 'sameday5minute' in timeframe:
+                    timeframe = '5minute'  
                 elif 'sameday15minute' in timeframe:    
                     timeframe = '15minute'
                 elif 'sameday30minute' in timeframe:    
@@ -89,7 +95,7 @@ class Fetch:
                 else:
                     logging.error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
                     return None
-
+                
                 data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
                 logging.info(f'::::::: OHLCV ::::::: Timeframe: {MINUTE.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
             elif timeframe.__contains__('minute'):

@@ -103,22 +103,17 @@ class StockDelivery(BaseStrategy):
 
         # Loop through stocks
         for stock in watchlist_stocks:
-            self.trading_symbol = stock.get('tradingsymbol')
-            if self.trading_symbol is None:
-                continue
-    
-            self.instrument_token = self.modules['fetch'].instrument_token_lookup(self.exchange, self.trading_symbol)
-            candles = asyncio.run(self.get_candlestick_data())
-            candles_current, candles_daily, candles_weekly, candles_monthly, candles_same_day_5m, candles_same_day_15m = candles
-
-            # Display Output of Candle Data <Debug> 
-            # self.modules['help'].format_json_output_print(candles_current, "Today", prettier)
-            # self.modules['help'].format_json_output_print(candles_daily, "Daily", prettier)
-            # self.modules['help'].format_json_output_print(candles_weekly, "Weekly", prettier)
-            # self.modules['help'].format_json_output_print(candles_monthly, "Monthly", prettier)
-            # self.modules['help'].format_json_output_print(candles_same_day_5m, "Same Day 5M", prettier)
-            # self.modules['help'].format_json_output_print(candles_same_day_15m, "Same Day 15M", prettier)
             
+            self.trading_exchange = stock.get('exchange')           
+            self.trading_symbol = stock.get('tradingsymbol')
+            if self.trading_symbol is None or self.trading_symbol is None:
+                continue
+            self.instrument_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules['fetch'].instrument_token_lookup(self.trading_exchange, self.trading_symbol)
+
+            print(f"\nFetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+            candles = asyncio.run(self.get_candlestick_data())
+            candles_current, candles_daily, candles_weekly, candles_monthly, candles_same_day_5m, candles_same_day_15m = candles         
+
             # Candlestick Processing
             ohlcv_current_data      = self.process_current_candles(candles_current)
             ohlcv_daily_data        = self.process_daily_candles(candles_daily)
@@ -127,17 +122,26 @@ class StockDelivery(BaseStrategy):
             ohlcv_same_day_5m_data  = self.process_same_day_candles(candles_same_day_5m)
             ohlcv_same_day_15m_data = self.process_same_day_candles(candles_same_day_15m)
 
+
             # Indicators Data          
             indicator_data = self.calculate_indicators(ohlcv_current_data)
+
+            # <Debug> 
+            # self.modules['help'].format_json_output_print(candles_current, "Today", prettier)
+            # self.modules['help'].format_json_output_print(candles_daily, "Daily", prettier)
+            # self.modules['help'].format_json_output_print(candles_weekly, "Weekly", prettier)
+            # self.modules['help'].format_json_output_print(candles_monthly, "Monthly", prettier)
+            # self.modules['help'].format_json_output_print(candles_same_day_5m, "Same Day 5M", prettier)
+            # self.modules['help'].format_json_output_print(candles_same_day_15m, "Same Day 15M", prettier)
+
 
             # Evaluate Strategy conditions based on obtained Candle and Indicator Data
             conditions_met = self.evaluate_strategy_conditions(ohlcv_current_data, ohlcv_daily_data, ohlcv_weekly_data, ohlcv_monthly_data, ohlcv_same_day_5m_data, ohlcv_same_day_15m_data, indicator_data)
             if conditions_met:
-                print(f"\nStock Alert: {self.trading_symbol}")
-                stock_alerts.append(self.trading_symbol)
-                
-                # Publish the trading symbol to a Redis channel named 'stock_alerts'    
-                self.publisher.publish_message(self.trading_symbol)               
+                stock_alerts.append(self.trading_symbol)                
+                # Publish the stock alert to a Redis queue  
+                message = f"{self.trading_exchange},{self.trading_symbol},{self.instrument_token}" 
+                self.publisher.publish_message(message)               
             else:
                 continue     
 
@@ -267,7 +271,6 @@ class StockDelivery(BaseStrategy):
         
 
         # Define strategy conditions
-
         try:
             conditions = {
                 '1': rsi[-1] > 55,
@@ -293,14 +296,16 @@ class StockDelivery(BaseStrategy):
                 # '21': wma5[-1] > wma20[-1]
             }
         except Exception as e:
-            logging.ERROR(f"Error: {e}")
+            logging.error(f"Error: {e}")
 
         
         # Log and display each Condition check
-        print(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}\n")
+        print(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}")
         for condition_id, condition_check in conditions.items():
             logging.info(f":::::::Condition::::::: {condition_id} Status: {condition_check}")
 
+        print()
+        
         # Final Strategy Condition
         if all(conditions.values()):
             return True
