@@ -1,6 +1,10 @@
 # ENUMS
 from enum import Enum
 
+class AWS_SQS(Enum):
+    ACCOUNT_ID = '265153260161'
+    URL        = 'https://sqs.ap-south-1.amazonaws.com'
+    
 class Exchange(Enum):
     NSE = 'NSE'
     BSE = 'BSE'
@@ -14,12 +18,12 @@ class Symbol(Enum):
     IRCTC = 'IRCTC'
 
 class Queues(Enum):
-    STRATEGY_1_ALERTS = 1
-    STRATEGY_2_ALERTS = 2
-    STRATEGY_3_ALERTS = 3
-    STRATEGY_4_ALERTS = 4
-    STRATEGY_5_ALERTS = 5
-    STRATEGY_6_ALERTS = 6
+    Queue1     = 'IntelliTrader_Q1.fifo'
+    Queue2     = 'IntelliTrader_Q2.fifo'
+    Queue3     = 'IntelliTrader_Q3.fifo'
+    Queue4     = 'IntelliTrader_Q4.fifo'
+    Queue5     = 'IntelliTrader_Q5.fifo'
+    Queue6     = 'IntelliTrader_Q6.fifo'
     
 class Strategy(Enum):
     STOCK_DELIVERY = 1

@@ -17,5 +17,9 @@ class BaseStrategy(ABC, Shared):
         raise NotImplementedError("Subclasses must implement this method")
     
     @abstractmethod
-    def evaluate_strategy_conditions(self, ohlcv_data, indicator_data):
+    def evaluate_primary_strategy_conditions(self, ohlcv_data, indicator_data):
+        raise NotImplementedError("Subclasses must implement this method")
+
+    @abstractmethod
+    def publish_message(self, message):
         raise NotImplementedError("Subclasses must implement this method")
