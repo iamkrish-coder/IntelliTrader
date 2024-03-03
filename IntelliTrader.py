@@ -11,6 +11,7 @@ from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
 from source.strategies import strategy_manager
 from source.strategies import action_manager
+from source.services.redis_service import RedisServiceController
 from flask import Flask, render_template, request, redirect, session
 
 import webbrowser
@@ -124,12 +125,19 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Read user preferences from configuration
     configuration = app.read_input_configuration()
 
+    # Start Redis Queues
+    redis_service_controller = RedisServiceController()
+    redis_service_controller.start_redis_server()
+
     # Instantiate the Action Manager
-    channel_names = [queue.name for queue in Queues]
-    action_manager_instance = action_manager.ActionManager(channel_names)
+    strategy_queues = [queue.name for queue in Queues]
+    action_manager_instance = action_manager.ActionManager(connection, modules, strategy_queues)
     
     # Start monitoring queues
-    action_manager_instance.monitor_queues()
+    try:
+        action_manager_instance.monitor_queues()
+    except KeyboardInterrupt:
+        action_manager_instance.stop()
 
     # Instantiate the Strategy Manager
     strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)
@@ -137,6 +145,7 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Initialize the selected strategy
     strategy_manager_instance.initialize_strategy(configuration)
     
+
 def InitializeWebInterface(_IntelliTrader_):
     # Create a Flask app instance
     app = _IntelliTrader_
