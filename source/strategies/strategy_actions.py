@@ -63,9 +63,14 @@ class StrategyActions(BaseActions):
     def get_candlestick_data_sync(self, exchange, symbol, token):
         self.logger.info(f"Fetching OHLCV data for Secondary Conditions: {exchange}, {symbol}, {token}")      
         timeframes = ['sameday1minute', 'sameday2minute', 'sameday3minute']
-        candles = [self.modules['fetch'].fetch_ohlc(exchange, symbol, token, timeframe) for timeframe in timeframes]
+        candles_same_day_1m, candles_same_day_2m, candles_same_day_3m = [self.modules['fetch'].fetch_ohlc(exchange, symbol, token, timeframe) for timeframe in timeframes]
 
-        print(candles)   
+        ohlcv_same_day_1m_data  = self.process_same_day_candles(candles_same_day_1m)
+        ohlcv_same_day_2m_data  = self.process_same_day_candles(candles_same_day_2m)
+        ohlcv_same_day_3m_data  = self.process_same_day_candles(candles_same_day_3m)
+        
+
+
     
     def stop(self):
         """
