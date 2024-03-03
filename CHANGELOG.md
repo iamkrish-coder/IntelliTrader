@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.7.0...v1.8.0) (2024-03-03)
+
+
+### Features
+
+* fix redis service management, actions_manager now checks for secondary conditions before generating buy sell signals ([74b0736](https://github.com/iamkrish-coder/IntelliTrader/commit/74b073676c33fe49adda8b769f1ad66f2f40e398))
+
 ## [1.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.6.1...v1.7.0) (2024-03-02)
 
 
