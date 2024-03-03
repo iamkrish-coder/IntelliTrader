@@ -1,4 +1,5 @@
 import redis
+import logging
 
 class RedisSubscriber:
     def __init__(self, queue, callback):
@@ -18,7 +19,7 @@ class RedisSubscriber:
                 if message['type'] == 'message':
                     self.handle_message(message)
         except Exception as e:
-            print(f"An error occurred while listening for messages: {str(e)}")
+            logging.error(f"An error occurred while listening for messages: {str(e)}")
 
     def stop_subscription(self):
         self.pubsub.unsubscribe(self.queue)

@@ -52,7 +52,8 @@
     <Compile Include="source\queue\redisPublisher.py" />
     <Compile Include="source\queue\redisSubscriber.py" />
     <Compile Include="source\services\redis_service.py" />
-    <Compile Include="source\strategies\action_manager.py" />
+    <Compile Include="source\strategies\strategy_actions.py" />
+    <Compile Include="source\strategies\base_actions.py" />
     <Compile Include="source\strategies\base_strategy.py" />
     <Compile Include="source\strategies\__init__.py">
       <SubType>Code</SubType>

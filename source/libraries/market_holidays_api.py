@@ -2,6 +2,7 @@ from queue import Empty
 import requests
 from bs4 import BeautifulSoup
 import datetime as dt
+import logging
 
 def market_holidays(url):
     # Send a GET request to the URL
@@ -36,6 +37,6 @@ def market_holidays(url):
                 
             return holidays
         else:
-            print("Holiday calendar data not found on the webpage.")
+            logging.info("Holiday calendar data not found on the webpage.")
     else:
-        print("Failed to fetch webpage. Status code:", response.status_code)
+        logging.error("Failed to fetch webpage. Status code:", response.status_code)
