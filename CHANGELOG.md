@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.9.0...v1.10.0) (2024-03-03)
+
+
+### Features
+
+* Introducing Amazon SQS for Message Queueing, deprecated the redis implementation ([9a38517](https://github.com/iamkrish-coder/IntelliTrader/commit/9a38517386deaff605d5be7014c840f2b3fd9a44))
+
 ## [1.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.8.0...v1.9.0) (2024-03-03)
 
 
