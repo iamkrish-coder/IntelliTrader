@@ -110,7 +110,7 @@ class StockDelivery(BaseStrategy):
                 continue
             self.instrument_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules['fetch'].instrument_token_lookup(self.trading_exchange, self.trading_symbol)
 
-            print(f"\nFetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+            logging.info(f"\nFetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
             candles = asyncio.run(self.get_candlestick_data())
             candles_current, candles_daily, candles_weekly, candles_monthly, candles_same_day_5m, candles_same_day_15m = candles         
 
@@ -155,51 +155,51 @@ class StockDelivery(BaseStrategy):
     ###########################################
         
     def calculate_indicators(self, ohlcv_current_data):
-      """
-      Calculates and stores various technical indicators for the given OHLCV data.
+        """
+        Calculates and stores various technical indicators for the given OHLCV data.
 
-      Args:
-          ohlcv_current_data (pandas.DataFrame): The OHLCV data
+        Args:
+            ohlcv_current_data (pandas.DataFrame): The OHLCV data
 
-      Returns:
-          dict: A dictionary containing calculated indicator values.
-      """
-      indicator_data = {}
-      indicator_data['rsi'] = self.get_indicator_values('rsi', ohlcv_current_data, RSI.RSI_8.value)
-      indicator_data['wma5'] = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_5.value)
-      indicator_data['wma20'] = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_21.value)
-      indicator_data['supertrend'] = self.get_indicator_values('supertrend', ohlcv_current_data, Supertrend.SUPERTREND_4_2.value)
-      indicator_data['truerange'] = self.get_indicator_values('truerange', ohlcv_current_data, TrueRange.TRUERANGE_14.value)
-      indicator_data['average_truerange'] = self.get_indicator_values('average_truerange', ohlcv_current_data, AverageTrueRange.AVERAGETRUERANGE_14.value)
-      indicator_data['macd'] = self.get_indicator_values('macd', ohlcv_current_data, MACD.MACD_12_26_9.value)
-      return indicator_data
+        Returns:
+            dict: A dictionary containing calculated indicator values.
+        """
+        indicator_data = {}
+        indicator_data['rsi'] = self.get_indicator_values('rsi', ohlcv_current_data, RSI.RSI_8.value)
+        indicator_data['wma5'] = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_5.value)
+        indicator_data['wma20'] = self.get_indicator_values('wma', ohlcv_current_data, WMA.WMA_21.value)
+        indicator_data['supertrend'] = self.get_indicator_values('supertrend', ohlcv_current_data, Supertrend.SUPERTREND_4_2.value)
+        indicator_data['truerange'] = self.get_indicator_values('truerange', ohlcv_current_data, TrueRange.TRUERANGE_14.value)
+        indicator_data['average_truerange'] = self.get_indicator_values('average_truerange', ohlcv_current_data, AverageTrueRange.AVERAGETRUERANGE_14.value)
+        indicator_data['macd'] = self.get_indicator_values('macd', ohlcv_current_data, MACD.MACD_12_26_9.value)
+        return indicator_data
 
     ###########################################
     # Async Processing
     ###########################################
         
     async def get_candlestick_data(self):
-      """
-      Asynchronously fetches OHLC data for different timeframes.
-      """
-      if self.historical_data_subscription:
-        tasks = [
-          self.fetch_ohlc_async(self.exchange, self.trading_symbol, self.instrument_token, self.timeframe)
-          for self.timeframe in [self.TIMEFRAME, self.DAILY, self.WEEKLY, self.MONTHLY, SAMEDAY_5M, SAMEDAY_15M]
-        ]
-        candles = await asyncio.gather(*tasks)
-        return candles
+        """
+        Asynchronously fetches OHLC data for different timeframes.
+        """
+        if self.historical_data_subscription:
+            tasks = [
+                self.fetch_ohlc_async(self.exchange, self.trading_symbol, self.instrument_token, self.timeframe)
+                for self.timeframe in [self.TIMEFRAME, self.DAILY, self.WEEKLY, self.MONTHLY, SAMEDAY_5M, SAMEDAY_15M]
+            ]
+            candles = await asyncio.gather(*tasks)
+            return candles
       
-      else:
-        pass
+        else:
+            pass
 
     async def fetch_ohlc_async(self, exchange, symbol, token, timeframe):
-      """
-      Fetches OHLC data asynchronously for the given timeframe.
-      """
-      loop = asyncio.get_running_loop()  # Get the current event loop
-      candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, exchange, symbol, token, timeframe)
-      return candles
+        """
+        Fetches OHLC data asynchronously for the given timeframe.
+        """
+        loop = asyncio.get_running_loop()  # Get the current event loop
+        candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, exchange, symbol, token, timeframe)
+        return candles
 
 
     ###########################################
@@ -300,7 +300,7 @@ class StockDelivery(BaseStrategy):
 
         
         # Log and display each Condition check
-        print(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}")
+        logging.info(f"\n::::::: Evaluating Strategy ::::::: {self.trading_symbol}")
         for condition_id, condition_check in conditions.items():
             logging.info(f":::::::Condition::::::: {condition_id} Status: {condition_check}")
 

@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import json
 from source.constants.constants import *
+import logging
 
 class Helper:
     def __init__(self, params=None):
@@ -60,4 +61,4 @@ class Helper:
             print(formatted_json)
 
         except Exception as e:
-            print(f"Error occurred while formatting data: {str(e)}")
+            logging.error(f"Error occurred while formatting data: {str(e)}")

@@ -10,7 +10,7 @@ from source.constants.constants import *
 from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
 from source.strategies import strategy_manager
-from source.strategies import action_manager
+from source.strategies import strategy_actions
 from source.services.redis_service import RedisServiceController
 from flask import Flask, render_template, request, redirect, session
 
@@ -131,13 +131,13 @@ def InitializeCoreSystem(_IntelliTrader_):
 
     # Instantiate the Action Manager
     strategy_queues = [queue.name for queue in Queues]
-    action_manager_instance = action_manager.ActionManager(connection, modules, strategy_queues)
+    strategy_actions_instance = strategy_actions.StrategyActions(connection, modules, strategy_queues)
     
     # Start monitoring queues
     try:
-        action_manager_instance.monitor_queues()
+        strategy_actions_instance.subscribe_to_queues()
     except KeyboardInterrupt:
-        action_manager_instance.stop()
+        strategy_actions_instance.stop()
 
     # Instantiate the Strategy Manager
     strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)
