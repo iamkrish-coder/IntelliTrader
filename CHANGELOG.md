@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.8.0...v1.9.0) (2024-03-03)
+
+
+### Features
+
+* latest changes pushed ([915f99d](https://github.com/iamkrish-coder/IntelliTrader/commit/915f99db4e1b6b50a79ef510a2989f358b7070db))
+
 ## [1.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.7.0...v1.8.0) (2024-03-03)
 
 
