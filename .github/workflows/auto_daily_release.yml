@@ -1,0 +1,45 @@
+name: Create Daily Release
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight
+
+jobs:
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Get latest release tag
+        id: latest_release
+        run: echo ::set-output name=tag::$(git describe --abbrev=0 --tags)
+
+      - name: Get commits since last release
+        id: commits
+        run: |
+          echo "::set-output name=commits::$(git log --pretty=format:\"%s (%h)\" ${GITHUB_SHA} ^${{ steps.latest_release.outputs.tag }})"
+
+      - name: Determine next version
+        id: next_version
+        run: |
+          echo "::set-output name=next_version::$(echo ${{ steps.latest_release.outputs.tag }} | awk -F '.' '{$NF = $NF + 1;} 1' OFS='.')"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.next_version.outputs.next_version }}
+          release_name: ${{ steps.next_version.outputs.next_version }}
+          body: ${{ steps.commits.outputs.commits }}
+          draft: false
+          prerelease: false
