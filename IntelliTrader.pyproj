@@ -52,14 +52,9 @@
     <Compile Include="source\queue\redisPublisher.py" />
     <Compile Include="source\queue\redisSubscriber.py" />
     <Compile Include="source\services\redis_service.py" />
-    <Compile Include="source\strategies\strategy_actions.py" />
     <Compile Include="source\strategies\base_actions.py" />
     <Compile Include="source\strategies\base_strategy.py" />
-    <Compile Include="source\strategies\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="source\strategies\shared.py" />
-    <Compile Include="source\strategies\stock_delivery.py" />
+    <Compile Include="source\strategies\sharedManager.py" />
     <Compile Include="source\strategies\strategy_manager.py" />
     <Compile Include="source\ticker.py" />
   </ItemGroup>
@@ -130,12 +125,6 @@
     <Content Include="source\static\js\jquery.js" />
     <Content Include="source\static\js\main.js" />
     <Content Include="source\static\js\plugins.js" />
-    <Content Include="source\strategies\__pycache__\base_strategy.cpython-312.pyc" />
-    <Content Include="source\strategies\__pycache__\shared.cpython-312.pyc" />
-    <Content Include="source\strategies\__pycache__\stock_delivery.cpython-312.pyc" />
-    <Content Include="source\strategies\__pycache__\stock_options.cpython-312.pyc" />
-    <Content Include="source\strategies\__pycache__\strategy_manager.cpython-312.pyc" />
-    <Content Include="source\strategies\__pycache__\__init__.cpython-312.pyc" />
     <Content Include="source\templates\home.html" />
     <Content Include="source\templates\index.html" />
     <Content Include="source\templates\login.html" />
@@ -160,6 +149,7 @@
     <Folder Include="source\constants\__pycache__\" />
     <Folder Include="source\data\" />
     <Folder Include="source\data\basket\" />
+    <Folder Include="source\data\algorithms\" />
     <Folder Include="source\enumerations\" />
     <Folder Include="source\enumerations\__pycache__\" />
     <Folder Include="source\indicators\" />
@@ -183,7 +173,6 @@
     <Folder Include="source\static\images\flakes\depth5\" />
     <Folder Include="source\static\js\" />
     <Folder Include="source\strategies\" />
-    <Folder Include="source\strategies\__pycache__\" />
     <Folder Include="source\templates\" />
     <Folder Include="source\__pycache__\" />
   </ItemGroup>

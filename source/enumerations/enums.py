@@ -17,6 +17,10 @@ class Symbol(Enum):
     SBIN  = 'SBIN'
     IRCTC = 'IRCTC'
 
+class Strategy_Type(Enum):
+    LONG  = 'long'
+    SHORT = 'short'
+
 class Queues(Enum):
     Queue1     = 'IntelliTrader_Q1.fifo'
     Queue2     = 'IntelliTrader_Q2.fifo'
@@ -26,12 +30,12 @@ class Queues(Enum):
     Queue6     = 'IntelliTrader_Q6.fifo'
     
 class Strategy(Enum):
-    STOCK_DELIVERY = 1
-    STOCK_OPTIONS  = 2
-    STOCK_FUTURES  = 3   
-    STOCK_INTRADAY = 4
-    INDEX_OPTIONS  = 5
-    INDEX_FUTURES  = 6 
+    algorithm_1  = 1
+    algorithm_2  = 2
+    algorithm_3  = 3   
+    algorithm_4  = 4
+    algorithm_5  = 5
+    algorithm_6  = 6 
 
 class RSI(Enum):
     RSI_5  = 5

@@ -10,7 +10,7 @@ from source.constants.constants import *
 from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
 from source.strategies import strategy_manager
-from source.strategies import strategy_actions
+from source.strategies import actions_manager
 # from source.services.redis_service import RedisServiceController
 from flask import Flask, render_template, request, redirect, session
 
@@ -131,11 +131,11 @@ def InitializeCoreSystem(_IntelliTrader_):
 
     # Instantiate the Strategy Manager
     strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)    
-    # Initialize the selected strategy
     strategy_manager_instance.initialize_strategy(configuration)
 
-    strategy_actions_instance = strategy_actions.StrategyActions(connection, modules)   
-    strategy_actions_instance.subscribe_message()    
+    # Instantiate the Actions Manager
+    strategy_actions_instance = actions_manager.ActionsManager(connection, modules)   
+    strategy_actions_instance.initialize_actions(configuration)    
 
 def InitializeWebInterface(_IntelliTrader_):
     # Create a Flask app instance

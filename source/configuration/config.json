@@ -1,5 +1,5 @@
 {
-  "debugging": false,
+  "debugger": false,
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
@@ -63,6 +63,7 @@
   "strategy": "1",
   "strategy_1_params": {
     "timeframe": "5minute",
+    "type":  "long",
     "ticker": true,
     "option": true,
     "futures": false,

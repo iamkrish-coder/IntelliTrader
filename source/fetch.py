@@ -74,30 +74,40 @@ class Fetch:
         data = pd.DataFrame()
         if exchange and symbol and instrument_token and timeframe and duration:
             
-            if timeframe.__contains__('sameday'):
-                # Fetch Minutes Data
-                duration = duration['sameday']
+            if timeframe.__contains__('today'):
                 
-                if 'sameday1minute' in timeframe:
+                # Fetch Minutes Data
+                duration = duration['today']
+                
+                if 'today1minute' in timeframe:
                     timeframe = 'minute'
-                elif 'sameday2minute' in timeframe:
+                elif 'today2minute' in timeframe:
                     timeframe = '2minute'                    
-                elif 'sameday3minute' in timeframe:
+                elif 'today3minute' in timeframe:
                     timeframe = '3minute'
-                elif 'sameday5minute' in timeframe:
+                elif 'today5minute' in timeframe:
                     timeframe = '5minute'  
-                elif 'sameday15minute' in timeframe:    
+                elif 'today15minute' in timeframe:    
                     timeframe = '15minute'
-                elif 'sameday30minute' in timeframe:    
+                elif 'today30minute' in timeframe:    
                     timeframe = '30minute'
-                elif 'sameday60minute' in timeframe:    
+                elif 'today60minute' in timeframe:    
                     timeframe = '60minute'
                 else:
                     logging.error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
                     return None
                 
                 data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
+                
+                current_time = dt.datetime.now().time()
+                if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
+                    pass
+                else:            
+                    data['date'] = pd.to_datetime(data['date'])
+                    today_date = dt.datetime.now().date()
+                    data = data[data['date'].dt.date == today_date]
                 logging.info(f'::::::: OHLCV ::::::: Timeframe: {MINUTE.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                
             elif timeframe.__contains__('minute'):
                 # Fetch Minutes Data
                 duration = duration['minute']
@@ -137,13 +147,13 @@ class Fetch:
             
             if data is None or data.empty:
                 logging.warning(f"No data found for exchange:symbol {exchange}:{symbol}")
-                exit()
+                return None
             else:    
                 Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
                 return data
         else:
             logging.warning(f'Please verify that the exchange [{exchange}], symbol [{symbol}], timeframe[{timeframe}] and duration[{duration}] are present.')
-            exit()
+            return None
 
     def aggregate_to_weekly(self, daily_data):      
         daily_data['date'] = pd.to_datetime(daily_data['date'])
