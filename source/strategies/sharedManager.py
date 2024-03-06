@@ -1,4 +1,4 @@
-# strategies/shared.py
+# strategies/sharedManager.py
 
 import pandas as pd
 import numpy as np
@@ -9,14 +9,116 @@ import calendar
 from source.constants.constants import *
 from source.enumerations.enums import *
 
-class Shared:
+class SharedManager:
     def __init__(self, connection, modules):
         self.connection = connection
         self.modules = modules
 
+    def is_red(self, candle):
+        return candle['close'] < candle['open']
+
+    def is_green(self, candle):
+        return candle['close'] > candle['open']
+    
+    def calculate_candle_range(self, candle):
+        return candle['high'] - candle['low']
+
+    def calculate_candle_body_size(self, candle):
+        return abs(candle['close'] - candle['open'])
+
+    def calculate_candle_wick_size(self, candle):
+        return max(candle['high'] - max(candle['open'], candle['close']), max(candle['open'], candle['close']) - candle['low'])
+
+    def is_doji(self, candle, threshold=0.01):  
+        return abs(candle['close'] - candle['open']) < threshold * self.calculate_candle_range(candle)
+
+    def is_higher_high(self, candle, previous_candle):
+        return candle['high'] > previous_candle['high']
+
+    def is_lower_low(self, candle, previous_candle):
+        return candle['low'] < previous_candle['low']
+
+    def is_engulfing_pattern(self, candle, previous_candle):
+        return candle['high'] > previous_candle['high'] and candle['low'] < previous_candle['low']
+
+    def is_hammer(self, candle):
+        body_size = abs(candle['close'] - candle['open'])
+        upper_shadow = candle['high'] - max(candle['open'], candle['close'])
+        lower_shadow = min(candle['open'], candle['close']) - candle['low']
+        return upper_shadow >= 2 * body_size and lower_shadow <= body_size
+
+    def is_shooting_star(self, candle):
+        body_size = abs(candle['close'] - candle['open'])
+        upper_shadow = candle['high'] - max(candle['open'], candle['close'])
+        lower_shadow = min(candle['open'], candle['close']) - candle['low']
+        return upper_shadow >= 2 * body_size and lower_shadow >= body_size
+
+    def is_inside_bar(self, candle, previous_candle):
+        return candle['high'] < previous_candle['high'] and candle['low'] > previous_candle['low']
+
+    def is_bearish_engulfing(candle, previous_candle):
+        return candle['close'] < candle['open'] and previous_candle['close'] < previous_candle['open'] and \
+               candle['open'] >= previous_candle['close'] and candle['close'] <= previous_candle['open']
+
+    def is_bearish_engulfing(candle, previous_candle):
+        return candle['close'] < candle['open'] and previous_candle['close'] < previous_candle['open'] and \
+           candle['open'] >= previous_candle['close'] and candle['close'] <= previous_candle['open']
+
+    def is_bullish_harami(candle, previous_candle):
+        return previous_candle['close'] > previous_candle['open'] and candle['close'] > candle['open'] and \
+           candle['open'] < previous_candle['close'] and candle['close'] > previous_candle['open']
+
+    def is_bearish_harami(candle, previous_candle):
+        return previous_candle['close'] < previous_candle['open'] and candle['close'] < candle['open'] and \
+           candle['open'] > previous_candle['close'] and candle['close'] < previous_candle['open']
+
     def get_indicator_values(self, indicator, datasource, setting):
         indicator_values = self.modules['indicator'].use_indicator(indicator, datasource, setting)
         return indicator_values
+
+    def get_last_n_candles(self, candles, n):
+        """
+        Get the last n candles from the given candle dataset.
+        """
+        return candles.iloc[-n:]
+
+    def get_first_candle_of_day(self, candles):
+        """
+        Get the first candle of the day from the given candle dataset.
+        """
+        return candles.iloc[0] if candles else None
+
+
+    def get_nth_last_prices(self, candles, n=1):
+        """
+        Get the nth last open, high, low, close, and volume from the dataset.
+        """
+        if not candles.empty and len(candles) >= n:
+            nth_last_candle = candles.iloc[-n]
+            nth_last_open = nth_last_candle.get('open')
+            nth_last_high = nth_last_candle.get('high')
+            nth_last_low = nth_last_candle.get('low')
+            nth_last_close = nth_last_candle.get('close')
+            nth_last_volume = nth_last_candle.get('volume')
+            return nth_last_open, nth_last_high, nth_last_low, nth_last_close, nth_last_volume
+        else:
+            return None, None, None, None, None
+
+    def get_nth_first_prices(self, candles, n=1):
+        """
+        Get the nth first open, high, low, close, and volume from the dataset.
+        """
+        if not candles.empty and len(candles) >= n:
+            nth_first_candle = candles.iloc[n - 1]
+            nth_first_open = nth_first_candle.get('open')
+            nth_first_high = nth_first_candle.get('high')
+            nth_first_low = nth_first_candle.get('low')
+            nth_first_close = nth_first_candle.get('close')
+            nth_first_volume = nth_first_candle.get('volume')
+            return nth_first_open, nth_first_high, nth_first_low, nth_first_close, nth_first_volume
+        else:
+            return None, None, None, None, None
+
 
     def get_stock_basket(self, exchange, symbol):
         stock_basket = []       
@@ -86,19 +188,17 @@ class Shared:
             
         return ohlcv_monthly_data
 
-    def process_same_day_candles(self, candles_same_day):
-        ohlcv_same_day_data = {}
-        # Same Day Candles
-        ohlcv_same_day_data['open']                  = candles_same_day.get('open', []).tolist()
-        ohlcv_same_day_data['high']                  = candles_same_day.get('high', []).tolist()
-        ohlcv_same_day_data['low']                   = candles_same_day.get('low', []).tolist()
-        ohlcv_same_day_data['close']                 = candles_same_day.get('close', []).tolist()
-        ohlcv_same_day_data['volume']                = candles_same_day.get('volume', []).tolist()
+    def process_today_candles(self, candles_today):
+        ohlcv_today_data = {}
+        # Today Candles
+        ohlcv_today_data['open']                  = candles_today.get('open', []).tolist()
+        ohlcv_today_data['high']                  = candles_today.get('high', []).tolist()
+        ohlcv_today_data['low']                   = candles_today.get('low', []).tolist()
+        ohlcv_today_data['close']                 = candles_today.get('close', []).tolist()
+        ohlcv_today_data['volume']                = candles_today.get('volume', []).tolist()
 
-        return ohlcv_same_day_data
+        return ohlcv_today_data
 
-
-    
     def get_duration_week(self, depth=1):
         today = dt.date.today()
         current_year = today.year
@@ -136,11 +236,6 @@ class Shared:
                 duration += days_in_month
         
         return duration
-
-
-
-
-
 
     def get_underlying_ltp(ticker):
         stock = ticker if ticker not in ('NIFTY', 'BANKNIFTY') else None

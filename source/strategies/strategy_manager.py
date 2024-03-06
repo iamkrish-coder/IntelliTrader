@@ -1,57 +1,365 @@
 # strategies/strategy_manager.py
+import os
+import time
+import json
 import logging
+import asyncio
+import boto3
+import uuid
+import pandas as pd
 import source.strategies as strategies
+
 from source.enumerations.enums import Strategy
+from ast import arg
+from ctypes import alignment
+from numpy import histogram
+from turtle import st
+from msilib.schema import CustomAction
+from source.strategies.base_strategy import BaseStrategy
+from source.constants.constants import *
+from source.enumerations.enums import *
     
-class StrategyManager:
+class StrategyManager(BaseStrategy):
+    
     def __init__(self, connection, modules):
-        self.connection = connection
-        self.modules = modules
+        super().__init__(connection, modules) 
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+        self.sqs = boto3.client('sqs', region_name=REGION_NAME)
         
+    ###########################################
+    # Initialize Strategy Manager
+    ###########################################
+ 
     def initialize_strategy(self, configuration):
         try:
-            live_trade          = configuration.get("live_trade")
-            virtual_trade       = configuration.get("virtual_trade")
-            strategy_id         = int(configuration.get("strategy"))
-            strategy_enum       = Strategy(strategy_id)
-            strategy_enum_name  = strategy_enum.name
-            strategy_class_name = self.modules["help"].convert_enum_to_class_name(strategy_enum_name)
-            strategy_class      = getattr(strategies, strategy_class_name, None)
+            debugger = configuration.get("debugger") 
+            live_trade = configuration.get("live_trade")
+            virtual_trade = configuration.get("virtual_trade")
+            market_trade = configuration.get("market_trade")
             
-            if strategy_class:
+            strategy_id = int(configuration.get("strategy"))
+            strategy_enum = Strategy(strategy_id)
+            strategy_name = strategy_enum.name
 
-                # Instantiate the strategy with connection and parameters
-                strategy_instance = strategy_class(self.connection, self.modules)
-                
-                # Strategy Execution
-                if live_trade == True:
+            if live_trade == True:
            
-                    live_trade          = configuration.get("live_trade")
-                    live_trade_params   = configuration.get("live_trade_params") if live_trade else None
-                    market_trade        = configuration.get("market_trade")
-                    market_trade_params = configuration.get("market_trade_params") if market_trade else None
-                    strategy_params     = configuration.get(f"strategy_{strategy_enum.value}_params")
-                    common_params       = configuration.get("common_params")
+                live_trade          = configuration.get("live_trade")
+                live_trade_params   = configuration.get("live_trade_params") if live_trade else None
+                market_trade        = configuration.get("market_trade")
+                market_trade_params = configuration.get("market_trade_params") if market_trade else None
+                strategy_params     = configuration.get(f"strategy_{strategy_enum.value}_params")
+                common_params       = configuration.get("common_params")
 
-                    # Instantiate Strategy Method
-                    strategy_instance.execute_live_strategy(live_trade_params, market_trade_params, strategy_params, common_params)
+                self.execute_strategy(live_trade_params, market_trade_params, strategy_params, common_params)
                     
-                elif virtual_trade == True and live_trade == False:
+            elif virtual_trade == True and live_trade == False:
 
-                    virtual_trade        = configuration.get("virtual_trade")
-                    virtual_trade_params = configuration.get("virtual_trade_params") if virtual_trade else None
-                    market_trade         = configuration.get("market_trade")
-                    market_trade_params  = configuration.get("market_trade_params") if market_trade else None
-                    strategy_params      = configuration.get(f"strategy_{strategy_enum.value}_params")
-                    common_params       = configuration.get("common_params")
+                virtual_trade        = configuration.get("virtual_trade")
+                virtual_trade_params = configuration.get("virtual_trade_params") if virtual_trade else None
+                market_trade         = configuration.get("market_trade")
+                market_trade_params  = configuration.get("market_trade_params") if market_trade else None
+                strategy_params      = configuration.get(f"strategy_{strategy_enum.value}_params")
+                common_params        = configuration.get("common_params")
                     
-                    # Instantiate Strategy Method
-                    strategy_instance.execute_virtual_strategy(virtual_trade_params, market_trade_params, strategy_params, common_params)
+                self.execute_strategy(virtual_trade_params, market_trade_params, strategy_params, common_params)
                     
-                else:
-                    logging.info("No Virtual trade or Live configuration found.")       
             else:
-                logging.info(f"Strategy class {strategy_class_name} not found in the strategies module.")
+                self.logger.info("No Virtual trade or Live configuration found.")       
 
         except Exception as e:
-            logging.info(f"An error occurred: {e}")
+            self.logger.info(f"An error occurred: {e}")
+            
+    def execute_strategy(self, v_args, m_args, s_args, c_args):
+        """
+        Executes a trading strategy using provided arguments.
+
+        Parameters:
+        - v_args (dict): Virtual trading arguments including initial capital, virtual account settings, etc.
+        - m_args (dict): Market data arguments including OHLCV data, indicators, etc.
+        - s_args (dict): Strategy-specific arguments including strategy parameters, rules, etc.
+        - c_args (dict): Additional contextual arguments if needed.
+
+        Returns:
+        - result (dict): Dictionary containing the result of the virtual strategy execution.
+          Example keys: 'profit_loss', 'trades_executed', 'strategy_performance', etc.
+        """               
+        
+        # Declare variables
+        instruments_list   = []
+        watchlist_stocks   = []
+        local_indices      = []
+        global_indices     = []
+        stock_alerts       = []
+        
+        stock_data         = {}
+        indicator_data     = {}
+        ohlcv_today_data   = {}
+        ohlcv_daily_data   = {}
+        ohlcv_weekly_data  = {}
+        ohlcv_monthly_data = {}
+               
+        # Virtual Trade Parameters
+        self.symbol                       = v_args.get('symbol')
+        self.exchange                     = v_args.get('exchange')
+        self.historical_data_subscription = v_args.get('historical_data_subscription')
+        max_allocation                    = v_args.get('max_allocation')
+        quantity                          = v_args.get('quantity')
+        tpsl_method                       = v_args.get('tpsl_method')
+        target                            = v_args.get('target')
+        stop_loss                         = v_args.get('stop_loss')
+        trail_profit                      = v_args.get('trail_profit')
+        trail_stop_loss                   = v_args.get('trail_stop_loss')
+
+        # Multi Timeframe
+        multi_timeframe = m_args.get('multi_timeframe', {})
+        self.DAILY      = multi_timeframe.get('daily_interval')
+        self.WEEKLY     = multi_timeframe.get('weekly_interval')
+        self.MONTHLY    = multi_timeframe.get('monthly_interval')
+
+        # Strategy Parameters
+        self.TIMEFRAME = s_args.get('timeframe')
+        self.strategy_type = s_args.get('type')
+
+        # Market Parameters
+        market_params  = m_args.get('market_params')
+        market_indices = m_args.get('market_indices')
+
+        # Common Parameters
+        prettier = c_args.get('prettier_print')
+        
+        # Market Trend Study
+        if market_params:
+            local_market_sentiment  = self.get_local_market_sentiment()
+            global_market_sentiment = self.get_global_market_sentiment()
+
+
+        # Get Live Data
+        stock_basket     = self.get_stock_basket(self.exchange, self.symbol)
+        instruments_list = self.modules['fetch'].fetch_instruments(self.exchange)  
+        watchlist_stocks = [instrument for instrument in instruments_list if instrument['tradingsymbol'] in stock_basket]
+
+        # Loop through stocks
+        for i, stock in enumerate(watchlist_stocks, start=1):
+            
+            self.trading_exchange = stock.get('exchange')           
+            self.trading_symbol   = stock.get('tradingsymbol')
+
+            if self.trading_symbol is None or self.trading_symbol is None:
+                continue
+
+            self.instrument_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules['fetch'].instrument_token_lookup(self.trading_exchange, self.trading_symbol)
+
+            ##################################################################################################################################
+            print(f"\nScanning Stock {i}/{len(watchlist_stocks)}: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}\n")
+            ##################################################################################################################################
+            
+            # Candlestick Data          
+            self.logger.info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+            candlestick_data = asyncio.run(self.get_candlestick_data())     
+            
+            candles = candlestick_data[0]
+           
+            # Indicators Data          
+            self.logger.info(f"Fetching Indicator data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+
+            indicator_data = self.calculate_indicators(candles)
+          
+           
+            # <Debug> 
+            # self.modules['help'].format_json_output_print(candles, "Now", prettier)
+            # self.modules['help'].format_json_output_print(candles_daily, "Daily", prettier)
+            # self.modules['help'].format_json_output_print(candles_weekly, "Weekly", prettier)
+            # self.modules['help'].format_json_output_print(candles_monthly, "Monthly", prettier)
+            # self.modules['help'].format_json_output_print(candles_today_5m, "Today 5M", prettier)
+            # self.modules['help'].format_json_output_print(candles_today_15m, "Today 15M", prettier)
+            
+            # Evaluate Strategy Conditions 
+            conditions_met = self.evaluate_primary_conditions(candlestick_data, indicator_data)
+            
+            if conditions_met:
+                stock_alerts.append(self.trading_symbol) 
+                
+                # Publish the stock alert to a queue 
+                message = f"{self.trading_exchange},{self.trading_symbol},{self.instrument_token}" 
+                
+                queue_response = self.publish_message(message)   
+                self.logger.info(f":::::::: Message ID :::::::: {queue_response['MessageId']}")
+
+            else:
+                continue     
+
+    ###########################################
+    # Evaluate Strategy Conditions
+    ###########################################
+
+    def evaluate_primary_conditions(self, candlestick_data, indicator_data):
+        """
+        Evaluates the trading strategy conditions based on provided data.
+
+        Parameters:
+        - candlestick_data (DataFrame): OHLCV data for all timeframes.
+        - indicator_data (DataFrame): Additional indicator data used for evaluation.
+
+        Returns:
+        - conditions_met (bool): True if strategy conditions are met, False otherwise.
+        """
+        
+        candles, candles_daily, candles_weekly, candles_monthly, candles_today_5m, candles_today_15m, candles_today_30m, candles_today_60m = candlestick_data         
+
+
+        # Default Candles  
+        last_open, last_high, last_low, last_close, last_volume                                    = self.get_nth_last_prices(candles, 1)
+        second_last_open, second_last_high, second_last_low, second_last_close, second_last_volume = self.get_nth_last_prices(candles, 2)
+        third_last_open, third_last_high, third_last_low, third_last_close, third_last_volume      = self.get_nth_last_prices(candles, 3)
+
+        # Daily Candles        
+        last_open_daily, last_high_daily, last_low_daily, last_close_daily, last_volume_daily                                    = self.get_nth_last_prices(candles_daily, 1)
+        second_last_open_daily, second_last_high_daily, second_last_low_daily, second_last_close_daily, second_last_volume_daily = self.get_nth_last_prices(candles_daily, 2)
+        third_last_open_daily, third_last_high_daily, third_last_low_daily, third_last_close_daily, third_last_volume_daily      = self.get_nth_last_prices(candles_daily, 3)
+
+        # Weekly Candles
+        last_open_weekly, last_high_weekly, last_low_weekly, last_close_weekly, last_volume_weekly                                    = self.get_nth_last_prices(candles_weekly, 1)
+        second_last_open_weekly, second_last_high_weekly, second_last_low_weekly, second_last_close_weekly, second_last_volume_weekly = self.get_nth_last_prices(candles_weekly, 2)
+        third_last_open_weekly, third_last_high_weekly, third_last_low_weekly, third_last_close_weekly, third_last_volume_weekly      = self.get_nth_last_prices(candles_weekly, 3)
+
+        # Monthly Candles
+        last_open_monthly, last_high_monthly, last_low_monthly, last_close_monthly, last_volume_monthly                                    = self.get_nth_last_prices(candles_monthly, 1)
+        second_last_open_monthly, second_last_high_monthly, second_last_low_monthly, second_last_close_monthly, second_last_volume_monthly = self.get_nth_last_prices(candles_monthly, 2)
+        third_last_open_monthly, third_last_high_monthly, third_last_low_monthly, third_last_close_monthly, third_last_volume_monthly      = self.get_nth_last_prices(candles_monthly, 3)
+
+        # Today Candles
+        first_open_today_5m, first_high_today_5m, first_low_today_5m, first_close_today_5m, first_volume_today_5m      = self.get_nth_first_prices(candles_today_5m, n=1)
+        first_open_today_15m, first_high_today_15m, first_low_today_15m, first_close_today_15m, first_volume_today_15m = self.get_nth_first_prices(candles_today_15m, n=1)
+        first_open_today_30m, first_high_today_30m, first_low_today_30m, first_close_today_30m, first_volume_today_30m = self.get_nth_first_prices(candles_today_30m, n=1)
+        first_open_today_60m, first_high_today_60m, first_low_today_60m, first_close_today_60m, first_volume_today_60m = self.get_nth_first_prices(candles_today_60m, n=1)
+       
+        rsi               = indicator_data.get('rsi')       
+        wma5              = indicator_data.get('wma5')
+        wma20             = indicator_data.get('wma20')
+        supertrend        = indicator_data.get('supertrend')
+        truerange         = indicator_data.get('truerange')
+        average_truerange = indicator_data.get('average_truerange')
+        macd              = indicator_data.get('macd')
+        macd_line         = macd['macd_line']
+        macd_signal       = macd['signal_line']
+        macd_histogram    = macd['macd_histogram']
+
+        # TODO - Get More Indicators 
+
+
+        # TODO - Define Primary Level Checking
+
+        # Define strategy conditions
+        try:
+            conditions = {
+                '1': rsi[-1] > 50
+                # '2': close[-1] > (open[-1] * 1.01),
+                # '3': volume[-1] > 200000,
+                # '4': close[-1] > 2000,
+                # '5': close[-1] > close_daily[-2],                    
+                # '6': truerange[-1] > average_truerange[-1],
+                # '7': truerange[-1] > 8,
+                # '8': close[-1] > close_weekly[-2],                                   
+                # '9': close[-1] > close_monthly[-2], 
+                # '10': close_weekly[-1] > close_weekly[-2],                                                    
+                # '11': close_monthly[-1] > close_monthly[-2],
+                # '12': close[-1] > ((open[-1] + high_daily[-2] + close_daily[-2]) / 3),
+                # '13': macd_histogram[-1] > 0,
+                # '14': macd_line[-1] > macd_signal[-1],
+                # '15': close[-1] > high_daily[-2],
+                # '16': close[-1] > open_5m[0],
+                # '17': close[-1] > supertrend[-1],
+                # '18': close[-2] <= supertrend[-2],
+                # '19': rsi[-1] > 60,
+                # '20': rsi[-2] <= 60,
+                # '21': wma5[-1] > wma20[-1]
+            }
+        except Exception as e:
+            self.logger.error(f"An error occurred while evaluating primary conditions: {str(e)}")
+
+        
+        # Log and display each Condition check
+        self.logger.info(f"Evaluating Strategy {self.trading_symbol}")
+        for condition_id, condition_check in conditions.items():
+            self.logger.info(f"::::::: Condition ::::::: {condition_id} Status: {condition_check}")
+
+       
+        # Final Strategy Condition
+        if all(conditions.values()):
+            return True
+        else:
+            return False
+        
+    ###########################################
+    # Publish Stock Alert to Queue
+    ###########################################
+        
+    def publish_message(self, message):
+        # Publish messages to the queue
+        # Generate a unique message group ID using UUID
+        message_group_id = str(uuid.uuid4())   
+        
+        response = self.sqs.send_message(
+            QueueUrl    = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
+            MessageBody = message,
+            MessageGroupId = message_group_id
+        )
+        self.logger.info(f"Message Published: {message}")       
+        return response
+    
+    ###########################################
+    # Calculate Indicators Data
+    ###########################################
+        
+    def calculate_indicators(self, candles):
+        """
+        Calculates and stores various technical indicators for the given OHLCV data.
+
+        Args:
+            candles (pandas.DataFrame): The OHLCV data
+
+        Returns:
+            dict: A dictionary containing calculated indicator values.
+        """
+        indicator_data                      = {}
+        indicator_data['rsi']               = self.get_indicator_values('rsi', candles, RSI.RSI_8.value)
+        indicator_data['wma5']              = self.get_indicator_values('wma', candles, WMA.WMA_5.value)
+        indicator_data['wma20']             = self.get_indicator_values('wma', candles, WMA.WMA_21.value)
+        indicator_data['supertrend']        = self.get_indicator_values('supertrend', candles, Supertrend.SUPERTREND_4_2.value)
+        indicator_data['truerange']         = self.get_indicator_values('truerange', candles, TrueRange.TRUERANGE_14.value)
+        indicator_data['average_truerange'] = self.get_indicator_values('average_truerange', candles, AverageTrueRange.AVERAGETRUERANGE_14.value)
+        indicator_data['macd']              = self.get_indicator_values('macd', candles, MACD.MACD_12_26_9.value)
+        
+        # Check if any indicator data is None, if so, return None
+        if any(value is None for value in indicator_data.values()):
+            return None
+    
+        return indicator_data
+
+    ###########################################
+    # Async Processing
+    ###########################################
+        
+    async def get_candlestick_data(self):
+        """
+        Asynchronously fetches OHLC data for different timeframes.
+        """
+        if self.historical_data_subscription:
+            tasks = [
+                self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.instrument_token, self.timeframe)
+                for self.timeframe in [self.TIMEFRAME, self.DAILY, self.WEEKLY, self.MONTHLY, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M]
+            ]
+            candles = await asyncio.gather(*tasks)
+            return candles
+      
+        else:
+            pass
+
+    async def fetch_ohlc_async(self, trading_exchange, trading_symbol, instrument_token, trading_timeframe):
+        """
+        Fetches OHLC data asynchronously for the given timeframe.
+        """
+        loop = asyncio.get_running_loop()  
+        candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, trading_exchange, trading_symbol, instrument_token, trading_timeframe)
+        return candles

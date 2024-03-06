@@ -64,7 +64,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate RSI
                 pdf = pd.DataFrame(dataset)
-                rsi_values = rsi(pdf)
+                rsi_values = rsi(pdf, period)
                 return rsi_values
             else:
                 logging.error("Failed to calculate RSI") 
