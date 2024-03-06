@@ -2,7 +2,6 @@
 import logging
 import datetime
 import time
-import logging
 import boto3
 import asyncio
 import source.strategies as strategies
@@ -29,98 +28,102 @@ class ActionsManager(BaseActions):
     def initialize_actions(self, configuration):
         try:
 
-            debugger = configuration.get("debugger") 
-            live_trade = configuration.get("live_trade")
+            debugger      = configuration.get("debugger") 
+            live_trade    = configuration.get("live_trade")
             virtual_trade = configuration.get("virtual_trade")
-            market_trade = configuration.get("market_trade")
+            market_trade  = configuration.get("market_trade")
             
-            strategy_id = int(configuration.get("strategy"))
+            strategy_id   = int(configuration.get("strategy"))
             strategy_enum = Strategy(strategy_id)
             strategy_name = strategy_enum.name
             
                 
-            if live_trade == True:
-           
-                live_trade          = configuration.get("live_trade")
-                live_trade_params   = configuration.get("live_trade_params") if live_trade else None
-                market_trade        = configuration.get("market_trade")
-                market_trade_params = configuration.get("market_trade_params") if market_trade else None
-                strategy_params     = configuration.get(f"strategy_{strategy_enum.value}_params")
-                common_params       = configuration.get("common_params")
+            # Initialize Settings
+            settings = {}
 
-                self.execute_actions(live_trade_params, market_trade_params, strategy_params, common_params)
-                    
-            elif virtual_trade == True and live_trade == False:
+            if live_trade:
+                settings['trade_params'] = configuration.get("live_trade_params")
+            elif virtual_trade and not live_trade:
+                settings['trade_params'] = configuration.get("virtual_trade_params")
 
-                virtual_trade        = configuration.get("virtual_trade")
-                virtual_trade_params = configuration.get("virtual_trade_params") if virtual_trade else None
-                market_trade         = configuration.get("market_trade")
-                market_trade_params  = configuration.get("market_trade_params") if market_trade else None
-                strategy_params      = configuration.get(f"strategy_{strategy_enum.value}_params")
-                common_params       = configuration.get("common_params")
-                    
-                self.execute_actions(virtual_trade_params, market_trade_params, strategy_params, common_params)
-                    
-            else:
-                self.logger.info("No Virtual trade or Live configuration found.")       
+            # Add common parameters
+            settings['market_trade_params']   = configuration.get("market_trade_params")
+            settings['strategy_trade_params'] = configuration.get(f"strategy_{strategy_enum.value}_params")
+            settings['common_trade_params']   = configuration.get("common_trade_params")
+
+            self.execute_actions(**settings)
 
         except Exception as e:
             self.logger.info(f"An error occurred: {e}")
             
-    def execute_actions(self, v_args, m_args, s_args, c_args):
-        # Load Configurations
-        
-        # Virtual Trade Parameters
-        self.symbol                       = v_args.get('symbol')
-        self.exchange                     = v_args.get('exchange')
-        self.historical_data_subscription = v_args.get('historical_data_subscription')
-        max_allocation                    = v_args.get('max_allocation')
-        quantity                          = v_args.get('quantity')
-        tpsl_method                       = v_args.get('tpsl_method')
-        target                            = v_args.get('target')
-        stop_loss                         = v_args.get('stop_loss')
-        trail_profit                      = v_args.get('trail_profit')
-        trail_stop_loss                   = v_args.get('trail_stop_loss')
+    def execute_actions(self, **kwargs):
+        params = []
 
-        # Multi Timeframe
-        multi_timeframe = m_args.get('multi_timeframe', {})
-        self.DAILY      = multi_timeframe.get('daily_interval')
-        self.WEEKLY     = multi_timeframe.get('weekly_interval')
-        self.MONTHLY    = multi_timeframe.get('monthly_interval')
+        params.append(kwargs.get('trade_params'))
+        params.append(kwargs.get('market_trade_params'))
+        params.append(kwargs.get('strategy_trade_params'))
+        params.append(kwargs.get('common_trade_params'))
+
+        # Trade Params
+        trade_params = params[0] if params else {}
+
+        self.historical_data_subscription = trade_params.get('historical_data_subscription', None)
+        self.ticker_mode                  = trade_params.get('ticker_mode', None)
+        self.max_allocation               = trade_params.get('max_allocation', None)
+        self.quantity                     = trade_params.get('quantity', None)
+        self.tpsl_method                  = trade_params.get('tpsl_method', None)
+        self.target                       = trade_params.get('target', None)
+        self.stop_loss                    = trade_params.get('stop_loss', None)
+        self.trail_profit                 = trade_params.get('trail_profit', None)
+        self.trail_stop_loss              = trade_params.get('trail_stop_loss', None)
+        self.variety                      = trade_params.get('Variety', None)
+        self.order_type                   = trade_params.get('Order_Type', None)
+        self.product                      = trade_params.get('Product', None)
+        self.validity                     = trade_params.get('Validity', None)
+
+        # Market Parameters
+        market_params = params[1] if len(params) > 1 else {}
+
+        self.multi_timeframe = market_params.get('multi_timeframe', {})
+        self.DAILY           = self.multi_timeframe.get('daily_interval')
+        self.WEEKLY          = self.multi_timeframe.get('weekly_interval')
+        self.MONTHLY         = self.multi_timeframe.get('monthly_interval')
+        self.market_params   = market_params.get('market_params')
+        self.market_indices  = market_params.get('market_indices', {})
+        self.order_params    = market_params.get('order_settings', {})
 
         # Strategy Parameters
-        self.TIMEFRAME = s_args.get('timeframe')
-        self.strategy_type = s_args.get('type')
-        
-        # Market Parameters
-        market_params  = m_args.get('market_params')
-        market_indices = m_args.get('market_indices')
+        strategy_params = params[2] if len(params) > 2 else {}
+
+        self.exchange           = strategy_params.get('exchange', None)  
+        self.symbol             = strategy_params.get('symbol', None)    
+        self.timeframe          = strategy_params.get('timeframe', None)
+        self.strategy_type      = strategy_params.get('type', None)
+        self.ticker             = strategy_params.get('ticker', None)
+        self.option             = strategy_params.get('option', None)
+        self.futures            = strategy_params.get('futures', None)
+        self.strike             = strategy_params.get('strike', [])
+        self.expiry             = strategy_params.get('expiry', None)
+        self.offset             = strategy_params.get('offset', None)
 
         # Common Parameters
-        prettier = c_args.get('prettier_print')
-            
-        self.subscribe_message()
-        
-    ###########################################
-    # Subscribe Stock Alert from Queue
-    ###########################################
-        
-    def subscribe_message(self):
-        # Receive messages from the queue
-        response = self.sqs.receive_message(
-            QueueUrl = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
-            MaxNumberOfMessages = 5
-        )
+        common_params = params[3] if len(params) > 3 else {}
 
+        self.prettier = common_params.get('prettier_print')
+
+        
+        # Subscribe To Messages in Queue
+        response = self.subscribe_message()
+        
         # TODO: Do Async Multi Processing to process messages simultaneously
 
         # Process received messages
         messages = response.get('Messages', [])
         for i, message in enumerate(messages, start=1):
-                        
+            
             self.is_stock_monitored = True
-            self.message = message['Body']
-            self.receipt_handle = message['ReceiptHandle']
+            self.message            = message['Body']
+            self.receipt_handle     = message['ReceiptHandle']
             
             exchange, symbol, token = self.message.split(',')
             self.trading_exchange   = exchange
@@ -131,27 +134,41 @@ class ActionsManager(BaseActions):
             print(f"\nPreparing Stock {i}/{len(messages)}: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}\n")
             ##################################################################################################################################
 
-            self.logger.info(f"Message Received: {self.message}")
             # Delete the message from the queue
             self.sqs.delete_message(
-                QueueUrl = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
+                QueueUrl      = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
                 ReceiptHandle = self.receipt_handle
             )
             self.logger.info(f"Purge message from Queue: {self.message}")
 
-            # Pass the message to process_stock_alerts
+            # Pass the message to process stock alerts
             stock_processing_successful = self.process_stock_alerts()
             
             if stock_processing_successful and self.strategy_type == Strategy_Type.LONG.value:
-                
-                stock_to_trade = (self.trading_exchange, self.trading_symbol, self.instrument_token)
-                self.generate_buy_signal(stock_to_trade)
-                
+                stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
+                self.generate_buy_signal(stock_information)
             elif stock_processing_successful and self.strategy_type == Strategy_Type.SHORT.value:    
                 pass
             else:
                 self.logger.info(f"Stock {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token} not processed.")
                 
+    ###########################################
+    # Subscribe Stock Alert from Queue
+    ###########################################
+        
+    def subscribe_message(self):
+        # Receive messages from the queue
+        response = self.sqs.receive_message(
+            QueueUrl = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
+            MaxNumberOfMessages = 5
+        )
+        self.logger.info(f"Message Received from Queue: {response}")
+        return response
+
+    ###########################################
+    # Process Stock Alerts
+    ###########################################
+
     def process_stock_alerts(self):
         """
         Manage Stock Alerts to generate buy or sell signals
@@ -167,7 +184,7 @@ class ActionsManager(BaseActions):
                     # No need to sleep if the current minute is already a multiple 
                     self.logger.info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
                     candlestick_data = asyncio.run(self.get_candlestick_data())
-                    conditions_met = self.evaluate_secondary_conditions(candlestick_data)
+                    conditions_met   = self.evaluate_secondary_conditions(candlestick_data)
                     
                     if conditions_met:
                         print(f"Buy Now")
@@ -257,34 +274,37 @@ class ActionsManager(BaseActions):
 
         # Generate a buy signal if all last obtained candles are green
         try:
-            if is_last_1m_green.item() and is_last_2m_green.item():
-                # buy signal 
-                return True    
-            elif is_last_2m_green.item() and is_last_3m_green.item():
-                # buy signal 
-                return True    
-            elif is_last_3m_green.item(): 
-                # buy signal             
-                return True    
-            else: 
-                return False
+            # if is_last_1m_green.item() and is_last_2m_green.item():
+            #     # buy signal 
+            #     return True    
+            # elif is_last_2m_green.item() and is_last_3m_green.item():
+            #     # buy signal 
+            #     return True    
+            # elif is_last_3m_green.item(): 
+            #     # buy signal             
+            #     return True    
+            # else: 
+            #     return False
+            
+            return True # For now
         except Exception as e:
             self.logger.error(f"An error occurred while evaluating secondary conditions: {str(e)}")
             return False
+
         
     ###########################################
     # Buy Signal
     ###########################################
 
-    def generate_buy_signal(self, trade_information):
+    def generate_buy_signal(self, stock_information):
             
-        exchange, symbol, token = trade_information
-            
+        exchange, symbol, token = stock_information
+
 
     ###########################################
     # Sell Signal
     ###########################################
 
-    def generate_sell_signal(self, trade_information):
+    def generate_sell_signal(self, stock_information):
             
-        exchange, symbol, token = trade_information
+        exchange, symbol, token = stock_information
