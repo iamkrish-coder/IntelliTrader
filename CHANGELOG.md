@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.10.0...v1.11.0) (2024-03-06)
+
+
+### Features
+
+* Refactor code to rewrite the strategy and actions ([7ce8b44](https://github.com/iamkrish-coder/IntelliTrader/commit/7ce8b44af56cfd6b695b4b0552c99ba73c138af3))
+
 ## [1.10.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.9.0...v1.10.0) (2024-03-03)
 
 
