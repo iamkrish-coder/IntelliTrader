@@ -6,6 +6,7 @@ import source.libraries.nse_data_api as _nseData
 import source.libraries.market_durations_api as _marketDurations
 import requests
 import calendar
+
 from turtle import st
 from source.helper import Helper
 from tkinter.tix import COLUMN
@@ -19,6 +20,7 @@ class Fetch:
 
     # Fetch instruments list
     def fetch_instruments(self, exchange=None):
+        exchange = exchange.upper()
         instruments_dump = self.prop['kite'].instruments(exchange)
         if exchange is not None:
             Helper().write_csv_output(f'instruments_{exchange}.csv', instruments_dump)
@@ -29,6 +31,8 @@ class Fetch:
     # Lookup instrument token 
     def instrument_token_lookup(self, exchange, symbol):
         if exchange and symbol:
+            exchange = exchange.upper()      
+            symbol = symbol.upper()
             nse_instruments_dump = self.prop['kite'].instruments(exchange)
             instrument_df = pd.DataFrame(nse_instruments_dump)
             try:
@@ -45,6 +49,8 @@ class Fetch:
     # Lookup instrument token list (web streaming)
     def stream_instrument_token_lookup(self, exchange, symbol_list):
         if exchange and symbol_list:
+            exchange = exchange.upper()      
+            symbol = symbol.upper()
             nse_instruments_dump = self.prop['kite'].instruments(exchange)
             instrument_df = pd.DataFrame(nse_instruments_dump)
             token_list = []
@@ -62,10 +68,8 @@ class Fetch:
             
     # Fetch historical data for an exchange and symbol    
     def fetch_ohlc(self, exchange, symbol, token, timeframe='5minute', depth=2):
-
         duration_obj = _marketDurations.MarketDurations(depth)
         duration = duration_obj.calculate_all_durations()
-        
         if token:
             instrument_token = token
         else:    
@@ -73,7 +77,8 @@ class Fetch:
         
         data = pd.DataFrame()
         if exchange and symbol and instrument_token and timeframe and duration:
-            
+            exchange = exchange.upper()      
+            symbol = symbol.upper()
             if timeframe.__contains__('today'):
                 
                 # Fetch Minutes Data
@@ -188,6 +193,8 @@ class Fetch:
     # Fetch extended historical data for an exchange and symbol with limits   
     def fetch_ohlc_extended(self, exchange, symbol, timeframe, duration=1):
         if exchange and symbol and timeframe and duration:
+            exchange = exchange.upper()      
+            symbol = symbol.upper()            
             instrument_token = self.instrument_token_lookup(exchange, symbol)
             match timeframe:
                 case "minute":
@@ -232,6 +239,8 @@ class Fetch:
     # Fetch quote
     def fetch_quote(self, exchange, symbol):
         if exchange and symbol:
+            exchange = exchange.upper()      
+            symbol = symbol.upper()                    
             quote = self.prop['kite'].quote(f'{exchange}:{symbol}')
             logging.info(f'::::::: Quote ::::::: Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')          
             return quote
@@ -242,9 +251,14 @@ class Fetch:
     # Fetch ltp 
     def fetch_ltp(self, exchange, symbol):
         if exchange and symbol:
+            exchange = exchange.upper()      
+            symbol = symbol.upper()                    
             last_traded_price = self.prop['kite'].ltp(f'{exchange}:{symbol}')
             logging.info(f'::::::: LTP ::::::: Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')                     
-            return last_traded_price
+            
+            # Extract the last price from the dictionary
+            last_price = last_traded_price[f'{exchange}:{symbol}']['last_price']            
+            return last_price
         else:
             logging.warning(f'Please verify that the exchange [{exchange}] and symbol [{symbol}] are present.')
             exit()

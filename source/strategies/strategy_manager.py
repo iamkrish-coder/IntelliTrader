@@ -102,7 +102,6 @@ class StrategyManager(BaseStrategy):
         trade_params = params[0] if params else {}
 
         self.historical_data_subscription = trade_params.get('historical_data_subscription', None)
-        self.ticker_mode                  = trade_params.get('ticker_mode', None)
         self.max_allocation               = trade_params.get('max_allocation', None)
         self.quantity                     = trade_params.get('quantity', None)
         self.tpsl_method                  = trade_params.get('tpsl_method', None)
@@ -110,18 +109,14 @@ class StrategyManager(BaseStrategy):
         self.stop_loss                    = trade_params.get('stop_loss', None)
         self.trail_profit                 = trade_params.get('trail_profit', None)
         self.trail_stop_loss              = trade_params.get('trail_stop_loss', None)
-        self.variety                      = trade_params.get('Variety', None)
-        self.order_type                   = trade_params.get('Order_Type', None)
-        self.product                      = trade_params.get('Product', None)
-        self.validity                     = trade_params.get('Validity', None)
+        self.variety                      = trade_params.get('variety', None)
+        self.ordertype                    = trade_params.get('order_type', None)
+        self.product                      = trade_params.get('product', None)
+        self.validity                     = trade_params.get('validity', None)
 
         # Market Parameters
         market_params = params[1] if len(params) > 1 else {}
 
-        self.multi_timeframe = market_params.get('multi_timeframe', {})
-        self.daily           = self.multi_timeframe.get('daily_interval')
-        self.weekly          = self.multi_timeframe.get('weekly_interval')
-        self.monthly         = self.multi_timeframe.get('monthly_interval')
         self.market_params   = market_params.get('market_params')
         self.market_indices  = market_params.get('market_indices', {})
         self.order_params    = market_params.get('order_settings', {})
@@ -129,21 +124,24 @@ class StrategyManager(BaseStrategy):
         # Strategy Parameters
         strategy_params = params[2] if len(params) > 2 else {}
 
-        self.exchange           = strategy_params.get('exchange', None)  
-        self.symbol             = strategy_params.get('symbol', None)    
-        self.timeframe          = strategy_params.get('timeframe', None)
-        self.strategy_type      = strategy_params.get('type', None)
-        self.ticker             = strategy_params.get('ticker', None)
-        self.option             = strategy_params.get('option', None)
-        self.futures            = strategy_params.get('futures', None)
-        self.strike             = strategy_params.get('strike', [])
-        self.expiry             = strategy_params.get('expiry', None)
-        self.offset             = strategy_params.get('offset', None)
+        self.exchange             = strategy_params.get('exchange', None)  
+        self.symbol               = strategy_params.get('symbol', None)    
+        self.timeframe            = strategy_params.get('timeframe', None)
+        self.strategy_type        = strategy_params.get('type', None)
+        self.ticker               = strategy_params.get('ticker', None)
+        self.ticker_mode          = strategy_params.get('ticker_mode', None)        
+        self.equity_trading       = strategy_params.get('equity_trading', None)               
+        self.option_trading       = strategy_params.get('option_trading', None)
+        self.futures_trading      = strategy_params.get('futures_trading', None)
+        self.strike               = strategy_params.get('strike', [])
+        self.expiry               = strategy_params.get('expiry', None)
+        self.offset               = strategy_params.get('offset', None)
 
         # Common Parameters
         common_params = params[3] if len(params) > 3 else {}
 
         self.prettier = common_params.get('prettier_print')
+        
         
         # Market Trend Study
         if self.market_params:
@@ -270,7 +268,7 @@ class StrategyManager(BaseStrategy):
         # Define strategy conditions
         try:
             conditions = {
-                '1': rsi[-1] > 50
+                '1': rsi[-1] > 40
                 # '2': close[-1] > (open[-1] * 1.01),
                 # '3': volume[-1] > 200000,
                 # '4': close[-1] > 2000,
@@ -365,7 +363,7 @@ class StrategyManager(BaseStrategy):
         if self.historical_data_subscription:
             tasks = [
                 self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, self.trading_timeframe)
-                for self.trading_timeframe in [self.timeframe, self.daily, self.weekly, self.monthly, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M]
+                for self.trading_timeframe in [self.timeframe, DAY, WEEK, MONTH, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M]
             ]
             candles = await asyncio.gather(*tasks)
             return candles

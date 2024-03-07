@@ -144,6 +144,19 @@ class SharedManager:
     def get_global_market_sentiment(self):
         pass
     
+    def calculate_quantity_per_capita(self, max_allocation, stock_last_traded_price, lot_size=1):
+        try:
+            max_allocation = float(max_allocation)
+            stock_last_traded_price = float(stock_last_traded_price)
+            
+            # Calculate the quantity of stocks based on maximum allocation
+            quantity = max_allocation / (stock_last_traded_price * lot_size)
+            return quantity
+        except ValueError:
+            # Handle the case where the inputs are not valid numbers
+            return None        
+        
+
     def process_current_candles(self, candles_current):
         ohlcv_current_data = {}
         # Current Interval Candles
