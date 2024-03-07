@@ -5,21 +5,36 @@ class AWS_SQS(Enum):
     ACCOUNT_ID = '265153260161'
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
     
+class Variety(Enum):
+    REGULAR = 'REGULAR'
+    AMO = 'AMO'
+    CO = 'CO'
+    ICEBERG = 'ICEBERG'
+    AUCTION = 'AUCTION'
+
 class Exchange(Enum):
     NSE = 'NSE'
     BSE = 'BSE'
 
-class Interval(Enum):
-    DAILY = 'daily'
-    MULTI = 'multi'
+class TransactionType(Enum):
+    BUY = 'BUY'
+    SELL = 'SELL'
 
-class Symbol(Enum):
-    SBIN  = 'SBIN'
-    IRCTC = 'IRCTC'
+class Product(Enum):
+    MIS = 'MIS'
+    CNC = 'CNC'
+    NRML = 'NRML'
+
+class OrderType(Enum):
+    MARKET = 'MARKET'
+    LIMIT = 'LIMIT'
+    SL = 'SL'
+    SL_M = 'SL-M'
+
 
 class Strategy_Type(Enum):
-    LONG  = 'long'
-    SHORT = 'short'
+    LONG  = 'LONG'
+    SHORT = 'SHORT'
 
 class Queues(Enum):
     Queue1     = 'IntelliTrader_Q1.fifo'
