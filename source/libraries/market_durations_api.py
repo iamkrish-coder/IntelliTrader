@@ -3,18 +3,27 @@ import datetime as dt
 import source.libraries.market_holidays_api as _marketHolidays
 
 class MarketDurations:
-    def __init__(self, depth):
+    def __init__(self, depth, timeframe):
         self.depth = depth
+        self.timeframe = timeframe
 
     def calculate_all_durations(self):
-        all_durations = {
-            'today': self.get_duration_today(self.depth),
-            'minute': self.get_duration_minutes(self.depth),
-            'hour': self.get_duration_hour(self.depth),
-            'day': self.get_duration_day(self.depth),
-            'week': self.get_duration_week(self.depth),
-            'month': self.get_duration_month(self.depth)
-        }
+        all_durations = {}
+
+        if 'today' in self.timeframe:
+            all_durations['today'] = self.get_duration_today(self.depth)
+        elif 'minute' in self.timeframe:     
+            all_durations['minute'] = self.get_duration_minutes(self.depth)
+        elif 'hour' in self.timeframe:     
+            all_durations['hour'] = self.get_duration_hour(self.depth)
+        elif 'day' in self.timeframe:     
+            all_durations['day'] = self.get_duration_day(self.depth)
+        elif 'week' in self.timeframe:                    
+            all_durations['week'] = self.get_duration_week(self.depth)
+        elif 'month' in self.timeframe:                 
+            all_durations['month'] = self.get_duration_month(self.depth)
+        else:
+            pass
         
         return all_durations
 
@@ -31,16 +40,14 @@ class MarketDurations:
             current_weekday  = today.weekday()
 
             if current_weekday == 5:            # Saturday
-                today -= dt.timedelta(days=1)   # Move back to Friday
+                # today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
-                today -= dt.timedelta(days=2)   # Move back to Friday
+                # today -= dt.timedelta(days=2)   # Move back to Friday
                 duration_in_days += 2
+            else:
+                duration_in_days += 1
 
-            # Update the duration for each working day
-            duration_in_days += 1               # For Sameday we will not increment the lookback period
-            today -= dt.timedelta(days=1)
-            
             # Iterate over the trading holidays and check if they fall within the depth or min_duration
             for holiday in trading_holidays:
                 holiday_date = holiday['date']
@@ -53,6 +60,8 @@ class MarketDurations:
                 if current_holiday >= 0 and current_holiday <= min_duration \
                         and holiday_date.weekday() != 5 and holiday_date.weekday() != 6:
                     duration_in_days += 1
+            
+            today -= dt.timedelta(days=duration_in_days)
 
         return duration_in_days
 
@@ -69,18 +78,16 @@ class MarketDurations:
             current_weekday  = today.weekday()
 
             if current_weekday == 0:            # Monday
-                today -= dt.timedelta(days=2)   # Move back to Friday
+                # today -= dt.timedelta(days=2)   # Move back to Friday
                 duration_in_days += 2
             elif current_weekday == 5:          # Saturday
-                today -= dt.timedelta(days=1)   # Move back to Friday
+                # today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
-                today -= dt.timedelta(days=2)   # Move back to Friday
+                # today -= dt.timedelta(days=2)   # Move back to Friday
                 duration_in_days += 2
-
-            # Update the duration for each working day
-            duration_in_days += 1
-            today -= dt.timedelta(days=1)
+            else:
+                duration_in_days += 1
             
             # Iterate over the trading holidays and check if they fall within the depth or min_duration
             for holiday in trading_holidays:
@@ -95,6 +102,8 @@ class MarketDurations:
                         and holiday_date.weekday() != 5 and holiday_date.weekday() != 6:
                     duration_in_days += 1
 
+            today -= dt.timedelta(days=duration_in_days)
+            
         return duration_in_days
 
     def get_duration_hour(self, depth):
@@ -110,18 +119,16 @@ class MarketDurations:
             current_weekday  = today.weekday()
             
             if current_weekday == 0:            # Monday
-                today -= dt.timedelta(days=3)   # Move back to Friday
+                # today -= dt.timedelta(days=3)   # Move back to Friday
                 duration_in_days += 3
             elif current_weekday == 5:          # Saturday
-                today -= dt.timedelta(days=1)   # Move back to Friday
+                # today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
-                today -= dt.timedelta(days=2)   # Move back to Friday
+                # today -= dt.timedelta(days=2)   # Move back to Friday
                 duration_in_days += 2
-
-            # Update the duration for each working day
-            duration_in_days += 1
-            today -= dt.timedelta(days=1)
+            else:
+                duration_in_days += 1            
             
             # Iterate over the trading holidays and check if they fall within the depth or min_duration
             for holiday in trading_holidays:
@@ -135,6 +142,8 @@ class MarketDurations:
                 if current_holiday >= 0 and current_holiday <= min_duration \
                         and holiday_date.weekday() != 5 and holiday_date.weekday() != 6:
                     duration_in_days += 1
+
+            today -= dt.timedelta(days=duration_in_days)
 
         return duration_in_days
 
@@ -151,18 +160,16 @@ class MarketDurations:
             current_weekday  = today.weekday()
             
             if current_weekday == 0:            # Monday
-                today -= dt.timedelta(days=3)   # Move back to Friday
+                # today -= dt.timedelta(days=3)   # Move back to Friday
                 duration_in_days += 3
             elif current_weekday == 5:          # Saturday
-                today -= dt.timedelta(days=1)   # Move back to Friday
+                # today -= dt.timedelta(days=1)   # Move back to Friday
                 duration_in_days += 1
             elif current_weekday == 6:          # Sunday
-                today -= dt.timedelta(days=2)   # Move back to Friday
+                # today -= dt.timedelta(days=2)   # Move back to Friday
                 duration_in_days += 2
-
-            # Update the duration for each working day
-            duration_in_days += 1
-            today -= dt.timedelta(days=1)
+            else:
+                duration_in_days += 1  
             
             # Iterate over the trading holidays and check if they fall within the depth or min_duration
             for holiday in trading_holidays:
@@ -176,6 +183,8 @@ class MarketDurations:
                 if current_holiday >= 0 and current_holiday <= min_duration \
                         and holiday_date.weekday() != 5 and holiday_date.weekday() != 6:
                     duration_in_days += 1
+
+            today -= dt.timedelta(days=duration_in_days)
 
         return duration_in_days
 

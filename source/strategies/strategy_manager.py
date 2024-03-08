@@ -101,25 +101,25 @@ class StrategyManager(BaseStrategy):
         # Trade Params
         trade_params = params[0] if params else {}
 
-        self.historical_data_subscription = trade_params.get('historical_data_subscription', None)
-        self.max_allocation               = trade_params.get('max_allocation', None)
-        self.quantity                     = trade_params.get('quantity', None)
-        self.tpsl_method                  = trade_params.get('tpsl_method', None)
-        self.target                       = trade_params.get('target', None)
-        self.stop_loss                    = trade_params.get('stop_loss', None)
-        self.trail_profit                 = trade_params.get('trail_profit', None)
-        self.trail_stop_loss              = trade_params.get('trail_stop_loss', None)
-        self.variety                      = trade_params.get('variety', None)
-        self.ordertype                    = trade_params.get('order_type', None)
-        self.product                      = trade_params.get('product', None)
-        self.validity                     = trade_params.get('validity', None)
+        self.historical_data_subscription  = trade_params.get('historical_data_subscription', None)
+        self.max_allocation                = trade_params.get('max_allocation', None)
+        self.quantity                      = trade_params.get('quantity', None)
+        self.tpsl_method                   = trade_params.get('tpsl_method', None)
+        self.target                        = trade_params.get('target', None)
+        self.stop_loss                     = trade_params.get('stop_loss', None)
+        self.trail_profit                  = trade_params.get('trail_profit', None)
+        self.trail_stop_loss               = trade_params.get('trail_stop_loss', None)
+        self.variety                       = trade_params.get('variety', None)
+        self.order_type                    = trade_params.get('order_type', None)
+        self.product                       = trade_params.get('product', None)
+        self.validity                      = trade_params.get('validity', None)
 
         # Market Parameters
         market_params = params[1] if len(params) > 1 else {}
-
+        
         self.market_params   = market_params.get('market_params')
         self.market_indices  = market_params.get('market_indices', {})
-        self.order_params    = market_params.get('order_settings', {})
+        self.order_params    = market_params.get('order_params', {})
 
         # Strategy Parameters
         strategy_params = params[2] if len(params) > 2 else {}
@@ -127,9 +127,9 @@ class StrategyManager(BaseStrategy):
         self.exchange             = strategy_params.get('exchange', None)  
         self.symbol               = strategy_params.get('symbol', None)    
         self.timeframe            = strategy_params.get('timeframe', None)
-        self.strategy_type        = strategy_params.get('type', None)
+        self.strategy_type        = strategy_params.get('strategy_type', None)
         self.ticker               = strategy_params.get('ticker', None)
-        self.ticker_mode          = strategy_params.get('ticker_mode', None)        
+        self.ticker_mode          = strategy_params.get('ticker_mode', None)       
         self.equity_trading       = strategy_params.get('equity_trading', None)               
         self.option_trading       = strategy_params.get('option_trading', None)
         self.futures_trading      = strategy_params.get('futures_trading', None)
@@ -172,7 +172,7 @@ class StrategyManager(BaseStrategy):
             # Candlestick Data          
             self.logger.info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
             candlestick_data = asyncio.run(self.get_candlestick_data())     
-            
+
             candles = candlestick_data[0]
            
             # Indicators Data          
@@ -362,6 +362,10 @@ class StrategyManager(BaseStrategy):
         """
         if self.historical_data_subscription:
             tasks = [
+                
+                # TODO: Fix the None Data return for Today Candles during Holidays
+                # self.timeframe, DAY, WEEK, MONTH, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M
+                
                 self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, self.trading_timeframe)
                 for self.trading_timeframe in [self.timeframe, DAY, WEEK, MONTH, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M]
             ]

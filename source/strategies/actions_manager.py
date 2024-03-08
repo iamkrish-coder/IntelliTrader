@@ -162,7 +162,8 @@ class ActionsManager(BaseActions):
         # Receive messages from the queue
         response = self.sqs.receive_message(
             QueueUrl = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
-            MaxNumberOfMessages = 5
+            MaxNumberOfMessages = 5,
+            WaitTimeSeconds = 3
         )
         print("\nAWS Queue Service")
         self.logger.info(f"Message Received from Queue: {response}")
@@ -183,7 +184,7 @@ class ActionsManager(BaseActions):
         while self.is_stock_monitored:
             try:
                 current_time = datetime.datetime.now()
-                if current_time.minute % 2 == 0 and check_counter == 0:
+                if current_time.minute % 1 == 0 and check_counter == 0:
                     # No need to sleep if the current minute is already a multiple 
                     self.logger.info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
                     candlestick_data = asyncio.run(self.get_candlestick_data())
@@ -368,7 +369,7 @@ class ActionsManager(BaseActions):
         if all(param is not None for param in order_params):
             if self.order_type == 'MARKET':
                 # Handle MARKET order type
-                self.modules['orders'].create_market_order(self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type)
+                self.modules['orders'].create_market_order(self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type, self.validity)
             elif self.order_type == 'LIMIT':
                 # Handle LIMIT order type
                 self.modules['orders'].create_limit_order()
