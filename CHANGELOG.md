@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.12.0...v1.12.1) (2024-03-07)
+
+
+### Features
+
+* add order functionality ([b2737da](https://github.com/iamkrish-coder/IntelliTrader/commit/b2737dab049a4da84c66a7359e6e3ffab95267f3))
+
 ## [1.12.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.11.1...v1.12.0) (2024-03-07)
 
 
