@@ -33,7 +33,7 @@
     "stop_loss": "100",
     "trail_profit": true,
     "trail_stop_loss": true,
-    "variety": "AMO",
+    "variety": "Regular",
     "order_type": "MARKET",
     "product": "CNC",
     "validity": "DAY"
@@ -42,7 +42,7 @@
   "virtual_trade_params": {
     "historical_data_subscription": true,
     "max_allocation": "100000",
-    "quantity": "per capita",
+    "quantity": "1",
     "tpsl_method": "percentage/absolute/points",
     "target": "100",
     "stop_loss": "100",

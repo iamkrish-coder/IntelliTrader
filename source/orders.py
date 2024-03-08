@@ -8,91 +8,90 @@ class Orders:
         self.prop = params
 
     # Place a market order for a stock with given quantity
-    def create_market_order(self, trade_variety, trade_exchange, trade_symbol, trade_transaction, trade_quantity, trade_product, trade_ordertype):
+    def create_market_order(self, trade_variety, trade_exchange, trade_symbol, trade_transaction, trade_quantity, trade_product, trade_ordertype, trade_validity):
         
-        trade_variety = trade_variety.upper()
-        if trade_variety == Variety.REGULAR.value:
-            trade_variety = self.prop['kite'].VARIETY_REGULAR
-        elif trade_variety == Variety.AMO.value:
-            trade_variety = self.prop['kite'].VARIETY_AMO
-        elif trade_variety == Variety.CO.value:
-            trade_variety = self.prop['kite'].VARIETY_CO
-        elif trade_variety == Variety.ICEBERG.value:
-            trade_variety = self.prop['kite'].VARIETY_ICEBERG
-        elif trade_variety == Variety.AUCTION.value:
-            trade_variety = self.prop['kite'].VARIETY_AUCTION
-        else:
-            logging.error("The order placement does not have a specified variety to regular, amo, co, iceberg or auction.")
-            return False
-        
-        # Exchange
-        trade_exchange = trade_exchange.upper()
-        if trade_exchange == Exchange.NSE.value:
-            trade_exchange =  self.prop['kite'].EXCHANGE_NSE
-        elif trade_exchange == Exchange.BSE.value:
-            trade_exchange = self.prop['kite'].EXCHANGE_BSE
-        else:
-            logging.error("The order placement does not have a specified exchange to NSE or BSE.")
-            return False    
+        # Define mapping dictionaries for each parameter
+        variety_mapping = {
+            Variety.REGULAR.value: self.prop['kite'].VARIETY_REGULAR,
+            Variety.AMO.value: self.prop['kite'].VARIETY_AMO,
+            Variety.CO.value: self.prop['kite'].VARIETY_CO,
+            Variety.ICEBERG.value: self.prop['kite'].VARIETY_ICEBERG,
+            Variety.AUCTION.value: self.prop['kite'].VARIETY_AUCTION
+        }
 
-        # Transaction Type
-        trade_transaction = trade_transaction.upper()
-        if trade_transaction == TransactionType.BUY.value:
-            trade_transaction = self.prop['kite'].TRANSACTION_TYPE_BUY
-        elif trade_transaction == TransactionType.SELL.value:
-            trade_transaction = self.prop['kite'].TRANSACTION_TYPE_SELL
-        else:
+        exchange_mapping = {
+            Exchange.NSE.value: self.prop['kite'].EXCHANGE_NSE,
+            Exchange.BSE.value: self.prop['kite'].EXCHANGE_BSE
+        }
+
+        transaction_mapping = {
+            TransactionType.BUY.value: self.prop['kite'].TRANSACTION_TYPE_BUY,
+            TransactionType.SELL.value: self.prop['kite'].TRANSACTION_TYPE_SELL
+        }
+
+        product_mapping = {
+            Product.MIS.value: self.prop['kite'].PRODUCT_MIS,
+            Product.CNC.value: self.prop['kite'].PRODUCT_CNC,
+            Product.NRML.value: self.prop['kite'].PRODUCT_NRML
+        }
+
+        order_type_mapping = {
+            OrderType.MARKET.value: self.prop['kite'].ORDER_TYPE_MARKET,
+            OrderType.LIMIT.value: self.prop['kite'].ORDER_TYPE_LIMIT,
+            OrderType.SL.value: self.prop['kite'].ORDER_TYPE_SL,
+            OrderType.SL_M.value: self.prop['kite'].ORDER_TYPE_SLM
+        }
+
+        validity_mapping = {
+            Validity.DAY.value: self.prop['kite'].VALIDITY_DAY,
+            Validity.IOC.value: self.prop['kite'].VALIDITY_IOC,
+            Validity.TTL.value: self.prop['kite'].VALIDITY_TTL,
+        }
+
+        # Convert strings to constants using the mapping dictionaries
+        trade_variety = variety_mapping.get(trade_variety.upper())
+        trade_exchange = exchange_mapping.get(trade_exchange.upper())
+        trade_transaction = transaction_mapping.get(trade_transaction.upper())
+        trade_product = product_mapping.get(trade_product.upper())
+        trade_ordertype = order_type_mapping.get(trade_ordertype.upper())
+        trade_validity = validity_mapping.get(trade_validity.upper())
+
+        if trade_variety is None:
+            logging.error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
+            return False
+
+        if trade_exchange is None:
+            logging.error("The order placement does not have a specified exchange to NSE or BSE.")
+            return False
+
+        if trade_transaction is None:
             logging.error("The order placement does not have a specified action to buy or sell.")
             return False
-        
-        # Product
-        trade_product = trade_product.upper()
-        if trade_product == Product.MIS.value:
-            trade_product = self.prop['kite'].PRODUCT_MIS
-        elif trade_product == Product.CNC.value:
-            trade_product = self.prop['kite'].PRODUCT_CNC
-        elif trade_product == Product.NRML.value:
-            trade_product = self.prop['kite'].PRODUCT_NRML
-        else:
-            logging.error("The order placement does not have a specified product to MIS, CNC or NRML.")
+
+        if trade_product is None:
+            logging.error("The order placement does not have a specified product to MIS, CNC, or NRML.")
             return False
-        
-        # Order Type
-        trade_ordertype = trade_ordertype.upper()
-        if trade_ordertype == OrderType.MARKET.value:
-            trade_ordertype = self.prop['kite'].ORDER_TYPE_MARKET
-        elif trade_ordertype == OrderType.LIMIT.value:
-            trade_ordertype = self.prop['kite'].ORDER_TYPE_LIMIT
-        elif trade_ordertype == OrderType.SL.value:
-            trade_ordertype = self.prop['kite'].ORDER_TYPE_SL
-        elif trade_ordertype == OrderType.SL_M.value:
-            trade_ordertype = self.prop['kite'].ORDER_TYPE_SL_M
-        else:
-            logging.error("The order type does not match the required format")
+
+        if trade_ordertype is None:
+            logging.error("The order type does not match the required format.")
             return False
+
 
         try:
-            response             = self.prop['kite'].place_order(
-                variety          = trade_variety, 
-                exchange         = trade_exchange,
-                tradingsymbol    = trade_symbol,
-                transaction_type = trade_transaction,
-                quantity         = trade_quantity,
-                product          = trade_product, 
-                order_type       = trade_ordertype
-            )
-            
-           
+            order_id = self.prop['kite'].place_order(tradingsymbol = trade_symbol,
+                                        exchange         = trade_exchange,
+                                        transaction_type = trade_transaction,
+                                        quantity         = trade_quantity,
+                                        variety          = trade_variety,
+                                        order_type       = trade_ordertype,
+                                        product          = trade_product,
+                                        validity         = trade_validity)
 
-            if "order_id" in response:
-                order_id = response["order_id"]
-                logging.info(f"Market order placed successfully. Order ID: {order_id}")
-            else:
-                error_message = response["error_type"] + ": " + response["message"]
-                logging.error("Market order placement failed. Error:", error_message)
-                
+            logging.info(f"Market order placed. Order ID: {order_id}")
         except Exception as e:
-            logging.error("An exception occurred while placing the market order:", e)
+            logging.info("Order placement failed: {}".format(e))
+
+        return 
 
     # Place a limit order for a stock with given quantity
     def create_limit_order(self, variety, symbol, transaction, quantity, product, limit_price):

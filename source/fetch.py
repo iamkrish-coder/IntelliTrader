@@ -68,7 +68,7 @@ class Fetch:
             
     # Fetch historical data for an exchange and symbol    
     def fetch_ohlc(self, exchange, symbol, token, timeframe='5minute', depth=2):
-        duration_obj = _marketDurations.MarketDurations(depth)
+        duration_obj = _marketDurations.MarketDurations(depth, timeframe)
         duration = duration_obj.calculate_all_durations()
         if token:
             instrument_token = token
@@ -111,13 +111,20 @@ class Fetch:
                 
                 data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
                 
+                # Transform data for Last Available Date
                 current_time = dt.datetime.now().time()
                 if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
                     pass
-                else:            
+                else:
                     data['date'] = pd.to_datetime(data['date'])
                     today_date = dt.datetime.now().date()
-                    data = data[data['date'].dt.date == today_date]
+                    while True:
+                        if today_date in data['date'].dt.date.unique():
+                            data = data[data['date'].dt.date == today_date]
+                            break
+                        else:
+                            today_date -= dt.timedelta(days=1) 
+                            
                 logging.info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                 
             elif timeframe.__contains__('minute'):

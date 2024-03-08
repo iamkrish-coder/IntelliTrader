@@ -31,7 +31,11 @@ class OrderType(Enum):
     SL = 'SL'
     SL_M = 'SL-M'
 
-
+class Validity(Enum):
+    DAY = 'DAY'
+    IOC = 'IOC'
+    TTL = 'TTL'
+    
 class Strategy_Type(Enum):
     LONG  = 'LONG'
     SHORT = 'SHORT'
