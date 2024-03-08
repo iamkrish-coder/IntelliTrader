@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.12.1...v1.13.0) (2024-03-08)
+
+
+### Features
+
+* Milestone Build - Order Place ([2f2f948](https://github.com/iamkrish-coder/IntelliTrader/commit/2f2f948dbeb796963dfc80b01e10761a23baed59))
+
 ## [1.12.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.12.0...v1.12.1) (2024-03-07)
 
 
