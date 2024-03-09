@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.13.0...v1.14.0) (2024-03-09)
+
+
+### Features
+
+* Refactored Code and Renamed Manager to Handler ([8679f65](https://github.com/iamkrish-coder/IntelliTrader/commit/8679f654daaa931bb93cfac99fef39eb17e690ab))
+
 ## [1.13.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.12.1...v1.13.0) (2024-03-08)
 
 
