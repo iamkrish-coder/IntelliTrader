@@ -1,15 +1,32 @@
 from source.helper import Helper
 from source.constants.constants import *
 from source.enumerations.enums import *
-import logging
+from source.shared.logging_utils import *
 
 class Orders:
     def __init__(self, params):
         self.prop = params
 
+    def initialize_order(self, type_of_order, order_parameters):
+        if type_of_order == OrderType.MARKET.value:
+            return self.create_market_order(order_parameters)
+        elif type_of_order == OrderType.LIMIT.value:
+            return self.create_limit_order(order_parameters)
+        elif type_of_order == OrderType.SL.value:
+            return self.create_sl_order(order_parameters)
+        elif type_of_order == OrderType.SL_M.value:
+            return self.create_slm_order(order_parameters)
+        elif type_of_order == OrderType.GTT.value:
+            return self.create_gtt_order(order_parameters)        
+        else:
+            log_error("Invalid order type")
+            return None
+
     # Place a market order for a stock with given quantity
-    def create_market_order(self, trade_variety, trade_exchange, trade_symbol, trade_transaction, trade_quantity, trade_product, trade_ordertype, trade_validity):
+    def create_market_order(self, order_parameters):
         
+        trade_variety, trade_exchange, trade_symbol, trade_transaction, trade_quantity, trade_product, trade_ordertype, trade_validity = order_parameters
+
         # Define mapping dictionaries for each parameter
         variety_mapping = {
             Variety.REGULAR.value: self.prop['kite'].VARIETY_REGULAR,
@@ -57,25 +74,24 @@ class Orders:
         trade_validity = validity_mapping.get(trade_validity.upper())
 
         if trade_variety is None:
-            logging.error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
+            log_error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
             return False
 
         if trade_exchange is None:
-            logging.error("The order placement does not have a specified exchange to NSE or BSE.")
+            log_error("The order placement does not have a specified exchange to NSE or BSE.")
             return False
 
         if trade_transaction is None:
-            logging.error("The order placement does not have a specified action to buy or sell.")
+            log_error("The order placement does not have a specified action to buy or sell.")
             return False
 
         if trade_product is None:
-            logging.error("The order placement does not have a specified product to MIS, CNC, or NRML.")
+            log_error("The order placement does not have a specified product to MIS, CNC, or NRML.")
             return False
 
         if trade_ordertype is None:
-            logging.error("The order type does not match the required format.")
+            log_error("The order type does not match the required format.")
             return False
-
 
         try:
             order_id = self.prop['kite'].place_order(tradingsymbol = trade_symbol,
@@ -87,9 +103,9 @@ class Orders:
                                         product          = trade_product,
                                         validity         = trade_validity)
 
-            logging.info(f"Market order placed. Order ID: {order_id}")
+            log_info(f"Market order placed. Order ID: {order_id}")
         except Exception as e:
-            logging.info("Order placement failed: {}".format(e))
+            log_info("Order placement failed: {}".format(e))
 
         return 
 
@@ -100,7 +116,7 @@ class Orders:
         elif transaction == 'sell':
             transaction_type = self.prop['kite'].TRANSACTION_TYPE_SELL
         else:
-            logging.error("The order placement does not have a specified action to buy or sell.")
+            log_error("The order placement does not have a specified action to buy or sell.")
             exit()
 
         try:
@@ -116,12 +132,20 @@ class Orders:
             )
             if "order_id" in response:
                 order_id = response["order_id"]
-                logging.info(f"Limit order placed successfully. Order ID: {order_id}")
+                log_info(f"Limit order placed successfully. Order ID: {order_id}")
             else:
                 error_message = response["error_type"] + ": " + response["message"]
-                logging.error(f"Limit order placement failed. Error: {error_message}")
+                log_error(f"Limit order placement failed. Error: {error_message}")
         except Exception as e:
-            logging.info(f"Order placement failed: {e}")
+            log_info(f"Order placement failed: {e}")
+
+    # Place a stop loss order for a stock with given quantity
+    def create_sl_order():
+        pass
+    
+    # Place a stop loss market order for a stock with given quantity
+    def create_slm_order():
+        pass
 
     # Place a gtt limit order for a stock with given order details
     def create_gtt_order(self, gtt_type, symbol, exchange, trigger_values, last_price, order_list):
@@ -130,18 +154,18 @@ class Orders:
             gtt_trigger_type = 'GTT_TYPE_SINGLE'
             try:
                 single_gtt = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
-                logging.info(f"Single leg gtt order trigger_id: {single_gtt['trigger_id']}")
+                log_info(f"Single leg gtt order trigger_id: {single_gtt['trigger_id']}")
             except Exception as e:
-                logging.error(f"Error placing single leg gtt order: {e}")
+                log_error(f"Error placing single leg gtt order: {e}")
         
         # Place two-leg(OCO) gtt order
         elif gtt_type == 'oco':            
             gtt_trigger_type = 'GTT_TYPE_OCO'
             try:
                 gtt_oco = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
-                logging.info(f"GTT OCO trigger_id: {gtt_oco['trigger_id']}")
+                log_info(f"GTT OCO trigger_id: {gtt_oco['trigger_id']}")
             except Exception as e:
-                logging.info(f"Error placing gtt oco order: {e}")
+                log_info(f"Error placing gtt oco order: {e}")
 
         else:
-            logging.warn("Error placing gtt order, gtt type is not defined")
+            log_warn("Error placing gtt order, gtt type is not defined")

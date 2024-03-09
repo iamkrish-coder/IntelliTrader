@@ -1,3 +1,6 @@
+from source.shared.logging_utils import *
+configure_logging()
+
 from sys import modules
 from kiteconnect import KiteConnect, KiteTicker
 from source.connection import Connection
@@ -9,8 +12,8 @@ from source.indicator import Indicator
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
-from source.strategies import strategy_manager
-from source.strategies import actions_manager
+from source.handlers import strategy_handler
+from source.handlers import actions_handler
 # from source.services.redis_service import RedisServiceController
 from flask import Flask, render_template, request, redirect, session
 
@@ -20,9 +23,6 @@ import datetime
 import os
 import glob
 import pandas as pd
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 class IntelliTrader:
     def __init__(self, secret_name, region_name):
@@ -66,14 +66,14 @@ class IntelliTrader:
         kite = KiteConnect(api_key)
         kite_ticker = KiteTicker(api_key, access_token)
         kite.set_access_token(access_token)
-        logging.info("Connection to Kite Connect API ...COMPLETE!")
+        log_info("Connection to Kite Connect API ...COMPLETE!")
         return kite, kite_ticker, access_token
 
     def establish_new_connection(self):
         connect = Connection(self.secret_keys)
         kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker)
         kite.set_access_token(access_token)
-        logging.info("New Connection Request to Kite Connect API ...COMPLETE!")       
+        log_info("New Connection Request to Kite Connect API ...COMPLETE!")       
         return kite, kite_ticker, access_token
 
     def remove_old_tokens(self):
@@ -92,7 +92,7 @@ class IntelliTrader:
             self.handle_error(e, f"Unable to remove file: {file_path}")
 
     def handle_error(self, exception, message):
-        logging.error(f"An exception occurred: {exception}. {message}")
+        log_error(f"An exception occurred: {exception}. {message}")
         exit()
 
     def init_modules(self, connection):
@@ -129,12 +129,12 @@ def InitializeCoreSystem(_IntelliTrader_):
     # redis_service_controller = RedisServiceController()
     # redis_service_controller.start_redis_server()
 
-    # Instantiate the Strategy Manager
-    strategy_manager_instance = strategy_manager.StrategyManager(connection, modules)    
-    strategy_manager_instance.initialize_strategy(configuration)
+    # Instantiate the Strategy Handler
+    strategy_handler_instance = strategy_handler.StrategyHandler(connection, modules)    
+    strategy_handler_instance.initialize_strategy(configuration)
 
-    # Instantiate the Actions Manager
-    strategy_actions_instance = actions_manager.ActionsManager(connection, modules)   
+    # Instantiate the Actions Handler
+    strategy_actions_instance = actions_handler.ActionsHandler(connection, modules)   
     strategy_actions_instance.initialize_actions(configuration)    
 
 def InitializeWebInterface(_IntelliTrader_):

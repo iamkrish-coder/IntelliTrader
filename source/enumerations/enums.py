@@ -30,6 +30,7 @@ class OrderType(Enum):
     LIMIT = 'LIMIT'
     SL = 'SL'
     SL_M = 'SL-M'
+    GTT = 'GTT'
 
 class Validity(Enum):
     DAY = 'DAY'

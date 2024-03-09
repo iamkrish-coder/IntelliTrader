@@ -1,4 +1,3 @@
-import logging
 import pyotp
 import time
 import datetime
@@ -10,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from source.helper import Helper
+from source.shared.logging_utils import *
 from selenium.common.exceptions import TimeoutException
 
 class Connection:
@@ -69,16 +69,16 @@ class Connection:
                 initial_token = url_parts[1].split('&')[0]
                 token_str = str(initial_token)
                 Helper().write_text_output('request_token' + '_' + auth_date + '.txt', token_str)
-                logging.info("Generate Kite Request Token ...COMPLETE!")
+                log_info("Generate Kite Request Token ...COMPLETE!")
             else:
-                logging.error("Kite Request Token Not Found")
+                log_error("Kite Request Token Not Found")
 
             # Access token generation
             data = kite.generate_session(initial_token, api_secret=secret_key)
             access_token = data['access_token']
             token_str = str(access_token)
             Helper().write_text_output('access_token' + '_' + auth_date + '.txt', token_str)
-            logging.info("Generate Kite Access Token ...COMPLETE!")
+            log_info("Generate Kite Access Token ...COMPLETE!")
 
             # Kite Ticker Subscription
             kite_ticker = KiteTicker(api_key, access_token)
@@ -86,7 +86,7 @@ class Connection:
             return kite, kite_ticker, access_token
 
         except Exception as e:
-            logging.error(f"Error during broker login: {e}")
+            log_error(f"Error during broker login: {e}")
             raise
 
         finally:

@@ -1,6 +1,6 @@
 import subprocess
 import socket
-import logging 
+from source.shared.logging_utils import *
 
 class RedisServiceController:
     def __init__(self):
@@ -10,19 +10,19 @@ class RedisServiceController:
         if not self.is_redis_running():
             try:
                 subprocess.run(['wsl', 'sudo', 'service', 'redis-server', 'start'], check=True)
-                logging.info("Redis server started successfully.")
+                log_info("Redis server started successfully.")
             except subprocess.CalledProcessError as e:
-                logging.error(f"Error starting Redis server: {e}")
+                log_error(f"Error starting Redis server: {e}")
         else:
-            logging.info("Redis server is already running.")
+            log_info("Redis server is already running.")
             
     def stop_redis_server(self):
         try:
             # Execute the command to stop the Redis server in WSL
             subprocess.run(['wsl', 'sudo', 'service', 'redis-server', 'stop'], check=True)
-            logging.info("Redis server stopped successfully.")
+            log_info("Redis server stopped successfully.")
         except subprocess.CalledProcessError as e:
-            logging.error(f"Error stopping Redis server: {e}")
+            log_error(f"Error stopping Redis server: {e}")
 
     def is_redis_running(self):
         # Attempt to connect to the Redis server's default port
