@@ -30,6 +30,11 @@
     <Compile Include="source\constants\constants.py" />
     <Compile Include="source\enumerations\enums.py" />
     <Compile Include="source\fetch.py" />
+    <Compile Include="source\handlers\actions_handler.py" />
+    <Compile Include="source\handlers\base_actions.py" />
+    <Compile Include="source\handlers\base_strategy.py" />
+    <Compile Include="source\handlers\shared_handler.py" />
+    <Compile Include="source\handlers\strategy_handler.py" />
     <Compile Include="source\helper.py" />
     <Compile Include="source\indicator.py" />
     <Compile Include="source\indicators\adx.py" />
@@ -45,8 +50,11 @@
     <Compile Include="source\indicators\truerange.py" />
     <Compile Include="source\indicators\vwap.py" />
     <Compile Include="source\indicators\williams_r.py" />
-    <Compile Include="source\libraries\nse_data_api.py" />
-    <Compile Include="source\libraries\market_holidays_api.py" />
+    <Compile Include="source\queue\awsSQSPublisher.py" />
+    <Compile Include="source\queue\awsSQSSubscriber.py" />
+    <Compile Include="source\shared\logging_utils.py" />
+    <Compile Include="source\shared\nse_data_api.py" />
+    <Compile Include="source\shared\market_holidays_api.py" />
     <Compile Include="source\modify.py" />
     <Compile Include="source\orders.py" />
     <Compile Include="source\queue\redisPublisher.py" />
@@ -54,7 +62,7 @@
     <Compile Include="source\services\redis_service.py" />
     <Compile Include="source\strategies\base_actions.py" />
     <Compile Include="source\strategies\base_strategy.py" />
-    <Compile Include="source\strategies\sharedManager.py" />
+    <Compile Include="source\strategies\shared_manager.py" />
     <Compile Include="source\strategies\strategy_manager.py" />
     <Compile Include="source\ticker.py" />
   </ItemGroup>
@@ -69,6 +77,14 @@
     <Content Include="source\constants\__pycache__\constants.cpython-312.pyc" />
     <Content Include="source\data\basket\default_basket.csv" />
     <Content Include="source\enumerations\__pycache__\enums.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\actions_handler.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\actions_manager.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\base_actions.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\base_strategy.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\sharedManager.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\shared_handler.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\strategy_handler.cpython-312.pyc" />
+    <Content Include="source\handlers\__pycache__\strategy_manager.cpython-312.pyc" />
     <Content Include="source\indicators\__pycache__\adx.cpython-312.pyc" />
     <Content Include="source\indicators\__pycache__\atr.cpython-312.pyc" />
     <Content Include="source\indicators\__pycache__\bollinger_bands.cpython-312.pyc" />
@@ -80,8 +96,8 @@
     <Content Include="source\indicators\__pycache__\supertrend.cpython-312.pyc" />
     <Content Include="source\indicators\__pycache__\vwap.cpython-312.pyc" />
     <Content Include="source\indicators\__pycache__\williams_r.cpython-312.pyc" />
-    <Content Include="source\libraries\__pycache__\backtest.cpython-312.pyc" />
-    <Content Include="source\libraries\__pycache__\nse_data.cpython-312.pyc" />
+    <Content Include="source\shared\__pycache__\backtest.cpython-312.pyc" />
+    <Content Include="source\shared\__pycache__\nse_data.cpython-312.pyc" />
     <Content Include="source\static\css\custom.css" />
     <Content Include="source\static\css\font-awesome.min.css" />
     <Content Include="source\static\css\ie.css" />
@@ -152,10 +168,13 @@
     <Folder Include="source\data\algorithms\" />
     <Folder Include="source\enumerations\" />
     <Folder Include="source\enumerations\__pycache__\" />
+    <Folder Include="source\handlers\" />
+    <Folder Include="source\handlers\__pycache__\" />
     <Folder Include="source\indicators\" />
     <Folder Include="source\indicators\__pycache__\" />
-    <Folder Include="source\libraries\" />
-    <Folder Include="source\libraries\__pycache__\" />
+    <Folder Include="source\api\" />
+    <Folder Include="source\shared\" />
+    <Folder Include="source\shared\__pycache__\" />
     <Folder Include="source\services\" />
     <Folder Include="source\queue\" />
     <Folder Include="source\static\" />

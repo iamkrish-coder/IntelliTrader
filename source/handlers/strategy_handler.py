@@ -1,13 +1,12 @@
-# strategies/strategy_manager.py
+# strategies/strategy_handler.py
 import os
 import time
 import json
-import logging
 import asyncio
 import boto3
 import uuid
 import pandas as pd
-import source.strategies as strategies
+import source.handlers as strategies
 
 from source.enumerations.enums import Strategy
 from ast import arg
@@ -15,20 +14,20 @@ from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
-from source.strategies.base_strategy import BaseStrategy
+from source.handlers.base_strategy import BaseStrategy
 from source.constants.constants import *
 from source.enumerations.enums import *
-    
-class StrategyManager(BaseStrategy):
+from source.queue.awsPublisher import aws_publish
+from source.shared.logging_utils import *
+
+class StrategyHandler(BaseStrategy):
     
     def __init__(self, connection, modules):
         super().__init__(connection, modules) 
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
         self.sqs = boto3.client('sqs', region_name=REGION_NAME)
         
     ###########################################
-    # Initialize Strategy Manager
+    # Initialize Strategy Handler
     ###########################################
  
     def initialize_strategy(self, configuration):
@@ -60,7 +59,7 @@ class StrategyManager(BaseStrategy):
             self.execute_strategy(**settings)
 
         except Exception as e:
-            self.logger.info(f"An error occurred: {e}")
+            log_info(f"An error occurred: {e}")
             
     def execute_strategy(self, **kwargs):
         """
@@ -170,13 +169,13 @@ class StrategyManager(BaseStrategy):
             ##################################################################################################################################
             
             # Candlestick Data          
-            self.logger.info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
+            log_info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
             candlestick_data = asyncio.run(self.get_candlestick_data())     
 
             candles = candlestick_data[0]
            
             # Indicators Data          
-            self.logger.info(f"Fetching Indicator data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
+            log_info(f"Fetching Indicator data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
 
             indicator_data = self.calculate_indicators(candles)
           
@@ -199,7 +198,7 @@ class StrategyManager(BaseStrategy):
                 message = f"{self.trading_exchange},{self.trading_symbol},{self.trading_token}" 
                 
                 queue_response = self.publish_message(message)   
-                self.logger.info(f"Message ID: {queue_response['MessageId']}")
+                log_info(f"Message ID: {queue_response['MessageId']}")
 
             else:
                 continue     
@@ -291,13 +290,13 @@ class StrategyManager(BaseStrategy):
                 # '21': wma5[-1] > wma20[-1]
             }
         except Exception as e:
-            self.logger.error(f"An error occurred while evaluating primary conditions: {str(e)}")
+            log_error(f"An error occurred while evaluating primary conditions: {str(e)}")
 
         
         # Log and display each Condition check
-        self.logger.info(f"Evaluating Strategy {self.trading_symbol}")
+        log_info(f"Evaluating Strategy {self.trading_symbol}")
         for condition_id, condition_check in conditions.items():
-            self.logger.info(f"::::::: Condition ::::::: {condition_id} Status: {condition_check}")
+            log_info(f"::::::: Condition ::::::: {condition_id} Status: {condition_check}")
 
        
         # Final Strategy Condition
@@ -312,15 +311,8 @@ class StrategyManager(BaseStrategy):
         
     def publish_message(self, message):
         # Publish messages to the queue
-        # Generate a unique message group ID using UUID
-        message_group_id = str(uuid.uuid4())   
-        
-        response = self.sqs.send_message(
-            QueueUrl    = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
-            MessageBody = message,
-            MessageGroupId = message_group_id
-        )
-        self.logger.info(f"Message Published: {message}")       
+        response = aws_publish(self.sqs, message, f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}')
+        log_info(f"Message Published: {message}")       
         return response
     
     ###########################################

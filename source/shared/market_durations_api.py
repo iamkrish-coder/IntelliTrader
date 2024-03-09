@@ -1,6 +1,6 @@
 import calendar
 import datetime as dt
-import source.libraries.market_holidays_api as _marketHolidays
+import source.shared.market_holidays_api as _marketHolidays
 
 class MarketDurations:
     def __init__(self, depth, timeframe):

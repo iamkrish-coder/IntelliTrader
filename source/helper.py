@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import json
 from source.constants.constants import *
-import logging
+from source.shared.logging_utils import *
 
 class Helper:
     def __init__(self, params=None):
@@ -35,7 +35,7 @@ class Helper:
         # start_time = time.time()                 
         # end_time = time.time()
         # execution_time = end_time - start_time
-        # logging.info(f"Execution time: {execution_time} seconds")
+        # log_info(f"Execution time: {execution_time} seconds")
    
     def format_json_output_print(self, dictionary_data, label, prettier=False, indent=4):
         """
@@ -61,4 +61,4 @@ class Helper:
             print(formatted_json)
 
         except Exception as e:
-            logging.error(f"Error occurred while formatting data: {str(e)}")
+            log_error(f"Error occurred while formatting data: {str(e)}")

@@ -33,7 +33,7 @@
     "stop_loss": "100",
     "trail_profit": true,
     "trail_stop_loss": true,
-    "variety": "Regular",
+    "variety": "AMO",
     "order_type": "MARKET",
     "product": "CNC",
     "validity": "DAY"

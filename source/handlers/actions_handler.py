@@ -1,30 +1,29 @@
-# strategies/actions_manager.py
+# strategies/actions_handler.py
 from ast import List
-import logging
 import datetime
 import time
 import math
 import boto3
 import asyncio
-import source.strategies as strategies
+import source.handlers as strategies
 
 from source.enumerations.enums import Strategy
 from time import sleep
 from pandas import qcut
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.strategies.base_actions import BaseActions
+from source.handlers.base_actions import BaseActions
+from source.queue.awsSubscriber import aws_subscribe
+from source.shared.logging_utils import *
 
-class ActionsManager(BaseActions):
+class ActionsHandler(BaseActions):
     
     def __init__(self, connection, modules):
         super().__init__(connection, modules) 
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger(__name__)
         self.sqs = boto3.client('sqs', region_name=REGION_NAME)
        
     ###########################################
-    # Initialize Actions Manager
+    # Initialize Actions Handler
     ###########################################        
 
     def initialize_actions(self, configuration):
@@ -56,7 +55,7 @@ class ActionsManager(BaseActions):
             self.execute_actions(**settings)
 
         except Exception as e:
-            self.logger.info(f"An error occurred: {e}")
+            log_info(f"An error occurred: {e}")
             
     def execute_actions(self, **kwargs):
         params = []
@@ -118,41 +117,46 @@ class ActionsManager(BaseActions):
 
         # Process received messages
         messages = response.get('Messages', [])
-        for i, message in enumerate(messages, start=1):
-            
-            self.is_stock_monitored = True
-            self.message            = message['Body']
-            self.receipt_handle     = message['ReceiptHandle']
-            
-            exchange, symbol, token = self.message.split(',')
-            self.trading_exchange   = exchange
-            self.trading_symbol     = symbol
-            self.instrument_token   = token
-            
-            ##################################################################################################################################
-            print(f"\nPreparing Stock {i}/{len(messages)}: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}\n")
-            ##################################################################################################################################
+        if not messages:
+            print("No Message available in Queue.")
+        else:           
+            print(f"\nMessage Received from Queue: {response}")
 
-            # Delete the message from the queue
-            self.sqs.delete_message(
-                QueueUrl      = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
-                ReceiptHandle = self.receipt_handle
-            )
-            self.logger.info(f"Purge message from Queue: {self.message}")
-
-            # Pass the message to process stock alerts
-            stock_processing_successful = self.process_stock_alerts()
+            for i, message in enumerate(messages, start=1):
             
-            if stock_processing_successful and self.strategy_type.upper() == Strategy_Type.LONG.value:
-                stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
-                self.generate_long_trade(stock_information)
+                self.is_stock_monitored = True
+                self.message            = message['Body']
+                self.receipt_handle     = message['ReceiptHandle']
+            
+                exchange, symbol, token = self.message.split(',')
+                self.trading_exchange   = exchange
+                self.trading_symbol     = symbol
+                self.instrument_token   = token
+            
+                ##################################################################################################################################
+                print(f"\nPreparing Stock {i}/{len(messages)}: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}\n")
+                ##################################################################################################################################
+
+                # Delete the message from the queue
+                self.sqs.delete_message(
+                    QueueUrl      = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
+                    ReceiptHandle = self.receipt_handle
+                )
+                log_info(f"Purge message from Queue: {self.message}")
+
+                # Pass the message to process stock alerts
+                stock_processing_successful = self.process_stock_alerts()
+            
+                if stock_processing_successful and self.strategy_type.upper() == Strategy_Type.LONG.value:
+                    stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
+                    self.generate_long_trade(stock_information)
                 
-            elif stock_processing_successful and self.strategy_type.upper() == Strategy_Type.SHORT.value:    
-                stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
-                self.generate_short_trade(stock_information)
+                elif stock_processing_successful and self.strategy_type.upper() == Strategy_Type.SHORT.value:    
+                    stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
+                    self.generate_short_trade(stock_information)
                 
-            else:
-                self.logger.info(f"Stock {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token} not processed.")
+                else:
+                    log_info(f"Stock {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token} not processed.")
                 
     ###########################################
     # Subscribe Stock Alert from Queue
@@ -160,13 +164,8 @@ class ActionsManager(BaseActions):
         
     def subscribe_message(self):
         # Receive messages from the queue
-        response = self.sqs.receive_message(
-            QueueUrl = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}',
-            MaxNumberOfMessages = 5,
-            WaitTimeSeconds = 3
-        )
-        print("\nAWS Queue Service")
-        self.logger.info(f"Message Received from Queue: {response}")
+        response = aws_subscribe(self.sqs, f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}')
+        log_info(f"Message Subscribed: {response.get('ResponseMetadata', {}).get('RequestId')}")               
         return response
 
     ###########################################
@@ -177,7 +176,7 @@ class ActionsManager(BaseActions):
         """
         Manage Stock Alerts to generate buy or sell signals
         """
-        self.logger.info(f"Processing Stock Alerts for {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+        log_info(f"Processing Stock Alerts for {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
         
         check_counter = 0
 
@@ -186,7 +185,7 @@ class ActionsManager(BaseActions):
                 current_time = datetime.datetime.now()
                 if current_time.minute % 1 == 0 and check_counter == 0:
                     # No need to sleep if the current minute is already a multiple 
-                    self.logger.info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
+                    log_info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}")
                     candlestick_data = asyncio.run(self.get_candlestick_data())
                     conditions_met   = self.evaluate_secondary_conditions(candlestick_data)
                     
@@ -202,7 +201,7 @@ class ActionsManager(BaseActions):
                     print(f"Sleeping for {seconds_until_next_run} seconds")
                     time.sleep(seconds_until_next_run)
             except Exception as e:
-                self.logger.error(f"An error occurred while monitoring stock alerts: {str(e)}")
+                log_error(f"An error occurred while monitoring stock alerts: {str(e)}")
 
         
     ###########################################
@@ -289,7 +288,7 @@ class ActionsManager(BaseActions):
             
                 return True 
             except Exception as e:
-                self.logger.error(f"An error occurred while evaluating secondary conditions: {str(e)}")
+                log_error(f"An error occurred while evaluating secondary conditions: {str(e)}")
                 return False
 
 
@@ -320,9 +319,36 @@ class ActionsManager(BaseActions):
             
                 return True 
             except Exception as e:
-                self.logger.error(f"An error occurred while evaluating secondary conditions: {str(e)}")
+                log_error(f"An error occurred while evaluating secondary conditions: {str(e)}")
                 return False
 
+
+    def compute_quantity(self):
+        if self.max_allocation is not None:
+            if self.quantity == "per capita":
+                self.symbol_ltp = self.modules['fetch'].fetch_ltp(self.exchange, self.symbol)
+                self.quantity = math.floor(self.calculate_quantity_per_capita(self.max_allocation, self.symbol_ltp))
+                log_info(f"Quantity per capital {self.max_allocation}: {self.quantity}")
+            else:
+                self.quantity = int(self.quantity)                
+                if self.quantity <= 0:
+                    # Handle the case where quantity is not positive
+                    log_error("Error: Quantity cannot be less than or equal to 0")
+
+    def place_order(self, order_params):
+        if all(param is not None for param in order_params):
+            if self.order_type in [OrderType.MARKET.value, OrderType.LIMIT.value, OrderType.SL.value, OrderType.SL_M.value, OrderType.GTT.value]:
+                # Handle various order types
+                self.modules['orders'].initialize_order(self.order_type, order_params)
+                return True
+            else:
+                # Handle invalid order type
+                log_error("Error: Invalid order type")
+                return False
+        else:
+            # Handle missing common parameters
+            print("Some required parameters for the order are missing. Order Placement Failed!")
+            return False
 
         
     ###########################################
@@ -342,7 +368,7 @@ class ActionsManager(BaseActions):
         elif self.equity_trading:
             result = self.buy_equities()
         else:
-            self.logger.error("Error: Invalid trading type")
+            log_error("Error: Invalid trading type")
 
         return result
           
@@ -354,40 +380,10 @@ class ActionsManager(BaseActions):
         pass
     
     def buy_equities(self):
-        if self.max_allocation is not None:
-            if self.quantity == "per capita":
-                self.symbol_ltp = self.modules['fetch'].fetch_ltp(self.exchange, self.symbol)
-                self.quantity = math.floor(self.calculate_quantity_per_capita(self.max_allocation, self.symbol_ltp))
-                self.logger.info(f"Quantity per capital {self.max_allocation}: {self.quantity}")
-            else:
-                self.quantity = int(self.quantity)                
-                if self.quantity <= 0:
-                    # Handle the case where quantity is not positive
-                    self.logger.error("Error: Quantity cannot be less than or equal to 0")
-           
-        order_params = [self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type]
-        if all(param is not None for param in order_params):
-            if self.order_type == 'MARKET':
-                # Handle MARKET order type
-                self.modules['orders'].create_market_order(self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type, self.validity)
-            elif self.order_type == 'LIMIT':
-                # Handle LIMIT order type
-                self.modules['orders'].create_limit_order()
-            elif self.order_type in ['SL', 'SL-M']:
-                # Handle SL and SL-M order types
-                pass  # No specific parameters to check
-            elif self.order_type == 'GTT':
-                # Handle SL and SL-M order types
-                self.modules['orders'].create_gtt_order()
-            else:
-                # Handle other cases
-                pass
-            
-            return True
-        else:
-            # Handle missing common parameters
-            print("Some required parameters for the order are missing. Order Placement Failed!")
-            return False
+        self.compute_quantity()
+        order_params = [self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type, self.validity]
+        return self.place_order(order_params)
+    
 
     
     ###########################################
@@ -407,8 +403,7 @@ class ActionsManager(BaseActions):
         elif self.equity_trading:
             result = self.sell_equities()
         else:
-            self.logger.error("Error: Invalid trading type")
-
+            log_error("Error: Invalid trading type")
         return result
 
     
@@ -419,38 +414,8 @@ class ActionsManager(BaseActions):
         pass
     
     def sell_equities(self):
-        
-        if self.max_allocation is not None:
-            if self.quantity == "per capita":
-                self.symbol_ltp = self.modules['fetch'].fetch_ltp(self.exchange, self.symbol)
-                self.quantity = math.floor(self.calculate_quantity_per_capita(self.max_allocation, self.symbol_ltp))
-                self.logger.info(f"Quantity per capital {self.max_allocation}: {self.quantity}")
-            else:
-                self.quantity = int(self.quantity)                
-                if self.quantity <= 0:
-                    # Handle the case where quantity is not positive
-                    self.logger.error("Error: Quantity cannot be less than or equal to 0")
-        
+        self.compute_quantity()
         order_params = [self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type]
-        if all(param is not None for param in order_params):
-            if self.order_type == 'MARKET':
-                # Handle MARKET order type
-                self.modules['orders'].create_market_order(self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type)
-            
-            elif self.order_type == 'LIMIT':
-                # Handle LIMIT order type
-                self.modules['orders'].create_limit_order()
+        return self.place_order(order_params)        
 
-            elif self.order_type in ['SL', 'SL-M']:
-                # Handle SL and SL-M order types
-                # self.modules['orders'].create_slm_order()
-                pass
-            elif self.order_type == 'GTT':
-                # Handle SL and SL-M order types
-                self.modules['orders'].create_gtt_order()
-            
-        else:
-            # Handle missing common parameters
-            print("Some required parameters for the order are missing. Order Placement Failed!")
-            return False
 

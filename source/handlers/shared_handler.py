@@ -1,15 +1,15 @@
-# strategies/sharedManager.py
+# strategies/shared_handler.py
 
 import pandas as pd
 import numpy as np
 import datetime as dt
 import yfinance as yf
-import logging
 import calendar
 from source.constants.constants import *
 from source.enumerations.enums import *
+from source.shared.logging_utils import *
 
-class SharedManager:
+class SharedHandler:
     def __init__(self, connection, modules):
         self.connection = connection
         self.modules = modules
@@ -134,7 +134,7 @@ class SharedManager:
             else:
                 stock_basket.append(symbol.upper())
         else:
-            logging.info(f"Invalid Exchange {exchange}")            
+            log_info(f"Invalid Exchange {exchange}")            
         return stock_basket
   
 
@@ -260,7 +260,7 @@ class SharedManager:
         elif stock is not None:
             underlying = stock + '.NS'
         else:
-            logging.error("The derivative instrument provided is invalid")
+            log_error("The derivative instrument provided is invalid")
             return False
 
         hist_data = yf.download(underlying, period='5d')
