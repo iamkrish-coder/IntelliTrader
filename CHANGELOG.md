@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.14.0...v1.15.0) (2024-03-10)
+
+
+### Features
+
+* Refactored strategy code to implement better encapsulation and Modular Code practices [#208](https://github.com/iamkrish-coder/IntelliTrader/issues/208) ([da0fed4](https://github.com/iamkrish-coder/IntelliTrader/commit/da0fed4f321c2ec3ec2da3bd86e2a7d19a1414e8))
+
 ## [1.14.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.13.0...v1.14.0) (2024-03-09)
 
 
