@@ -84,6 +84,7 @@
     <Content Include=".github\ISSUE_TEMPLATE\feature_request.md" />
     <Content Include=".github\workflows\auto_pull_request.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
+    <Content Include=".release-please.yml" />
     <Content Include="requirements.txt" />
     <Content Include="source\aws\__pycache__\aws_secrets_manager.cpython-312.pyc" />
     <Content Include="source\configuration\config.json" />
