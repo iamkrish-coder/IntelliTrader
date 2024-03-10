@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.0...v1.15.1) (2024-03-10)
+
+
+### Bug Fixes
+
+* update release please configuration ([90ecc81](https://github.com/iamkrish-coder/IntelliTrader/commit/90ecc8178947721f71c2972d01b6287324d56dcf))
+
 ## [1.15.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.14.0...v1.15.0) (2024-03-10)
 
 
