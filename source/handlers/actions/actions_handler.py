@@ -1,4 +1,4 @@
-# strategies/actions_handler.py
+# # strategies/actions_handler.py
 from ast import List
 import datetime
 import time
@@ -12,9 +12,13 @@ from time import sleep
 from pandas import qcut
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.handlers.base_actions import BaseActions
+from source.handlers.actions.base_actions import BaseActions
 from source.queue.awsSubscriber import aws_subscribe
 from source.shared.logging_utils import *
+from source.modules.base_classes.trade import Trade
+from source.modules.equity_trade import EquityTrade
+from source.modules.option_trade import OptionTrade
+from source.modules.futures_trade import FuturesTrade
 
 class ActionsHandler(BaseActions):
     
@@ -56,6 +60,10 @@ class ActionsHandler(BaseActions):
 
         except Exception as e:
             log_info(f"An error occurred: {e}")
+            
+    ###########################################
+    # Execute Actions
+    ###########################################
             
     def execute_actions(self, **kwargs):
         params = []
@@ -109,33 +117,44 @@ class ActionsHandler(BaseActions):
 
         self.prettier = common_params.get('prettier_print')
         
+        # Member Parameters
+        self.quantity = self.compute_quantity()
+
+        strategy_transaction_map = {
+            Strategy_Type.LONG.name: Transaction_Type.BUY.value,
+            Strategy_Type.SHORT.name: Transaction_Type.SELL.value
+        }
+        # Get the transaction type based on the strategy type
+        self.transaction_type = strategy_transaction_map.get(self.strategy_type)
+        
+        # Check if the transaction type is available
+        if not self.transaction_type:
+            log_error("No transaction type available... Exiting")
+            exit()
         
         # Subscribe To Messages in Queue
         response = self.subscribe_message()
         
         # TODO: Do Async Multi Processing to process messages simultaneously
+        self.process_messages(response)
 
-        # Process received messages
+    ###########################################
+    # Process Messages
+    ###########################################
+
+    def process_messages(self, response):
         messages = response.get('Messages', [])
-        if not messages:
-            print("No Message available in Queue.")
-        else:           
+        if messages:
             print(f"\nMessage Received from Queue: {response}")
-
+        
             for i, message in enumerate(messages, start=1):
-            
                 self.is_stock_monitored = True
                 self.message            = message['Body']
                 self.receipt_handle     = message['ReceiptHandle']
-            
-                exchange, symbol, token = self.message.split(',')
-                self.trading_exchange   = exchange
-                self.trading_symbol     = symbol
-                self.instrument_token   = token
-            
-                ##################################################################################################################################
+        
+                self.trading_exchange, self.trading_symbol, self.instrument_token = self.message.split(',')
+       
                 print(f"\nPreparing Stock {i}/{len(messages)}: {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token}\n")
-                ##################################################################################################################################
 
                 # Delete the message from the queue
                 self.sqs.delete_message(
@@ -143,21 +162,34 @@ class ActionsHandler(BaseActions):
                     ReceiptHandle = self.receipt_handle
                 )
                 log_info(f"Purge message from Queue: {self.message}")
-
-                # Pass the message to process stock alerts
-                stock_processing_successful = self.process_stock_alerts()
             
-                if stock_processing_successful and self.strategy_type.upper() == Strategy_Type.LONG.value:
-                    stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
-                    self.generate_long_trade(stock_information)
-                
-                elif stock_processing_successful and self.strategy_type.upper() == Strategy_Type.SHORT.value:    
-                    stock_information = (self.trading_exchange, self.trading_symbol, self.instrument_token)
-                    self.generate_short_trade(stock_information)
-                
-                else:
-                    log_info(f"Stock {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token} not processed.")
-                
+                # Process trade
+                self.process_trade()
+        else:           
+            print("No Message available in Queue.")
+                  
+    ###########################################
+    # Process Trade
+    ###########################################            
+
+    def process_trade(self):
+        if not self.process_stock_alerts():
+            log_info(f"Stock {self.trading_exchange}, {self.trading_symbol}, {self.instrument_token} not processed.")
+            return
+
+        if self.option_trading:
+            trade = OptionTrade(self.modules)
+        elif self.futures_trading:
+            trade = FuturesTrade(self.modules)
+        elif self.equity_trading:
+            trade = EquityTrade(self.modules, self.variety, self.trading_exchange, self.trading_symbol, self.transaction_type, self.quantity, self.product, self.order_type, self.validity)
+        else:
+            log_error("Error: Invalid trading type")
+            return
+
+        result = trade.execute_trade()
+        print(f"{trade.__class__.__name__} executed:", result)
+        
     ###########################################
     # Subscribe Stock Alert from Queue
     ###########################################
@@ -203,9 +235,8 @@ class ActionsHandler(BaseActions):
             except Exception as e:
                 log_error(f"An error occurred while monitoring stock alerts: {str(e)}")
 
-        
     ###########################################
-    # Async Processing
+    # Async Processing Candlestick Data
     ###########################################
 
     async def get_candlestick_data(self):
@@ -220,6 +251,10 @@ class ActionsHandler(BaseActions):
             candles = await asyncio.gather(*tasks)     
             return candles
     
+    ###########################################
+    # Async Processing Fetch Data
+    ###########################################
+        
     async def fetch_ohlc_async(self, trading_exchange, trading_symbol, instrument_token, trading_timeframe):
         """
         Fetches OHLC data asynchronously for the given timeframe.
@@ -321,101 +356,4 @@ class ActionsHandler(BaseActions):
             except Exception as e:
                 log_error(f"An error occurred while evaluating secondary conditions: {str(e)}")
                 return False
-
-
-    def compute_quantity(self):
-        if self.max_allocation is not None:
-            if self.quantity == "per capita":
-                self.symbol_ltp = self.modules['fetch'].fetch_ltp(self.exchange, self.symbol)
-                self.quantity = math.floor(self.calculate_quantity_per_capita(self.max_allocation, self.symbol_ltp))
-                log_info(f"Quantity per capital {self.max_allocation}: {self.quantity}")
-            else:
-                self.quantity = int(self.quantity)                
-                if self.quantity <= 0:
-                    # Handle the case where quantity is not positive
-                    log_error("Error: Quantity cannot be less than or equal to 0")
-
-    def place_order(self, order_params):
-        if all(param is not None for param in order_params):
-            if self.order_type in [OrderType.MARKET.value, OrderType.LIMIT.value, OrderType.SL.value, OrderType.SL_M.value, OrderType.GTT.value]:
-                # Handle various order types
-                self.modules['orders'].initialize_order(self.order_type, order_params)
-                return True
-            else:
-                # Handle invalid order type
-                log_error("Error: Invalid order type")
-                return False
-        else:
-            # Handle missing common parameters
-            print("Some required parameters for the order are missing. Order Placement Failed!")
-            return False
-
-        
-    ###########################################
-    # Buy Signal
-    ###########################################
-
-    def generate_long_trade(self, stock_information):
-        exchange, symbol, token = stock_information
-        self.exchange = exchange
-        self.symbol = symbol
-        self.transaction = TransactionType.BUY.value
-        
-        if self.option_trading:
-            result = self.buy_options()
-        elif self.futures_trading:
-            result = self.buy_futures()
-        elif self.equity_trading:
-            result = self.buy_equities()
-        else:
-            log_error("Error: Invalid trading type")
-
-        return result
-          
-
-    def buy_options(self):
-        pass
-
-    def buy_futures(self):
-        pass
-    
-    def buy_equities(self):
-        self.compute_quantity()
-        order_params = [self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type, self.validity]
-        return self.place_order(order_params)
-    
-
-    
-    ###########################################
-    # Sell Signal
-    ###########################################
-
-    def generate_short_trade(self, stock_information):
-        exchange, symbol, token = stock_information
-        self.exchange = exchange
-        self.symbol = symbol
-        self.transaction = TransactionType.SELL.value
-        
-        if self.option_trading:
-            result = self.sell_options()
-        elif self.futures_trading:
-            result = self.sell_futures()
-        elif self.equity_trading:
-            result = self.sell_equities()
-        else:
-            log_error("Error: Invalid trading type")
-        return result
-
-    
-    def sell_options(self):
-        pass
-
-    def sell_futures(self):
-        pass
-    
-    def sell_equities(self):
-        self.compute_quantity()
-        order_params = [self.variety, self.exchange, self.symbol, self.transaction, self.quantity, self.product, self.order_type]
-        return self.place_order(order_params)        
-
 

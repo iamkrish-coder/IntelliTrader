@@ -5,6 +5,10 @@ class AWS_SQS(Enum):
     ACCOUNT_ID = '265153260161'
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
     
+class MarketSentiment(Enum):
+    POSITIVE = 'POSITIVE'
+    NEGATIVE = 'NEGATIVE'  
+
 class Variety(Enum):
     REGULAR = 'REGULAR'
     AMO = 'AMO'
@@ -16,7 +20,7 @@ class Exchange(Enum):
     NSE = 'NSE'
     BSE = 'BSE'
 
-class TransactionType(Enum):
+class Transaction_Type(Enum):
     BUY = 'BUY'
     SELL = 'SELL'
 
@@ -25,7 +29,7 @@ class Product(Enum):
     CNC = 'CNC'
     NRML = 'NRML'
 
-class OrderType(Enum):
+class Order_Type(Enum):
     MARKET = 'MARKET'
     LIMIT = 'LIMIT'
     SL = 'SL'
@@ -95,7 +99,7 @@ class EMA(Enum):
     EMA_100 = 100
     EMA_200 = 200
 
-class WilliamsR(Enum):
+class Williams_R(Enum):
     WILLIAMSR_5   = 5
     WILLIAMSR_8   = 8  
     WILLIAMSR_10  = 10
@@ -113,7 +117,7 @@ class Supertrend(Enum):
     SUPERTREND_20_2  = [20, 2]
     SUPERTREND_50_10 = [50, 10]
     
-class BollingerBands(Enum):
+class Bollinger_Bands(Enum):
     BOLLINGERBANDS_20_2  = [20, 2]
     BOLLINGERBANDS_14_1  = [14, 1]
     BOLLINGERBANDS_30_3  = [30, 3]

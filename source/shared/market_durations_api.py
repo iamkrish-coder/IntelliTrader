@@ -57,7 +57,7 @@ class MarketDurations:
                 if current_holiday < 0:
                     break
             
-                if current_holiday >= 0 and current_holiday <= min_duration \
+                if current_holiday >= 0 and current_holiday <= (min_duration + duration_in_days) \
                         and holiday_date.weekday() != 5 and holiday_date.weekday() != 6:
                     duration_in_days += 1
             

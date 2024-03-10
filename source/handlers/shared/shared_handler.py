@@ -5,6 +5,7 @@ import numpy as np
 import datetime as dt
 import yfinance as yf
 import calendar
+import math
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
@@ -72,10 +73,6 @@ class SharedHandler:
         return previous_candle['close'] < previous_candle['open'] and candle['close'] < candle['open'] and \
            candle['open'] > previous_candle['close'] and candle['close'] < previous_candle['open']
 
-    def get_indicator_values(self, indicator, datasource, setting):
-        indicator_values = self.modules['indicator'].use_indicator(indicator, datasource, setting)
-        return indicator_values
-
     def get_last_n_candles(self, candles, n):
         """
         Get the last n candles from the given candle dataset.
@@ -87,7 +84,6 @@ class SharedHandler:
         Get the first candle of the day from the given candle dataset.
         """
         return candles.iloc[0] if candles else None
-
 
     def get_nth_last_prices(self, candles, n=1):
         """
@@ -118,26 +114,7 @@ class SharedHandler:
             return nth_first_open, nth_first_high, nth_first_low, nth_first_close, nth_first_volume
         else:
             return None, None, None, None, None
-
-
-    def get_stock_basket(self, exchange, symbol):
-        stock_basket = []       
-        if exchange.upper() == Exchange.NSE.value:
-            if symbol.upper() == "DEFAULT":
-                symbols_list = pd.read_csv(DEFAULT_BASKET)
-                stock_basket = symbols_list['Symbol'].tolist()
-            else:
-                stock_basket.append(symbol.upper())
-        elif exchange.upper() == Exchange.BSE.value:
-            if symbol.upper() == "DEFAULT":
-                stock_basket = pd.read_csv(DEFAULT_BASKET)
-            else:
-                stock_basket.append(symbol.upper())
-        else:
-            log_info(f"Invalid Exchange {exchange}")            
-        return stock_basket
   
-
     def get_local_market_sentiment(self):
         pass
 
@@ -156,6 +133,22 @@ class SharedHandler:
             # Handle the case where the inputs are not valid numbers
             return None        
         
+    def compute_quantity(self):
+        if self.max_allocation is not None:
+            if self.quantity == "per capita":
+                self.symbol_ltp = self.modules['fetch'].fetch_ltp(self.exchange, self.symbol)
+                quantity_per_capita = math.floor(self.calculate_quantity_per_capita(self.max_allocation, self.symbol_ltp))
+                log_info(f"Quantity per capital {self.max_allocation}: {quantity_per_capita}")
+                return quantity_per_capita
+            else:
+                quantity = int(self.quantity)                
+                if quantity <= 0:
+                    # Handle the case where quantity is not positive
+                    log_error("Error: Quantity cannot be less than or equal to 0")
+                    return None
+                return quantity
+        else:
+            return None
 
     def process_current_candles(self, candles_current):
         ohlcv_current_data = {}
@@ -229,7 +222,6 @@ class SharedHandler:
 
         return duration
 
-        
     def get_duration_month(self, depth=1):
         today = dt.date.today()
         current_year = today.year

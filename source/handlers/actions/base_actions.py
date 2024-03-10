@@ -1,7 +1,7 @@
 # strategies/base_actions.py
 from abc import ABC, abstractmethod
 from sys import modules
-from source.handlers.shared_handler import SharedHandler
+from source.handlers.shared.shared_handler import SharedHandler
 
 class BaseActions(ABC, SharedHandler):
     def __init__(self, connection, modules):

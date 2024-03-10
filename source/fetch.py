@@ -86,25 +86,25 @@ class Fetch:
                 
                 if 'today1minute' in timeframe:
                     timeframe = 'minute'
-                    timeframe_text = 'Today 1MINUTE'
+                    timeframe_text = 'Today 1 MINUTE'
                 elif 'today2minute' in timeframe:
                     timeframe = '2minute'      
-                    timeframe_text = 'Today 2MINUTE'                    
+                    timeframe_text = 'Today 2 MINUTE'                    
                 elif 'today3minute' in timeframe:
                     timeframe = '3minute'
-                    timeframe_text = 'Today 3MINUTE'                    
+                    timeframe_text = 'Today 3 MINUTE'                    
                 elif 'today5minute' in timeframe:
                     timeframe = '5minute'  
-                    timeframe_text = 'Today 5MINUTE'                    
+                    timeframe_text = 'Today 5 MINUTE'                    
                 elif 'today15minute' in timeframe:    
                     timeframe = '15minute'
-                    timeframe_text = 'Today 15MINUTE'                    
+                    timeframe_text = 'Today 15 MINUTE'                    
                 elif 'today30minute' in timeframe:    
                     timeframe = '30minute'
-                    timeframe_text = 'Today 30MINUTE'                    
+                    timeframe_text = 'Today 30 MINUTE'                    
                 elif 'today60minute' in timeframe:    
                     timeframe = '60minute'
-                    timeframe_text = 'Today 60MINUTE'                    
+                    timeframe_text = 'Today 60 MINUTE'                    
                 else:
                     log_error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
                     return None

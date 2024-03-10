@@ -8,15 +8,15 @@ class Orders:
         self.prop = params
 
     def initialize_order(self, type_of_order, order_parameters):
-        if type_of_order == OrderType.MARKET.value:
+        if type_of_order == Order_Type.MARKET.value:
             return self.create_market_order(order_parameters)
-        elif type_of_order == OrderType.LIMIT.value:
+        elif type_of_order == Order_Type.LIMIT.value:
             return self.create_limit_order(order_parameters)
-        elif type_of_order == OrderType.SL.value:
+        elif type_of_order == Order_Type.SL.value:
             return self.create_sl_order(order_parameters)
-        elif type_of_order == OrderType.SL_M.value:
+        elif type_of_order == Order_Type.SL_M.value:
             return self.create_slm_order(order_parameters)
-        elif type_of_order == OrderType.GTT.value:
+        elif type_of_order == Order_Type.GTT.value:
             return self.create_gtt_order(order_parameters)        
         else:
             log_error("Invalid order type")
@@ -42,8 +42,8 @@ class Orders:
         }
 
         transaction_mapping = {
-            TransactionType.BUY.value: self.prop['kite'].TRANSACTION_TYPE_BUY,
-            TransactionType.SELL.value: self.prop['kite'].TRANSACTION_TYPE_SELL
+            Transaction_Type.BUY.value: self.prop['kite'].TRANSACTION_TYPE_BUY,
+            Transaction_Type.SELL.value: self.prop['kite'].TRANSACTION_TYPE_SELL
         }
 
         product_mapping = {
@@ -53,10 +53,10 @@ class Orders:
         }
 
         order_type_mapping = {
-            OrderType.MARKET.value: self.prop['kite'].ORDER_TYPE_MARKET,
-            OrderType.LIMIT.value: self.prop['kite'].ORDER_TYPE_LIMIT,
-            OrderType.SL.value: self.prop['kite'].ORDER_TYPE_SL,
-            OrderType.SL_M.value: self.prop['kite'].ORDER_TYPE_SLM
+            Order_Type.MARKET.value: self.prop['kite'].ORDER_TYPE_MARKET,
+            Order_Type.LIMIT.value: self.prop['kite'].ORDER_TYPE_LIMIT,
+            Order_Type.SL.value: self.prop['kite'].ORDER_TYPE_SL,
+            Order_Type.SL_M.value: self.prop['kite'].ORDER_TYPE_SLM
         }
 
         validity_mapping = {

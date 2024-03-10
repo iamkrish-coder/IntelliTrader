@@ -12,8 +12,8 @@ from source.indicator import Indicator
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
-from source.handlers import strategy_handler
-from source.handlers import actions_handler
+from source.handlers.strategy import strategy_handler
+from source.handlers.actions import actions_handler
 # from source.services.redis_service import RedisServiceController
 from flask import Flask, render_template, request, redirect, session
 
@@ -130,9 +130,11 @@ def InitializeCoreSystem(_IntelliTrader_):
     # redis_service_controller.start_redis_server()
 
     # Instantiate the Strategy Handler
-    strategy_handler_instance = strategy_handler.StrategyHandler(connection, modules)    
-    strategy_handler_instance.initialize_strategy(configuration)
+    strategy_handler_instance = strategy_handler.StrategyHandler(connection, modules, configuration)    
+    strategy_handler_instance.initialize()
 
+    exit()
+    
     # Instantiate the Actions Handler
     strategy_actions_instance = actions_handler.ActionsHandler(connection, modules)   
     strategy_actions_instance.initialize_actions(configuration)    
