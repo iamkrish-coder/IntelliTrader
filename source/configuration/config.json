@@ -55,6 +55,7 @@
   },
   "strategy": "1",
   "strategy_1_params": {
+    "id": "1",
     "exchange": "NSE",
     "symbol": "default",
     "timeframe": "5minute",

@@ -13,7 +13,7 @@ from source.constants.constants import *
 from source.enumerations.enums import *
 from source.aws.aws_secrets_manager import get_secret
 from source.handlers.strategy import strategy_handler
-from source.handlers.actions import actions_handler
+from source.handlers.action import action_handler
 # from source.services.redis_service import RedisServiceController
 from flask import Flask, render_template, request, redirect, session
 
@@ -125,19 +125,24 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Read user preferences from configuration
     configuration = app.read_input_configuration()
 
-    # Start Redis Queues [DEPRECATED]
-    # redis_service_controller = RedisServiceController()
-    # redis_service_controller.start_redis_server()
+    # Data Transport Choices
 
     # Instantiate the Strategy Handler
     strategy_handler_instance = strategy_handler.StrategyHandler(connection, modules, configuration)    
     strategy_handler_instance.initialize()
-
-    exit()
     
-    # Instantiate the Actions Handler
-    strategy_actions_instance = actions_handler.ActionsHandler(connection, modules)   
-    strategy_actions_instance.initialize_actions(configuration)    
+
+    # (1) Redis Queues [DEPRECATED]
+    # redis_service_controller = RedisServiceController()
+    # redis_service_controller.start_redis_server()
+
+    # (2) AWS Simple Queue Servuce (SQS) [DEPRECATED]
+    # actions_handler_instance = action_handler.ActionHandler(connection, modules, configuration)   
+    # actions_handler_instance.initialize()
+
+
+
+
 
 def InitializeWebInterface(_IntelliTrader_):
     # Create a Flask app instance

@@ -1,11 +1,11 @@
-# _strategy_conditions.py
+# handlers/strategy
 
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.handlers.strategy.base_strategy import BaseStrategy
 from source.shared.logging_utils import *
 
-class StrategyConditions(BaseStrategy):
+class StrategyEvaluatePrimaryConditions(BaseStrategy):
     def __init__(self, modules, candlesticks_data_list, indicators_data_list, parameters):
         self.modules = modules
         self.candlesticks_data_list = candlesticks_data_list

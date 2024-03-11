@@ -1,10 +1,10 @@
-# handlers/strategy
+# handlers/actions
 
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
 
-class StrategyConfigurations:
+class ActionConfigurations:
     def __init__(self, configuration):
         self.configuration = configuration
 

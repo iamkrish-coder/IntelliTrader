@@ -1,4 +1,5 @@
-# _strategy_stock_baskets.py
+# handlers/strategy
+
 import pandas as pd
 from source.constants.constants import *
 from source.enumerations.enums import *

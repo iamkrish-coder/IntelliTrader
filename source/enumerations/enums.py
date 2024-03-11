@@ -53,6 +53,14 @@ class Queues(Enum):
     Queue5     = 'IntelliTrader_Q5.fifo'
     Queue6     = 'IntelliTrader_Q6.fifo'
     
+class Topics(Enum):
+    Topic1     = 'IntelliTrader_T1'
+    Topic2     = 'IntelliTrader_T2'
+    Topic3     = 'IntelliTrader_T3'
+    Topic4     = 'IntelliTrader_T4'
+    Topic5     = 'IntelliTrader_T5'
+    Topic6     = 'IntelliTrader_T6'
+
 class Strategy(Enum):
     algorithm_1  = 1
     algorithm_2  = 2
