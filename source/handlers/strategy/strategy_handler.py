@@ -1,4 +1,5 @@
-# strategies/strategy_handler.py
+# handlers/strategy
+
 import os
 import time
 import json
@@ -6,7 +7,6 @@ import asyncio
 import boto3
 import uuid
 import pandas as pd
-import source.handlers as strategies
 
 from source.enumerations.enums import Strategy
 from ast import arg
@@ -25,8 +25,8 @@ from source.handlers.strategy._strategy_market_analysis import StrategyMarketAna
 from source.handlers.strategy._strategy_stock_baskets import StrategyStockBaskets
 from source.handlers.strategy._strategy_candlesticks import StrategyCandlesticks
 from source.handlers.strategy._strategy_indicators import StrategyIndicators
-from source.handlers.strategy._strategy_conditions import StrategyConditions
-from source.handlers.strategy._strategy_stock_alerts import StrategyStockAlerts
+from source.handlers.strategy._strategy_evaluate_primary_conditions import StrategyEvaluatePrimaryConditions
+from source.handlers.strategy._strategy_publisher import StrategyPublisher
 
 class StrategyHandler(BaseStrategy):
     
@@ -61,11 +61,11 @@ class StrategyHandler(BaseStrategy):
         indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, params)
         indicators_data_list = indicators_handler.initialize()
 
-        conditions_handler = StrategyConditions(self.modules, candlestick_data_list, indicators_data_list, params) 
-        alerts = conditions_handler.initialize()
+        evaluate_conditions_handler = StrategyEvaluatePrimaryConditions(self.modules, candlestick_data_list, indicators_data_list, params) 
+        alerts = evaluate_conditions_handler.initialize()
 
-        stock_alerts_handler = StrategyStockAlerts(self.modules, alerts, params)
-        response = stock_alerts_handler.initialize()
+        publisher_handler = StrategyPublisher(self.modules, alerts, params)
+        publisher_handler.initialize()
         
    
         # self.process_data(strategy)

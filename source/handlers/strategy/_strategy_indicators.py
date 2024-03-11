@@ -1,4 +1,4 @@
-# _strategy_get_indicators.py
+# handlers/strategy
 
 from source.constants.constants import *
 from source.enumerations.enums import *

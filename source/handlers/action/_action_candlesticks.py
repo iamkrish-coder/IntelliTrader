@@ -1,11 +1,12 @@
-# handlers/strategy
+# handlers/actions
 
+import math
 import asyncio
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
 
-class StrategyCandlesticks:
+class ActionCandlesticks:
     def __init__(self, modules, watchlist, parameters):
         self.modules                      = modules
         self.trading_watchlist            = watchlist  
@@ -25,15 +26,19 @@ class StrategyCandlesticks:
         Asynchronously fetches OHLC data for different timeframes.
         """
         if self.historical_data_subscription:
-            # self.timeframe, DAY, WEEK, MONTH, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M
-            tasks = [
-                self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, self.trading_timeframe)
-                for self.trading_timeframe in [self.timeframe, DAY, WEEK, MONTH, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M]
-            ]
-            candles = await asyncio.gather(*tasks)
-            return candles
+            if self.trading_exchange and self.trading_symbol and self.trading_token:
+                tasks = [
+                    # TODAY_1M, TODAY_2M, TODAY_3M
+                    self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, self.trading_timeframe) 
+                    for self.trading_timeframe in [TODAY_1M, TODAY_2M, TODAY_3M]
+                ]
+                candles = await asyncio.gather(*tasks)
+                return candles
+            else:
+                log_error("Required parameters exchange, symbol, token, or timeframe is missing.")
+                return None
         else:
-            pass
+            return None
 
     async def fetch_ohlc_async(self, trading_exchange, trading_symbol, trading_token, trading_timeframe):
         """
@@ -50,18 +55,12 @@ class StrategyCandlesticks:
         candlestick_data_list = []
 
         try:
-            for i, stock in enumerate(self.trading_watchlist, start=1):                
-                self.trading_exchange = stock.get('exchange')
-                self.trading_symbol = stock.get('tradingsymbol')
-
-                if self.trading_exchange is None or self.trading_symbol is None:
-                    continue
-
-                self.trading_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules['fetch'].trading_token_lookup(self.trading_exchange, self.trading_symbol)
-
+            for i, trading_data in enumerate(self.trading_watchlist, start=1):
+                self.trading_exchange, self.trading_symbol, self.trading_token = trading_data
+                        
                 print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
-
-                log_info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
+                        
+                log_info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
                 candlestick_data = asyncio.run(self.get_candlestick_information())
 
                 candlestick_data_list.append({
@@ -71,6 +70,6 @@ class StrategyCandlesticks:
                     'candlestick_data': candlestick_data
                 })
         except Exception as e:
-            log_error(f"An error occurred while scanning watchlist stocks: {str(e)}")
+            log_error(f"An error occurred while monitoring stock alerts: {str(e)}")
 
         return candlestick_data_list
