@@ -1,10 +1,34 @@
 # ENUMS
 from enum import Enum
+from source.constants.constants import ARN
 
 class AWS_SQS(Enum):
     ACCOUNT_ID = '265153260161'
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
+
+class Queues(Enum):
+    Queue1     = 'IntelliTrader_Q1.fifo'
+    Queue2     = 'IntelliTrader_Q2.fifo'
+    Queue3     = 'IntelliTrader_Q3.fifo'
+    Queue4     = 'IntelliTrader_Q4.fifo'
+    Queue5     = 'IntelliTrader_Q5.fifo'
+    Queue6     = 'IntelliTrader_Q6.fifo'
+
+class AWS_SNS(Enum):
+    ARN        = 'arn'
+    AWS        = 'aws'
+    SNS        = 'sns'
+    REGION     = 'ap-south-1'
+    ACCOUNT_ID = '265153260161'
     
+class Topics(Enum):
+    Topic1     = 'IntelliTrader_T1'
+    Topic2     = 'IntelliTrader_T2'
+    Topic3     = 'IntelliTrader_T3'
+    Topic4     = 'IntelliTrader_T4'
+    Topic5     = 'IntelliTrader_T5'
+    Topic6     = 'IntelliTrader_T6'
+
 class MarketSentiment(Enum):
     POSITIVE = 'POSITIVE'
     NEGATIVE = 'NEGATIVE'  
@@ -44,22 +68,6 @@ class Validity(Enum):
 class Strategy_Type(Enum):
     LONG  = 'LONG'
     SHORT = 'SHORT'
-
-class Queues(Enum):
-    Queue1     = 'IntelliTrader_Q1.fifo'
-    Queue2     = 'IntelliTrader_Q2.fifo'
-    Queue3     = 'IntelliTrader_Q3.fifo'
-    Queue4     = 'IntelliTrader_Q4.fifo'
-    Queue5     = 'IntelliTrader_Q5.fifo'
-    Queue6     = 'IntelliTrader_Q6.fifo'
-    
-class Topics(Enum):
-    Topic1     = 'IntelliTrader_T1'
-    Topic2     = 'IntelliTrader_T2'
-    Topic3     = 'IntelliTrader_T3'
-    Topic4     = 'IntelliTrader_T4'
-    Topic5     = 'IntelliTrader_T5'
-    Topic6     = 'IntelliTrader_T6'
 
 class Strategy(Enum):
     algorithm_1  = 1

@@ -1,6 +1,6 @@
-from source.modules.base_classes.trade import Trade
+from source.modules.trades.BaseTrade import BaseTrade
 
-class EquityTrade(Trade):
+class EquityTrade(BaseTrade):
     def __init__(self, modules, variety, exchange, symbol, transaction_type, quantity, product, order_type, validity):
         super().__init__(modules, transaction_type, order_type)
         self.variety = variety

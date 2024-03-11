@@ -5,16 +5,16 @@ import boto3
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
-from source.queue.awsSubscriber import aws_subscribe
+from source.queue.awsSubscriber import aws_sqs_subscribe
 
 class ActionSubscriber:
     def __init__(self, modules, parameters):
         self.modules = modules
         self.parameters = parameters
-        self.sqs = boto3.client('sqs', region_name=REGION_NAME)
+        self.sqs = boto3.client(SQS, region_name=REGION_NAME)
         
     def initialize(self):
-        return self.subscribe_to_queue()
+        return self.subscribe()
 
     def get_queue_name(self, strategy_id):
         # Create a mapping between strategy IDs and queue names
@@ -34,7 +34,7 @@ class ActionSubscriber:
         else:
             return None 
 
-    def subscribe_to_queue(self):
+    def subscribe(self):
         strategy_id = self.parameters.get('strategy_id')
         if strategy_id is None:
             log_error("Strategy ID is missing from parameters.")
@@ -46,7 +46,7 @@ class ActionSubscriber:
             log_error(f"Queue name not found for Strategy {strategy_id}.")
             return None
 
-        response = aws_subscribe(self.sqs, f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{self.strategy_queue}')
+        response = aws_sqs_subscribe(self.sqs, f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{self.strategy_queue}')
         log_info(f"Message Subscribed: {self.strategy_queue}: {response.get('ResponseMetadata', {}).get('RequestId')}")
 
         if response.get('Messages'):

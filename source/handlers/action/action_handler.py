@@ -9,10 +9,9 @@ from ast import List
 from time import sleep
 from pandas import qcut
 from source.enumerations.enums import Strategy
-from source.handlers.action.base_action import BaseAction
+from source.handlers.action.BaseAction import BaseAction
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.queue.awsSubscriber import aws_subscribe
 from source.shared.logging_utils import *
 from source.handlers.action._action_configurations import ActionConfigurations
 from source.handlers.action._action_parameters import ActionParameters

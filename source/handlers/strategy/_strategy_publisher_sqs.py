@@ -6,21 +6,22 @@ import time
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
-from source.queue.awsPublisher import aws_publish
+from source.queue.awsPublisher import aws_sqs_publish
+from source.queue.awsPublisher import aws_sns_publish
 
-class StrategyPublisher:
+class StrategyPublisherSQS:
     def __init__(self, modules, alerts, parameters):
         self.modules = modules
         self.alerts = alerts
         self.parameters = parameters
-        self.sqs = boto3.client('sqs', region_name=REGION_NAME)
+        self.client = boto3.client(SQS, region_name=REGION_NAME)
         self.retry_count = 3
         self.retry_interval = 15  # in seconds
         
     def initialize(self):
-        return self.publish_to_queue()
+        return self.publish()
 
-    def publish_to_queue(self):
+    def publish(self):
         for attempt in range(1, self.retry_count + 1):
             successfully_published = []
             
@@ -30,7 +31,7 @@ class StrategyPublisher:
         
                 try:
                     # Publish message to the queue
-                    response = aws_publish(self.sqs, message, f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}')
+                    response = aws_sqs_publish(self.client, message, f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{Queues.Queue1.value}')
             
                     # Check if the response contains a message ID
                     if 'MessageId' in response:

@@ -26,20 +26,22 @@
   <ItemGroup>
     <Compile Include="IntelliTrader.py" />
     <Compile Include="source\aws\aws_secrets_manager.py" />
+    <Compile Include="source\aws\aws_sns_subscription.py" />
     <Compile Include="source\connection.py" />
     <Compile Include="source\constants\constants.py" />
     <Compile Include="source\enumerations\enums.py" />
     <Compile Include="source\fetch.py" />
     <Compile Include="source\handlers\action\action_handler.py" />
-    <Compile Include="source\handlers\action\base_action.py" />
+    <Compile Include="source\handlers\action\BaseAction.py" />
+    <Compile Include="source\handlers\action\_action_candlesticks.py" />
     <Compile Include="source\handlers\action\_action_configurations.py" />
     <Compile Include="source\handlers\action\_action_evaluate_secondary_conditions.py" />
     <Compile Include="source\handlers\action\_action_monitor_watchlist.py" />
     <Compile Include="source\handlers\action\_action_parameters.py" />
     <Compile Include="source\handlers\action\_action_subscriber.py" />
     <Compile Include="source\handlers\action\_action_process_alerts.py" />
-    <Compile Include="source\handlers\strategy\base_strategy.py" />
     <Compile Include="source\handlers\shared\shared_handler.py" />
+    <Compile Include="source\handlers\strategy\BaseStrategy.py" />
     <Compile Include="source\handlers\strategy\strategy_handler.py" />
     <Compile Include="source\handlers\strategy\_strategy_evaluate_primary_conditions.py" />
     <Compile Include="source\handlers\strategy\_strategy_indicators.py" />
@@ -47,7 +49,8 @@
     <Compile Include="source\handlers\strategy\_strategy_parameters.py" />
     <Compile Include="source\handlers\strategy\_strategy_candlesticks.py" />
     <Compile Include="source\handlers\strategy\_strategy_configurations.py" />
-    <Compile Include="source\handlers\strategy\_strategy_publisher.py" />
+    <Compile Include="source\handlers\strategy\_strategy_publisher_sns.py" />
+    <Compile Include="source\handlers\strategy\_strategy_publisher_sqs.py" />
     <Compile Include="source\handlers\strategy\_strategy_stock_baskets.py" />
     <Compile Include="source\helper.py" />
     <Compile Include="source\indicator.py" />
@@ -64,10 +67,12 @@
     <Compile Include="source\indicators\truerange.py" />
     <Compile Include="source\indicators\vwap.py" />
     <Compile Include="source\indicators\williams_r.py" />
-    <Compile Include="source\modules\base_classes\trade.py" />
-    <Compile Include="source\modules\equity_trade.py" />
-    <Compile Include="source\modules\futures_trade.py" />
-    <Compile Include="source\modules\option_trade.py" />
+    <Compile Include="source\modules\trades\BaseTrade.py" />
+    <Compile Include="source\modules\trades\equity_trade.py" />
+    <Compile Include="source\modules\trades\futures_trade.py" />
+    <Compile Include="source\modules\trades\option_trade.py" />
+    <Compile Include="source\queue\awsPublisher.py" />
+    <Compile Include="source\queue\awsSubscriber.py" />
     <Compile Include="source\shared\logging_utils.py" />
     <Compile Include="source\shared\market_durations_api.py" />
     <Compile Include="source\shared\nse_data_api.py" />
@@ -77,10 +82,6 @@
     <Compile Include="source\queue\redisPublisher.py" />
     <Compile Include="source\queue\redisSubscriber.py" />
     <Compile Include="source\services\redis_service.py" />
-    <Compile Include="source\strategies\base_actions.py" />
-    <Compile Include="source\strategies\base_strategy.py" />
-    <Compile Include="source\strategies\shared_manager.py" />
-    <Compile Include="source\strategies\strategy_manager.py" />
     <Compile Include="source\ticker.py" />
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +196,7 @@
     <Folder Include="source\indicators\" />
     <Folder Include="source\indicators\__pycache__\" />
     <Folder Include="source\modules\" />
-    <Folder Include="source\modules\base_classes\" />
+    <Folder Include="source\modules\trades\" />
     <Folder Include="source\shared\" />
     <Folder Include="source\shared\__pycache__\" />
     <Folder Include="source\services\" />
@@ -214,7 +215,6 @@
     <Folder Include="source\static\images\flakes\depth4\" />
     <Folder Include="source\static\images\flakes\depth5\" />
     <Folder Include="source\static\js\" />
-    <Folder Include="source\strategies\" />
     <Folder Include="source\templates\" />
     <Folder Include="source\__pycache__\" />
   </ItemGroup>
