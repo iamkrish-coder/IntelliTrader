@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.1...v1.15.2) (2024-03-11)
+
+
+### Features
+
+* Moving to SNS from SQS, kept SQS code for later use ([01ed5ea](https://github.com/iamkrish-coder/IntelliTrader/commit/01ed5ea9569727775133fc951712c3495b1c3299))
+
 ## [1.15.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.0...v1.15.1) (2024-03-10)
 
 
