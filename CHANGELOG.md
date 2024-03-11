@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.2...v1.16.0) (2024-03-11)
+
+
+### Features
+
+* Implemented SNS Publish of Messages ([23b60e2](https://github.com/iamkrish-coder/IntelliTrader/commit/23b60e2ce50ce32810d3b7171fe7f807148f9be7))
+
 ## [1.15.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.1...v1.15.2) (2024-03-11)
 
 
