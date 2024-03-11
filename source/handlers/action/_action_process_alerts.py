@@ -16,7 +16,7 @@ class ActionProcessAlerts:
         self.modules = modules
         self.alerts = alerts
         self.parameters = parameters
-        self.sqs = boto3.client('sqs', region_name=REGION_NAME)  
+        self.sqs = boto3.client(SQS, region_name=REGION_NAME)  
         self.monitored_stocks = []
         self.is_stock_monitored = False
         
@@ -48,7 +48,7 @@ class ActionProcessAlerts:
                 self.receipt_handle = message['ReceiptHandle']
                 self.trading_exchange, self.trading_symbol, self.trading_token = self.message.split(',')
                 self.monitored_stocks.append((self.trading_exchange.strip(), self.trading_symbol.strip(), self.trading_token.strip()))
-                # self.delete_message_from_queue(self.receipt_handle)
+                self.delete_message_from_queue(self.receipt_handle)
 
         else:
             print("\nNo Alerts available to process in Queue.\n")

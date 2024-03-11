@@ -1,6 +1,6 @@
-from source.modules.base_classes.trade import Trade
+from source.modules.trades.BaseTrade import BaseTrade
 
-class OptionTrade(Trade):
+class OptionTrade(BaseTrade):
     def buy(self):
         pass  # Implement buy options logic here
 

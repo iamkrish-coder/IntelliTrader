@@ -14,10 +14,9 @@ from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
-from source.handlers.strategy.base_strategy import BaseStrategy
+from source.handlers.strategy.BaseStrategy import BaseStrategy
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.queue.awsPublisher import aws_publish
 from source.shared.logging_utils import *
 from source.handlers.strategy._strategy_configurations import StrategyConfigurations
 from source.handlers.strategy._strategy_parameters import StrategyParameters
@@ -26,7 +25,8 @@ from source.handlers.strategy._strategy_stock_baskets import StrategyStockBasket
 from source.handlers.strategy._strategy_candlesticks import StrategyCandlesticks
 from source.handlers.strategy._strategy_indicators import StrategyIndicators
 from source.handlers.strategy._strategy_evaluate_primary_conditions import StrategyEvaluatePrimaryConditions
-from source.handlers.strategy._strategy_publisher import StrategyPublisher
+from source.handlers.strategy._strategy_publisher_sqs import StrategyPublisherSQS
+from source.handlers.strategy._strategy_publisher_sns import StrategyPublisherSNS
 
 class StrategyHandler(BaseStrategy):
     
@@ -42,33 +42,29 @@ class StrategyHandler(BaseStrategy):
 
     def handle_strategy(self):
         
-        configuration_handler = StrategyConfigurations(self.configuration)
-        settings = configuration_handler.initialize()
+        object_configuration_handler = StrategyConfigurations(self.configuration)
+        settings = object_configuration_handler.initialize()
 
-        parameters_handler = StrategyParameters(settings)
-        parameters_handler.initialize()
-        params = parameters_handler.get_parameters()
+        object_parameters_handler = StrategyParameters(settings)
+        object_parameters_handler.initialize()
+        parameters = object_parameters_handler.get_parameters()
 
-        market_analysis_handler = StrategyMarketAnalysis(self.modules, params)
-        trend = market_analysis_handler.initialize()
+        object_market_analysis_handler = StrategyMarketAnalysis(self.modules, parameters)
+        trend = object_market_analysis_handler.initialize()
 
-        stock_baskets_handler = StrategyStockBaskets(self.modules, params)
-        watchlist = stock_baskets_handler.initialize()
+        object_stock_baskets_handler = StrategyStockBaskets(self.modules, parameters)
+        watchlist = object_stock_baskets_handler.initialize()
 
-        candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, params)
-        candlestick_data_list = candlesticks_handler.initialize()
+        object_candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, parameters)
+        candlestick_data_list = object_candlesticks_handler.initialize()
         
-        indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, params)
-        indicators_data_list = indicators_handler.initialize()
+        object_indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, parameters)
+        indicators_data_list = object_indicators_handler.initialize()
 
-        evaluate_conditions_handler = StrategyEvaluatePrimaryConditions(self.modules, candlestick_data_list, indicators_data_list, params) 
-        alerts = evaluate_conditions_handler.initialize()
+        object_evaluate_conditions_handler = StrategyEvaluatePrimaryConditions(self.modules, candlestick_data_list, indicators_data_list, parameters) 
+        alerts = object_evaluate_conditions_handler.initialize()
 
-        publisher_handler = StrategyPublisher(self.modules, alerts, params)
-        publisher_handler.initialize()
+        object_publisher_handler = StrategyPublisherSNS(self.modules, alerts, parameters)
+        object_publisher_handler.initialize()
         
    
-        # self.process_data(strategy)
-        # self.analyze_data(strategy)
-        # self.execute_strategy(strategy)
-        

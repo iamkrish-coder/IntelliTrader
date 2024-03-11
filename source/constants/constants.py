@@ -1,6 +1,10 @@
 # Constants
 SECRET_NAME               = 'IntelliTrader'
 REGION_NAME               = 'ap-south-1'
+ARN                       = 'arn'
+AWS                       = 'aws'
+SNS                       = 'sns'
+SQS                       = 'sqs'  
 EXCHANGE_NSE              = 'NSE'
 EXCHANGE_BSE              = 'BSE'
 SOURCE_PATH               = './source'
