@@ -21,12 +21,11 @@ from source.shared.logging_utils import *
 from source.handlers.strategy._strategy_configurations import StrategyConfigurations
 from source.handlers.strategy._strategy_parameters import StrategyParameters
 from source.handlers.strategy._strategy_market_analysis import StrategyMarketAnalysis
-from source.handlers.strategy._strategy_stock_baskets import StrategyStockBaskets
+from source.handlers.strategy._strategy_watchlist import StrategyWatchlist
 from source.handlers.strategy._strategy_candlesticks import StrategyCandlesticks
 from source.handlers.strategy._strategy_indicators import StrategyIndicators
-from source.handlers.strategy._strategy_evaluate_primary_conditions import StrategyEvaluatePrimaryConditions
-from source.handlers.strategy._strategy_publisher_sqs import StrategyPublisherSQS
-from source.handlers.strategy._strategy_publisher_sns import StrategyPublisherSNS
+from source.handlers.strategy._strategy_scanner import StrategyScanner
+from source.handlers.strategy._strategy_publisher import StrategyPublisher
 
 class StrategyHandler(BaseStrategy):
     
@@ -37,6 +36,7 @@ class StrategyHandler(BaseStrategy):
     ###########################################
     # Initialize Strategy Handler
     ###########################################
+        
     def initialize(self):
         return self.handle_strategy()    
 
@@ -52,8 +52,8 @@ class StrategyHandler(BaseStrategy):
         object_market_analysis_handler = StrategyMarketAnalysis(self.modules, parameters)
         trend = object_market_analysis_handler.initialize()
 
-        object_stock_baskets_handler = StrategyStockBaskets(self.modules, parameters)
-        watchlist = object_stock_baskets_handler.initialize()
+        object_watchlist_handler = StrategyWatchlist(self.modules, parameters)
+        watchlist = object_watchlist_handler.initialize()
 
         object_candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, parameters)
         candlestick_data_list = object_candlesticks_handler.initialize()
@@ -61,10 +61,10 @@ class StrategyHandler(BaseStrategy):
         object_indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, parameters)
         indicators_data_list = object_indicators_handler.initialize()
 
-        object_evaluate_conditions_handler = StrategyEvaluatePrimaryConditions(self.modules, candlestick_data_list, indicators_data_list, parameters) 
-        alerts = object_evaluate_conditions_handler.initialize()
+        object_scanner_handler = StrategyScanner(self.modules, candlestick_data_list, indicators_data_list, parameters) 
+        alerts = object_scanner_handler.initialize()
 
-        object_publisher_handler = StrategyPublisherSNS(self.modules, alerts, parameters)
+        object_publisher_handler = StrategyPublisher(self.modules, alerts, parameters, SNS)
         object_publisher_handler.initialize()
         
    

@@ -11,10 +11,11 @@ from source.ticker import Ticker
 from source.indicator import Indicator
 from source.constants.constants import *
 from source.enumerations.enums import *
+from source.enumerations.resource_strings import Info_Messages, Error_Messages, Warning_Messages
+from source.language.resource_strings import ResourceStrings
 from source.aws.aws_secrets_manager import get_secret
-from source.handlers.strategy import strategy_handler
-from source.handlers.action import action_handler
-# from source.services.redis_service import RedisServiceController
+from source.handlers.strategy import MainStrategy
+from source.handlers.action import MainAction
 from flask import Flask, render_template, request, redirect, session
 
 import webbrowser
@@ -66,7 +67,7 @@ class IntelliTrader:
         kite = KiteConnect(api_key)
         kite_ticker = KiteTicker(api_key, access_token)
         kite.set_access_token(access_token)
-        log_info("Connection to Kite Connect API ...COMPLETE!")
+        log_info(Info_Messages.CONNECT_KITE_COMPLETE)
         return kite, kite_ticker, access_token
 
     def establish_new_connection(self):
@@ -118,7 +119,7 @@ def InitializeCoreSystem(_IntelliTrader_):
 
     # Establish connection to the broker
     connection = app.connection_to_broker()
-
+    
     # Initialize application modules
     modules = app.init_modules(connection)
 
@@ -128,7 +129,7 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Data Transport Choices
 
     # Instantiate the Strategy Handler
-    strategy_handler_instance = strategy_handler.StrategyHandler(connection, modules, configuration)    
+    strategy_handler_instance = MainStrategy.StrategyHandler(connection, modules, configuration)    
     strategy_handler_instance.initialize()
     
 
@@ -137,7 +138,7 @@ def InitializeCoreSystem(_IntelliTrader_):
     # redis_service_controller.start_redis_server()
 
     # (2) AWS Simple Queue Servuce (SQS) [DEPRECATED]
-    # actions_handler_instance = action_handler.ActionHandler(connection, modules, configuration)   
+    # actions_handler_instance = MainAction.ActionHandler(connection, modules, configuration)   
     # actions_handler_instance.initialize()
 
 

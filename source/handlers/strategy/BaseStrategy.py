@@ -1,4 +1,4 @@
-# strategies/base_strategy.py
+# strategies/BaseStrategy.py
 from abc import ABC, abstractmethod
 from sys import modules
 from source.handlers.shared.shared_handler import SharedHandler

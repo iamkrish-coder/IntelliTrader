@@ -5,7 +5,7 @@ from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
 
-class StrategyStockBaskets:
+class StrategyWatchlist:
     def __init__(self, modules, parameters):
         self.modules = modules      
         self.parameters = parameters
@@ -13,7 +13,7 @@ class StrategyStockBaskets:
         self.symbol   = parameters.get('symbol')
         
     def initialize(self):
-        return self.get_watchlist_stocks()
+        return self.get_stock_watchlist()
 
     def get_stock_basket(self, exchange, symbol):
         stock_basket = []       
@@ -32,7 +32,7 @@ class StrategyStockBaskets:
             log_info(f"Invalid Exchange {exchange}")            
         return stock_basket
 
-    def get_watchlist_stocks(self):       
+    def get_stock_watchlist(self):       
         stock_basket = self.get_stock_basket(self.exchange, self.symbol)
         instruments_list = self.modules['fetch'].fetch_instruments(self.exchange)          
         watchlist_stocks = [instrument for instrument in instruments_list if instrument['tradingsymbol'] in stock_basket]

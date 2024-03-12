@@ -7,12 +7,12 @@ class AWS_SQS(Enum):
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
 
 class Queues(Enum):
-    Queue1     = 'IntelliTrader_Q1.fifo'
-    Queue2     = 'IntelliTrader_Q2.fifo'
-    Queue3     = 'IntelliTrader_Q3.fifo'
-    Queue4     = 'IntelliTrader_Q4.fifo'
-    Queue5     = 'IntelliTrader_Q5.fifo'
-    Queue6     = 'IntelliTrader_Q6.fifo'
+    QUEUE_1     = 'IntelliTrader_Q1.fifo'
+    QUEUE_2     = 'IntelliTrader_Q2.fifo'
+    QUEUE_3     = 'IntelliTrader_Q3.fifo'
+    QUEUE_4     = 'IntelliTrader_Q4.fifo'
+    QUEUE_5     = 'IntelliTrader_Q5.fifo'
+    QUEUE_6     = 'IntelliTrader_Q6.fifo'
 
 class AWS_SNS(Enum):
     ARN        = 'arn'
@@ -22,14 +22,14 @@ class AWS_SNS(Enum):
     ACCOUNT_ID = '265153260161'
     
 class Topics(Enum):
-    Topic1     = 'IntelliTrader_T1'
-    Topic2     = 'IntelliTrader_T2'
-    Topic3     = 'IntelliTrader_T3'
-    Topic4     = 'IntelliTrader_T4'
-    Topic5     = 'IntelliTrader_T5'
-    Topic6     = 'IntelliTrader_T6'
+    TOPIC_1     = 'IntelliTrader_T1'
+    TOPIC_2     = 'IntelliTrader_T2'
+    TOPIC_3     = 'IntelliTrader_T3'
+    TOPIC_4     = 'IntelliTrader_T4'
+    TOPIC_5     = 'IntelliTrader_T5'
+    TOPIC_6     = 'IntelliTrader_T6'
 
-class MarketSentiment(Enum):
+class Market_Sentiment(Enum):
     POSITIVE = 'POSITIVE'
     NEGATIVE = 'NEGATIVE'  
 
@@ -70,12 +70,12 @@ class Strategy_Type(Enum):
     SHORT = 'SHORT'
 
 class Strategy(Enum):
-    algorithm_1  = 1
-    algorithm_2  = 2
-    algorithm_3  = 3   
-    algorithm_4  = 4
-    algorithm_5  = 5
-    algorithm_6  = 6 
+    ALGORITHM_1  = 1
+    ALGORITHM_2  = 2
+    ALGORITHM_3  = 3   
+    ALGORITHM_4  = 4
+    ALGORITHM_5  = 5
+    ALGORITHM_6  = 6 
 
 class RSI(Enum):
     RSI_5  = 5
