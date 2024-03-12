@@ -30,7 +30,7 @@
     <Compile Include="source\connection.py" />
     <Compile Include="source\constants\constants.py" />
     <Compile Include="source\enumerations\enums.py" />
-    <Compile Include="source\enumerations\resource_strings.py" />
+    <Compile Include="source\enumerations\resource_string_enums.py" />
     <Compile Include="source\fetch.py" />
     <Compile Include="source\handlers\action\MainAction.py" />
     <Compile Include="source\handlers\action\BaseAction.py" />
