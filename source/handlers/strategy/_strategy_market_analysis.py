@@ -17,11 +17,11 @@ class StrategyMarketAnalysis:
 
     def get_local_market_sentiment(self):
         log_info("Analyzing local market sentiment ...COMPLETE!")
-        return True if self.market_sentiment == MarketSentiment.POSITIVE else False if self.market_sentiment == MarketSentiment.NEGATIVE else None
+        return True if self.market_sentiment == Market_Sentiment.POSITIVE else False if self.market_sentiment == Market_Sentiment.NEGATIVE else None
     
     def get_global_market_sentiment(self):
         log_info("Analyzing global market sentiment ...COMPLETE!")
-        return True if self.market_sentiment == MarketSentiment.POSITIVE else False if self.market_sentiment == MarketSentiment.NEGATIVE else None
+        return True if self.market_sentiment == Market_Sentiment.POSITIVE else False if self.market_sentiment == Market_Sentiment.NEGATIVE else None
 
     # Analyze market sentiment and determine strategy recommendations:
     def analyze_market_sentiments(self):       

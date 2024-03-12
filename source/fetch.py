@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 import datetime as dt
-import source.shared.nse_data_api as _nseData
-import source.shared.market_durations_api as _marketDurations
 import requests
 import calendar
+import source.shared.nse_data_api as _nseData
+import source.shared.market_durations_api as _marketDurations
 
 from turtle import st
 from source.helper import Helper
