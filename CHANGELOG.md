@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.16.0...v1.17.0) (2024-03-12)
+
+
+### Features
+
+* Added advanced logging by using Resource strings concepts ([9fb3383](https://github.com/iamkrish-coder/IntelliTrader/commit/9fb338388cc877e2283c9b99c949a2874766ba29))
+
 ## [1.16.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.2...v1.16.0) (2024-03-11)
 
 
