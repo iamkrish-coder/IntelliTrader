@@ -24,4 +24,5 @@ jobs:
         pr_body: ":crown: *An automated PR*"
         pr_assignee: "iamkrish-coder"
         pr_label: "enhancement"
+        pr_project: "IntelliTrader"
         github_token: ${{ secrets.GITHUB_TOKEN }}
