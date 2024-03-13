@@ -16,7 +16,7 @@ jobs:
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
           state: open
-          head: ${{ github.repository }}:feature-build
+          head: ${{ github.repository_owner }}:develop
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
