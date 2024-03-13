@@ -11,11 +11,11 @@ from source.ticker import Ticker
 from source.indicator import Indicator
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.enumerations.resource_strings import Info_Messages, Error_Messages, Warning_Messages
+from source.enumerations.resource_string_enums import INFO, ERROR, WARN
 from source.language.resource_strings import ResourceStrings
 from source.aws.aws_secrets_manager import get_secret
-from source.handlers.strategy import MainStrategy
-from source.handlers.action import MainAction
+from source.controller.MainStrategy import StrategyController
+from source.controller.MainAction import ActionController
 from flask import Flask, render_template, request, redirect, session
 
 import webbrowser
@@ -67,14 +67,14 @@ class IntelliTrader:
         kite = KiteConnect(api_key)
         kite_ticker = KiteTicker(api_key, access_token)
         kite.set_access_token(access_token)
-        log_info(Info_Messages.CONNECT_KITE_COMPLETE)
+        log_info(INFO.CONNECT_KITE_COMPLETE)
         return kite, kite_ticker, access_token
 
     def establish_new_connection(self):
         connect = Connection(self.secret_keys)
         kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker)
         kite.set_access_token(access_token)
-        log_info("New Connection Request to Kite Connect API ...COMPLETE!")       
+        log_info(INFO.NEW_CONNECTION_REQUEST_COMPLETE)       
         return kite, kite_ticker, access_token
 
     def remove_old_tokens(self):
@@ -90,11 +90,7 @@ class IntelliTrader:
         try:
             os.remove(file_path)
         except Exception as e:
-            self.handle_error(e, f"Unable to remove file: {file_path}")
-
-    def handle_error(self, exception, message):
-        log_error(f"An exception occurred: {exception}. {message}")
-        exit()
+            log_error(ERROR.REMOVE_FILE_ERROR, file_path)
 
     def init_modules(self, connection):
         help_instance      = Helper(connection)
@@ -129,8 +125,8 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Data Transport Choices
 
     # Instantiate the Strategy Handler
-    strategy_handler_instance = MainStrategy.StrategyHandler(connection, modules, configuration)    
-    strategy_handler_instance.initialize()
+    sc_instance = StrategyController(connection, modules, configuration)
+    sc_instance.initialize() 
     
 
     # (1) Redis Queues [DEPRECATED]

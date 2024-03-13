@@ -2,7 +2,7 @@
 
 import logging
 import colorlog
-from source.enumerations.resource_strings import Info_Messages, Error_Messages, Warning_Messages
+from source.enumerations.resource_string_enums import INFO, ERROR, WARN
 from source.language.resource_strings import ResourceStrings
 
 def configure_logging():
@@ -47,7 +47,7 @@ def get_message(resource_string):
         str: The message string (either from ResourceStrings or the input string).
     """
 
-    if isinstance(resource_string, (Info_Messages, Error_Messages, Warning_Messages)):
+    if isinstance(resource_string, (INFO, ERROR, WARN)):
         message = ResourceStrings.get(resource_string)
         return message or resource_string.value
     else:
@@ -55,20 +55,43 @@ def get_message(resource_string):
         return resource_string
 
 
-def log_info(resource_string):
+def log_info(message_enum, *args, **kwargs):
+    if kwargs:
+        formatted_message = ResourceStrings.get(message_enum)    
+        formatted_message = formatted_message.format(**kwargs)
+    elif args:
+        formatted_message = ResourceStrings.get(message_enum)            
+        formatted_message = formatted_message.format(*args)
+    else:
+        formatted_message = get_message(message_enum)
+        
     logger = logging.getLogger(__name__)
-    message = get_message(resource_string)
-    logger.info(message)
+    logger.info(formatted_message)
 
-
-def log_error(resource_string):
+def log_error(message_enum, *args, **kwargs):
+    if kwargs:
+        formatted_message = ResourceStrings.get(message_enum)    
+        formatted_message = formatted_message.format(**kwargs)
+    elif args:
+        formatted_message = ResourceStrings.get(message_enum)            
+        formatted_message = formatted_message.format(*args)
+    else:
+        formatted_message = get_message(message_enum)
+        
     logger = logging.getLogger(__name__)
-    message = get_message(resource_string)
-    logger.error(message)
+    logger.error(formatted_message)
 
 
-def log_warn(resource_string):
+def log_warn(message_enum, *args, **kwargs):
+    if kwargs:
+        formatted_message = ResourceStrings.get(message_enum)    
+        formatted_message = formatted_message.format(**kwargs)
+    elif args:
+        formatted_message = ResourceStrings.get(message_enum)            
+        formatted_message = formatted_message.format(*args)
+    else:
+        formatted_message = get_message(message_enum)
+        
     logger = logging.getLogger(__name__)
-    message = get_message(resource_string)
-    logger.warning(message)
+    logger.warning(formatted_message)
 

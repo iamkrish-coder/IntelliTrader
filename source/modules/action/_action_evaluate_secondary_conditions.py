@@ -2,7 +2,7 @@
 
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.handlers.strategy.BaseStrategy import BaseStrategy
+from source.modules.strategy.BaseStrategy import BaseStrategy
 from source.shared.logging_utils import *
 
 class ActionEvaluateSecondaryConditions(BaseStrategy):
