@@ -19,7 +19,7 @@ jobs:
 
     - name: Auto Release
       uses: google-github-actions/release-please-action@v4
-      id: auto_pr_created_to_master
+      id: create_pr
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         release-type: simple
@@ -30,5 +30,5 @@ jobs:
       uses: juliangruber/merge-pull-request-action@v1
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.auto_pr_created_to_master.outputs.pr.number }}
+          number: ${{ steps.create_pr.outputs.pr.number }}
           method: squash
