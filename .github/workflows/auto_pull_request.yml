@@ -21,7 +21,7 @@ jobs:
           OWNER=${{ github.repository_owner }}
           REPO=${{ github.repository }}
           SHA=${{ github.sha }}
-          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq -r '.[0]' > open_pr.txt
+          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq 'empty' > open_pr.txt
 
       - name: Create Pull Request (if no open PR exists)
         id: cpr
