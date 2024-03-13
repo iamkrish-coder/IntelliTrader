@@ -1,5 +1,133 @@
 # Changelog
 
+## [1.18.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.18.0...v1.18.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* add auditing to console output to a file ([f00a680](https://github.com/iamkrish-coder/IntelliTrader/commit/f00a68098aebd6ce80072440c0d680cc6f25928e))
+* Auto PR approval, merge ([29dae0c](https://github.com/iamkrish-coder/IntelliTrader/commit/29dae0c4a1bfd3889947570a49bbc3b669b69db4))
+* updated actions workflow ([bb0fe07](https://github.com/iamkrish-coder/IntelliTrader/commit/bb0fe0747b1a979fd35606d043dc901f1df49efb))
+
+## [1.18.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.2...v1.18.0) (2024-03-13)
+
+
+### Features
+
+* Add Project to Auto PR ([fb97dba](https://github.com/iamkrish-coder/IntelliTrader/commit/fb97dba245882e951a1ba199f0ee8b7dc86005f8))
+
+
+### Bug Fixes
+
+* fix code ([02648a0](https://github.com/iamkrish-coder/IntelliTrader/commit/02648a065136b855b1758a9e37d5b66b52a4e402))
+* fix the Auto PR Label assignment ([d2dcd2d](https://github.com/iamkrish-coder/IntelliTrader/commit/d2dcd2d4702bafa1cfd0739b0a569f99cecaa739))
+
+## [1.17.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.1...v1.17.2) (2024-03-13)
+
+
+### Bug Fixes
+
+* action file ([34e2e63](https://github.com/iamkrish-coder/IntelliTrader/commit/34e2e63f3e1c4d15feb2d79e77690d6263997e10))
+* auto pr ([7ccc88a](https://github.com/iamkrish-coder/IntelliTrader/commit/7ccc88add6b51a73b2623e509e420309b02ec2f1))
+* auto pr ([1fa5992](https://github.com/iamkrish-coder/IntelliTrader/commit/1fa5992a4ba40bc42f4b9c5293339bf70dc34ba6))
+* auto PR ([bb78fa4](https://github.com/iamkrish-coder/IntelliTrader/commit/bb78fa464de28418e9a04ac1ee0add68e3958970))
+* auto pr for open pr ([11917d1](https://github.com/iamkrish-coder/IntelliTrader/commit/11917d12f81de2d6367166b77d079a537996b622))
+* curl commands ([a3203ff](https://github.com/iamkrish-coder/IntelliTrader/commit/a3203ff8c03fcec5a7dc8160ed14e90af587d13c))
+* error while creation of PR ([773cb91](https://github.com/iamkrish-coder/IntelliTrader/commit/773cb91fb270d18a84263c8da142fa5711a0a647))
+* fix env variable ([bf741a7](https://github.com/iamkrish-coder/IntelliTrader/commit/bf741a79da04c83996b7d447e12e410b3114f24a))
+* fix formatting ([ee9a822](https://github.com/iamkrish-coder/IntelliTrader/commit/ee9a822838597e8a324f467ec49329917d8acba5))
+* fix the latest commit not showing in title ([91b80c9](https://github.com/iamkrish-coder/IntelliTrader/commit/91b80c97ad3a64f0ea24751f6c967d32d62bba74))
+* get latest commit ([1244cee](https://github.com/iamkrish-coder/IntelliTrader/commit/1244cee4fe46d7dc2d5b7af912a2df9ed5488e62))
+* PR title not showing commit ([df61775](https://github.com/iamkrish-coder/IntelliTrader/commit/df6177579cf5e4bebd2a4fedc081528e85ffb61e))
+* repo head ([fac48e8](https://github.com/iamkrish-coder/IntelliTrader/commit/fac48e834dd3974aa9072e552dafe497b0fa7c63))
+* repo head issue ([8426907](https://github.com/iamkrish-coder/IntelliTrader/commit/84269072f3cc3a044f12ece6a30b6a20d4ca652e))
+* repository fix ([10b149d](https://github.com/iamkrish-coder/IntelliTrader/commit/10b149d249b8b73e93e46c3f57112c0e8fe2baee))
+
+## [1.17.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.0...v1.17.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* added controllers, reafctored code ([eb39633](https://github.com/iamkrish-coder/IntelliTrader/commit/eb396333c5a63562ed6e0116dd065b259496a06b))
+* Improved logging utils ([74ceff4](https://github.com/iamkrish-coder/IntelliTrader/commit/74ceff4858d60d724527a4e1c8031fcc30c6c072))
+
+## [1.17.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.16.0...v1.17.0) (2024-03-12)
+
+
+### Features
+
+* Added advanced logging by using Resource strings concepts ([9fb3383](https://github.com/iamkrish-coder/IntelliTrader/commit/9fb338388cc877e2283c9b99c949a2874766ba29))
+
+## [1.16.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.2...v1.16.0) (2024-03-11)
+
+
+### Features
+
+* Implemented SNS Publish of Messages ([23b60e2](https://github.com/iamkrish-coder/IntelliTrader/commit/23b60e2ce50ce32810d3b7171fe7f807148f9be7))
+
+## [1.15.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.1...v1.15.2) (2024-03-11)
+
+
+### Features
+
+* Moving to SNS from SQS, kept SQS code for later use ([01ed5ea](https://github.com/iamkrish-coder/IntelliTrader/commit/01ed5ea9569727775133fc951712c3495b1c3299))
+
+## [1.15.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.15.0...v1.15.1) (2024-03-10)
+
+
+### Bug Fixes
+
+* update release please configuration ([90ecc81](https://github.com/iamkrish-coder/IntelliTrader/commit/90ecc8178947721f71c2972d01b6287324d56dcf))
+
+## [1.15.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.14.0...v1.15.0) (2024-03-10)
+
+
+### Features
+
+* Refactored strategy code to implement better encapsulation and Modular Code practices [#208](https://github.com/iamkrish-coder/IntelliTrader/issues/208) ([da0fed4](https://github.com/iamkrish-coder/IntelliTrader/commit/da0fed4f321c2ec3ec2da3bd86e2a7d19a1414e8))
+
+## [1.14.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.13.0...v1.14.0) (2024-03-09)
+
+
+### Features
+
+* Refactored Code and Renamed Manager to Handler ([8679f65](https://github.com/iamkrish-coder/IntelliTrader/commit/8679f654daaa931bb93cfac99fef39eb17e690ab))
+
+## [1.13.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.12.1...v1.13.0) (2024-03-08)
+
+
+### Features
+
+* Milestone Build - Order Place ([2f2f948](https://github.com/iamkrish-coder/IntelliTrader/commit/2f2f948dbeb796963dfc80b01e10761a23baed59))
+
+## [1.12.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.12.0...v1.12.1) (2024-03-07)
+
+
+### Features
+
+* add order functionality ([b2737da](https://github.com/iamkrish-coder/IntelliTrader/commit/b2737dab049a4da84c66a7359e6e3ffab95267f3))
+
+## [1.12.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.11.1...v1.12.0) (2024-03-07)
+
+
+### Features
+
+* updated build with latest fixes ([86f9fe4](https://github.com/iamkrish-coder/IntelliTrader/commit/86f9fe4f4091dd468fd0fa9295d719b5c28abe14))
+
+## [1.11.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.11.0...v1.11.1) (2024-03-06)
+
+
+### Features
+
+* Added Order Settings# ([93b3561](https://github.com/iamkrish-coder/IntelliTrader/commit/93b3561214be94a6cacf8a105f7bf7d8c0b7f75c))
+
+## [1.11.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.10.0...v1.11.0) (2024-03-06)
+
+
+### Features
+
+* Refactor code to rewrite the strategy and actions ([7ce8b44](https://github.com/iamkrish-coder/IntelliTrader/commit/7ce8b44af56cfd6b695b4b0552c99ba73c138af3))
+
 ## [1.10.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.9.0...v1.10.0) (2024-03-03)
 
 
