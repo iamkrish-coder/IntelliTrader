@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.18.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.18.0...v1.18.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* add auditing to console output to a file ([f00a680](https://github.com/iamkrish-coder/IntelliTrader/commit/f00a68098aebd6ce80072440c0d680cc6f25928e))
+* Auto PR approval, merge ([29dae0c](https://github.com/iamkrish-coder/IntelliTrader/commit/29dae0c4a1bfd3889947570a49bbc3b669b69db4))
+* updated actions workflow ([bb0fe07](https://github.com/iamkrish-coder/IntelliTrader/commit/bb0fe0747b1a979fd35606d043dc901f1df49efb))
+
 ## [1.18.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.2...v1.18.0) (2024-03-13)
 
 
