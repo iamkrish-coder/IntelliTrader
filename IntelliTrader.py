@@ -14,8 +14,8 @@ from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import INFO, ERROR, WARN
 from source.language.resource_strings import ResourceStrings
 from source.aws.aws_secrets_manager import get_secret
-from source.handlers.strategy import MainStrategy
-from source.handlers.action import MainAction
+from source.controller.MainStrategy import StrategyController
+from source.controller.MainAction import ActionController
 from flask import Flask, render_template, request, redirect, session
 
 import webbrowser
@@ -125,8 +125,8 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Data Transport Choices
 
     # Instantiate the Strategy Handler
-    strategy_handler_instance = MainStrategy.StrategyHandler(connection, modules, configuration)    
-    strategy_handler_instance.initialize()
+    sc_instance = StrategyController(connection, modules, configuration)
+    sc_instance.initialize() 
     
 
     # (1) Redis Queues [DEPRECATED]

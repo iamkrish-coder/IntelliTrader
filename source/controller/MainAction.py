@@ -9,15 +9,15 @@ from ast import List
 from time import sleep
 from pandas import qcut
 from source.enumerations.enums import Strategy
-from source.handlers.action.BaseAction import BaseAction
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
-from source.handlers.action._action_configurations import ActionConfigurations
-from source.handlers.action._action_parameters import ActionParameters
-from source.handlers.action._action_monitor_watchlist import ActionMonitorWatchlist
+from source.modules.action.BaseAction import BaseAction
+from source.modules.action._action_configurations import ActionConfigurations
+from source.modules.action._action_parameters import ActionParameters
+from source.modules.action._action_monitor_watchlist import ActionMonitorWatchlist
 
-class ActionHandler(BaseAction):
+class ActionController(BaseAction):
     
     def __init__(self, connection, modules, configuration):
         super().__init__(connection, modules) 

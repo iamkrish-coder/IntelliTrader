@@ -14,20 +14,20 @@ from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
-from source.handlers.strategy.BaseStrategy import BaseStrategy
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
-from source.handlers.strategy._strategy_configurations import StrategyConfigurations
-from source.handlers.strategy._strategy_parameters import StrategyParameters
-from source.handlers.strategy._strategy_market_analysis import StrategyMarketAnalysis
-from source.handlers.strategy._strategy_watchlist import StrategyWatchlist
-from source.handlers.strategy._strategy_candlesticks import StrategyCandlesticks
-from source.handlers.strategy._strategy_indicators import StrategyIndicators
-from source.handlers.strategy._strategy_scanner import StrategyScanner
-from source.handlers.strategy._strategy_publisher import StrategyPublisher
+from source.modules.strategy.BaseStrategy import BaseStrategy
+from source.modules.strategy._strategy_configurations import StrategyConfigurations
+from source.modules.strategy._strategy_parameters import StrategyParameters
+from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
+from source.modules.strategy._strategy_watchlist import StrategyWatchlist
+from source.modules.strategy._strategy_candlesticks import StrategyCandlesticks
+from source.modules.strategy._strategy_indicators import StrategyIndicators
+from source.modules.strategy._strategy_scanner import StrategyScanner
+from source.modules.strategy._strategy_publisher import StrategyPublisher
 
-class StrategyHandler(BaseStrategy):
+class StrategyController(BaseStrategy):
     
     def __init__(self, connection, modules, configuration):
         super().__init__(connection, modules) 
