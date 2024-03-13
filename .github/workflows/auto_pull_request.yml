@@ -13,38 +13,25 @@ jobs:
         with:
           ref: master
 
-      - name: Check for existing open PR
-        id: check_pr
+      - name: Check if file exists
+        id: check_file
         run: |
-          API_URL="https://api.github.com"
-          OWNER=${{ github.repository_owner }}
-          REPO=${{ github.repository }}
-          SHA=${{ github.sha }}
-          OPEN_PR=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$OWNER:$SHA&state=open" | jq '.[0].number')
-          echo "::set-output name=open_pr::$OPEN_PR"
+          if [ -f "open_pr.json" ]; then
+            echo "File exists"
+            exit 0
+          else
+            echo "File does not exist"
+            exit 0  # Exit with code 0 to indicate success even if the file does not exist
+          fi
 
       - name: Get latest commit message
         id: latest_commit
         run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-      - name: Update existing PR and add latest commit
-        if: steps.check_pr.outputs.open_pr
-        run: |
-          API_URL="https://api.github.com"
-          OWNER=${{ github.repository_owner }}
-          REPO=${{ github.repository }}
-          PR_NUMBER=${{ steps.check_pr.outputs.open_pr }}
-          LATEST_COMMIT_MSG="${{ steps.latest_commit.outputs.message }}"
-          
-          # Update pull request title
-          curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "$API_URL/repos/$OWNER/$REPO/pulls/$PR_NUMBER" -d "{\"title\":\"$LATEST_COMMIT_MSG\"}"
-          
-          # Add latest commit to pull request
-          git push "https://github.com/$OWNER/$REPO.git" HEAD:refs/heads/feature-build --force-with-lease
-
-      - name: Create Pull Request (if no open PR exists)
-        if: steps.check_pr.outputs.open_pr == null
+      - name: Create Pull Request (if file exists)
+        id: cpr
         uses: peter-evans/create-pull-request@v5
+        if: steps.check_file.outputs.run == 'File exists'
         with:
           branch: feature-build
           title: ${{ steps.latest_commit.outputs.message }} 
@@ -52,6 +39,7 @@ jobs:
             Updates to IntelliTrader
             - Srikrishnan
             - Auto-generated Pull Request on push to Develop
+
           delete-branch: true
           labels: |
             enhancement
