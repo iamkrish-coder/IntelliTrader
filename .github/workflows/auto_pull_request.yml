@@ -17,6 +17,8 @@ jobs:
           repo: ${{ github.event.repository.name }}
           state: open
           head: ${{ github.repository }}:feature-build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Pull Request
         if: steps.check_pr.outputs.data == '[]'
