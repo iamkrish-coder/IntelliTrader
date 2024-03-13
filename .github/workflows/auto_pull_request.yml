@@ -1,50 +1,47 @@
----
 name: Auto Pull Request
 on:
   push:
     branches:
       - develop
+
 jobs:
-  AUTO_PULL_REQUEST:
+  PR:
     runs-on: ubuntu-latest
     steps:
-      - name: Check for open pull requests
-        id: check_pr
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/${{ github.repository_owner }}/${{
-            github.event.repository.name }}/pulls
-          mediaType: '{"previews":["symmetra"]}'
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create Pull Request
-        if: steps.check_pr.outputs.data == '[]'
-        uses: peter-evans/create-pull-request@v5
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: ${{ github.event.head_commit.message }}
-          body: >
+          ref: master
+
+      - name: Check for existing open PR
+        id: check_pr
+        run: |
+          # Assuming your GitHub API URL format is https://api.github.com
+          API_URL="https://api.github.com"
+          OWNER=${{ github.repository_owner }}
+          REPO=${{ github.repository }}
+          SHA=${{ github.sha }}
+          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq -r '.[].number' > open_pr.txt
+
+      - name: Create Pull Request (if no open PR exists)
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        if: -s open_pr.txt
+        with:
+          branch: feature-build
+          title: ${{ steps.latest_commit.outputs.message }}  # Assuming you have a later step to get the message
+          body: |
             Updates to IntelliTrader
-
             - Srikrishnan
-
             - Auto-generated Pull Request on push to Develop
 
-
             Commit Message Convention
-
             fix: Represents bug fixes, correlates to a SemVer patch.
-
             feat: Represents a new feature, correlates to a SemVer minor.
-
             feat!:, fix!:, refactor!: Represents a breaking change (indicated by the!) and will result in a SemVer major.
-
             feat(lang): add Polish language
-
             feat(api)!: send an email to the customer when a product is shipped
-
             docs: correct spelling of CHANGELOG
-
             revert: let us never again speak of the noodle incident
           delete-branch: true
           labels: |
@@ -52,3 +49,4 @@ jobs:
             automated pull request
           assignees: iamkrish-coder
           draft: false
+
