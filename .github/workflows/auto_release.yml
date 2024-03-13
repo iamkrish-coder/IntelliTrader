@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: google-github-actions/release-please-action@v4
         id: release
+        with:
+         config-file: release-please-config.json
+         manifest-file: .release-please-manifest.json
 
       - name: Echo release outputs
         if: ${{ steps.release.outputs }}
@@ -42,3 +45,10 @@ jobs:
           git add CHANGELOG.md
           git commit -m 'chore: run CHANGELOG.md through Prettier' --no-verify
           git push
+
+      - name: Merge Pull Request
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            number: ${{ steps.release.outputs.pr.number }}
+            method: squash
