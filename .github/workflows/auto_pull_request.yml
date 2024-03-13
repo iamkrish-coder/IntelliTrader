@@ -23,12 +23,9 @@ jobs:
           SHA=${{ github.sha }}
           curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq 'empty' > open_pr.txt
           
-      - name: Get Latest Commit Message
+      - name: Get latest commit message
         id: latest_commit
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.context.payload.commits[0].message
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
       - name: Create Pull Request (if no open PR exists)
         id: cpr
