@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.20.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.20.0...v1.20.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* added squash back ([677ec71](https://github.com/iamkrish-coder/IntelliTrader/commit/677ec71289c786ee040d9d41ef5d4b08502ab285))
+* added squash back ([#250](https://github.com/iamkrish-coder/IntelliTrader/issues/250)) ([d764817](https://github.com/iamkrish-coder/IntelliTrader/commit/d764817ce41c3663302ec24e611e4e617fa672e4))
+* auto release minimal ([e272552](https://github.com/iamkrish-coder/IntelliTrader/commit/e272552a63d881edd4d2d67c637cd67290ebfce3))
+* method changed from squash to merge ([39311d5](https://github.com/iamkrish-coder/IntelliTrader/commit/39311d5c8746f7184e6b8553c221e2ba7636429f))
+* Updated release please ([d2f716d](https://github.com/iamkrish-coder/IntelliTrader/commit/d2f716d20c9c42ce641ee9da3d7ca4cca3772178))
+
 ## [1.20.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.19.0...v1.20.0) (2024-03-13)
 
 ### Features
