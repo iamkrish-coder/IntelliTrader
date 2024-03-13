@@ -138,9 +138,6 @@ def InitializeCoreSystem(_IntelliTrader_):
     # actions_handler_instance.initialize()
 
 
-
-
-
 def InitializeWebInterface(_IntelliTrader_):
     # Create a Flask app instance
     app = _IntelliTrader_
