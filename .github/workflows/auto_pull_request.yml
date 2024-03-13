@@ -6,7 +6,7 @@ on:
       - develop
   workflow_dispatch:
 
-jobs:    
+jobs:
   dummy_job:
     name: 'Dummy Job'
     runs-on: ubuntu-latest
@@ -14,9 +14,8 @@ jobs:
       - name: 'Dummy Step'
         run: echo "This is a dummy job, it doesn't do anything."
 
-  CREATE_PR:
+  create_pr:
     name: 'Create PR'
-    if: github.ref == 'refs/heads/beta'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -36,7 +35,7 @@ jobs:
             
             if (pulls.data.length < 1) {
               await github.rest.pulls.create({
-                title: '[CI] Merge beta into main',
+                title: '[CI] Merge branch into main',
                 owner: 'iamkrish-coder',
                 repo: ${{ github.repository }},
                 head: context.ref,
