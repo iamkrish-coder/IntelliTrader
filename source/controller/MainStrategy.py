@@ -14,6 +14,7 @@ from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.shared.logging_utils import *
