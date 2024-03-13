@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.18.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.2...v1.18.0) (2024-03-13)
+
+
+### Features
+
+* Add Project to Auto PR ([fb97dba](https://github.com/iamkrish-coder/IntelliTrader/commit/fb97dba245882e951a1ba199f0ee8b7dc86005f8))
+
+
+### Bug Fixes
+
+* fix code ([02648a0](https://github.com/iamkrish-coder/IntelliTrader/commit/02648a065136b855b1758a9e37d5b66b52a4e402))
+* fix the Auto PR Label assignment ([d2dcd2d](https://github.com/iamkrish-coder/IntelliTrader/commit/d2dcd2d4702bafa1cfd0739b0a569f99cecaa739))
+
 ## [1.17.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.1...v1.17.2) (2024-03-13)
 
 
