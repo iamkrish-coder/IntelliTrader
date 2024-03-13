@@ -15,8 +15,6 @@ jobs:
           route: GET /repos/${{ github.repository_owner }}/${{
             github.event.repository.name }}/pulls
           mediaType: '{"previews":["symmetra"]}'
-          headers:
-            Authorization: ${{ secrets.GITHUB_TOKEN }}
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Create Pull Request
