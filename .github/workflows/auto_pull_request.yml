@@ -20,8 +20,14 @@ jobs:
           OWNER=${{ github.repository_owner }}
           REPO=${{ github.repository }}
           SHA=${{ github.sha }}
-          OPEN_PR=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$OWNER:$SHA&state=open" | jq -r '.[0].number')
-          echo "::set-output name=open_pr::$OPEN_PR"
+          OPEN_PR=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$OWNER:$SHA&state=open")
+          if [[ "$(echo "$OPEN_PR" | jq '. | length')" -gt 0 ]]; then
+            PR_NUMBER=$(echo "$OPEN_PR" | jq -r '.[0].number')
+            echo "::set-output name=open_pr::$PR_NUMBER"
+          else
+            echo "::set-output name=open_pr::null"
+          fi
+          echo "Open PRs: $OPEN_PR"
 
       - name: Get latest commit message
         id: latest_commit
@@ -31,7 +37,7 @@ jobs:
         id: update_or_create_pr
         run: |
           LATEST_COMMIT_MSG="${{ steps.latest_commit.outputs.message }}"
-          if [ -n "${{ steps.check_pr.outputs.open_pr }}" ]; then
+          if [ "${{ steps.check_pr.outputs.open_pr }}" != "null" ]; then
             API_URL="https://api.github.com"
             OWNER=${{ github.repository_owner }}
             REPO=${{ github.repository }}
@@ -48,10 +54,5 @@ jobs:
             # You can adjust the body of the PR as needed
             TITLE="$LATEST_COMMIT_MSG"
             BODY="Updates to IntelliTrader\n- Srikrishnan\n- Auto-generated Pull Request on push to Develop"
-            hub pull-request -b develop -h feature-build -m "$TITLE" -m "$BODY"
+            gh pr create --base develop --head feature-build --title "$TITLE" --body "$BODY"
           fi
-
-      - name: Set output for new PR URL
-        if: steps.update_or_create_pr.outputs.open_pr == null
-        run: |
-          echo "::set-output name=new_pr_url::$(jq -r '.html_url' <<< "${{ steps.update_or_create_pr.outputs.stdout }}")"
