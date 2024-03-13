@@ -36,7 +36,6 @@ jobs:
         pr_label: ${{ steps.determine_label.outputs.label }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-
     - name: Merge Pull Request
       uses: juliangruber/merge-pull-request-action@v1
       with:

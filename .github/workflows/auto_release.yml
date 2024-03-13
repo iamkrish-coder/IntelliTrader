@@ -19,7 +19,16 @@ jobs:
 
     - name: Auto Release
       uses: google-github-actions/release-please-action@v4
+      id: auto_pr_created_to_master
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         release-type: simple
         target-branch: master
+        release-notes-generator: "conventional"  # Set to "markdown" for markdown format
+    
+    - name: Merge Pull Request
+      uses: juliangruber/merge-pull-request-action@v1
+      with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.auto_pr_created_to_master.outputs.pr.number }}
+          method: squash
