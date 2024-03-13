@@ -16,6 +16,15 @@ jobs:
       id: latest_commit
       run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
+    - name: Determine PR Label
+      id: determine_label
+      run: |
+        if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+          echo "::set-output name=label::bug"
+        else
+          echo "::set-output name=label::enhancement"
+        fi
+
     - uses: repo-sync/pull-request@v2
       name: pull-request
       with:
@@ -23,6 +32,5 @@ jobs:
         pr_title: ${{ steps.latest_commit.outputs.message }}
         pr_body: ":crown: *An automated PR*"
         pr_assignee: "iamkrish-coder"
-        pr_label: "enhancement"
-        pr_projects: "IntelliTrader"
+        pr_label: ${{ steps.determine_label.outputs.label }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
