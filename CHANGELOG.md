@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.17.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.0...v1.17.1) (2024-03-13)
+
+
+### Bug Fixes
+
+* added controllers, reafctored code ([eb39633](https://github.com/iamkrish-coder/IntelliTrader/commit/eb396333c5a63562ed6e0116dd065b259496a06b))
+* Improved logging utils ([74ceff4](https://github.com/iamkrish-coder/IntelliTrader/commit/74ceff4858d60d724527a4e1c8031fcc30c6c072))
+
 ## [1.17.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.16.0...v1.17.0) (2024-03-12)
 
 
