@@ -9,68 +9,44 @@ jobs:
     name: Open PR to Master
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout
+    - uses: actions/checkout@v3
+      name: checkout
 
-      - name: Get latest commit message
-        id: latest_commit
-        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+    - name: Get latest commit message
+      id: latest_commit
+      run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-      - name: Determine PR Label
-        id: determine_label
-        run: |
-          if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-            echo "::set-output name=label::bug"
-          else
-            echo "::set-output name=label::enhancement"
-          fi
+    - name: Determine PR Label
+      id: determine_label
+      run: |
+        if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+          echo "::set-output name=label::bug"
+        else
+          echo "::set-output name=label::enhancement"
+        fi
 
-          - name: Check Existing Pull Request (Optional)
-            uses: octokit/rest@v18  # Optional step
-            with:
-              endpoints: listPullRequests
-              repo: ${{ github.repository }}
-              head: ${{ github.sha }}
-            run: |
-              pulls=$("${{ steps.check-existing-pr.outputs.data }}")
-              if [[ "$pulls" == "[]" ]]; then
-                echo "::notice::No existing pull request found. Creating a new one."
-              else
-                echo "::set-output name=pr_number::$(echo "$pulls" | jq -r '.[0].number')"
-              fi
+    - uses: repo-sync/pull-request@v2
+      name: pull-request
+      id: create_pr
+      with:
+        destination_branch: "master"
+        pr_title: ${{ steps.latest_commit.outputs.message }}
+        pr_body: "*An automated PR*"
+        pr_assignee: "iamkrish-coder"
+        pr_label: ${{ steps.determine_label.outputs.label }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create or Update Pull Request
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "master"
-          pr_title: ${{ steps.latest_commit.outputs.message }}
-          pr_body: "*An automated PR*\n**Please review and approve before merging.**"
-          pr_assignee: "iamkrish-coder"
-          pr_label: ${{ steps.determine_label.outputs.label }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Conditionally set pull number if it exists from previous step
-          pull_number: ${{ steps.check-existing-pr.outputs.pr_number || '' }}
-
-      - name: Get Pull Request Number (if not already set)
-        id: get_pr_number  # Fallback step if no existing PR found
-        run: |
-          if [[ -z "${{ steps.check-existing-pr.outputs.pr_number }}" ]]; then
-            branch_name=${{ github.ref_name }}
-            url="https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.sha }}"
-            auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
-            response=$(curl -sSL -H "$auth_header"  "$url")
-            echo "::set-output name=number::$(echo "$response" | jq -r '.[0].number')"
-          fi
-
-      - name: Approve Pull Request
-        uses: juliangruber/approve-pull-request-action@v1
-        with:
+    - name: Approve Pull Request
+      uses: juliangruber/approve-pull-request-action@v1
+      with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          pull-number: ${{ steps.get_pr_number.outputs.number || steps.check-existing-pr.outputs.pr_number  }}
+          number: ${{ steps.create_pr.outputs.pull-request-number }}
 
-      - name: Merge Pull Request
-        uses: juliangruber/merge-pull-request-action@v1
-        with:
+    - name: Merge Pull Request
+      uses: juliangruber/merge-pull-request-action@v1
+      with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.get_pr_number.outputs.number || steps.check-existing-pr.outputs.pr_number  }}
+          number: ${{ steps.create_pr.outputs.pull-request-number }}
           method: squash
+      
+            
