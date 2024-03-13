@@ -33,6 +33,25 @@ class ActionController(BaseAction):
         return self.handle_action()    
 
     def handle_action(self):
+        """
+        This method handles the execution of an action, likely related to monitoring or processing alerts for a trading strategy.
+
+        Steps (Commented out for now):
+            1. Load action configurations and parameters (already implemented).
+            2. Potentially monitor a watchlist based on the parameters (commented out).
+            3. Possibly subscribe to a message source for updates (commented out).
+            4. Potentially process incoming alerts based on the message and parameters (commented out).
+            5. Potentially fetch candlestick data for relevant assets (commented out).
+            6. Potentially evaluate secondary conditions based on the candlestick data (commented out).
+            7. Potentially update the monitored state based on the evaluation (commented out).
+            8. Potentially return candlestick data if conditions are met (commented out).
+
+        **Current functionality:**
+            - Loads configurations and parameters from ActionConfigurations and ActionParameters handlers.
+
+        **Note:** The commented-out sections suggest potential functionalities that are not currently implemented. 
+        These sections might be placeholders for future development or might require additional information about the specific actions your strategy performs.
+        """
 
         configuration_handler = ActionConfigurations(self.configuration)
         settings = configuration_handler.initialize()
