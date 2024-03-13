@@ -13,7 +13,7 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: GET /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/pulls
-          mediaType: '{"previews":["symmetra"]}'
+          mediaType: {"previews":["symmetra"]}
           headers:
             Authorization: ${{ secrets.GITHUB_TOKEN }}
 
