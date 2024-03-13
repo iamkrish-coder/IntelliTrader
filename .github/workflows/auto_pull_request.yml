@@ -5,29 +5,29 @@ on:
       - develop
 
 jobs:
-  PR:
+  check_open_pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Check for open pull requests
+        id: check_pr
+        uses: actions/github-script@v4
         with:
-          ref: master
-      
-      - name: Reset master branch
-        run: |
-          git fetch origin develop:develop
-          git reset --hard develop
-      
-      - name: Get latest commit message
-        id: latest_commit
-        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
-      
-      - name: Auto Pull Request
-        id: cpr
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: '${{ github.repository }}:feature-build',
+            });
+            return data.length > 0;
+
+      - name: Create Pull Request
+        if: steps.check_pr.outputs.result == 'false'
         uses: peter-evans/create-pull-request@v5
         with:
           branch: feature-build
-          title: ${{ steps.latest_commit.outputs.message }}
+          title: ${{ github.event.head_commit.message }}
           body: |
             Updates to IntelliTrader
             - Srikrishnan 
@@ -47,3 +47,5 @@ jobs:
             automated pull request
           assignees: iamkrish-coder
           draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
