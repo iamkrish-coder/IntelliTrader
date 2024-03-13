@@ -12,13 +12,8 @@ def aws_sqs_subscribe(sqs_client, queue_url):
     return response
 
 
-def aws_sqs_subscribe(sqs_client, queue_url):
+def aws_sns_subscribe(sqs_client, queue_url):
     """
-    Subscribe message from an AWS SQS queue.
+    Subscribe message from an AWS SNS queue.
     """
-    response = sqs_client.receive_message(
-        QueueUrl = queue_url,
-        MaxNumberOfMessages = 10,
-        WaitTimeSeconds = 5
-    )
-    return response
+    pass

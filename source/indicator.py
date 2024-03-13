@@ -2,19 +2,19 @@ import os
 import datetime as dt
 import time
 import pandas as pd
-import source.indicators.ma as ma
-from source.indicators.rsi import rsi
-from source.indicators.supertrend import supertrend
-from source.indicators.macd import macd
-from source.indicators.atr import atr
-from source.indicators.williams_r import williams_r
-from source.indicators.vwap import vwap
-from source.indicators.adx import adx
-from source.indicators.stochastic import stochastic
-from source.indicators.renko import renko
-from source.indicators.bollinger_bands import bollinger_bands
-from source.indicators.truerange import truerange
-from source.indicators.average_truerange import average_truerange
+import source.modules.indicators.ma as ma
+from source.modules.indicators.rsi import rsi
+from source.modules.indicators.supertrend import supertrend
+from source.modules.indicators.macd import macd
+from source.modules.indicators.atr import atr
+from source.modules.indicators.williams_r import williams_r
+from source.modules.indicators.vwap import vwap
+from source.modules.indicators.adx import adx
+from source.modules.indicators.stochastic import stochastic
+from source.modules.indicators.renko import renko
+from source.modules.indicators.bollinger_bands import bollinger_bands
+from source.modules.indicators.truerange import truerange
+from source.modules.indicators.average_truerange import average_truerange
 from source.helper import Helper
 from source.shared.logging_utils import *
 
