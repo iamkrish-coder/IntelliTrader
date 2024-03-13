@@ -2,16 +2,14 @@
 
 ## [1.20.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.19.0...v1.20.0) (2024-03-13)
 
-
 ### Features
 
-* fix the title of release builds ([7765c01](https://github.com/iamkrish-coder/IntelliTrader/commit/7765c0165cc423b688124d3c5f7b9cb0c616a080))
-
+- fix the title of release builds ([7765c01](https://github.com/iamkrish-coder/IntelliTrader/commit/7765c0165cc423b688124d3c5f7b9cb0c616a080))
 
 ### Bug Fixes
 
-* Update releae please to auto merge ([ce79de2](https://github.com/iamkrish-coder/IntelliTrader/commit/ce79de27b5246b24c3e5519ad1616944fed9f9ea))
-* Update title of release ([e84eca6](https://github.com/iamkrish-coder/IntelliTrader/commit/e84eca634f4eab22159084c1a05ef1b66ceafc37))
+- Update releae please to auto merge ([ce79de2](https://github.com/iamkrish-coder/IntelliTrader/commit/ce79de27b5246b24c3e5519ad1616944fed9f9ea))
+- Update title of release ([e84eca6](https://github.com/iamkrish-coder/IntelliTrader/commit/e84eca634f4eab22159084c1a05ef1b66ceafc37))
 
 ## [1.19.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.18.1...v1.19.0) (2024-03-13)
 
