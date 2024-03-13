@@ -88,6 +88,7 @@
   <ItemGroup>
     <Content Include=".github\ISSUE_TEMPLATE\bug_report.md" />
     <Content Include=".github\ISSUE_TEMPLATE\feature_request.md" />
+    <Content Include=".github\PULL_REQUEST_TEMPLATE.md" />
     <Content Include=".github\workflows\auto_pull_request.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
     <Content Include=".release-please.yml" />
