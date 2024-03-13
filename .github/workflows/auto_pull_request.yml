@@ -1,43 +1,52 @@
+---
 name: Auto Pull Request
 on:
   push:
     branches:
       - develop
-
 jobs:
-  check_open_pr:
+  AUTO_PULL_REQUEST:
     runs-on: ubuntu-latest
     steps:
       - name: Check for open pull requests
         id: check_pr
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/pulls
-          mediaType: {"previews":["symmetra"]}
+          route: GET /repos/${{ github.repository_owner }}/${{
+            github.event.repository.name }}/pulls
+          mediaType: '{"previews":["symmetra"]}'
           headers:
             Authorization: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Create Pull Request
         if: steps.check_pr.outputs.data == '[]'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: ${{ github.event.head_commit.message }}
-          body: |
+          body: >
             Updates to IntelliTrader
-            - Srikrishnan 
+
+            - Srikrishnan
+
             - Auto-generated Pull Request on push to Develop
 
-            - Commit Message Convention
+
+            Commit Message Convention
+
             fix: Represents bug fixes, correlates to a SemVer patch.
+
             feat: Represents a new feature, correlates to a SemVer minor.
-            feat!:, fix!:, refactor!: Represents a breaking change (indicated by the !) and will result in a SemVer major.
+
+            feat!:, fix!:, refactor!: Represents a breaking change (indicated by the!) and will result in a SemVer major.
+
             feat(lang): add Polish language
+
             feat(api)!: send an email to the customer when a product is shipped
+
             docs: correct spelling of CHANGELOG
+
             revert: let us never again speak of the noodle incident
           delete-branch: true
           labels: |
