@@ -12,13 +12,10 @@ jobs:
         id: check_pr
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/:owner/:repo/pulls
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          state: open
-          head: ${{ github.event.repository.owner }}:feature-build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          route: GET /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/pulls
+          mediaType: '{"previews":["symmetra"]}'
+          headers:
+            Authorization: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout code
         uses: actions/checkout@v2
