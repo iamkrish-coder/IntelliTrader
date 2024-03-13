@@ -13,29 +13,25 @@ jobs:
         with:
           ref: master
 
-      - name: Reset master branch
+      - name: Check if file exists
+        id: check_file
         run: |
-          git fetch origin develop:develop
-          git reset --hard develop
-
-      - name: Check for existing open PR
-        id: check_pr
-        run: |
-          # Assuming your GitHub API URL format is https://api.github.com
-          API_URL="https://api.github.com"
-          OWNER=${{ github.repository_owner }}
-          REPO=${{ github.repository }}
-          SHA=${{ github.sha }}
-          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" > open_pr.json
+          if [ -f "open_pr.json" ]; then
+            echo "File exists"
+            exit 0
+          else
+            echo "File does not exist"
+            exit 1
+          fi
 
       - name: Get latest commit message
         id: latest_commit
         run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-      - name: Create Pull Request (if no open PR exists)
+      - name: Create Pull Request (if file exists)
         id: cpr
         uses: peter-evans/create-pull-request@v5
-        if: ${{ fileExists('open_pr.json') && contains(github.event_name, 'push') }}
+        if: steps.check_file.outputs.run == 'File exists'
         with:
           branch: feature-build
           title: ${{ steps.latest_commit.outputs.message }} 
