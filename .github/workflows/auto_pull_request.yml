@@ -23,4 +23,5 @@ jobs:
         pr_title: ${{ steps.latest_commit.outputs.message }}
         pr_body: ":crown: *An automated PR*"
         pr_assignee: "iamkrish-coder"
+        pr_label: "enhancement"
         github_token: ${{ secrets.GITHUB_TOKEN }}
