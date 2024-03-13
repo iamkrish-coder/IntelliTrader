@@ -1,5 +1,4 @@
-name: Auto Release
-
+name: release-please
 on:
   push:
     branches:
@@ -10,16 +9,36 @@ permissions:
   pull-requests: write
 
 jobs:
-  auto_release:
+  release-please:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2.5.0
+      - uses: google-github-actions/release-please-action@v4
+        id: release
 
-    - name: Auto Release
-      uses: google-github-actions/release-please-action@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        release-type: simple
-        target-branch: master
+      - name: Echo release outputs
+        if: ${{ steps.release.outputs }}
+        run: echo '${{ toJson(steps.release) }}'
+        continue-on-error: true
+
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.pr }}
+        with:
+          ref: ${{ fromJson(steps.release.outputs.pr).headBranchName }}
+
+      - name: Configure Git user
+        if: ${{ steps.release.outputs.pr }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git --no-pager show --name-only
+
+      - name: Run CHANGELOG.md through Prettier
+        if: ${{ steps.release.outputs.pr }}
+        run: npx prettier --write CHANGELOG.md
+
+      - name: Commit and push
+        if: ${{ steps.release.outputs.pr }}
+        run: |
+          git add CHANGELOG.md
+          git commit -m 'chore: run CHANGELOG.md through Prettier' --no-verify
+          git push
