@@ -31,7 +31,7 @@ jobs:
           body: |
             Updates to IntelliTrader
             - Srikrishnan 
-            - Auto-generated Pull Request on push to Develop
+            - Auto-generated Pull Request
 
           delete-branch: false
           labels: |
