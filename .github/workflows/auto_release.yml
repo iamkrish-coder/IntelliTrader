@@ -46,9 +46,3 @@ jobs:
           git commit -m 'chore: run CHANGELOG.md through Prettier' --no-verify
           git push
 
-      - name: Merge Pull Request
-        uses: juliangruber/merge-pull-request-action@v1
-        with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            number: ${{ steps.release.outputs.pr.number }}
-            method: squash
