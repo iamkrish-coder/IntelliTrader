@@ -41,4 +41,4 @@ jobs:
       with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.create_pr.outputs.pr_number }}
-          method: merge-squash
+          method: merge
