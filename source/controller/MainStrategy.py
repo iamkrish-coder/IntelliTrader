@@ -39,32 +39,52 @@ class StrategyController(BaseStrategy):
         
     def initialize(self):
         return self.handle_strategy()    
-
+    
     def handle_strategy(self):
-        
-        object_configuration_handler = StrategyConfigurations(self.configuration)
-        settings = object_configuration_handler.initialize()
+       """
+       Orchestrates the execution of a trading strategy, coordinating multiple handlers for various tasks.
 
-        object_parameters_handler = StrategyParameters(settings)
-        object_parameters_handler.initialize()
-        parameters = object_parameters_handler.get_parameters()
+       Steps:
+       1. Loads strategy configurations and parameters.
+       2. Performs market analysis to determine the current trend.
+       3. Manages a watchlist of assets for potential trading opportunities.
+       4. Fetches candlestick data for the assets in the watchlist.
+       5. Calculates technical indicators based on the candlestick data.
+       6. Scans for trading signals based on the indicators and trend.
+       7. Publishes alerts for identified trading signals.
+       """
 
-        object_market_analysis_handler = StrategyMarketAnalysis(self.modules, parameters)
-        trend = object_market_analysis_handler.initialize()
+       # 1. Load configurations and parameters
+       object_configuration_handler = StrategyConfigurations(self.configuration)
+       settings = object_configuration_handler.initialize()
 
-        object_watchlist_handler = StrategyWatchlist(self.modules, parameters)
-        watchlist = object_watchlist_handler.initialize()
+       object_parameters_handler = StrategyParameters(settings)
+       object_parameters_handler.initialize()
+       parameters = object_parameters_handler.get_parameters()
 
-        object_candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, parameters)
-        candlestick_data_list = object_candlesticks_handler.initialize()
-        
-        object_indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, parameters)
-        indicators_data_list = object_indicators_handler.initialize()
+       # 2. Perform market analysis
+       object_market_analysis_handler = StrategyMarketAnalysis(self.modules, parameters)
+       trend = object_market_analysis_handler.initialize()
 
-        object_scanner_handler = StrategyScanner(self.modules, candlestick_data_list, indicators_data_list, parameters) 
-        alerts = object_scanner_handler.initialize()
+       # 3. Manage watchlist
+       object_watchlist_handler = StrategyWatchlist(self.modules, parameters)
+       watchlist = object_watchlist_handler.initialize()
 
-        object_publisher_handler = StrategyPublisher(self.modules, alerts, parameters, SNS)
-        object_publisher_handler.initialize()
+       # 4. Fetch candlestick data
+       object_candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, parameters)
+       candlestick_data_list = object_candlesticks_handler.initialize()
+
+       # 5. Calculate indicators
+       object_indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, parameters)
+       indicators_data_list = object_indicators_handler.initialize()
+
+       # 6. Scan for trading signals
+       object_scanner_handler = StrategyScanner(self.modules, candlestick_data_list, indicators_data_list, parameters)
+       alerts = object_scanner_handler.initialize()
+
+       # 7. Publish alerts
+       object_publisher_handler = StrategyPublisher(self.modules, alerts, parameters, SNS)
+       object_publisher_handler.initialize()
+
         
    
