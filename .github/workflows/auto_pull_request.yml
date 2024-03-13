@@ -9,28 +9,51 @@ jobs:
     name: Open PR to Master
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      name: checkout
+      - uses: actions/checkout@v3
+        name: Checkout
 
-    - name: Get latest commit message
-      id: latest_commit
-      run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      - name: Get latest commit message
+        id: latest_commit
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-    - name: Determine PR Label
-      id: determine_label
-      run: |
-        if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-          echo "::set-output name=label::bug"
-        else
-          echo "::set-output name=label::enhancement"
-        fi
+      - name: Determine PR Label
+        id: determine_label
+        run: |
+          if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+            echo "::set-output name=label::bug"
+          else
+            echo "::set-output name=label::enhancement"
+          fi
 
-    - uses: repo-sync/pull-request@v2
-      name: pull-request
-      with:
-        destination_branch: "master"
-        pr_title: ${{ steps.latest_commit.outputs.message }}
-        pr_body: "*An automated PR*"
-        pr_assignee: "iamkrish-coder"
-        pr_label: ${{ steps.determine_label.outputs.label }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: repo-sync/pull-request@v2
+        name: Pull Request
+        with:
+          destination_branch: "master"
+          pr_title: ${{ steps.latest_commit.outputs.message }}
+          pr_body: "*An automated PR*\n**Please review and approve before merging.**"
+          pr_reviewer: "iamkrish-coder"
+          pr_assignee: "iamkrish-coder"
+          pr_label: ${{ steps.determine_label.outputs.label }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Pull Request Number
+        id: get_pr_number
+        run: |
+          branch_name=${{ github.ref_name }}
+          url="https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.sha }}"
+          auth_header="Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+          response=$(curl -sSL -H "$auth_header"  "$url")
+          echo "::set-output name=number::$(echo "$response" | jq -r '.[0].number')"
+
+      - name: Approve Pull Request
+        uses: juliangruber/approve-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pull-number: ${{ steps.get_pr_number.outputs.number }}
+
+      - name: Merge Pull Request
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.get_pr_number.outputs.number }}
+          method: squash
