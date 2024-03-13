@@ -1,8 +1,10 @@
-name: Auto Pull Request
+name: Auto Pull Request and Update
+
 on:
   push:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
   PR:
@@ -39,3 +41,33 @@ jobs:
             automated pull request
           assignees: iamkrish-coder
           draft: false
+
+      - name: Fetch existing PR and Update
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository }}
+
+      - name: Fetch existing PR
+        id: fetch_pr
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          pr_url=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls?head=iamkrish-coder:feature-build | jq -r '.[0].url')
+          echo "::set-output name=pr_url::$pr_url"
+      
+      - name: Make changes to the pull request
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          pr_url="${{ steps.fetch_pr.outputs.pr_url }}"
+          new_title="Updated Title"
+          new_body="Updated Body"
+          curl -s -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d "{\"title\":\"$new_title\", \"body\":\"$new_body\"}" $pr_url
+
+      - name: Push changes to the branch associated with the pull request
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update pull request"
+          git push origin feature-build
