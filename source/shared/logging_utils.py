@@ -2,6 +2,9 @@
 
 import logging
 import colorlog
+import os
+from source.constants.constants import *
+from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import INFO, ERROR, WARN
 from source.language.resource_strings import ResourceStrings
 
@@ -24,7 +27,8 @@ def configure_logging():
 
 
     # File handler (uncomment to log to a file)
-    file_handler = logging.FileHandler('your_logfile.log')
+    log_file_path = os.path.join(OUTPUT_PATH, 'auditing.log')
+    file_handler = logging.FileHandler(log_file_path)
     file_handler.setLevel(logging.DEBUG)  # Adjust level as needed
     file_handler.setFormatter(formatter)
 
