@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.17.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.1...v1.17.2) (2024-03-13)
+
+
+### Bug Fixes
+
+* action file ([34e2e63](https://github.com/iamkrish-coder/IntelliTrader/commit/34e2e63f3e1c4d15feb2d79e77690d6263997e10))
+* auto pr ([7ccc88a](https://github.com/iamkrish-coder/IntelliTrader/commit/7ccc88add6b51a73b2623e509e420309b02ec2f1))
+* auto pr ([1fa5992](https://github.com/iamkrish-coder/IntelliTrader/commit/1fa5992a4ba40bc42f4b9c5293339bf70dc34ba6))
+* auto PR ([bb78fa4](https://github.com/iamkrish-coder/IntelliTrader/commit/bb78fa464de28418e9a04ac1ee0add68e3958970))
+* auto pr for open pr ([11917d1](https://github.com/iamkrish-coder/IntelliTrader/commit/11917d12f81de2d6367166b77d079a537996b622))
+* curl commands ([a3203ff](https://github.com/iamkrish-coder/IntelliTrader/commit/a3203ff8c03fcec5a7dc8160ed14e90af587d13c))
+* error while creation of PR ([773cb91](https://github.com/iamkrish-coder/IntelliTrader/commit/773cb91fb270d18a84263c8da142fa5711a0a647))
+* fix env variable ([bf741a7](https://github.com/iamkrish-coder/IntelliTrader/commit/bf741a79da04c83996b7d447e12e410b3114f24a))
+* fix formatting ([ee9a822](https://github.com/iamkrish-coder/IntelliTrader/commit/ee9a822838597e8a324f467ec49329917d8acba5))
+* fix the latest commit not showing in title ([91b80c9](https://github.com/iamkrish-coder/IntelliTrader/commit/91b80c97ad3a64f0ea24751f6c967d32d62bba74))
+* get latest commit ([1244cee](https://github.com/iamkrish-coder/IntelliTrader/commit/1244cee4fe46d7dc2d5b7af912a2df9ed5488e62))
+* PR title not showing commit ([df61775](https://github.com/iamkrish-coder/IntelliTrader/commit/df6177579cf5e4bebd2a4fedc081528e85ffb61e))
+* repo head ([fac48e8](https://github.com/iamkrish-coder/IntelliTrader/commit/fac48e834dd3974aa9072e552dafe497b0fa7c63))
+* repo head issue ([8426907](https://github.com/iamkrish-coder/IntelliTrader/commit/84269072f3cc3a044f12ece6a30b6a20d4ca652e))
+* repository fix ([10b149d](https://github.com/iamkrish-coder/IntelliTrader/commit/10b149d249b8b73e93e46c3f57112c0e8fe2baee))
+
 ## [1.17.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.17.0...v1.17.1) (2024-03-13)
 
 
