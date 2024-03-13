@@ -36,11 +36,6 @@ jobs:
         pr_label: ${{ steps.determine_label.outputs.label }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Approve Pull Request
-      uses: juliangruber/approve-pull-request-action@v1
-      with:
-          github-token: ${{ secrets.SECRETS_PAT }}
-          number: ${{ steps.create_pr.outputs.pr_number }}
 
     - name: Merge Pull Request
       uses: juliangruber/merge-pull-request-action@v1
@@ -48,4 +43,3 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.create_pr.outputs.pr_number }}
           method: squash
-      
