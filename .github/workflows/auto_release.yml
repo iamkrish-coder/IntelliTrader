@@ -19,9 +19,7 @@ jobs:
 
     - name: Auto Release
       uses: google-github-actions/release-please-action@v4
-      id: create_pr
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         release-type: simple
         target-branch: master
-        release-notes-generator: "conventional"
