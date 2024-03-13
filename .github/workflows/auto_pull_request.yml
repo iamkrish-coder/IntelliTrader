@@ -6,7 +6,14 @@ on:
       - develop
   workflow_dispatch:
 
-jobs:    
+jobs:
+  dummy_job:
+    name: 'Dummy Job'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Dummy Step'
+        run: echo "This is a dummy job, it doesn't do anything."
+        
   CREATE_PR:
     name: 'Create PR'
     if: github.ref == 'refs/heads/beta'
