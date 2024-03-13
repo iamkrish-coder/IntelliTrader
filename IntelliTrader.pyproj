@@ -86,8 +86,6 @@
     <Compile Include="source\ticker.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".github\ISSUE_TEMPLATE\bug_report.md" />
-    <Content Include=".github\ISSUE_TEMPLATE\feature_request.md" />
     <Content Include=".github\workflows\auto_pull_request.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
     <Content Include=".release-please-manifest.json" />
@@ -164,7 +162,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".github\" />
-    <Folder Include=".github\ISSUE_TEMPLATE\" />
     <Folder Include=".github\workflows\" />
     <Folder Include="source\" />
     <Folder Include="source\aws\" />
