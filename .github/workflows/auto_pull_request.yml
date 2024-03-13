@@ -26,7 +26,7 @@ jobs:
       - name: Create Pull Request (if no open PR exists)
         id: cpr
         uses: peter-evans/create-pull-request@v5
-        if: -s open_pr.txt
+        if: ${{ !contains(steps.check_pr.outputs.stdout, '[]') }}  # Check if output is not empty
         with:
           branch: feature-build
           title: ${{ steps.latest_commit.outputs.message }}  # Assuming you have a later step to get the message
