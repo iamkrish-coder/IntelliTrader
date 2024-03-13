@@ -12,47 +12,30 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: master
-
-      - name: Check for existing open PR
-        id: check_pr
+      
+      - name: Reset master branch
         run: |
-          API_URL="https://api.github.com"
-          OWNER=${{ github.repository_owner }}
-          REPO=${{ github.repository }}
-          SHA=${{ github.sha }}
-          OPEN_PR=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$OWNER:$SHA&state=open")
-          if [[ "$(echo "$OPEN_PR" | jq '. | length')" -gt 0 ]]; then
-            PR_NUMBER=$(echo "$OPEN_PR" | jq -r '.[0].number')
-            echo "::set-output name=open_pr::$PR_NUMBER"
-          else
-            echo "::set-output name=open_pr::null"
-          fi
-          echo "Open PRs: $OPEN_PR"
-
+          git fetch origin develop:develop
+          git reset --hard develop
+      
       - name: Get latest commit message
         id: latest_commit
         run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      
+      - name: Auto Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: feature-build
+          title: ${{ steps.latest_commit.outputs.message }}
+          body: |
+            Updates to IntelliTrader
+            - Srikrishnan 
+            - Auto-generated Pull Request on push to Develop
 
-      - name: Update existing PR or create new PR
-        id: update_or_create_pr
-        run: |
-          LATEST_COMMIT_MSG="${{ steps.latest_commit.outputs.message }}"
-          if [ "${{ steps.check_pr.outputs.open_pr }}" != "null" ]; then
-            API_URL="https://api.github.com"
-            OWNER=${{ github.repository_owner }}
-            REPO=${{ github.repository }}
-            PR_NUMBER=${{ steps.check_pr.outputs.open_pr }}
-            
-            # Update pull request title
-            curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "$API_URL/repos/$OWNER/$REPO/pulls/$PR_NUMBER" -d "{\"title\":\"$LATEST_COMMIT_MSG\"}"
-            
-            # Add latest commit to pull request
-            git push "https://github.com/$OWNER/$REPO.git" HEAD:refs/heads/feature-build --force-with-lease
-          else
-            # Create new pull request
-            echo "Creating new pull request"
-            # You can adjust the body of the PR as needed
-            TITLE="$LATEST_COMMIT_MSG"
-            BODY="Updates to IntelliTrader\n- Srikrishnan\n- Auto-generated Pull Request on push to Develop"
-            gh pr create --base develop --head feature-build --title "$TITLE" --body "$BODY"
-          fi
+          delete-branch: false
+          labels: |
+            enhancement
+            automated pull request
+          assignees: iamkrish-coder
+          draft: false
