@@ -26,8 +26,7 @@ jobs:
           OWNER=${{ github.repository_owner }}
           REPO=${{ github.repository }}
           SHA=${{ github.sha }}
-          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq 'empty' > open_pr.txt
-          cat open_pr.txt  # Add this line to see the content of open_pr.txt for debugging
+          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" > open_pr.json
 
       - name: Get latest commit message
         id: latest_commit
@@ -36,7 +35,7 @@ jobs:
       - name: Create Pull Request (if no open PR exists)
         id: cpr
         uses: peter-evans/create-pull-request@v5
-        if: ${{ !contains(steps.check_pr.outputs.stdout, '[]') }}  # Check if output is not empty
+        if: ${{ fileExists('open_pr.json') && contains(github.event_name, 'push') }}
         with:
           branch: feature-build
           title: ${{ steps.latest_commit.outputs.message }} 
