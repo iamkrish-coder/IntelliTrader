@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.19.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.18.1...v1.19.0) (2024-03-13)
+
+
+### Features
+
+* added auto merge prs ([5326702](https://github.com/iamkrish-coder/IntelliTrader/commit/5326702b7cb75f4f44fdceb084c2229811609e1f))
+
+
+### Bug Fixes
+
+* add comments ([ce45bde](https://github.com/iamkrish-coder/IntelliTrader/commit/ce45bde39d79b77956b0b25baf834639ee4da82b))
+* add comments ([#235](https://github.com/iamkrish-coder/IntelliTrader/issues/235)) ([f382ce7](https://github.com/iamkrish-coder/IntelliTrader/commit/f382ce705f4b135051cc1707db5d922f98b604ff))
+* auto release ([3177702](https://github.com/iamkrish-coder/IntelliTrader/commit/31777020bf47b4d2dd79ece41b71257543a31711))
+* auto release ([#237](https://github.com/iamkrish-coder/IntelliTrader/issues/237)) ([7c985b4](https://github.com/iamkrish-coder/IntelliTrader/commit/7c985b462f84fab4676f9fab3d2778299e8e0ed8))
+* formatting changes ([d0a0550](https://github.com/iamkrish-coder/IntelliTrader/commit/d0a0550a11bc170021a58d71f177081a042f0b3d))
+* formatting changes ([66547aa](https://github.com/iamkrish-coder/IntelliTrader/commit/66547aacc4dafd29a70eef8a989c4d68651d5868))
+* formatting changes ([#236](https://github.com/iamkrish-coder/IntelliTrader/issues/236)) ([863acd8](https://github.com/iamkrish-coder/IntelliTrader/commit/863acd8c3b76f17a18b1706c63a7f2a7abe83785))
+* formatting changes ([#240](https://github.com/iamkrish-coder/IntelliTrader/issues/240)) ([ff9ed1d](https://github.com/iamkrish-coder/IntelliTrader/commit/ff9ed1dfe30b5e53d791633ca40091b675d1d639))
+* testing out older changes for actions ([77c4416](https://github.com/iamkrish-coder/IntelliTrader/commit/77c44169bdb5bd5119871dcaae544250ae4c10bb))
+
 ## [1.18.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.18.0...v1.18.1) (2024-03-13)
 
 
