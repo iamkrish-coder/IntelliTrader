@@ -27,6 +27,7 @@ jobs:
           REPO=${{ github.repository }}
           SHA=${{ github.sha }}
           curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq 'empty' > open_pr.txt
+          cat open_pr.txt  # Add this line to see the content of open_pr.txt for debugging
 
       - name: Get latest commit message
         id: latest_commit
@@ -50,4 +51,3 @@ jobs:
             automated pull request
           assignees: iamkrish-coder
           draft: false
-
