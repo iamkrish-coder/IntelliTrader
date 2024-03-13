@@ -20,6 +20,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Create Pull Request
         if: steps.check_pr.outputs.data == '[]'
         uses: peter-evans/create-pull-request@v5
