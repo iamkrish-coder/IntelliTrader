@@ -1,53 +1,26 @@
-name: Auto Pull Request
+name: Automatically create / update pull request
+
 on:
   push:
-    branches:
-      - develop
+    branches: ['develop']
 
 jobs:
-  PR:
+  pull-request:
+    name: Open PR to Master
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: master
+    - uses: actions/checkout@v3
+      name: checkout
 
-      - name: Reset master branch
-        run: |
-          git fetch origin develop:develop
-          git reset --hard develop
+    - name: Get latest commit message
+      id: latest_commit
+      run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-      - name: Check for existing open PR
-        id: check_pr
-        run: |
-          # Assuming your GitHub API URL format is https://api.github.com
-          API_URL="https://api.github.com"
-          OWNER=${{ github.repository_owner }}
-          REPO=${{ github.repository }}
-          SHA=${{ github.sha }}
-          curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$API_URL/repos/$OWNER/$REPO/pulls?head=$SHA&state=open" | jq 'empty' > open_pr.txt
-          cat open_pr.txt  # Add this line to see the content of open_pr.txt for debugging
-
-      - name: Get latest commit message
-        id: latest_commit
-        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
-
-      - name: Create Pull Request (if no open PR exists)
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
-        if: ${{ !contains(steps.check_pr.outputs.stdout, '[]') }}  # Check if output is not empty
-        with:
-          branch: feature-build
-          title: ${{ steps.latest_commit.outputs.message }} 
-          body: |
-            Updates to IntelliTrader
-            - Srikrishnan
-            - Auto-generated Pull Request on push to Develop
-
-          delete-branch: true
-          labels: |
-            enhancement
-            automated pull request
-          assignees: iamkrish-coder
-          draft: false
+    - uses: repo-sync/pull-request@v2
+      name: pull-request
+      with:
+        destination_branch: "master"
+        pr_title: ${{ steps.latest_commit.outputs.message }}
+        pr_body: ":crown: *An automated PR*"
+        pr_assignee: "iamkrish-coder"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
