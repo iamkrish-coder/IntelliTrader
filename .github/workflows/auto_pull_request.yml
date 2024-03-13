@@ -10,20 +10,16 @@ jobs:
     steps:
       - name: Check for open pull requests
         id: check_pr
-        uses: actions/github-script@v4
+        uses: octokit/request-action@v2.x
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data } = await github.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              head: '${{ github.repository }}:feature-build',
-            });
-            return data.length > 0;
+          route: GET /repos/:owner/:repo/pulls
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          state: open
+          head: ${{ github.repository }}:feature-build
 
       - name: Create Pull Request
-        if: steps.check_pr.outputs.result == 'false'
+        if: steps.check_pr.outputs.data == '[]'
         uses: peter-evans/create-pull-request@v5
         with:
           branch: feature-build
