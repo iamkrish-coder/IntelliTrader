@@ -17,21 +17,3 @@ jobs:
         with:
          config-file: release-please-config.json
          manifest-file: .release-please-manifest.json
-
-      - name: Echo release outputs
-        if: ${{ steps.release.outputs }}
-        run: echo '${{ toJson(steps.release) }}'
-        continue-on-error: true
-
-      - uses: actions/checkout@v4
-        if: ${{ steps.release.outputs.pr }}
-        with:
-          ref: ${{ fromJson(steps.release.outputs.pr).headBranchName }}
-
-      - name: Merge Pull Request
-        uses: juliangruber/merge-pull-request-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.create_pr.outputs.pr }}
-          method: squash
-
