@@ -26,7 +26,7 @@ jobs:
           script: |
             const { repo } = context.repo;
             const pulls = await github.rest.pulls.list({
-              owner: 'iamkrish-coder',
+              owner: ['iamkrish-coder'],
               repo: repo,
               head: context.ref,
               base: 'main',
@@ -36,7 +36,7 @@ jobs:
             if (pulls.data.length < 1) {
               await github.rest.pulls.create({
                 title: '[CI] Merge branch into main',
-                owner: 'iamkrish-coder',
+                owner: ['iamkrish-coder'],
                 repo: ${{ github.repository }},
                 head: context.ref,
                 base: 'main',
@@ -51,7 +51,7 @@ jobs:
             } else {
               const existingPR = pulls.data[0];
               await github.rest.pulls.update({
-                owner: 'iamkrish-coder',
+                owner: ['iamkrish-coder'],
                 repo: ${{ github.repository }},
                 pull_number: existingPR.number,
                 body: [
