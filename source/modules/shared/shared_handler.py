@@ -8,7 +8,7 @@ import calendar
 import math
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class SharedHandler:
     def __init__(self, connection, modules):

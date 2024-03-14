@@ -1,6 +1,6 @@
 import subprocess
 import socket
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class RedisServiceController:
     def __init__(self):

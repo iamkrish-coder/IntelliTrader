@@ -8,7 +8,7 @@ import boto3
 from time import sleep
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 
 class ActionProcessAlerts:

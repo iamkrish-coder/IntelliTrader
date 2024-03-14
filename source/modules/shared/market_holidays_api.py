@@ -2,7 +2,7 @@ from queue import Empty
 import requests
 from bs4 import BeautifulSoup
 import datetime as dt
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 def market_holidays(url):
     # Send a GET request to the URL

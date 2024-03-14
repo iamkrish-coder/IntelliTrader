@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import json
 from source.constants.constants import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class Helper:
     def __init__(self, params=None):

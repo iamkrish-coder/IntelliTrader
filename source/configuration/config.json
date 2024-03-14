@@ -3,6 +3,7 @@
   "log_level": "DEBUG",
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
+  "runtime": "5minute",
   "market_trade": true,
   "market_trade_params": {
     "market_indices": {

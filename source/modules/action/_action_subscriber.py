@@ -4,7 +4,7 @@ import time
 import boto3
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 from source.queue.awsSubscriber import aws_sqs_subscribe
 
 class ActionSubscriber:

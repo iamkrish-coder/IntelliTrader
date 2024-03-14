@@ -3,7 +3,7 @@ import boto3
 import time
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 from source.queue.awsPublisher import aws_sns_publish
 from source.queue.awsPublisher import aws_sqs_publish
 
