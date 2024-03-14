@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.20.1...v1.21.0) (2024-03-14)
+
+
+### Features
+
+* add scheduler for Strategy always running mode, 3 types of scheduler modes added ([e005b24](https://github.com/iamkrish-coder/IntelliTrader/commit/e005b246e5c01538350b7f37629effad9d47028f))
+
 ## [1.20.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.20.0...v1.20.1) (2024-03-13)
 
 
