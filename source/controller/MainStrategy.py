@@ -8,6 +8,7 @@ import boto3
 import uuid
 import pandas as pd
 
+from functools import wraps  
 from source.enumerations.enums import Strategy
 from ast import arg
 from ctypes import alignment
@@ -17,7 +18,7 @@ from msilib.schema import CustomAction
 
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 from source.modules.strategy.BaseStrategy import BaseStrategy
 from source.modules.strategy._strategy_configurations import StrategyConfigurations
 from source.modules.strategy._strategy_parameters import StrategyParameters
@@ -34,13 +35,22 @@ class StrategyController(BaseStrategy):
         super().__init__(connection, modules) 
         self.configuration = configuration
         
+    def log_execution(func):
+        @wraps(func)  # Preserves function metadata
+        def wrapper(*args, **kwargs):
+            log_info(f"Function '{func.__name__}' triggered")
+            return func(*args, **kwargs)
+        return wrapper
+
     ###########################################
     # Initialize Strategy Handler
     ###########################################
-        
+    
+    @log_execution 
     def initialize(self):
         return self.handle_strategy()    
     
+    @log_execution 
     def handle_strategy(self):
        """
        Orchestrates the execution of a trading strategy, coordinating multiple handlers for various tasks.

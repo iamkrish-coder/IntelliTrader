@@ -3,7 +3,7 @@
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.modules.strategy.BaseStrategy import BaseStrategy
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class StrategyScanner(BaseStrategy):
     def __init__(self, modules, candlesticks_data_list, indicators_data_list, parameters):

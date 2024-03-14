@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from source.helper import Helper
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 from selenium.common.exceptions import TimeoutException
 
 class Connection:

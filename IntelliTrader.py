@@ -1,6 +1,6 @@
-from source.shared.logging_utils import *
-configure_logging()
+# IntelliTrader.py
 
+from pytz import utc
 from sys import modules
 from kiteconnect import KiteConnect, KiteTicker
 from source.connection import Connection
@@ -17,6 +17,11 @@ from source.aws.aws_secrets_manager import get_secret
 from source.controller.MainStrategy import StrategyController
 from source.controller.MainAction import ActionController
 from flask import Flask, render_template, request, redirect, session
+from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.triggers.cron import CronTrigger
+from source.utils.scheduler_utils import Scheduler 
+from source.utils.logging_utils import *
+configure_logging()
 
 import webbrowser
 import json
@@ -110,6 +115,7 @@ class IntelliTrader:
 
 
 def InitializeCoreSystem(_IntelliTrader_):
+    
     # Create app instance
     app = _IntelliTrader_
 
@@ -122,12 +128,15 @@ def InitializeCoreSystem(_IntelliTrader_):
     # Read user preferences from configuration
     configuration = app.read_input_configuration()
 
-    # Data Transport Choices
-
     # Instantiate the Strategy Handler
-    sc_instance = StrategyController(connection, modules, configuration)
-    sc_instance.initialize() 
-    
+    strategy_instance = StrategyController(connection, modules, configuration)
+
+    # Instantiate the Scheduler
+    scheduler_instance = Scheduler(configuration, strategy_instance, None, 'asyncio')
+    scheduler_instance.start_scheduler()
+
+   
+    # Data Transport Choices
 
     # (1) Redis Queues [DEPRECATED]
     # redis_service_controller = RedisServiceController()

@@ -74,16 +74,17 @@
     <Compile Include="source\queue\awsPublisher.py" />
     <Compile Include="source\queue\awsSubscriber.py" />
     <Compile Include="source\language\resource_strings.py" />
-    <Compile Include="source\shared\logging_utils.py" />
-    <Compile Include="source\shared\market_durations_api.py" />
-    <Compile Include="source\shared\nse_data_api.py" />
-    <Compile Include="source\shared\market_holidays_api.py" />
+    <Compile Include="source\utils\logging_utils.py" />
+    <Compile Include="source\modules\shared\market_durations_api.py" />
+    <Compile Include="source\modules\shared\nse_data_api.py" />
+    <Compile Include="source\modules\shared\market_holidays_api.py" />
     <Compile Include="source\modify.py" />
     <Compile Include="source\orders.py" />
     <Compile Include="source\queue\redisPublisher.py" />
     <Compile Include="source\queue\redisSubscriber.py" />
     <Compile Include="source\services\redis_service.py" />
     <Compile Include="source\ticker.py" />
+    <Compile Include="source\utils\scheduler_utils.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".github\workflows\auto_pull_request.yml" />
@@ -103,8 +104,8 @@
     <Content Include="source\controller\__pycache__\shared_handler.cpython-312.pyc" />
     <Content Include="source\controller\__pycache__\strategy_handler.cpython-312.pyc" />
     <Content Include="source\controller\__pycache__\strategy_manager.cpython-312.pyc" />
-    <Content Include="source\shared\__pycache__\backtest.cpython-312.pyc" />
-    <Content Include="source\shared\__pycache__\nse_data.cpython-312.pyc" />
+    <Content Include="source\utils\__pycache__\backtest.cpython-312.pyc" />
+    <Content Include="source\utils\__pycache__\nse_data.cpython-312.pyc" />
     <Content Include="source\static\css\custom.css" />
     <Content Include="source\static\css\font-awesome.min.css" />
     <Content Include="source\static\css\ie.css" />
@@ -188,8 +189,8 @@
     <Folder Include="source\modules\" />
     <Folder Include="source\modules\trades\" />
     <Folder Include="source\language\" />
-    <Folder Include="source\shared\" />
-    <Folder Include="source\shared\__pycache__\" />
+    <Folder Include="source\utils\" />
+    <Folder Include="source\utils\__pycache__\" />
     <Folder Include="source\services\" />
     <Folder Include="source\queue\" />
     <Folder Include="source\static\" />

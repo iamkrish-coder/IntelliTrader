@@ -2,7 +2,7 @@
 
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class StrategyIndicators:
     def __init__(self, modules, candlesticks_data, parameters):

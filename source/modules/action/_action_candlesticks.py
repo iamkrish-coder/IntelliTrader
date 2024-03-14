@@ -4,7 +4,7 @@ import math
 import asyncio
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class ActionCandlesticks:
     def __init__(self, modules, watchlist, parameters):

@@ -4,7 +4,6 @@
   "pull-request-title-pattern": "build${scope}: release${component} ${version}",
   "pull-request-header": "New Release Build - Milestone",
   "extra-files": [ "README.md" ],
-  "release-notes-generator": "conventional",
   "packages": {
     ".": {}
   }

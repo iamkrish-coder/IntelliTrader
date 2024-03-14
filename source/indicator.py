@@ -16,7 +16,7 @@ from source.modules.indicators.bollinger_bands import bollinger_bands
 from source.modules.indicators.truerange import truerange
 from source.modules.indicators.average_truerange import average_truerange
 from source.helper import Helper
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class Indicator:
     def __init__(self, params):

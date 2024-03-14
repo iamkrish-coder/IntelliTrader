@@ -3,7 +3,7 @@ import os
 import datetime as dt
 import time
 from source.helper import Helper
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class Ticker:
     def __init__(self, params):

@@ -4,7 +4,7 @@ import datetime
 import time
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 from source.modules.action._action_subscriber import ActionSubscriber
 from source.modules.action._action_process_alerts import ActionProcessAlerts
 from source.modules.action._action_candlesticks import ActionCandlesticks

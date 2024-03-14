@@ -3,8 +3,8 @@ import pandas as pd
 import datetime as dt
 import requests
 import calendar
-import source.shared.nse_data_api as _nseData
-import source.shared.market_durations_api as _marketDurations
+import source.modules.shared.nse_data_api as _nseData
+import source.modules.shared.market_durations_api as _marketDurations
 
 from turtle import st
 from source.helper import Helper
@@ -12,7 +12,7 @@ from tkinter.tix import COLUMN
 from source.constants.constants import *
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class Fetch:
     def __init__(self, params):

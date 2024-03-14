@@ -1,7 +1,7 @@
 from source.helper import Helper
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.shared.logging_utils import *
+from source.utils.logging_utils import *
 
 class Orders:
     def __init__(self, params):
