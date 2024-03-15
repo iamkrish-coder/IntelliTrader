@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.1...v2.0.2) (2024-03-15)
+
+
+### Bug Fixes
+
+* add auto merge to PRs of develop branch ([e2f4cea](https://github.com/iamkrish-coder/IntelliTrader/commit/e2f4ceae39b17fd7176b16d4863f871123f23f00))
+* auto relase on close ([1e0acc1](https://github.com/iamkrish-coder/IntelliTrader/commit/1e0acc16bf9998d2a4c869fdfaa9ab7ccff000d1))
+* auto relase on close ([#263](https://github.com/iamkrish-coder/IntelliTrader/issues/263)) ([2ce68c6](https://github.com/iamkrish-coder/IntelliTrader/commit/2ce68c677b460b9972280a49f061badfdfe2b01a))
+* auto release changes ([dd4502e](https://github.com/iamkrish-coder/IntelliTrader/commit/dd4502ec659f6fb9746fc3c680372a55eec2812a))
+* auto release changes ([#265](https://github.com/iamkrish-coder/IntelliTrader/issues/265)) ([e136444](https://github.com/iamkrish-coder/IntelliTrader/commit/e136444138deba59598ea9ffb7a11d4a4162cf01))
+* remove refs on master ([3c46d66](https://github.com/iamkrish-coder/IntelliTrader/commit/3c46d66acbc4c181ac33a4e49baa2123ba7a84a5))
+* run auto release every hour ([#262](https://github.com/iamkrish-coder/IntelliTrader/issues/262)) ([f408c5f](https://github.com/iamkrish-coder/IntelliTrader/commit/f408c5f5366e6d241378f1f3d31bcf666f483d5c))
+
 ## [2.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.0...v2.0.1) (2024-03-15)
 
 
