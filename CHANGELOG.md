@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.2...v2.0.3) (2024-03-15)
+
+
+### Bug Fixes
+
+* added more PR automations ([a64aebd](https://github.com/iamkrish-coder/IntelliTrader/commit/a64aebd2a52dd7ed28cbfa450e250c9929a71c0b))
+* auto PR and auto release fixes to automate CI ([21b3a91](https://github.com/iamkrish-coder/IntelliTrader/commit/21b3a911932f964cdc166192351b3d98af54ac22))
+
 ## [2.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.1...v2.0.2) (2024-03-15)
 
 
