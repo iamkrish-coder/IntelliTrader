@@ -10,7 +10,6 @@ import webbrowser
 # Third-party library imports
 from flask import Flask, render_template, request, redirect, session
 from pytz import utc
-from keyboard import is_pressed
 
 # Custom application modules
 from source.constants import *  
@@ -24,7 +23,6 @@ from source.modules.connection.connection_module import Connection
 
 # utils Import
 from source.utils.logging_utils import *
-# from source.utils.program_utils import KeyboardListener
 from source.utils.scheduler_utils import Scheduler
 
 # IntelliTrader web application (if applicable)
