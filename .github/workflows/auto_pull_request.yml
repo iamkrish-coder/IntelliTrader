@@ -1,4 +1,4 @@
-name: Automatically create / update pull request
+name: Automatically create / update pull request / merge 
 
 on:
   push:
@@ -37,8 +37,8 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Merge Pull Request
-      uses: juliangruber/merge-pull-request-action@v1
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.create_pr.outputs.pr_number }}
-          method: squash
+      run: |
+        git fetch origin pull/${{ steps.create_pr.outputs.pr_number }}/head:pr-${{ steps.create_pr.outputs.pr_number }}
+        git checkout master
+        git merge --no-ff pr-${{ steps.create_pr.outputs.pr_number }} --no-edit
+        git push origin master
