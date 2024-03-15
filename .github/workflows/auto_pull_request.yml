@@ -1,4 +1,4 @@
-name: Automatically create / update pull request
+name: Automatically create / update pull request / merge 
 
 on:
   push:
@@ -20,9 +20,9 @@ jobs:
       id: determine_label
       run: |
         if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-          echo "::set-output name=label::bug"
+          echo "::set-output name=label::bug, automerge"
         else
-          echo "::set-output name=label::enhancement"
+          echo "::set-output name=label::enhancement, automerge"
         fi
 
     - uses: repo-sync/pull-request@v2
@@ -36,9 +36,3 @@ jobs:
         pr_label: ${{ steps.determine_label.outputs.label }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Merge Pull Request
-      uses: juliangruber/merge-pull-request-action@v1
-      with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          number: ${{ steps.create_pr.outputs.pr_number }}
-          method: squash
