@@ -1,26 +1,43 @@
-name: Automatically Create Pull Requests
+name: CI - Build, Test and Create Pull Request
+
 on:
   push:
-    branches:
-    - develop 
+    branches: [ develop ]  # Trigger on push to develop branch
 
 jobs:
-  pull-request:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: pull-request
-      uses: diillson/auto-pull-request@v1.0.1
-      with:
-        source_branch: ""                                 # If blank, default: triggered branch
-        destination_branch: "master"                      # If blank, default: master
-        pr_title: "Pulling ${{ github.ref }} into master" # Title of pull request
-        pr_body: |                                        # Full markdown support, requires pr_title to be set
-          :crown: *An automated PR*
+  build-and-test:
+    runs-on: ubuntu-latest  # Replace with your preferred runner OS
 
-        pr_assignee: "iamkrish-coder"                       # Comma-separated list (no spaces)
-        pr_label: "automerge"                               # Comma-separated list (no spaces)
-        pr_milestone: ""                                    # Milestone name no Required it is comment
-        pr_draft: false                                     # Creates pull request as draft
-        pr_allow_empty: false                               # Creates pull request even if there are no changes
-        github_token: ${{ secrets.GITHUB_TOKEN }}           # If blank, default: secrets.GITHUB_TOKEN
+    steps:
+      - uses: actions/checkout@v3  # Checkout code from repository
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt  # Install requirements from requirements.txt
+
+      - name: Build (optional)
+        run: |
+          # Add build commands here if needed (e.g., compiling code)
+          # Example: python setup.py build
+          # Omit this step if no build process is required
+
+      - name: Test
+        run: |
+          python -m unittest discover  # Run unit tests using unittest
+
+      - name: Create Pull Request (if tests pass)
+        uses: actions/create-pull-request@v4
+        with:
+          title: 'Automatic PR from develop - ${{ github.sha }}'  # Add commit SHA for reference
+          body: |  # Add dynamic content to PR description
+            Built and tested changes from develop branch. 
+
+            **Test results:**
+            [Insert link to test report here (optional)]  # Link to test report if applicable
+          head: develop
+          base: master
+          # Add labels (optional)
+          labels: |
+            build, test
+        # This step only runs if the previous steps succeed (uses: success() syntax)
+        if: success()
