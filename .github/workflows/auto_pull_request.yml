@@ -1,4 +1,4 @@
-name: Automatically create / update pull request / merge 
+name: Automatically create / update pull request / merge
 
 on:
   push:
@@ -9,30 +9,29 @@ jobs:
     name: Open PR to Master
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      name: checkout
+      - uses: actions/checkout@v3
+        name: checkout
 
-    - name: Get latest commit message
-      id: latest_commit
-      run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      - name: Get latest commit message
+        id: latest_commit
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-    - name: Determine PR Label
-      id: determine_label
-      run: |
-        if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-          echo "::set-output name=label::bug, automerge"
-        else
-          echo "::set-output name=label::enhancement, automerge"
-        fi
+      - name: Determine PR Label
+        id: determine_label
+        run: |
+          if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+            echo "::set-output name=label::bug, automerge"
+          else
+            echo "::set-output name=label::enhancement, automerge"
+          fi
 
-    - uses: repo-sync/pull-request@v2
-      name: pull-request
-      id: create_pr
-      with:
-        destination_branch: "master"
-        pr_title: ${{ steps.latest_commit.outputs.message }}
-        pr_body: "*An automated PR*"
-        pr_assignee: "iamkrish-coder"
-        pr_label: ${{ steps.determine_label.outputs.label }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-
+      - uses: repo-sync/pull-request@v2
+        name: pull-request
+        id: create_pr
+        with:
+          destination_branch: "master"
+          pr_title: ${{ steps.latest_commit.outputs.message }}
+          pr_body: "*An automated PR*"
+          pr_assignee: "iamkrish-coder"  
+          pr_label: ${{ steps.determine_label.outputs.label }}  # Single string with comma separation
+          github_token: ${{ secrets.GITHUB_TOKEN }}
