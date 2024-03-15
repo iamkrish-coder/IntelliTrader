@@ -33,6 +33,6 @@ jobs:
         pr_title: ${{ steps.latest_commit.outputs.message }}
         pr_body: "*An automated PR*"
         pr_assignee: "iamkrish-coder"
-        pr_label: ${{ steps.determine_label.outputs.label }}
+        pr_label: ${{ steps.determine_label.outputs.label.split(',') }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
