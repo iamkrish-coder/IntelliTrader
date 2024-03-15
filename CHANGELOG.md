@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.0...v2.0.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* remove keyboard package from project, no longer in use ([7dd2d99](https://github.com/iamkrish-coder/IntelliTrader/commit/7dd2d993da891fddbb3410e571861c1ff375e90a))
+
 ## [2.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.21.0...v2.0.0) (2024-03-15)
 
 
