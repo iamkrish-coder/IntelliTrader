@@ -2,36 +2,41 @@ name: Automatically create / update pull request / merge
 
 on:
   push:
-    branches: ['develop']
+    branches: [ develop ]
 
 jobs:
-  pull-request:
-    name: Open PR to Master
+  create_or_update_pr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: checkout
+        name: Checkout Code
 
-      - name: Get latest commit message
-        id: latest_commit
+      - name: Get Latest Commit Message
+        id: get_message
         run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
-
+        
       - name: Determine PR Label
         id: determine_label
-        run: |
-          if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+        run: |  # Conditional logic for labels
+          if [[ "${{ steps.get_message.outputs.message }}" == *"fix"* ]]; then
             echo "::set-output name=label::automerge"
           else
-            echo "::set-output name=label::automerge"
+            echo "::set-output name=label::enhancement"
           fi
 
-      - uses: repo-sync/pull-request@v2
-        name: pull-request
-        id: create_pr
+      - uses: peter-evans/create-pull-request@v5  # Action to create/update PR
+        name: Create or Update Pull Request
         with:
-          destination_branch: "master"
-          pr_title: ${{ steps.latest_commit.outputs.message }}
-          pr_body: "*An automated PR*"
-          pr_assignee: "iamkrish-coder"  
-          pr_label: ${{ steps.determine_label.outputs.label }}  # Single string with comma separation
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: ${{ steps.get_message.outputs.message }}
+          branch: develop  # Branch to compare with Master
+          base: master     # Target branch (Master)
+          title: ${{ steps.get_message.outputs.message }}  # PR title uses commit message
+          body: |-  # Optional PR body message
+            An automated PR created from develop branch push.
+
+          labels: ${{ steps.determine_label.outputs.label }}          
+          # Optional: Update existing PR instead of creating a new one
+          update: true 
+          delete-branch: false  # Optional: Don't delete the develop branch after PR
           github_token: ${{ secrets.GITHUB_TOKEN }}
