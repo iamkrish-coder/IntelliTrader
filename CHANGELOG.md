@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.0.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.3...v2.0.4) (2024-03-15)
+
+
+### Bug Fixes
+
+* added new action workflow ([89c248d](https://github.com/iamkrish-coder/IntelliTrader/commit/89c248d02af03ac876baa064e2afaa6870e0cfe0))
+* auto labels on merge updated ([5d70984](https://github.com/iamkrish-coder/IntelliTrader/commit/5d70984a331e24db0dab0c74ebe3e50f22c22b0f))
+* auto merge changes ([39b6571](https://github.com/iamkrish-coder/IntelliTrader/commit/39b657164cd2bf7f9e575be4f823e1a0471cf4f2))
+* new auto pr creation action ([a5d1144](https://github.com/iamkrish-coder/IntelliTrader/commit/a5d11440377ab08ad3bb4b5a0d4ab97ce963b603))
+* new patch ([8212be5](https://github.com/iamkrish-coder/IntelliTrader/commit/8212be5ac6d02fe95beed8e4a03fd8490ed6768e))
+* new patch ([b8b6985](https://github.com/iamkrish-coder/IntelliTrader/commit/b8b69859291f64ed5cb2126871b80881b5618e54))
+* new pathces ([3934b06](https://github.com/iamkrish-coder/IntelliTrader/commit/3934b06e656d9f59510e263ffae2e3a9544e56e7))
+* rebase to squash ([d1491f6](https://github.com/iamkrish-coder/IntelliTrader/commit/d1491f67de5738e870bd377e21af21380fe7b660))
+* resolve conflicts ([90b30ab](https://github.com/iamkrish-coder/IntelliTrader/commit/90b30ab43b00b11f50b885670c63c143eb5388e6))
+* Testing new pr creation ([af7491d](https://github.com/iamkrish-coder/IntelliTrader/commit/af7491d341face7ad5521ffef97810416cceaca6))
+* update to auto merge v12 ([8341cd4](https://github.com/iamkrish-coder/IntelliTrader/commit/8341cd40b489efa57e22314ae1f666abd50230bc))
+* update to auto merge v12 ([2bc8838](https://github.com/iamkrish-coder/IntelliTrader/commit/2bc8838e679e3c0e762341126b3f6ab0bb72ebad))
+* updated labels ([5d6c882](https://github.com/iamkrish-coder/IntelliTrader/commit/5d6c882af67862acb312ebd0c3329951a98cdd76))
+
 ## [2.0.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.2...v2.0.3) (2024-03-15)
 
 
