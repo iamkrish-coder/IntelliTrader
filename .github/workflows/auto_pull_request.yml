@@ -1,37 +1,27 @@
-name: Automatically create / update pull request / merge
-
+name: Automatic Pull Request
 on:
   push:
-    branches: ['develop']
+    branches:
+    - "develop"  # Support wildcard matching
 
 jobs:
   pull-request:
-    name: Open PR to Master
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: checkout
+    - uses: actions/checkout@v3
+    - name: pull-request
+      uses: diillson/auto-pull-request@v1.0.1
+      with:
+        source_branch: ""                                 # If blank, default: triggered branch
+        destination_branch: "master"                      # If blank, default: master
+        pr_title: "Pulling ${{ github.ref }} into master" # Title of pull request
+        pr_body: |                                        # Full markdown support, requires pr_title to be set
+          :crown: *An automated PR*
 
-      - name: Get latest commit message
-        id: latest_commit
-        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
-
-      - name: Determine PR Label
-        id: determine_label
-        run: |
-          if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-            echo "::set-output name=label::automerge"
-          else
-            echo "::set-output name=label::automerge"
-          fi
-
-      - uses: repo-sync/pull-request@v2
-        name: pull-request
-        id: create_pr
-        with:
-          destination_branch: "master"
-          pr_title: ${{ steps.latest_commit.outputs.message }}
-          pr_body: "*An automated PR*"
-          pr_assignee: "iamkrish-coder"  
-          pr_label: ${{ steps.determine_label.outputs.label }}  # Single string with comma separation
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        pr_reviewer: "iamkrish-coder"                         # Comma-separated list (no spaces)
+        pr_assignee: "iamkrish-coder"                         # Comma-separated list (no spaces)
+        pr_label: "enhancement"                               # Comma-separated list (no spaces)
+        pr_milestone: ""                       # Milestone name no Required it is comment
+        pr_draft: false                                    # Creates pull request as draft
+        pr_allow_empty: false                              # Creates pull request even if there are no changes
+        github_token: ${{ secrets.GITHUB_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
