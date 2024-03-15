@@ -1,8 +1,8 @@
 name: release-please
 
 on:
-  schedule:
-    - cron:  '15 * * * *'  # Runs every hour at minute 15
+  pull_request:
+    types: [closed]
 
 permissions:
   contents: write
