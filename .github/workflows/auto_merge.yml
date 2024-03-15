@@ -1,4 +1,4 @@
-name: Automatically Merge Pull Requests
+name: Automatic Merge of Pull Requests
 on:
   pull_request:
     types:
