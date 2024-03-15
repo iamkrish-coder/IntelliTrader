@@ -2,7 +2,7 @@ name: Automatically Create Pull Requests
 on:
   push:
     branches:
-    - "develop"  # Support wildcard matching
+    - develop 
 
 jobs:
   pull-request:
@@ -18,9 +18,9 @@ jobs:
         pr_body: |                                        # Full markdown support, requires pr_title to be set
           :crown: *An automated PR*
 
-        pr_assignee: "iamkrish-coder"                         # Comma-separated list (no spaces)
+        pr_assignee: "iamkrish-coder"                       # Comma-separated list (no spaces)
         pr_label: "automerge"                               # Comma-separated list (no spaces)
-        pr_milestone: ""                       # Milestone name no Required it is comment
-        pr_draft: false                                    # Creates pull request as draft
-        pr_allow_empty: false                              # Creates pull request even if there are no changes
-        github_token: ${{ secrets.GITHUB_TOKEN }}      # If blank, default: secrets.GITHUB_TOKEN
+        pr_milestone: ""                                    # Milestone name no Required it is comment
+        pr_draft: false                                     # Creates pull request as draft
+        pr_allow_empty: false                               # Creates pull request even if there are no changes
+        github_token: ${{ secrets.GITHUB_TOKEN }}           # If blank, default: secrets.GITHUB_TOKEN
