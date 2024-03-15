@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.21.0...v2.0.0) (2024-03-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Complete rewrite of application App Start modules, Async Multi Processing, significant improvement in performance, versatile logging functionalities, moved directory structures for better management of files, reduced technical debt and improved dynamic processing
+
+### Features
+
+* Complete rewrite of application App Start modules, Async Multi Processing, significant improvement in performance, versatile logging functionalities, moved directory structures for better management of files, reduced technical debt and improved dynamic processing ([ca4ef32](https://github.com/iamkrish-coder/IntelliTrader/commit/ca4ef320665a59759e937b397b270df5b2ac3797))
+
 ## [1.21.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.20.1...v1.21.0) (2024-03-14)
 
 
