@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.0...v2.0.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* remove keyboard package from project, no longer in use ([7dd2d99](https://github.com/iamkrish-coder/IntelliTrader/commit/7dd2d993da891fddbb3410e571861c1ff375e90a))
+
+## [2.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.21.0...v2.0.0) (2024-03-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Complete rewrite of application App Start modules, Async Multi Processing, significant improvement in performance, versatile logging functionalities, moved directory structures for better management of files, reduced technical debt and improved dynamic processing
+
+### Features
+
+* Complete rewrite of application App Start modules, Async Multi Processing, significant improvement in performance, versatile logging functionalities, moved directory structures for better management of files, reduced technical debt and improved dynamic processing ([ca4ef32](https://github.com/iamkrish-coder/IntelliTrader/commit/ca4ef320665a59759e937b397b270df5b2ac3797))
+
+## [1.21.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.20.1...v1.21.0) (2024-03-14)
+
+
+### Features
+
+* add scheduler for Strategy always running mode, 3 types of scheduler modes added ([e005b24](https://github.com/iamkrish-coder/IntelliTrader/commit/e005b246e5c01538350b7f37629effad9d47028f))
+
 ## [1.20.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v1.20.0...v1.20.1) (2024-03-13)
 
 
