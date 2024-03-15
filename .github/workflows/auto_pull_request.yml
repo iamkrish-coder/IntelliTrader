@@ -1,4 +1,4 @@
-name: Automatic Pull Request
+name: Automatically Create Pull Requests
 on:
   push:
     branches:
