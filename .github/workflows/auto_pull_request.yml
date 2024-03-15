@@ -2,42 +2,40 @@ name: CI - Build, Test and Create Pull Request
 
 on:
   push:
-    branches: [ develop ]  # Trigger on push to develop branch
+    branches:
+      - develop  # Trigger on push to develop branch
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest  # Replace with your preferred runner OS
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3  # Checkout code from repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8  # Adjust Python version as needed
 
       - name: Install dependencies
         run: |
-          python -m pip install -r requirements.txt  # Install requirements from requirements.txt
-
-      - name: Build (optional)
-        run: |
-          # Add build commands here if needed (e.g., compiling code)
-          # Example: python setup.py build
-          # Omit this step if no build process is required
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Test
         run: |
           python -m unittest discover  # Run unit tests using unittest
 
       - name: Create Pull Request (if tests pass)
-        uses: actions/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v3
         with:
-          title: 'Automatic PR from develop - ${{ github.sha }}'  # Add commit SHA for reference
-          body: |  # Add dynamic content to PR description
-            Built and tested changes from develop branch. 
+          title: 'Automatic PR from develop - ${{ github.sha }}'
+          body: |
+            Built and tested changes from the develop branch.
 
             **Test results:**
             [Insert link to test report here (optional)]  # Link to test report if applicable
-          head: develop
+          branch: develop
           base: master
-          # Add labels (optional)
-          labels: |
-            build, test
-        # This step only runs if the previous steps succeed (uses: success() syntax)
-        if: success()
+          token: ${{ secrets.GITHUB_TOKEN }}
