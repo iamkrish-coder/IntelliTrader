@@ -1,191 +1,157 @@
-# IntelliTrader.py
+# Standard library imports
+import asyncio
+import datetime
+import importlib
+import os
+import time
+import threading
+import webbrowser
 
-from pytz import utc
-from sys import modules
-from kiteconnect import KiteConnect, KiteTicker
-from source.connection import Connection
-from source.helper import Helper
-from source.fetch import Fetch
-from source.orders import Orders
-from source.ticker import Ticker
-from source.indicator import Indicator
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.enumerations.resource_string_enums import INFO, ERROR, WARN
-from source.language.resource_strings import ResourceStrings
-from source.aws.aws_secrets_manager import get_secret
-from source.controller.MainStrategy import StrategyController
-from source.controller.MainAction import ActionController
+# Third-party library imports
 from flask import Flask, render_template, request, redirect, session
-from apscheduler.schedulers.blocking import BlockingScheduler
-from apscheduler.triggers.cron import CronTrigger
-from source.utils.scheduler_utils import Scheduler 
+from pytz import utc
+from keyboard import is_pressed
+
+# Custom application modules
+from source.constants import *  
+from source.enumerations.enums import *
+from source.enumerations.resource_string_enums import * 
+from source.controller import MainAction, MainStrategy
+from source.language.resources_EN_IN import ResourceStrings
+from source.modules.BaseModules import BaseModules
+from source.modules.configurations.configuration_module import Configuration
+from source.modules.connection.connection_module import Connection
+
+# utils Import
 from source.utils.logging_utils import *
+# from source.utils.program_utils import KeyboardListener
+from source.utils.scheduler_utils import Scheduler
+
+# IntelliTrader web application (if applicable)
+try:
+    from IntelliTrader_web import create_app
+except ImportError:
+    pass  # Handle IntelliTrader_web import error gracefully (optional)
+
+# Application initialization
 configure_logging()
 
-import webbrowser
-import json
-import datetime
-import os
-import glob
-import pandas as pd
-
 class IntelliTrader:
-    def __init__(self, secret_name, region_name):
-        self.secret_name = secret_name
-        self.region_name = region_name
-        self.secret_keys = self.get_secret_keys()
-        self.configuration = self.read_input_configuration()
+    def __init__(self):
+        self.connection = None
+        self.modules = None
+        self.configuration = None
+        self.strategy_instance = None
+        self.scheduler_instance = None
+        self.initialize_components()
+        self.initialize_logging()
+        self.cancelled = False
+
+
+    def initialize_logging(self):
+        """ Establishes Logging capabilities """
+        strategy_log_path = os.path.join(OUTPUT_PATH, 'strategy.log')
+        action_log_path = os.path.join(OUTPUT_PATH, 'actions.log')
+        monitoring_log_path = os.path.join(OUTPUT_PATH, 'monitoring.log')
         
-    def read_input_configuration(self):
-        with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
-            config = json.load(f)
-        return config
-        
-    def get_secret_keys(self):
-        secret_keys = json.loads(get_secret(self.secret_name, self.region_name))
-        return secret_keys
-
-    def connection_to_broker(self):
-        api_key = self.secret_keys.get('api_key')
-        auth_date = datetime.datetime.now().strftime('%d%H')
-        access_token_file = f"{ACCESS_TOKEN_PATH + '_' + auth_date + '.txt'}"
-
-        # Establish connection
-        if os.path.isfile(access_token_file):
-            kite, kite_ticker, access_token = self.establish_old_connection(api_key)
-        else:
-            self.remove_old_tokens()
-            kite, kite_ticker, access_token = self.establish_new_connection()
-
-        # Initialize connection object
-        connection_object = {
-            "kite" : kite,
-            "kiteticker": kite_ticker,
-            "authorize" : access_token
-        }
-        return connection_object
-    
-    def establish_old_connection(self, api_key):
-        auth_date = datetime.datetime.now().strftime('%d%H')
-        access_token = open(ACCESS_TOKEN_PATH + '_' + auth_date +  '.txt','r').read()
-        kite = KiteConnect(api_key)
-        kite_ticker = KiteTicker(api_key, access_token)
-        kite.set_access_token(access_token)
-        log_info(INFO.CONNECT_KITE_COMPLETE)
-        return kite, kite_ticker, access_token
-
-    def establish_new_connection(self):
-        connect = Connection(self.secret_keys)
-        kite, kite_ticker, access_token = connect.broker_login(KiteConnect, KiteTicker)
-        kite.set_access_token(access_token)
-        log_info(INFO.NEW_CONNECTION_REQUEST_COMPLETE)       
-        return kite, kite_ticker, access_token
-
-    def remove_old_tokens(self):
-        old_access_token_files = glob.glob(ACCESS_TOKEN_PATH + '*.txt')
-        for old_access_token_file in old_access_token_files:
-            self.remove_file(old_access_token_file)
-
-        old_request_token_files = glob.glob(REQUEST_TOKEN_PATH + '*.txt')
-        for old_request_token_file in old_request_token_files:
-            self.remove_file(old_request_token_file)
-
-    def remove_file(self, file_path):
-        try:
-            os.remove(file_path)
-        except Exception as e:
-            log_error(ERROR.REMOVE_FILE_ERROR, file_path)
-
-    def init_modules(self, connection):
-        help_instance      = Helper(connection)
-        fetch_instance     = Fetch(connection)
-        orders_instance    = Orders(connection)
-        ticker_instance    = Ticker(connection)
-        indicator_instance = Indicator(connection)
-
-        modules = {
-            'help': help_instance,
-            'fetch': fetch_instance,
-            'orders': orders_instance,
-            'ticker': ticker_instance,
-            'indicator': indicator_instance
-        }
-        return modules
+        # Create named loggers with desired levels (optional)
+        strategy_logger = logging.getLogger(Logger.STRATEGY_LOGGER.value)
+        strategy_logger.setLevel(logging.DEBUG)
+        action_logger = logging.getLogger(Logger.ACTION_LOGGER.value)
+        action_logger.setLevel(logging.DEBUG)
+        monitoring_logger = logging.getLogger(Logger.MONITORING_LOGGER.value)
+        monitoring_logger.setLevel(logging.DEBUG)
 
 
-def InitializeCoreSystem(_IntelliTrader_):
-    
-    # Create app instance
-    app = _IntelliTrader_
+    def get_configuration(self):
+            return self.configuration
 
-    # Establish connection to the broker
-    connection = app.connection_to_broker()
-    
-    # Initialize application modules
-    modules = app.init_modules(connection)
+    def initialize_components(self):
+        """ Establishes connection, initializes modules and configuration."""
+        self.connection = Connection().connect_to_broker()
+        self.modules = BaseModules(self.connection).get_all_modules()
+        self.configuration = Configuration().read_input_configuration()
 
-    # Read user preferences from configuration
-    configuration = app.read_input_configuration()
+    async def initialize_strategy_controller(self):
+        """Starts the scanning process for watchlist stocks."""
+        logger = logging.getLogger(STRATEGY_LOGGER_NAME)
+        x = 0
+        while not self.cancelled: 
+            logger.info(f"Running Strategy...{x}")
+            x += 1
+            await asyncio.sleep(10)
 
-    # Instantiate the Strategy Handler
-    strategy_instance = StrategyController(connection, modules, configuration)
+    async def initialize_action_controller(self):
+        """Processes any generated alerts from the scanner."""
+        logger = logging.getLogger(ACTION_LOGGER_NAME)
+        y = 0
+        while not self.cancelled: 
+            logger.info(f"Running Actions...{y}")
+            y += 1
+            await asyncio.sleep(10)
 
-    # Instantiate the Scheduler
-    scheduler_instance = Scheduler(configuration, strategy_instance, None, 'asyncio')
-    scheduler_instance.start_scheduler()
+    async def initialize_monitoring_controller(self):
+        """Monitors existing trades and performs necessary actions."""
+        logger = logging.getLogger(MONITORING_LOGGER_NAME)
+        z = 0
+        while not self.cancelled: 
+            logger.info(f"Running Monitoring...{z}")
+            z += 1
+            await asyncio.sleep(10)
 
-   
-    # Data Transport Choices
-
-    # (1) Redis Queues [DEPRECATED]
-    # redis_service_controller = RedisServiceController()
-    # redis_service_controller.start_redis_server()
-
-    # (2) AWS Simple Queue Servuce (SQS) [DEPRECATED]
-    # actions_handler_instance = MainAction.ActionHandler(connection, modules, configuration)   
-    # actions_handler_instance.initialize()
+    async def run_async_task(self):
+        tasks = [
+            self.initialize_strategy_controller(),
+            self.initialize_action_controller(),
+            self.initialize_monitoring_controller()
+        ]
+        await asyncio.gather(*tasks)
 
 
-def InitializeWebInterface(_IntelliTrader_):
-    # Create a Flask app instance
-    app = _IntelliTrader_
-    app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), TEMPLATES_PATH),
-                static_url_path='/source/static',
-                static_folder=os.path.join(os.path.dirname(__file__), STATIC_FILE_PATH))
-    
-    # Sample settings data (you'll replace this with your actual settings)
-    configuration = app.read_input_configuration()
-
-    # Define the route for the index page
-    @app.route('/')
-    def index():
-        # Render the index.html template
-        return render_template('index.html', settings=configuration)
-
-    @app.route('/scan', methods=['POST'])
-    def initialize_core():
-        if request.method == 'POST':
-            # Call your backend function here
-            InitializeCoreSystem(app) 
-            return 'Core function executed successfully'
-
-    # Define the host and port for the Flask application
-    host = '127.0.0.1'
-    port = 5000
-
-    # Open the browser automatically with the Flask application URL
-    url = f'http://{host}:{port}/'
-    webbrowser.open(url)
-
-    # Run the Flask application
-    app.run(host=host, port=port)
-    
-
+######### App Start #########                    
 if __name__ == "__main__":
-    _IntelliTrader_ = IntelliTrader(SECRET_NAME, REGION_NAME)
-    # Website
-    # InitializeWebInterface(_IntelliTrader_) 
+    trader = IntelliTrader()
+    configuration = trader.get_configuration()
+ 
+    # # Start website
+    # app = create_app(configuration)
+    # url = f'http://{HOST}:{PORT}/'
+    # webbrowser.open(url)
+    # app.run(host=HOST, port=PORT)
     
-    # Application
-    InitializeCoreSystem(_IntelliTrader_)
+    # Approach 1: Threading
+
+    """
+    
+    # Start strategy in a separate thread
+    strategy_thread = threading.Thread(target=trader.initialize_strategy_controller)
+    strategy_thread.start()
+
+    # Start action in a separate thread
+    strategy_thread = threading.Thread(target=trader.initialize_action_controller)
+    strategy_thread.start()
+    
+    # Start monitoring in a separate thread
+    strategy_thread = threading.Thread(target=trader.initialize_monitoring_controller)
+    strategy_thread.start()
+    
+    """
+
+    # Approach 2: Multiprocessing
+
+    # process1 = Process(target=trader.initialize_strategy_controller)
+    # process1.start()
+
+    # process2 = Process(target=trader.initialize_action_controller)
+    # process2.start()
+
+    # process3 = Process(target=trader.initialize_monitoring_controller)
+    # process3.start()
+
+
+    
+    # Approach 3: Asyncio
+    try:
+        asyncio.run(trader.run_async_task())
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        print("\nCaught keyboard interrupt. Canceling tasks...\n")

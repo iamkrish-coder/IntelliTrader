@@ -15,7 +15,7 @@ from source.modules.indicators.renko import renko
 from source.modules.indicators.bollinger_bands import bollinger_bands
 from source.modules.indicators.truerange import truerange
 from source.modules.indicators.average_truerange import average_truerange
-from source.helper import Helper
+from source.modules.helper.helper_module import Helper
 from source.utils.logging_utils import *
 
 class Indicator:

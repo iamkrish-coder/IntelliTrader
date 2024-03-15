@@ -3,7 +3,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime
 from pytz import utc
-
 from source.utils.logging_utils import *  
 
 import asyncio
@@ -33,7 +32,6 @@ class Scheduler:
             self.schedule_task_asyncio(self.task_instance, self.task_runtime)
         else: 
             log_error("Invalid scheduler mode. Expected 'blocking', 'background', or 'asyncio'.")
-            return False
 
     def get_scheduled_runtime(self):
         """

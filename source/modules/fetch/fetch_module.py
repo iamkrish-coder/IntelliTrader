@@ -7,7 +7,7 @@ import source.modules.shared.nse_data_api as _nseData
 import source.modules.shared.market_durations_api as _marketDurations
 
 from turtle import st
-from source.helper import Helper
+from source.modules.helper.helper_module import Helper
 from tkinter.tix import COLUMN
 from source.constants.constants import *
 from concurrent.futures import ProcessPoolExecutor

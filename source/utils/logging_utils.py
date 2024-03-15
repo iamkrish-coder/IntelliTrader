@@ -6,37 +6,53 @@ import os
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import INFO, ERROR, WARN
-from source.language.resource_strings import ResourceStrings
+from source.language.resources_EN_IN import ResourceStrings
 
 def configure_logging():
-    # Configure root logger
+    """Configures logging with a console handler (optional)."""
+
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
 
-    # Colored console handler with additional configuration
+    # Colored console handler with additional configuration (optional)
     console_handler = colorlog.StreamHandler()
     console_handler.setLevel(logging.INFO)
     formatter = colorlog.ColoredFormatter(
-        '%(log_color)s%(asctime)s %(levelname)-8s %(message)s',
+        '%(log_color)s%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     console_handler.setFormatter(formatter)
-
-    # Add console handler to root logger
     root_logger.addHandler(console_handler)
 
+    # Create and configure file handlers for each task logger
+    strategy_logger = logging.getLogger(STRATEGY_LOGGER_NAME)
+    strategy_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'strategy.log'))
+    strategy_handler.setLevel(logging.DEBUG)
+    # Use '%(lineno)d' for line numbers
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    strategy_handler.setFormatter(plain_formatter)
+    strategy_logger.addHandler(strategy_handler)
 
-    # File handler (uncomment to log to a file)
-    log_file_path = os.path.join(OUTPUT_PATH, 'auditing.log')
-    file_handler = logging.FileHandler(log_file_path)
-    file_handler.setLevel(logging.DEBUG)  # Adjust level as needed
-    file_handler.setFormatter(formatter)
+    action_logger = logging.getLogger(ACTION_LOGGER_NAME)
+    action_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'actions.log'))
+    action_handler.setLevel(logging.DEBUG)
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    action_handler.setFormatter(plain_formatter)
+    action_logger.addHandler(action_handler)
 
-    # Add file handler to root logger
-    root_logger.addHandler(file_handler)
+    monitoring_logger = logging.getLogger(MONITORING_LOGGER_NAME)
+    monitoring_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'monitoring.log'))
+    monitoring_handler.setLevel(logging.DEBUG)
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    monitoring_handler.setFormatter(plain_formatter)
+    monitoring_logger.addHandler(monitoring_handler)
 
-    return root_logger
-
+    # General IntelliTrader log handler
+    intelliTrader_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'intelliTrader.log'))
+    intelliTrader_handler.setLevel(logging.INFO)
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    intelliTrader_handler.setFormatter(plain_formatter)
+    root_logger.addHandler(intelliTrader_handler)
 
 def get_message(resource_string):
     """Retrieves message from ResourceStrings or returns the input string if not found.
