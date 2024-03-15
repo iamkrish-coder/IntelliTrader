@@ -3,7 +3,7 @@ name: release-please
 on:
   pull_request:
     types: [closed]
-
+    
 permissions:
   contents: write
   pull-requests: write
