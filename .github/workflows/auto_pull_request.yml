@@ -1,4 +1,4 @@
-name: Automatically create / update pull request / merge 
+name: Automatically create/update pull request/merge
 
 on:
   push:
@@ -9,36 +9,43 @@ jobs:
     name: Open PR to Master
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-      name: checkout
+      - uses: actions/checkout@v3
+        name: checkout
 
-    - name: Get latest commit message
-      id: latest_commit
-      run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      - name: Get latest commit message
+        id: latest_commit
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
 
-    - name: Determine PR Label
-      id: determine_label
-      run: |
-        if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-          echo "::set-output name=label::bug"
-        else
-          echo "::set-output name=label::enhancement"
-        fi
+      - name: Determine PR Label
+        id: determine_label
+        run: |
+          if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+            echo "::set-output name=label::bug"
+          else
+            echo "::set-output name=label::enhancement"
+          fi
 
-    - uses: repo-sync/pull-request@v2
-      name: pull-request
-      id: create_pr
-      with:
-        destination_branch: "master"
-        pr_title: ${{ steps.latest_commit.outputs.message }}
-        pr_body: "*An automated PR*"
-        pr_assignee: "iamkrish-coder"
-        pr_label: ${{ steps.determine_label.outputs.label }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: repo-sync/pull-request@v2
+        name: pull-request
+        id: create_pr
+        with:
+          destination_branch: "master"
+          pr_title: ${{ steps.latest_commit.outputs.message }}
+          pr_body: "*An automated PR*"
+          pr_assignee: "iamkrish-coder"
+          pr_label: ${{ steps.determine_label.outputs.label }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Merge Pull Request
-      run: |
-        git fetch origin pull/${{ steps.create_pr.outputs.pr_number }}/head:pr-${{ steps.create_pr.outputs.pr_number }}
-        git checkout master
-        git merge --no-ff pr-${{ steps.create_pr.outputs.pr_number }} --no-edit
-        git push origin master
+      - # Add auto-merge step
+        uses: pascalgn/automerge-action@v1  # Include the action
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Provide a personal access token (PAT)
+
+        # Configure auto-merge conditions (optional)
+        with:
+          # (Optional) Only merge if all checks have passed (replace 'your-required-check-name' with the actual check name)
+          REQUIRED_STATUS_CHECKS: 'your-required-check-name'
+          # (Optional) Only merge if specific label is applied (replace 'automerge' with your desired label)
+          MERGE_LABELS: 'automerge'
+          # (Optional) Remove specific label after successful merge (replace 'automerge' with your desired label)
+          MERGE_REMOVE_LABELS: 'automerge'
