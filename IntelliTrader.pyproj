@@ -24,14 +24,16 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IntelliTrader_web.py" />
     <Compile Include="IntelliTrader.py" />
     <Compile Include="source\aws\aws_secrets_manager.py" />
     <Compile Include="source\aws\aws_sns_subscription.py" />
-    <Compile Include="source\connection.py" />
+    <Compile Include="source\modules\configurations\configuration_module.py" />
+    <Compile Include="source\modules\connection\connection_module.py" />
     <Compile Include="source\constants\constants.py" />
     <Compile Include="source\enumerations\enums.py" />
     <Compile Include="source\enumerations\resource_string_enums.py" />
-    <Compile Include="source\fetch.py" />
+    <Compile Include="source\modules\fetch\fetch_module.py" />
     <Compile Include="source\controller\MainAction.py" />
     <Compile Include="source\modules\action\BaseAction.py" />
     <Compile Include="source\modules\action\_action_candlesticks.py" />
@@ -41,6 +43,7 @@
     <Compile Include="source\modules\action\_action_parameters.py" />
     <Compile Include="source\modules\action\_action_subscriber.py" />
     <Compile Include="source\modules\action\_action_process_alerts.py" />
+    <Compile Include="source\modules\BaseModules.py" />
     <Compile Include="source\modules\shared\shared_handler.py" />
     <Compile Include="source\modules\strategy\BaseStrategy.py" />
     <Compile Include="source\controller\MainStrategy.py" />
@@ -52,8 +55,8 @@
     <Compile Include="source\modules\strategy\_strategy_publisher.py" />
     <Compile Include="source\modules\strategy\_strategy_scanner.py" />
     <Compile Include="source\modules\strategy\_strategy_watchlist.py" />
-    <Compile Include="source\helper.py" />
-    <Compile Include="source\indicator.py" />
+    <Compile Include="source\modules\helper\helper_module.py" />
+    <Compile Include="source\modules\indicators\indicators_module.py" />
     <Compile Include="source\modules\indicators\adx.py" />
     <Compile Include="source\modules\indicators\atr.py" />
     <Compile Include="source\modules\indicators\average_truerange.py" />
@@ -73,17 +76,17 @@
     <Compile Include="source\modules\trades\option_trade.py" />
     <Compile Include="source\queue\awsPublisher.py" />
     <Compile Include="source\queue\awsSubscriber.py" />
-    <Compile Include="source\language\resource_strings.py" />
+    <Compile Include="source\language\resources_EN_IN.py" />
     <Compile Include="source\utils\logging_utils.py" />
     <Compile Include="source\modules\shared\market_durations_api.py" />
     <Compile Include="source\modules\shared\nse_data_api.py" />
     <Compile Include="source\modules\shared\market_holidays_api.py" />
-    <Compile Include="source\modify.py" />
-    <Compile Include="source\orders.py" />
+    <Compile Include="source\modules\orders\modify.py" />
+    <Compile Include="source\modules\orders\orders_module.py" />
     <Compile Include="source\queue\redisPublisher.py" />
     <Compile Include="source\queue\redisSubscriber.py" />
     <Compile Include="source\services\redis_service.py" />
-    <Compile Include="source\ticker.py" />
+    <Compile Include="source\modules\streaming\streaming_module.py" />
     <Compile Include="source\utils\scheduler_utils.py" />
   </ItemGroup>
   <ItemGroup>
@@ -92,7 +95,7 @@
     <Content Include=".release-please-manifest.json" />
     <Content Include="requirements.txt" />
     <Content Include="source\aws\__pycache__\aws_secrets_manager.cpython-312.pyc" />
-    <Content Include="source\configuration\config.json" />
+    <Content Include="source\modules\configurations\config.json" />
     <Content Include="source\constants\__pycache__\constants.cpython-312.pyc" />
     <Content Include="source\data\basket\default_basket.csv" />
     <Content Include="source\enumerations\__pycache__\enums.cpython-312.pyc" />
@@ -153,13 +156,6 @@
     <Content Include="source\templates\index.html" />
     <Content Include="source\templates\login.html" />
     <Content Include="source\templates\register.html" />
-    <Content Include="source\__pycache__\connection.cpython-312.pyc" />
-    <Content Include="source\__pycache__\fetch.cpython-312.pyc" />
-    <Content Include="source\__pycache__\handlers.cpython-312.pyc" />
-    <Content Include="source\__pycache__\helper.cpython-312.pyc" />
-    <Content Include="source\__pycache__\indicator.cpython-312.pyc" />
-    <Content Include="source\__pycache__\orders.cpython-312.pyc" />
-    <Content Include="source\__pycache__\ticker.cpython-312.pyc" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".github\" />
@@ -167,7 +163,6 @@
     <Folder Include="source\" />
     <Folder Include="source\aws\" />
     <Folder Include="source\aws\__pycache__\" />
-    <Folder Include="source\configuration\" />
     <Folder Include="source\constants\" />
     <Folder Include="source\constants\__pycache__\" />
     <Folder Include="source\data\" />
@@ -177,10 +172,12 @@
     <Folder Include="source\enumerations\__pycache__\" />
     <Folder Include="source\controller\" />
     <Folder Include="source\modules\action\" />
-    <Folder Include="source\modules\utils\" />
+    <Folder Include="source\modules\helper\" />
     <Folder Include="source\modules\fetch\" />
     <Folder Include="source\modules\connection\" />
     <Folder Include="source\modules\indicators\" />
+    <Folder Include="source\modules\configurations\" />
+    <Folder Include="source\modules\streaming\" />
     <Folder Include="source\modules\orders\" />
     <Folder Include="source\modules\subscription\" />
     <Folder Include="source\modules\shared\" />
@@ -208,7 +205,6 @@
     <Folder Include="source\static\images\flakes\depth5\" />
     <Folder Include="source\static\js\" />
     <Folder Include="source\templates\" />
-    <Folder Include="source\__pycache__\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

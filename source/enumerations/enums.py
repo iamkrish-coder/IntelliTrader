@@ -6,6 +6,12 @@ class AWS_SQS(Enum):
     ACCOUNT_ID = '265153260161'
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
 
+class Logger(Enum):
+    STRATEGY_LOGGER   = "strategy_logger"
+    ACTION_LOGGER     = "action_logger"
+    MONITORING_LOGGER = "monitoring_logger"
+    TRADE_LOGGER      = "trade_logger"
+
 class Queues(Enum):
     QUEUE_1     = 'IntelliTrader_Q1.fifo'
     QUEUE_2     = 'IntelliTrader_Q2.fifo'

@@ -1,4 +1,4 @@
-from source.helper import Helper
+from source.modules.helper.helper_module import Helper
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *

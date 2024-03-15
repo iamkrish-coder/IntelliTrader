@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import datetime as dt
 import time
-from source.helper import Helper
+from source.modules.helper.helper_module import Helper
 from source.utils.logging_utils import *
 
 class Ticker:
