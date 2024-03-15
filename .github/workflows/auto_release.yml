@@ -3,6 +3,9 @@ name: release-please
 on:
   pull_request:
     types: [closed]
+  push:
+    branches:
+      - master
     
 permissions:
   contents: write
