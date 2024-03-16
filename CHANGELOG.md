@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.4...v2.0.5) (2024-03-15)
+
+
+### Bug Fixes
+
+* auto merge build ([36db561](https://github.com/iamkrish-coder/IntelliTrader/commit/36db561e7b3069e7f4137d30ac457c1c05fe313d))
+* pr auto merging testing ([8e1e8cd](https://github.com/iamkrish-coder/IntelliTrader/commit/8e1e8cd30799ba82efc266318f1fa71e8244853a))
+
 ## [2.0.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.3...v2.0.4) (2024-03-15)
 
 
