@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.7](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.6...v2.0.7) (2024-03-16)
+
+
+### Bug Fixes
+
+* auto create prs ([0c276f7](https://github.com/iamkrish-coder/IntelliTrader/commit/0c276f742f75b64f9248b64d95ac50fe237a6038))
+* PAT created, action file should work now ([a036c4b](https://github.com/iamkrish-coder/IntelliTrader/commit/a036c4bfa7f532e7eb959e47cf59f0deb7899441))
+
 ## [2.0.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.5...v2.0.6) (2024-03-16)
 
 
