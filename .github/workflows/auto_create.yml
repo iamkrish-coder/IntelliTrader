@@ -1,18 +1,20 @@
-name: Multi-Stage Automatic PR Creation
+name: Demo to create automatic PR
 
 on:
   push:
     branches:
-      - develop  # Trigger workflow on pushes to the develop branch
+      - main
 
 jobs:
-  create-feature-branch-to-develop:
+  updateAuthor:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checking out code
+        uses: actions/checkout@v2
 
-      - name: Extract Git commit data (optional)
-        uses: rlespinasse/git-commit-data-action@v1.x  
+
+      - name: extract git commit data
+        uses: rlespinasse/git-commit-data-action@v1.x
 
       - name: Update author information
         run: echo ${{ env.GIT_COMMIT_AUTHOR_NAME }} > AUTHOR
@@ -21,9 +23,9 @@ jobs:
         id: demo-1
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: "auto-feature-pr-develop"
-          base: develop
-          title: "Merge Feature -> Develop"
+          branch: "auto-pr-branch1"
+          base: main
+          title: "demo for auto pr1"
           committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
           author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
           body:
@@ -31,13 +33,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           delete-branch: true
 
-      - name: Approve Pull Request 1
+      - name: Approve Pull Request1
         uses: juliangruber/approve-pull-request-action@v1
         with:
           github-token: ${{ secrets.APPROVER_DEMO }}
           number: ${{ steps.demo-1.outputs.pull-request-number }}
 
-      - name: Merge Pull request 1
+      - name: Merge Pull request1
         uses: juliangruber/merge-pull-request-action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,115 +49,32 @@ jobs:
       - name: Update author information again
         run: echo Srikrishnan > AUTHOR
 
-
       - name: Raise PR 2
         id: demo-2
         uses: peter-evans/create-pull-request@v3
         with:
-            branch: "auto-sync-pr-master"
-            base: master
-            title: "Merge Develop -> Master"
-            committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
-            author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
-            body:
-                This is to show automatic PR creation
-            token: ${{ secrets.GITHUB_TOKEN }}
-            delete-branch: true
+          branch: "auto-pr-branch2"
+          base: main
+          title: "demo for auto pr2"
+          committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+          author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+          body:
+            This is to show automatic PR creation
+          token: ${{ secrets.GITHUB_TOKEN }}
+          delete-branch: true
 
-      - name: Approve Pull Request 2
+      - name: Approve Pull Request2
         uses: juliangruber/approve-pull-request-action@v1
         with:
-            github-token: ${{ secrets.APPROVER_DEMO }}
-            number: ${{ steps.demo-2.outputs.pull-request-number }}
+          github-token: ${{ secrets.APPROVER_DEMO }}
+          number: ${{ steps.demo-2.outputs.pull-request-number }}
 
-      - name: Merge Pull request 2
+      - name: Merge Pull request2
         uses: juliangruber/merge-pull-request-action@v1
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            number: ${{ steps.demo-2.outputs.pull-request-number }}
-            method: squash
-
-
-
-
-
-# name: Demo to create automatic PR
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   updateAuthor:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: checking out code
-#         uses: actions/checkout@v2
-
-
-#       - name: extract git commit data
-#         uses: rlespinasse/git-commit-data-action@v1.x
-
-#       - name: Update author information
-#         run: echo ${{ env.GIT_COMMIT_AUTHOR_NAME }} > AUTHOR
-
-#       - name: Raise PR 1
-#         id: demo-1
-#         uses: peter-evans/create-pull-request@v3
-#         with:
-#           branch: "auto-pr-branch1"
-#           base: main
-#           title: "demo for auto pr1"
-#           committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
-#           author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
-#           body:
-#             This is to show automatic PR creation
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           delete-branch: true
-
-#       - name: Approve Pull Request1
-#         uses: juliangruber/approve-pull-request-action@v1
-#         with:
-#           github-token: ${{ secrets.APPROVER_DEMO }}
-#           number: ${{ steps.demo-1.outputs.pull-request-number }}
-
-#       - name: Merge Pull request1
-#         uses: juliangruber/merge-pull-request-action@v1
-#         with:
-#           github-token: ${{ secrets.GITHUB_TOKEN }}
-#           number: ${{ steps.demo-1.outputs.pull-request-number }}
-#           method: squash
-
-#       - name: Update author information again
-#         run: echo Srikrishnan > AUTHOR
-
-#       - name: Raise PR 2
-#         id: demo-2
-#         uses: peter-evans/create-pull-request@v3
-#         with:
-#           branch: "auto-pr-branch2"
-#           base: main
-#           title: "demo for auto pr2"
-#           committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
-#           author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
-#           body:
-#             This is to show automatic PR creation
-#           token: ${{ secrets.GITHUB_TOKEN }}
-#           delete-branch: true
-
-#       - name: Approve Pull Request2
-#         uses: juliangruber/approve-pull-request-action@v1
-#         with:
-#           github-token: ${{ secrets.APPROVER_DEMO }}
-#           number: ${{ steps.demo-2.outputs.pull-request-number }}
-
-#       - name: Merge Pull request2
-#         uses: juliangruber/merge-pull-request-action@v1
-#         with:
-#           github-token: ${{ secrets.GITHUB_TOKEN }}
-#           number: ${{ steps.demo-2.outputs.pull-request-number }}
-#           method: squash
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.demo-2.outputs.pull-request-number }}
+          method: squash
 
 
 
