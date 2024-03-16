@@ -6,41 +6,51 @@ on:
       - develop  # Trigger workflow on pushes to the develop branch
 
 jobs:
-  create-feature-branch-and-pr:
+  create-feature-branch-to-develop:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - name: Extract Git commit data (optional)
-        uses: rlespinasse/git-commit-data-action@v1.x  # Optional for author information
+        uses: rlespinasse/git-commit-data-action@v1.x  
 
-      - name: Create a feature branch from current commit
-        run: |
-          git checkout -b feature/${{ github.sha }}
+      - name: Update author information
+        run: echo ${{ env.GIT_COMMIT_AUTHOR_NAME }} > AUTHOR
 
-      - name: Add changes and commit (replace with your actual logic)
-        run: |
-          echo "Adding some changes..."
-          touch some_new_file.txt
-          git add some_new_file.txt
-          git commit -m "Automatic feature branch changes"
-
-      - name: Push feature branch
-        run: git push origin feature/${{ github.sha }}
-
-      - name: Create pull request from feature branch to develop
+      - name: Raise PR 1
+        id: demo-1
         uses: peter-evans/create-pull-request@v3
         with:
-          title: "Automatic feature branch: ${{ github.sha }}"
-          body: "This PR is automatically created from the develop branch commit."
-          base: develop
-          head: feature/${{ github.sha }}
+          branch: "auto-feature-pr-develop"
+          base: main
+          title: "Merge Feature -> Develop"
+          committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+          author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+          body:
+            This is to show automatic PR creation
           token: ${{ secrets.GITHUB_TOKEN }}
-          delete-branch: true  # Optional, delete feature branch after merge
+          delete-branch: true
+
+      - name: Approve Pull Request 1
+        uses: juliangruber/approve-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.APPROVER_DEMO }}
+          number: ${{ steps.demo-1.outputs.pull-request-number }}
+
+      - name: Merge Pull request 1
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.demo-1.outputs.pull-request-number }}
+          method: squash
+
+      - name: Update author information again
+        run: echo Srikrishnan > AUTHOR
+
 
   merge-develop-to-master:
     runs-on: pull_request  # Trigger on successful merge of develop PR
-    needs: create-feature-branch-and-pr  # Wait for the previous job
+    needs: create-feature-branch-to-develop  # Wait for the previous job
 
     if: ${{ github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop' }}
     # Only run this job if the previous PR was merged into develop
@@ -48,23 +58,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Merge develop to master (replace with your merge strategy)
-        run: git merge develop
+      - name: Raise PR 2
+        id: demo-2
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: "auto-sync-pr-master"
+          base: main
+          title: "Merge Develop -> Master"
+          committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+          author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
+          body:
+            This is to show automatic PR creation
+          token: ${{ secrets.GITHUB_TOKEN }}
+          delete-branch: true
 
-      - name: Push changes to master
-        run: git push origin master
+      - name: Approve Pull Request 2
+        uses: juliangruber/approve-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.APPROVER_DEMO }}
+          number: ${{ steps.demo-2.outputs.pull-request-number }}
 
-  # Optional: Auto-approval and merge (requires additional configuration)
-  # - uses: juliangruber/approve-pull-request-action@v1  # Uncomment if needed
-  #   with:
-  #     github-token: ${{ secrets.APPROVER_DEMO }}
-  #     number: ${{ github.event.pull_request.number }}
-  #
-  # - uses: juliangruber/merge-pull-request-action@v1  # Uncomment if needed
-  #   with:
-  #     github-token: ${{ secrets.GITHUB_TOKEN }}
-  #     number: ${{ github.event.pull_request.number }}
-  #     method: squash
+      - name: Merge Pull request 2
+        uses: juliangruber/merge-pull-request-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          number: ${{ steps.demo-2.outputs.pull-request-number }}
+          method: squash
+
+
 
 
 
@@ -81,6 +102,7 @@ jobs:
 #     steps:
 #       - name: checking out code
 #         uses: actions/checkout@v2
+
 
 #       - name: extract git commit data
 #         uses: rlespinasse/git-commit-data-action@v1.x
