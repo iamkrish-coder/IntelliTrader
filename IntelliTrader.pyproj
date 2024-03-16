@@ -91,7 +91,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".github\workflows\auto_merge.yml" />
-    <Content Include=".github\workflows\auto_pull_request.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
     <Content Include=".release-please-manifest.json" />
     <Content Include="requirements.txt" />
