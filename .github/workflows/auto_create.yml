@@ -3,7 +3,7 @@ name: Demo to create automatic PR
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   updateAuthor:
@@ -24,7 +24,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: "auto-pr-branch1"
-          base: main
+          base: develop
           title: "demo for auto pr1"
           committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
           author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
@@ -54,7 +54,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: "auto-pr-branch2"
-          base: main
+          base: master
           title: "demo for auto pr2"
           committer: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
           author: ${{ env.GIT_COMMIT_AUTHOR_NAME }} <${{ env.GIT_COMMIT_AUTHOR_EMAIL }}">
