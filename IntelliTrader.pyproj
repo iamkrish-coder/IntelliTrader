@@ -90,8 +90,6 @@
     <Compile Include="source\utils\scheduler_utils.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".github\workflows\auto_merge.yml" />
-    <Content Include=".github\workflows\auto_create.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
     <Content Include=".release-please-manifest.json" />
     <Content Include="requirements.txt" />
