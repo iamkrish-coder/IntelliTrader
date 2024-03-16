@@ -1,4 +1,4 @@
-name: Demo to create automatic PR
+name: Demo to create automatic PRs
 
 on:
   push:
