@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.5...v2.0.6) (2024-03-16)
+
+
+### Bug Fixes
+
+* added new CI/CD function ([41bca80](https://github.com/iamkrish-coder/IntelliTrader/commit/41bca808a9c35d7c865c6bad7c386df5e61f219d))
+* ci/cd ([1893c60](https://github.com/iamkrish-coder/IntelliTrader/commit/1893c6053703e0b5e8dab6637607b7b8b219cb18))
+* Create action for auto create pr ([08cb654](https://github.com/iamkrish-coder/IntelliTrader/commit/08cb6543f859b5394257e947a7a7692060ea53e2))
+* create pr automatically ([61d30a1](https://github.com/iamkrish-coder/IntelliTrader/commit/61d30a111ebf5cb9f00104041cd992ad02d3b040))
+* updated python version ([cfe7c00](https://github.com/iamkrish-coder/IntelliTrader/commit/cfe7c0040a3bd20d2fc41559222a854dcefa56f2))
+* updated to use peter evans create pull request action ([10e8d13](https://github.com/iamkrish-coder/IntelliTrader/commit/10e8d13b409f2884719c6a124f4fc3cb0c3cc9d4))
+
 ## [2.0.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.4...v2.0.5) (2024-03-15)
 
 
