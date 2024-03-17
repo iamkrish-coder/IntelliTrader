@@ -11,7 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>IntelliTrader</Name>
     <RootNamespace>IntelliTrader</RootNamespace>
-    <InterpreterId>MSBuild|env_python_3.12|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>
+    </InterpreterId>
     <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -173,7 +174,7 @@
     <Folder Include="source\modules\" />
     <Folder Include="source\modules\trades\" />
     <Folder Include="source\language\" />
-    <Folder Include="source\output\" />
+    <Folder Include="source\cache\" />
     <Folder Include="source\utils\" />
     <Folder Include="source\services\" />
     <Folder Include="source\queue\" />
@@ -192,17 +193,6 @@
     <Folder Include="source\static\images\flakes\depth5\" />
     <Folder Include="source\static\js\" />
     <Folder Include="source\templates\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Interpreter Include="env_python_3.12\">
-      <Id>env_python_3.12</Id>
-      <Version>0.0</Version>
-      <Description>env_python_3.12 (Python 3.12 (64-bit))</Description>
-      <InterpreterPath>Scripts\python.exe</InterpreterPath>
-      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
-      <Architecture>X64</Architecture>
-    </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

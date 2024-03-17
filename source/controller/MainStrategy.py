@@ -83,21 +83,18 @@ class StrategyController(BaseStrategy):
 
         # 4. Fetch candlestick data
         object_candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, parameters)
-        candlestick_data_list = object_candlesticks_handler.initialize()
-
         try:
             candlestick_data_fetch_task = asyncio.create_task(
-                object_candlesticks_handler.get_candlestick_information()
+                object_candlesticks_handler.initialize()
             )
-
-            # Await the completion of candlestick data retrieval
             candlestick_data_list = await candlestick_data_fetch_task
-
-            # Continue with calculations and remaining steps...
+            if not candlestick_data_list:
+                log_info("No candlestick data returned. Skipping indicator calculation.")
+                
         except Exception as e:
-            # Handle permission error
             print(f"Error fetching candlestick data: {e}. Skipping indicator calculation.")
         else:
+          
             # 5. Calculate indicators
             object_indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, parameters)
             indicators_data_list = object_indicators_handler.initialize()
