@@ -23,7 +23,13 @@ class Helper:
 
     def write_csv_output(self, filename, data):
         csv_data = pd.DataFrame(data)
-        csv_data.to_csv(os.path.join(self.output_path, filename), index=False)
+        if filename.endswith('.csv'):
+            csv_data.to_csv(os.path.join(self.output_path, filename), index=False)
+        else:            
+            symbol = filename.split("_")[1]
+            os.makedirs(symbol, exist_ok=True)  
+            full_path = os.path.join(self.output_path, filename)
+            csv_data.to_csv(full_path, index=False)
 
     def convert_enum_to_class_name(self, enum_name):
         words = str(enum_name).split('_')

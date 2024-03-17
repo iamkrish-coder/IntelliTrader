@@ -76,103 +76,111 @@ class Fetch:
             instrument_token = self.instrument_token_lookup(exchange, symbol)
         
         data = pd.DataFrame()
-        if exchange and symbol and instrument_token and timeframe and duration:
-            exchange = exchange.upper()      
-            symbol = symbol.upper()
-            if timeframe.__contains__('today'):
+        try:
+            if exchange and symbol and instrument_token and timeframe and duration:
+                exchange = exchange.upper()      
+                symbol = symbol.upper()
+                if timeframe.__contains__('today'):
                 
-                # Fetch Minutes Data
-                duration = duration['today']
+                    # Fetch Minutes Data
+                    duration = duration['today']
                 
-                if 'today1minute' in timeframe:
-                    timeframe = 'minute'
-                    timeframe_text = 'Today 1 MINUTE'
-                elif 'today2minute' in timeframe:
-                    timeframe = '2minute'      
-                    timeframe_text = 'Today 2 MINUTE'                    
-                elif 'today3minute' in timeframe:
-                    timeframe = '3minute'
-                    timeframe_text = 'Today 3 MINUTE'                    
-                elif 'today5minute' in timeframe:
-                    timeframe = '5minute'  
-                    timeframe_text = 'Today 5 MINUTE'                    
-                elif 'today15minute' in timeframe:    
-                    timeframe = '15minute'
-                    timeframe_text = 'Today 15 MINUTE'                    
-                elif 'today30minute' in timeframe:    
-                    timeframe = '30minute'
-                    timeframe_text = 'Today 30 MINUTE'                    
-                elif 'today60minute' in timeframe:    
-                    timeframe = '60minute'
-                    timeframe_text = 'Today 60 MINUTE'                    
-                else:
-                    log_error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
-                    return None
+                    if 'today1minute' in timeframe:
+                        timeframe = 'minute'
+                        timeframe_text = 'Today 1 MINUTE'
+                    elif 'today2minute' in timeframe:
+                        timeframe = '2minute'      
+                        timeframe_text = 'Today 2 MINUTE'                    
+                    elif 'today3minute' in timeframe:
+                        timeframe = '3minute'
+                        timeframe_text = 'Today 3 MINUTE'                    
+                    elif 'today5minute' in timeframe:
+                        timeframe = '5minute'  
+                        timeframe_text = 'Today 5 MINUTE'                    
+                    elif 'today15minute' in timeframe:    
+                        timeframe = '15minute'
+                        timeframe_text = 'Today 15 MINUTE'                    
+                    elif 'today30minute' in timeframe:    
+                        timeframe = '30minute'
+                        timeframe_text = 'Today 30 MINUTE'                    
+                    elif 'today60minute' in timeframe:    
+                        timeframe = '60minute'
+                        timeframe_text = 'Today 60 MINUTE'                    
+                    else:
+                        log_error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
+                        return None
                 
-                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))
+                   
                 
-                # Transform data for Last Available Date
-                current_time = dt.datetime.now().time()
-                if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
-                    pass
-                else:
-                    data['date'] = pd.to_datetime(data['date'])
-                    today_date = dt.datetime.now().date()
-                    while True:
-                        if today_date in data['date'].dt.date.unique():
-                            data = data[data['date'].dt.date == today_date]
-                            break
-                        else:
-                            today_date -= dt.timedelta(days=1) 
+                    # Transform data for Last Available Date
+                    current_time = dt.datetime.now().time()
+                    if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
+                        pass
+                    else:
+                        data['date'] = pd.to_datetime(data['date'])
+                        today_date = dt.datetime.now().date()
+                        while True:
+                            if today_date in data['date'].dt.date.unique():
+                                data = data[data['date'].dt.date == today_date]
+                                break
+                            else:
+                                today_date -= dt.timedelta(days=1) 
                             
-                log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                 
-            elif timeframe.__contains__('minute'):
-                # Fetch Minutes Data
-                duration = duration['minute']
-                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
-                log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                elif timeframe.__contains__('minute'):
+                    # Fetch Minutes Data
+                    duration = duration['minute']
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
             
-            elif timeframe.__contains__('hour'):
-                # Fetch Hours Data
-                duration = duration['hour']               
-                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
-                log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                elif timeframe.__contains__('hour'):
+                    # Fetch Hours Data
+                    duration = duration['hour']               
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
-            elif timeframe.__contains__('day'):
-                # Fetch Daily Data
-                duration = duration['day']                              
-                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
-                log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                elif timeframe.__contains__('day'):
+                    # Fetch Daily Data
+                    duration = duration['day']                              
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
-            elif timeframe.__contains__('week'):
-                # Fetch Weekly Data
-                timeframe = 'day'
-                duration = duration['week']                                              
-                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))    
-                data = self.aggregate_to_weekly(data)
-                log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                elif timeframe.__contains__('week'):
+                    # Fetch Weekly Data
+                    timeframe = 'day'
+                    duration = duration['week']                                              
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))    
+                    data = self.aggregate_to_weekly(data)
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
-            elif timeframe.__contains__('month'):
-                # Fetch Monthly Data
-                timeframe = 'day'
-                duration = duration['month']                                                             
-                data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
-                data = self.aggregate_to_monthly(data)
-                log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                elif timeframe.__contains__('month'):
+                    # Fetch Monthly Data
+                    timeframe = 'day'
+                    duration = duration['month']                                                             
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
+                    data = self.aggregate_to_monthly(data)
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
+                else:
+                    data = None
+            
+                if data is None or data.empty:
+                    log_warn(f"No data found for exchange:symbol {exchange}:{symbol}")
+                    return None
+                else:    
+                    Helper().write_csv_output(f'historical_{exchange}_{symbol}_{timeframe}.csv', data)
+                    return data
             else:
-                data = None
-            
-            if data is None or data.empty:
-                log_warn(f"No data found for exchange:symbol {exchange}:{symbol}")
+                log_warn(f'Please verify that the exchange [{exchange}], symbol [{symbol}], timeframe[{timeframe}] and duration[{duration}] are present.')
                 return None
-            else:    
-                Helper().write_csv_output(f'historical_{exchange}_{symbol}.csv', data)
-                return data
-        else:
-            log_warn(f'Please verify that the exchange [{exchange}], symbol [{symbol}], timeframe[{timeframe}] and duration[{duration}] are present.')
-            return None
+        
+        except Exception as e:
+            # Handle the permission error with a user-friendly message
+            error_message = f"Error fetching historical data: {e}. Your API subscription might be expired. Please renew your subscription to continue."
+            raise ValueError(error_message)
+
 
     def aggregate_to_weekly(self, daily_data):      
         daily_data['date'] = pd.to_datetime(daily_data['date'])

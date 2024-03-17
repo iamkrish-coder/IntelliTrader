@@ -43,6 +43,9 @@ class StrategyCandlesticks:
         candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, trading_exchange, trading_symbol, trading_token, trading_timeframe)
         return candles
 
+    async def run_async_function(self):
+        return await self.get_candlestick_information()
+
     def scan_watchlist_stocks(self):
         """
         Executes the Scanning on Watchlist Instruments.
@@ -62,8 +65,9 @@ class StrategyCandlesticks:
                 print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
 
                 log_info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
-                candlestick_data = asyncio.run(self.get_candlestick_information())
 
+                candlestick_data = asyncio.create_task(self.run_async_function())
+                
                 candlestick_data_list.append({
                     'exchange': self.trading_exchange,
                     'symbol': self.trading_symbol,

@@ -11,8 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>IntelliTrader</Name>
     <RootNamespace>IntelliTrader</RootNamespace>
-    <InterpreterId>
-    </InterpreterId>
+    <InterpreterId>MSBuild|env_python_3.12|$(MSBuildProjectFullPath)</InterpreterId>
     <SuppressEnvironmentCreationPrompt>True</SuppressEnvironmentCreationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -91,23 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".github\workflows\auto_release.yml" />
-    <Content Include=".release-please-manifest.json" />
-    <Content Include="requirements.txt" />
-    <Content Include="source\aws\__pycache__\aws_secrets_manager.cpython-312.pyc" />
     <Content Include="source\modules\configurations\config.json" />
-    <Content Include="source\constants\__pycache__\constants.cpython-312.pyc" />
     <Content Include="source\data\basket\default_basket.csv" />
-    <Content Include="source\enumerations\__pycache__\enums.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\actions_handler.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\actions_manager.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\base_actions.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\base_strategy.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\sharedManager.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\shared_handler.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\strategy_handler.cpython-312.pyc" />
-    <Content Include="source\controller\__pycache__\strategy_manager.cpython-312.pyc" />
-    <Content Include="source\utils\__pycache__\backtest.cpython-312.pyc" />
-    <Content Include="source\utils\__pycache__\nse_data.cpython-312.pyc" />
     <Content Include="source\static\css\custom.css" />
     <Content Include="source\static\css\font-awesome.min.css" />
     <Content Include="source\static\css\ie.css" />
@@ -161,14 +145,11 @@
     <Folder Include=".github\workflows\" />
     <Folder Include="source\" />
     <Folder Include="source\aws\" />
-    <Folder Include="source\aws\__pycache__\" />
     <Folder Include="source\constants\" />
-    <Folder Include="source\constants\__pycache__\" />
     <Folder Include="source\data\" />
     <Folder Include="source\data\basket\" />
     <Folder Include="source\data\algorithms\" />
     <Folder Include="source\enumerations\" />
-    <Folder Include="source\enumerations\__pycache__\" />
     <Folder Include="source\controller\" />
     <Folder Include="source\modules\action\" />
     <Folder Include="source\modules\helper\" />
@@ -181,12 +162,11 @@
     <Folder Include="source\modules\subscription\" />
     <Folder Include="source\modules\shared\" />
     <Folder Include="source\modules\strategy\" />
-    <Folder Include="source\controller\__pycache__\" />
     <Folder Include="source\modules\" />
     <Folder Include="source\modules\trades\" />
     <Folder Include="source\language\" />
+    <Folder Include="source\output\" />
     <Folder Include="source\utils\" />
-    <Folder Include="source\utils\__pycache__\" />
     <Folder Include="source\services\" />
     <Folder Include="source\queue\" />
     <Folder Include="source\static\" />
@@ -205,11 +185,22 @@
     <Folder Include="source\static\js\" />
     <Folder Include="source\templates\" />
   </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env_python_3.12\">
+      <Id>env_python_3.12</Id>
+      <Version>0.0</Version>
+      <Description>env_python_3.12 (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in
        the BeforeBuild and AfterBuild targets below. -->
-  <!--<Target Name="CoreCompile" />-->
+  <Target Name="CoreCompile" />
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">

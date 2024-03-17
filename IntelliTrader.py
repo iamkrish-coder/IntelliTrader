@@ -15,7 +15,8 @@ from pytz import utc
 from source.constants import *  
 from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import * 
-from source.controller import MainAction, MainStrategy
+from source.controller.MainStrategy import StrategyController
+# from source.controller.MainAction import ActionController
 from source.language.resources_EN_IN import ResourceStrings
 from source.modules.BaseModules import BaseModules
 from source.modules.configurations.configuration_module import Configuration
@@ -70,43 +71,83 @@ class IntelliTrader:
         self.modules = BaseModules(self.connection).get_all_modules()
         self.configuration = Configuration().read_input_configuration()
 
+
+    ###########################################
+    ###########################################
+    #            STRATEGY CONTROLLER          # 
+    ###########################################
+    ###########################################    
+
     async def initialize_strategy_controller(self):
         """Starts the scanning process for watchlist stocks."""
         logger = logging.getLogger(STRATEGY_LOGGER_NAME)
-        x = 0
-        while not self.cancelled: 
-            logger.info(f"Running Strategy...{x}")
-            x += 1
-            await asyncio.sleep(10)
+
+        # Instantiate the Strategy Instance
+        strategy_instance = StrategyController(self.connection, self.modules, self.configuration)        
+        
+        # Instantiate the Scheduler Instance 
+        scheduler_instance = Scheduler(self.configuration, strategy_instance, None, ASYNCIO) 
+        
+        # Start Scheduler
+        scheduler_instance.start_scheduler()
+        await asyncio.sleep(6000)
+
+    ###########################################
+    ###########################################
+    #            ACTION CONTROLLER            # 
+    ###########################################
+    ###########################################    
+
 
     async def initialize_action_controller(self):
         """Processes any generated alerts from the scanner."""
         logger = logging.getLogger(ACTION_LOGGER_NAME)
         y = 0
         while not self.cancelled: 
-            logger.info(f"Running Actions...{y}")
+            logger.info(f"Running Actions...{y} Times")
             y += 1
             await asyncio.sleep(10)
+
+
+    ###########################################
+    ###########################################
+    #          MONITORING CONTROLLER          #  
+    ###########################################
+    ###########################################    
+
 
     async def initialize_monitoring_controller(self):
         """Monitors existing trades and performs necessary actions."""
         logger = logging.getLogger(MONITORING_LOGGER_NAME)
         z = 0
         while not self.cancelled: 
-            logger.info(f"Running Monitoring...{z}")
+            logger.info(f"Running Monitoring...{z} Times")
             z += 1
             await asyncio.sleep(10)
 
+
+    ###########################################
+    ###########################################
+    #                RUN ALL                  #  
+    ###########################################
+    ###########################################   
+
     async def run_async_task(self):
         tasks = [
-            self.initialize_strategy_controller(),
-            self.initialize_action_controller(),
-            self.initialize_monitoring_controller()
+            self.initialize_strategy_controller()
+            # self.initialize_action_controller(),
+            # self.initialize_monitoring_controller()
         ]
         await asyncio.gather(*tasks)
 
 
-######### App Start #########                    
+
+######################################################################################
+######################################################################################
+#                                   APP START                                        #  
+######################################################################################
+######################################################################################   
+
 if __name__ == "__main__":
     trader = IntelliTrader()
     configuration = trader.get_configuration()
