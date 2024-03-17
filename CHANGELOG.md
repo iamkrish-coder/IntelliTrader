@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.1.1...v2.2.0) (2024-03-17)
+
+
+### Features
+
+* Implemented caching to disk for larger timeframe [#293](https://github.com/iamkrish-coder/IntelliTrader/issues/293) ([d97b418](https://github.com/iamkrish-coder/IntelliTrader/commit/d97b418e9af0a1dc85a1b37af60471bfac2607f2))
+* Reduce historical data request api calls ([7724a28](https://github.com/iamkrish-coder/IntelliTrader/commit/7724a28026bd83d0b6fdbc34bfb429dede501184))
+
 ## [2.1.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.1.0...v2.1.1) (2024-03-17)
 
 
