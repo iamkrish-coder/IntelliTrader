@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.1.0...v2.1.1) (2024-03-17)
+
+
+### Bug Fixes
+
+* update pyproj files ([003eb07](https://github.com/iamkrish-coder/IntelliTrader/commit/003eb073c1f09eb8b3086710608d34c3f28b44d6))
+
 ## [2.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.0.7...v2.1.0) (2024-03-17)
 
 
