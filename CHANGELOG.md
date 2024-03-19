@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.2.0...v2.3.0) (2024-03-19)
+
+
+### Features
+
+* offline api access, when subscription is not active ([13d6595](https://github.com/iamkrish-coder/IntelliTrader/commit/13d6595eb5023f05eff6cb422ff65751d3068a38))
+
 ## [2.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.1.1...v2.2.0) (2024-03-17)
 
 
