@@ -28,7 +28,6 @@ def configure_logging():
     strategy_logger = logging.getLogger(STRATEGY_LOGGER_NAME)
     strategy_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'strategy.log'))
     strategy_handler.setLevel(logging.DEBUG)
-    # Use '%(lineno)d' for line numbers
     plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
     strategy_handler.setFormatter(plain_formatter)
     strategy_logger.addHandler(strategy_handler)

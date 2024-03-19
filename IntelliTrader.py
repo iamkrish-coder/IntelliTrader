@@ -28,7 +28,7 @@ from source.utils.scheduler_utils import Scheduler
 
 # IntelliTrader web application (if applicable)
 try:
-    from IntelliTrader_web import create_app
+    from IntelliTrader_web import create_web_app
 except ImportError:
     pass  # Handle IntelliTrader_web import error gracefully (optional)
 
@@ -47,6 +47,12 @@ class IntelliTrader:
         self.cancelled = False
 
 
+    def initialize_components(self):
+        """ Establishes connection, initializes modules and configuration."""
+        self.connection = Connection().connect_to_broker()
+        self.modules = BaseModules(self.connection).get_all_modules()
+        self.configuration = Configuration().read_input_configuration()
+       
     def initialize_logging(self):
         """ Establishes Logging capabilities """
         strategy_log_path = os.path.join(OUTPUT_PATH, 'strategy.log')
@@ -63,13 +69,7 @@ class IntelliTrader:
 
 
     def get_configuration(self):
-            return self.configuration
-
-    def initialize_components(self):
-        """ Establishes connection, initializes modules and configuration."""
-        self.connection = Connection().connect_to_broker()
-        self.modules = BaseModules(self.connection).get_all_modules()
-        self.configuration = Configuration().read_input_configuration()
+        return self.configuration
 
 
     ###########################################
@@ -92,12 +92,12 @@ class IntelliTrader:
         scheduler_instance.start_scheduler()
         await asyncio.sleep(6000)
 
+
     ###########################################
     ###########################################
     #            ACTION CONTROLLER            # 
     ###########################################
     ###########################################    
-
 
     async def initialize_action_controller(self):
         """Processes any generated alerts from the scanner."""
@@ -114,7 +114,6 @@ class IntelliTrader:
     #          MONITORING CONTROLLER          #  
     ###########################################
     ###########################################    
-
 
     async def initialize_monitoring_controller(self):
         """Monitors existing trades and performs necessary actions."""
@@ -141,7 +140,6 @@ class IntelliTrader:
         await asyncio.gather(*tasks)
 
 
-
 ######################################################################################
 ######################################################################################
 #                                   APP START                                        #  
@@ -152,8 +150,8 @@ if __name__ == "__main__":
     trader = IntelliTrader()
     configuration = trader.get_configuration()
  
-    # # Start website
-    # app = create_app(configuration)
+    # Start website
+    # app = create_web_app(configuration)
     # url = f'http://{HOST}:{PORT}/'
     # webbrowser.open(url)
     # app.run(host=HOST, port=PORT)
@@ -190,7 +188,7 @@ if __name__ == "__main__":
 
     
     # Approach 3: Asyncio
-    try:
-        asyncio.run(trader.run_async_task())
-    except (KeyboardInterrupt, asyncio.CancelledError):
-        print("\nCaught keyboard interrupt. Canceling tasks...\n")
+    # try:
+    #     asyncio.run(trader.run_async_task())
+    # except (KeyboardInterrupt, asyncio.CancelledError):
+    #     print("\nCaught keyboard interrupt. Canceling tasks...\n")

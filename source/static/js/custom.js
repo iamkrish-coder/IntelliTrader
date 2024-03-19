@@ -1,9 +1,9 @@
-// Example custom JavaScript code
+// Custom JavaScript code
 
 $(document).ready(function () {
-	$("#BtnGetStarted").click(function () {
-		alert("Helo")
-		// Navigate to a new page
-		window.location.href = "https://google.com";
-	});
+    $("#BtnGetStarted").click(function () {
+        $.get('/get_login_url', function (response) {
+            window.location.href = response; // Use the server-generated URL
+        });
+    });
 });

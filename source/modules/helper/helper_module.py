@@ -21,6 +21,13 @@ class Helper:
             else:
                 file.write(str(data))
 
+    def write_token_output(self, filename, data):
+        with open(os.path.join(self.output_path, filename), 'w') as file:
+            if isinstance(data, dict):
+                json.dump(data, file, indent=4)
+            else:
+                file.write(str(data))
+
     def write_csv_output(self, filename, data):
         csv_data = pd.DataFrame(data)
         if filename.endswith('.csv'):

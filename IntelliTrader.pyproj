@@ -33,6 +33,7 @@
     <Compile Include="source\constants\constants.py" />
     <Compile Include="source\enumerations\enums.py" />
     <Compile Include="source\enumerations\resource_string_enums.py" />
+    <Compile Include="source\modules\connection\kiteconnect_offline.py" />
     <Compile Include="source\modules\fetch\fetch_module.py" />
     <Compile Include="source\controller\MainAction.py" />
     <Compile Include="source\modules\action\BaseAction.py" />
