@@ -5,10 +5,11 @@ from source.enumerations.enums import *
 from source.utils.logging_utils import *
 
 class StrategyIndicators:
-    def __init__(self, modules, candlesticks_data, parameters):
-        self.modules = modules
-        self.candlesticks_data = candlesticks_data
-        self.parameters = parameters
+    def __init__(self, modules, parameters, candlestick_data, candles_timeframe = None):
+        self.modules           = modules
+        self.parameters        = parameters
+        self.candlesticks_data = candlestick_data
+        self.candles_timeframe = candles_timeframe or self.parameters['timeframe']
           
     def initialize(self):
         return self.calculate_indicators()
@@ -34,10 +35,9 @@ class StrategyIndicators:
             exchange = result['exchange']
             symbol = result['symbol']
             token = result['token']
-            candlesticks = result['candlestick_data']
-    
-            candles = candlesticks[0]
-
+            candlestick_data_all_timeframes = result['candlestick_data']
+            candles = candlestick_data_all_timeframes[self.candles_timeframe]
+            
             indicator_data = {}
             indicator_data['rsi'] = self.get_indicator_values('rsi', candles, RSI.RSI_8.value)
             indicator_data['wma5'] = self.get_indicator_values('wma', candles, WMA.WMA_5.value)

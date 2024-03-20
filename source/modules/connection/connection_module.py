@@ -44,6 +44,7 @@ class Connection:
             kite, kite_ticker, access_token = self.establish_old_connection(api_key)
         else:
             self.remove_old_tokens('access')
+            self.remove_old_tokens('request')            
             kite, kite_ticker, access_token = self.establish_new_connection()
 
         # connection object

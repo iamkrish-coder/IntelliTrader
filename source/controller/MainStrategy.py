@@ -33,8 +33,10 @@ class StrategyController(BaseStrategy):
     
     def __init__(self, connection, modules, configuration):
         super().__init__(connection, modules) 
-        self.configuration = configuration
-        self.run_count = 0
+        self.configuration  = configuration
+        self.run_count      = 0
+        self.parameters     = None
+        self.base_timeframe = None
         
     def log_execution(func):
         @wraps(func)  # Preserves function metadata
@@ -71,18 +73,18 @@ class StrategyController(BaseStrategy):
 
         object_parameters_handler = StrategyParameters(settings)
         object_parameters_handler.initialize()
-        parameters = object_parameters_handler.get_parameters()
+        self.parameters     = object_parameters_handler.get_parameters()
 
         # 2. Perform market analysis
-        object_market_analysis_handler = StrategyMarketAnalysis(self.modules, parameters)
+        object_market_analysis_handler = StrategyMarketAnalysis(self.modules, self.parameters)
         trend = object_market_analysis_handler.initialize()
 
         # 3. Manage watchlist
-        object_watchlist_handler = StrategyWatchlist(self.modules, parameters)
+        object_watchlist_handler = StrategyWatchlist(self.modules, self.parameters)
         watchlist = object_watchlist_handler.initialize()
 
         # 4. Fetch candlestick data
-        object_candlesticks_handler = StrategyCandlesticks(self.modules, watchlist, parameters)
+        object_candlesticks_handler = StrategyCandlesticks(self.modules, self.parameters, watchlist)
         try:
             candlestick_data_fetch_task = asyncio.create_task(
                 object_candlesticks_handler.initialize()
@@ -93,18 +95,19 @@ class StrategyController(BaseStrategy):
                 
         except Exception as e:
             print(f"Error fetching candlestick data: {e}. Skipping indicator calculation.")
+            
         else:
           
             # 5. Calculate indicators
-            object_indicators_handler = StrategyIndicators(self.modules, candlestick_data_list, parameters)
+            object_indicators_handler = StrategyIndicators(self.modules, self.parameters, candlestick_data_list)
             indicators_data_list = object_indicators_handler.initialize()
 
             # 6. Scan for trading signals
-            object_scanner_handler = StrategyScanner(self.modules, candlestick_data_list, indicators_data_list, parameters)
+            object_scanner_handler = StrategyScanner(self.modules, self.parameters, candlestick_data_list, indicators_data_list)
             alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
-            object_publisher_handler = StrategyPublisher(self.modules, alerts, parameters, SNS)
+            object_publisher_handler = StrategyPublisher(self.modules, alerts, self.parameters, SNS)
             object_publisher_handler.initialize()
 
 

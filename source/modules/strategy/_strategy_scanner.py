@@ -6,11 +6,12 @@ from source.modules.strategy.BaseStrategy import BaseStrategy
 from source.utils.logging_utils import *
 
 class StrategyScanner(BaseStrategy):
-    def __init__(self, modules, candlesticks_data_list, indicators_data_list, parameters):
-        self.modules = modules
+    def __init__(self, modules, parameters, candlesticks_data_list, indicators_data_list, candles_timeframe = None):
+        self.modules                = modules
+        self.parameters             = parameters
         self.candlesticks_data_list = candlesticks_data_list
-        self.indicators_data_list = indicators_data_list
-        self.parameters = parameters
+        self.indicators_data_list   = indicators_data_list
+        self.candles_timeframe      = candles_timeframe or self.parameters['timeframe']
         
     def initialize(self):
         return self.scan_primary_conditions()
@@ -37,14 +38,14 @@ class StrategyScanner(BaseStrategy):
                 token = candlestick_data['token']
 
                 # Extracting candlestick data
-                candles           = candlestick_data['candlestick_data'][0]  # First dataframe
-                candles_daily     = candlestick_data['candlestick_data'][1]  # Second dataframe
-                candles_weekly    = candlestick_data['candlestick_data'][2]  # Third dataframe
-                candles_monthly   = candlestick_data['candlestick_data'][3]  # Fourth dataframe
-                candles_today_5m  = candlestick_data['candlestick_data'][4]  # Fifth dataframe
-                candles_today_15m = candlestick_data['candlestick_data'][5]  # Sixth dataframe
-                candles_today_30m = candlestick_data['candlestick_data'][6]  # Seventh dataframe
-                candles_today_60m = candlestick_data['candlestick_data'][7]  # Eighth dataframe
+                candles           = candlestick_data['candlestick_data'][self.candles_timeframe]  # First dataframe
+                candles_daily     = candlestick_data['candlestick_data'][DAY]  # Second dataframe
+                candles_weekly    = candlestick_data['candlestick_data'][WEEK]  # Third dataframe
+                candles_monthly   = candlestick_data['candlestick_data'][MONTH]  # Fourth dataframe
+                candles_today_5m  = candlestick_data['candlestick_data'][TODAY_5M]  # Fifth dataframe
+                candles_today_15m = candlestick_data['candlestick_data'][TODAY_15M]  # Sixth dataframe
+                candles_today_30m = candlestick_data['candlestick_data'][TODAY_30M]  # Seventh dataframe
+                candles_today_60m = candlestick_data['candlestick_data'][TODAY_60M]  # Eighth dataframe
 
                 # Default Candles
                 last_open, last_high, last_low, last_close, last_volume = self.get_nth_last_prices(candles, 1)

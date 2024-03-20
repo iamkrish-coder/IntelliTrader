@@ -84,13 +84,15 @@ class IntelliTrader:
 
         # Instantiate the Strategy Instance
         strategy_instance = StrategyController(self.connection, self.modules, self.configuration)        
+        await strategy_instance.initialize() # FOR TESTING 
         
+
         # Instantiate the Scheduler Instance 
-        scheduler_instance = Scheduler(self.configuration, strategy_instance, None, ASYNCIO) 
+        # scheduler_instance = Scheduler(self.configuration, strategy_instance, None, ASYNCIO) 
         
-        # Start Scheduler
-        scheduler_instance.start_scheduler()
-        await asyncio.sleep(6000)
+        # # Start Scheduler
+        # scheduler_instance.start_scheduler()
+        # await asyncio.sleep(6000)
 
 
     ###########################################
@@ -175,20 +177,22 @@ if __name__ == "__main__":
     """
 
     # Approach 2: Multiprocessing
+    
+    """
+    
+    process1 = Process(target=trader.initialize_strategy_controller)
+    process1.start()
 
-    # process1 = Process(target=trader.initialize_strategy_controller)
-    # process1.start()
+    process2 = Process(target=trader.initialize_action_controller)
+    process2.start()
 
-    # process2 = Process(target=trader.initialize_action_controller)
-    # process2.start()
+    process3 = Process(target=trader.initialize_monitoring_controller)
+    process3.start()
 
-    # process3 = Process(target=trader.initialize_monitoring_controller)
-    # process3.start()
-
-
+    """
     
     # Approach 3: Asyncio
-    # try:
-    #     asyncio.run(trader.run_async_task())
-    # except (KeyboardInterrupt, asyncio.CancelledError):
-    #     print("\nCaught keyboard interrupt. Canceling tasks...\n")
+    try:
+        asyncio.run(trader.run_async_task())
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        print("\nCaught keyboard interrupt. Canceling tasks...\n")

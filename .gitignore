@@ -28,4 +28,4 @@
 /source/modules/orders/__pycache__
 __pycache__/
 /env_python_3.12
-/source/cache/cache.db-wal
+/source/cache

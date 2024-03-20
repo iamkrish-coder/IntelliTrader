@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitattributes" />
+    <Content Include=".github\workflows\auto_pull_request.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
     <Content Include=".gitignore" />
     <Content Include=".release-please-manifest.json" />
@@ -175,7 +176,6 @@
     <Folder Include="source\modules\" />
     <Folder Include="source\modules\trades\" />
     <Folder Include="source\language\" />
-    <Folder Include="source\cache\" />
     <Folder Include="source\utils\" />
     <Folder Include="source\services\" />
     <Folder Include="source\queue\" />
