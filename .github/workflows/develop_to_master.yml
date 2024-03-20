@@ -3,7 +3,7 @@ name: Develop Branch to Master PR
 on:
   pull_request:
     branches:
-      - develop  # Trigger on pull request merges to develop
+      - develop
 
 jobs:
   create-pull-request:
