@@ -29,9 +29,8 @@ jobs:
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: feature-release
-        base: develop
         commit-message: ${{ steps.latest_commit.outputs.message }}
+        base: master
         committer: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
         author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
         signoff: false
