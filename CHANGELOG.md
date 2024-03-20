@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.2.0...v2.3.0) (2024-03-20)
+
+
+### Features
+
+* added pr autiomation ([027cc9f](https://github.com/iamkrish-coder/IntelliTrader/commit/027cc9f2093e56e8e3b8d1c6251b0255c37f15f0))
+* fix the strategy class and async processing, also reintroducing updated actions ([8a1d5a0](https://github.com/iamkrish-coder/IntelliTrader/commit/8a1d5a0a3ba4e3eb2e8c3cee2415b34aadaaa5c7))
+* offline api access, when subscription is not active ([13d6595](https://github.com/iamkrish-coder/IntelliTrader/commit/13d6595eb5023f05eff6cb422ff65751d3068a38))
+
 ## [2.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.1.1...v2.2.0) (2024-03-17)
 
 
