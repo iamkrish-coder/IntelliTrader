@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.0.0...v3.1.0) (2024-03-20)
+
+
+### Features
+
+* updated base branch in actions file ([1c9f4be](https://github.com/iamkrish-coder/IntelliTrader/commit/1c9f4beb7e90f2494261f1e5a1ba67f867788f68))
+
+
+### Bug Fixes
+
+* code changes to actions file ([5d1ffff](https://github.com/iamkrish-coder/IntelliTrader/commit/5d1ffff2faefdbcc403436cab16d6e6bef97201e))
+* Remove actions ([81ba892](https://github.com/iamkrish-coder/IntelliTrader/commit/81ba892a04a93151d7933d77d89a00b992c2426e))
+
 ## [3.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v2.3.0...v3.0.0) (2024-03-20)
 
 
