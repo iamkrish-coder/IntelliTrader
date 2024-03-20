@@ -19,4 +19,4 @@ jobs:
           body: 'This pull request was created automatically after merging changes into Develop.'
           branch: master
           base: develop
-        if: ${{ github.event.pull_request.merged == true }}  # Only run if pull request is merged
+        if: ${{ github.event.pull_request.merged == true }}  
