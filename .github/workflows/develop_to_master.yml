@@ -1,7 +1,7 @@
 name: Develop Branch to Master PR
 
 on:
-  push:
+  pull_request:
     branches:
       - develop  # Trigger on pull request merges to develop
 
