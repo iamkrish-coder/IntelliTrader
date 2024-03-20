@@ -34,7 +34,7 @@ jobs:
             committer: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
             author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
             signoff: false
-            branch: develop
+            branch: feature-develop
             delete-branch: false
             title: ${{ steps.latest_commit.outputs.message }}
             body: |
