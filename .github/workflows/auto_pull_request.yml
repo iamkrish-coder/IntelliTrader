@@ -1,4 +1,4 @@
-name: hourly-sync-master
+name: auto-pull-request
 
 on:
   push:
@@ -13,16 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check for changes in develop branch
-        run: |
-          git fetch origin develop
-          git diff --quiet origin/develop release
-          if [ $? -eq 0 ]; then
-            echo "No changes found in develop branch. Skipping PR creation."
-            exit 0
-          fi
-
-      - name: Create Pull Request (if changes found)
+      - name: Create Pull Request
         run: |
           gh pr create -f origin/develop -t release --title 'Merge develop into release' --body 'Created by Github action'
         env:
