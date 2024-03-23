@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.7](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.6...v3.3.7) (2024-03-23)
+
+
+### Bug Fixes
+
+* change develop ([5d993bf](https://github.com/iamkrish-coder/IntelliTrader/commit/5d993bfaabf4cc8d238d867bf2611081df4d4a1a))
+
 ## [3.3.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.5...v3.3.6) (2024-03-23)
 
 
