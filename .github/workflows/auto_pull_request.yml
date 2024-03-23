@@ -2,7 +2,7 @@ name: pull-request-develop-to-release
 on:
   push:
     branches:
-      - 'develop/*'
+      - 'develop'
 jobs:
   PR_Develop_To_Release:
     runs-on: ubuntu-latest
