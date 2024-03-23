@@ -21,13 +21,13 @@ from source.enumerations.enums import *
 from source.utils.logging_utils import *
 from source.modules.strategy.BaseStrategy import BaseStrategy
 from source.modules.strategy._strategy_configurations import StrategyConfigurations
-from source.modules.strategy._strategy_parameters import StrategyParameters
 from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
 from source.modules.strategy._strategy_watchlist import StrategyWatchlist
 from source.modules.strategy._strategy_candlesticks import StrategyCandlesticks
 from source.modules.strategy._strategy_indicators import StrategyIndicators
 from source.modules.strategy._strategy_scanner import StrategyScanner
 from source.modules.strategy._strategy_publisher import StrategyPublisher
+from source.modules.configurations.shared_parameters import SharedParameters
 
 class StrategyController(BaseStrategy):
     
@@ -38,22 +38,15 @@ class StrategyController(BaseStrategy):
         self.parameters     = None
         self.base_timeframe = None
         
-    def log_execution(func):
-        @wraps(func)  # Preserves function metadata
-        def wrapper(*args, **kwargs):
-            log_info(f"Function '{func.__name__}' triggered")
-            return func(*args, **kwargs)
-        return wrapper
-
     ###########################################
     # Initialize Strategy Handler
     ###########################################
     
     async def initialize(self):
         log_info(f"Running Strategy...{self.run_count} Times")
-        return await self.handle_strategy()    
+        return await self.strategy_handler()    
     
-    async def handle_strategy(self):
+    async def strategy_handler(self):
         """
         Orchestrates the execution of a trading strategy, coordinating multiple handlers for various tasks.
 
@@ -71,7 +64,7 @@ class StrategyController(BaseStrategy):
         object_configuration_handler = StrategyConfigurations(self.configuration)
         settings = object_configuration_handler.initialize()
 
-        object_parameters_handler = StrategyParameters(settings)
+        object_parameters_handler = SharedParameters(settings)
         object_parameters_handler.initialize()
         self.parameters     = object_parameters_handler.get_parameters()
 
@@ -107,7 +100,7 @@ class StrategyController(BaseStrategy):
             alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
-            object_publisher_handler = StrategyPublisher(self.modules, alerts, self.parameters, SNS)
+            object_publisher_handler = StrategyPublisher(self.modules, self.parameters, alerts, SNS)
             object_publisher_handler.initialize()
 
 

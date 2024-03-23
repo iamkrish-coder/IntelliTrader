@@ -1,6 +1,6 @@
-# handlers/actions
+# source/modules/configurations/shared_parameters.py
 
-class ActionParameters:
+class SharedParameters:
     def __init__(self, kwargs):
         self.params = [
             kwargs.get('main_params'),            
@@ -41,7 +41,7 @@ class ActionParameters:
 
         self.market_indices = market_params.get('market_indices', {})
         # self.order_params = market_params.get('order_params', {})
-        
+
         self.strategy_id     = strategy_params.get('id', None)
         self.exchange        = strategy_params.get('exchange', None)
         self.symbol          = strategy_params.get('symbol', None)

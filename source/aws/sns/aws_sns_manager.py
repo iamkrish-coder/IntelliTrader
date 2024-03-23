@@ -1,21 +1,5 @@
 import boto3
-import uuid
-
-def aws_sqs_publish(sqs_client, message, queue_url):
-    """
-    Publishes a message to an AWS SQS queue.
-    """
-    # Generate a unique message group ID using UUID
-    message_group_id = str(uuid.uuid4())   
-    
-    response = sqs_client.send_message(
-        QueueUrl = queue_url,
-        MessageBody = message,
-        MessageGroupId = message_group_id
-    )
-    print(f"Message published successfully. MessageId: {response['MessageId']}")   
-    return response
-
+from boto3.session import botocore
 
 def aws_sns_publish(sqs_client, topic_arn, message, subject=""):
     """
@@ -33,3 +17,18 @@ def aws_sns_publish(sqs_client, topic_arn, message, subject=""):
     )
     print(f"Message published successfully. MessageId: {response['MessageId']}")
     return response
+
+
+def aws_sns_subscribe(sns_client, subscription_arn):
+    """
+    Subscribe to an SNS topic and receive messages.
+    """
+    try:
+        response = sns_client.receive(
+            SubscriptionArn = subscription_arn,  
+            MaxNumberOfMessages = 10
+        )
+        return response
+    except botocore.exceptions.ClientError as e:
+        print(f"Error receiving SNS messages: {e}")
+        return None
