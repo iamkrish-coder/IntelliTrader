@@ -25,6 +25,13 @@ def configure_logging():
     root_logger.addHandler(console_handler)
 
     # Create and configure file handlers for each task logger
+    database_logger = logging.getLogger(DATABASE_LOGGER_NAME)
+    database_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'database.log'))
+    database_handler.setLevel(logging.DEBUG)
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    database_handler.setFormatter(plain_formatter)
+    database_logger.addHandler(database_handler)
+
     strategy_logger = logging.getLogger(STRATEGY_LOGGER_NAME)
     strategy_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'strategy.log'))
     strategy_handler.setLevel(logging.DEBUG)

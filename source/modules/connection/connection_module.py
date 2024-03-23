@@ -18,7 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from kiteconnect import KiteConnect, KiteTicker
 from source.modules.connection.kiteconnect_offline import KiteConnectOffline
-from source.aws.aws_secrets_manager import get_secret
+from source.aws.SecretsManager.aws_secrets_manager import get_secret
 
 class Connection: 
     def __init__(self):

@@ -15,8 +15,9 @@ from pytz import utc
 from source.constants import *  
 from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import * 
-from source.controller.MainStrategy import StrategyController
-# from source.controller.MainAction import ActionController
+from source.controllers.strategy_controller import StrategyController
+from source.controllers.action_controller import ActionController
+from source.controllers.database_controller import DatabaseController
 from source.language.resources_EN_IN import ResourceStrings
 from source.modules.BaseModules import BaseModules
 from source.modules.configurations.configuration_module import Configuration
@@ -55,11 +56,14 @@ class IntelliTrader:
        
     def initialize_logging(self):
         """ Establishes Logging capabilities """
-        strategy_log_path = os.path.join(OUTPUT_PATH, 'strategy.log')
-        action_log_path = os.path.join(OUTPUT_PATH, 'actions.log')
+        database_log_path   = os.path.join(OUTPUT_PATH, 'database.log')
+        strategy_log_path   = os.path.join(OUTPUT_PATH, 'strategy.log')
+        action_log_path     = os.path.join(OUTPUT_PATH, 'actions.log')
         monitoring_log_path = os.path.join(OUTPUT_PATH, 'monitoring.log')
         
         # Create named loggers with desired levels (optional)
+        database_logger = logging.getLogger(Logger.DATABASE_LOGGER.value)
+        database_logger.setLevel(logging.DEBUG)        
         strategy_logger = logging.getLogger(Logger.STRATEGY_LOGGER.value)
         strategy_logger.setLevel(logging.DEBUG)
         action_logger = logging.getLogger(Logger.ACTION_LOGGER.value)
@@ -71,6 +75,21 @@ class IntelliTrader:
     def get_configuration(self):
         return self.configuration
 
+
+    ###########################################
+    ###########################################
+    #            DATABASE CONTROLLER          # 
+    ###########################################
+    ###########################################    
+
+    def initialize_database_controller(self):
+        """ Setup Database Pre-Requisites."""
+        logger = logging.getLogger(DATABASE_LOGGER_NAME)
+
+        # Instantiate the Database Instance
+        database_instance = DatabaseController(self.connection, self.modules, self.configuration)        
+        database_instance.initialize() 
+      
 
     ###########################################
     ###########################################
@@ -135,7 +154,7 @@ class IntelliTrader:
 
     async def run_async_task(self):
         tasks = [
-            self.initialize_strategy_controller()
+            # self.initialize_strategy_controller()
             # self.initialize_action_controller(),
             # self.initialize_monitoring_controller()
         ]
@@ -193,6 +212,7 @@ if __name__ == "__main__":
     
     # Approach 3: Asyncio
     try:
+        trader.initialize_database_controller()           
         asyncio.run(trader.run_async_task())
     except (KeyboardInterrupt, asyncio.CancelledError):
         print("\nCaught keyboard interrupt. Canceling tasks...\n")

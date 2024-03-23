@@ -7,6 +7,7 @@ class AWS_SQS(Enum):
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
 
 class Logger(Enum):
+    DATABASE_LOGGER   = "database_logger"
     STRATEGY_LOGGER   = "strategy_logger"
     ACTION_LOGGER     = "action_logger"
     MONITORING_LOGGER = "monitoring_logger"
