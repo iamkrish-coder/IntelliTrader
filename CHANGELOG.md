@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.3.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.1...v3.3.2) (2024-03-23)
+
+
+### Bug Fixes
+
+* remove check for changes ([50294f6](https://github.com/iamkrish-coder/IntelliTrader/commit/50294f655017bd6c48963f6edc134b00ab6b3ddf))
+* spaces used in actions ([0284fc5](https://github.com/iamkrish-coder/IntelliTrader/commit/0284fc557f97c94d9505d0f488f286b7d4c8c235))
+
 ## [3.3.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.0...v3.3.1) (2024-03-23)
 
 
