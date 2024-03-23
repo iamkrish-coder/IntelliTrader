@@ -1,20 +1,25 @@
-name: auto-pull-request
-
+name: Create pull request
 on:
   push:
     branches:
       - develop
-
 jobs:
-  create_pr:
+  prForMasterBranch:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Create Pull Request
+      - uses: actions/checkout@v2
+        with:
+          ref: release
+      - name: Reset release branch
         run: |
-          gh pr create -f 'origin/release' -t develop --title 'Merge develop into release' --body 'Created by GitHub action'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git fetch origin develop:develop
+          git reset --hard develop
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: update release branch
+          title: Update release branch
+          branch: temp
+          delete-branch: true
+          assignees: iamkrish-coder
+          reviewers: iamkrish-coder
