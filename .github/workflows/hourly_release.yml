@@ -1,0 +1,21 @@
+name: Hourly Merge PR Creator
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs once every hour
+
+jobs:
+  create_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create Pull Request
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@users.noreply.github.com"
+        git checkout master
+        git merge release --no-ff --no-edit
+        git push origin master
