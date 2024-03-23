@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.3.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.5...v3.3.6) (2024-03-23)
+
+
+### Bug Fixes
+
+* Update branch name convention for releaseplease ([f5a12b4](https://github.com/iamkrish-coder/IntelliTrader/commit/f5a12b47c34e945d5f414581e2ac951e61d057a2))
+* updated actions file changes ([e9b3b2b](https://github.com/iamkrish-coder/IntelliTrader/commit/e9b3b2b3dd21b726396cd8f2fc86e19ac4426dc3))
+* updated changes for actions ([b469224](https://github.com/iamkrish-coder/IntelliTrader/commit/b469224a28a448fdb7a566a856754e9c9d55181a))
+
 ## [3.3.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.4...v3.3.5) (2024-03-23)
 
 
