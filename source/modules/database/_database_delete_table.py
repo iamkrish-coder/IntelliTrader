@@ -16,6 +16,9 @@ class DatabaseDeleteTable:
     
     def delete_table(self):      
         # Delete a Table
+        if self.table_name is None:
+            return False
+        
         object_dynamodb_delete_handler = AWSDynamoDB(self.table_name)
         object_dynamodb_delete_handler.delete_table()
         

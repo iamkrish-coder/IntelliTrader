@@ -22,7 +22,7 @@ class DatabaseController(BaseDatabase):
     ###########################################  
     
     def initialize(self):
-        log_info(f"Running database setup...")        
+        log_info(f"We are setting up the database for the first time. Hang tight, we're on it!")        
         return self.database_handler()   
     
     def database_handler(self):
