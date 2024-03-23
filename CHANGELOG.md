@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.8](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.7...v3.3.8) (2024-03-23)
+
+
+### Bug Fixes
+
+* remove auto PR for one last time, let us focus on priorities ([f862b78](https://github.com/iamkrish-coder/IntelliTrader/commit/f862b784565ff1be9e3e0d76da76f6b13f8e4abc))
+
 ## [3.3.7](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.6...v3.3.7) (2024-03-23)
 
 
