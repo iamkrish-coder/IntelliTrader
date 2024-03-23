@@ -1,34 +1,22 @@
-name: sync-master-with-release
+name: sync-develop-with-release
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - release
-  schedule:
-    - cron: '0/10 * * * *' 
 
 jobs:
-  PR_Release_To_Master:
+  PR_Release_To_Develop:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'release'
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
         with:
-          ref: master
-      
-      - name: Get latest commit message
-        id: latest_commit
-        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+          ref: develop
 
-      - name: Determine PR Label
-        id: determine_label
-        run: |
-            if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
-              echo "::set-output name=label::bug"
-            else
-              echo "::set-output name=label::enhancement"
-            fi      
-
-      - name: Reset master branch
+      - name: Reset develop branch
         run: |
           git fetch origin release:release
           git reset --hard release
@@ -36,12 +24,17 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: ${{ steps.latest_commit.outputs.message }}
-          title: ${{ steps.latest_commit.outputs.message }}
-          branch: feature-master
-          labels: ${{ steps.determine_label.outputs.label }}
+          commit-message: Sync Develop with latest Release
+          title: Sync Release -> Develop
+          branch: feature-develop
+          labels: 'automerge'
           delete-branch: true
           committer: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
-          assignees: iamkrish-coder
-          reviewers: iamkrish-coder
+
+      - name: Merge Pull Request
+        uses: peter-evans/merge-pull-request@v3
+        with:
+          pull_request_number: ${{ steps.create_pr.outputs.pull-request-number }}
+          merge_method: squash
+          delete_branch_after_merge: true
