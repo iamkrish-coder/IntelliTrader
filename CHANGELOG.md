@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.1.0...v3.2.0) (2024-03-23)
+
+
+### Features
+
+* added AWS Dynamo DB for storage, added controllers for database operations, updated logs to log database messages, refacotored aws publisher and subscriber programs ([ca1e61a](https://github.com/iamkrish-coder/IntelliTrader/commit/ca1e61a92fcbc933c0c1015cb8820ac8b348caa3))
+
 ## [3.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.0.0...v3.1.0) (2024-03-20)
 
 
