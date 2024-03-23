@@ -1,15 +1,19 @@
-name: Create pull request
+name: Sync Master with Release
+
 on:
   push:
     branches:
-      - develop
+      - release
+  schedule:
+    - cron: '0/10 * * * *' 
+
 jobs:
-  PR_Develop_To_Release:
+  PR_Release_To_Master:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: release
+          ref: master
       - name: Determine PR Label
         id: determine_label
         run: |
@@ -18,16 +22,16 @@ jobs:
             else
               echo "::set-output name=label::enhancement"
             fi
-      - name: Reset release branch
+      - name: Reset master branch
         run: |
-          git fetch origin develop:develop
-          git reset --hard develop
+          git fetch origin release:release
+          git reset --hard release
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: update release branch
-          title: Update release branch
-          branch: feature-release
+          commit-message: update master branch
+          title: Update master branch
+          branch: feature-master
           labels: ${{ steps.determine_label.outputs.label }}
           delete-branch: true
           committer: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
