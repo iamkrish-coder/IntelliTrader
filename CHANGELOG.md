@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.4...v3.3.5) (2024-03-23)
+
+
+### Bug Fixes
+
+* remove an actions workflow which is unnecessary ([22c95b4](https://github.com/iamkrish-coder/IntelliTrader/commit/22c95b49e7df14f36dece413b5756f0cb323e865))
+
 ## [3.3.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.3...v3.3.4) (2024-03-23)
 
 
