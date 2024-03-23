@@ -96,8 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitattributes" />
+    <Content Include=".github\workflows\auto_pull_request.yml" />
     <Content Include=".github\workflows\auto_release.yml" />
-    <Content Include=".github\workflows\hourly_release.yml" />
+    <Content Include=".github\workflows\auto_sync_master.yml" />
     <Content Include=".gitignore" />
     <Content Include=".release-please-manifest.json" />
     <Content Include="AUTHOR" />

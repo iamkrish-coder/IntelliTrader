@@ -1,0 +1,40 @@
+name: Sync Master with Release
+
+on:
+  push:
+    branches:
+      - release
+  schedule:
+    - cron: '0/10 * * * *' 
+
+jobs:
+  PR_Release_To_Master:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: Determine PR Label
+        id: determine_label
+        run: |
+            if [[ "${{ steps.latest_commit.outputs.message }}" == *"fix"* ]]; then
+              echo "::set-output name=label::bug"
+            else
+              echo "::set-output name=label::enhancement"
+            fi
+      - name: Reset master branch
+        run: |
+          git fetch origin release:release
+          git reset --hard release
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: update master branch
+          title: Update master branch
+          branch: feature-master
+          labels: ${{ steps.determine_label.outputs.label }}
+          delete-branch: true
+          committer: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          assignees: iamkrish-coder
+          reviewers: iamkrish-coder
