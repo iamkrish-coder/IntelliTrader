@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.2.0...v3.2.1) (2024-03-23)
+
+
+### Bug Fixes
+
+* minor fixes to logging messages and fix a bug while checking for table existence ([4a925ae](https://github.com/iamkrish-coder/IntelliTrader/commit/4a925ae88fa957a720327f22d8713a4f795b5975))
+
 ## [3.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.1.0...v3.2.0) (2024-03-23)
 
 
