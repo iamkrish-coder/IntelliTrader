@@ -1,21 +1,31 @@
-name: Hourly Merge PR Creator
+name: hourly-sync-master
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs once every hour
+    - cron: '*/3 * * * *'  # Runs every 3 minutes
 
 jobs:
   create_pr:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Create Pull Request
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@users.noreply.github.com"
-        git checkout master
-        git merge release --no-ff --no-edit
-        git push origin master
+      - name: Check for changes in release branch
+        run: |
+          git fetch origin release
+          git diff --quiet origin/release master
+          if [ $? -eq 0 ]; then
+            echo "No changes found in release branch. Skipping PR creation."
+            exit 0
+          fi
+
+      - name: Create Pull Request (if changes found)
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@users.noreply.github.com"
+          git checkout master
+          git merge release --no-ff --no-edit
+          git push origin master
+
