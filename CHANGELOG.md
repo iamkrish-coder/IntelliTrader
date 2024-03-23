@@ -1,5 +1,42 @@
 # Changelog
 
+## [3.3.8](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.7...v3.3.8) (2024-03-23)
+
+
+### Bug Fixes
+
+* remove auto PR for one last time, let us focus on priorities ([f862b78](https://github.com/iamkrish-coder/IntelliTrader/commit/f862b784565ff1be9e3e0d76da76f6b13f8e4abc))
+
+## [3.3.7](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.6...v3.3.7) (2024-03-23)
+
+
+### Bug Fixes
+
+* change develop ([5d993bf](https://github.com/iamkrish-coder/IntelliTrader/commit/5d993bfaabf4cc8d238d867bf2611081df4d4a1a))
+
+## [3.3.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.5...v3.3.6) (2024-03-23)
+
+
+### Bug Fixes
+
+* Update branch name convention for releaseplease ([f5a12b4](https://github.com/iamkrish-coder/IntelliTrader/commit/f5a12b47c34e945d5f414581e2ac951e61d057a2))
+* updated actions file changes ([e9b3b2b](https://github.com/iamkrish-coder/IntelliTrader/commit/e9b3b2b3dd21b726396cd8f2fc86e19ac4426dc3))
+* updated changes for actions ([b469224](https://github.com/iamkrish-coder/IntelliTrader/commit/b469224a28a448fdb7a566a856754e9c9d55181a))
+
+## [3.3.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.4...v3.3.5) (2024-03-23)
+
+
+### Bug Fixes
+
+* remove an actions workflow which is unnecessary ([22c95b4](https://github.com/iamkrish-coder/IntelliTrader/commit/22c95b49e7df14f36dece413b5756f0cb323e865))
+
+## [3.3.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.3...v3.3.4) (2024-03-23)
+
+
+### Bug Fixes
+
+* updated actions workflow to sync the changes back to develop ([9f7666a](https://github.com/iamkrish-coder/IntelliTrader/commit/9f7666a72736cb51a33673ea081b1149cbfa1bd3))
+
 ## [3.3.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.2...v3.3.3) (2024-03-23)
 
 
