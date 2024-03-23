@@ -15,6 +15,6 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          gh pr create -f origin/develop -t release --title 'Merge develop into release' --body 'Created by Github action'
+          gh pr create -f 'origin/develop' -t release --title 'Merge develop into release' --body 'Created by GitHub action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
