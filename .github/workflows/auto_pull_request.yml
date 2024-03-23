@@ -1,4 +1,4 @@
-name: Create pull request
+name: pull-request-develop-to-release
 on:
   push:
     branches:
@@ -10,6 +10,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: release
+
+      - name: Get latest commit message
+        id: latest_commit
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+
       - name: Determine PR Label
         id: determine_label
         run: |
@@ -18,15 +23,17 @@ jobs:
             else
               echo "::set-output name=label::enhancement"
             fi
+
       - name: Reset release branch
         run: |
           git fetch origin develop:develop
           git reset --hard develop
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          commit-message: update release branch
-          title: Update release branch
+          commit-message: ${{ steps.latest_commit.outputs.message }}
+          title: ${{ steps.latest_commit.outputs.message }}
           branch: feature-release
           labels: ${{ steps.determine_label.outputs.label }}
           delete-branch: true
