@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.3...v3.3.4) (2024-03-23)
+
+
+### Bug Fixes
+
+* updated actions workflow to sync the changes back to develop ([9f7666a](https://github.com/iamkrish-coder/IntelliTrader/commit/9f7666a72736cb51a33673ea081b1149cbfa1bd3))
+
 ## [3.3.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.2...v3.3.3) (2024-03-23)
 
 
