@@ -30,11 +30,14 @@ class AWSDynamoDB:
         # Check if table exists before creating
         try:
             table = self.dynamodb_resource.Table(table_name)
+            table_id_exists = table.table_id
             log_info(f"Table '{table_name}' already exists. Skipping creation.")
         except botocore.exceptions.ClientError as e:
             error_code = e.response['Error']['Code']
+            
             if error_code == 'ResourceNotFoundException':
                 # Create table if it doesn't exist
+                log_info(f"Creating table '{table_name}'...")
                 response = self.dynamodb_resource.create_table(
                     TableName=table_name,
                     KeySchema=table_schema,
@@ -45,7 +48,9 @@ class AWSDynamoDB:
                     }
                 )
                 response.wait_until_exists()
-                log_info(f"Table '{table_name}' created successfully.")
+                log_info(f"Create '{table_name}' Table ...COMPLETE!")
+            else:
+                log_error(f"Error creating table '{self.table_name}': {e}")
                 
         return response
 
@@ -56,8 +61,9 @@ class AWSDynamoDB:
         """
         response = None
         try:
+            log_info(f"Deleting table '{self.table_name}'...")
             response = self.table.delete()
-            log_info(f"Table '{self.table_name}' deleted successfully.")
+            log_info(f"Delete '{self.table_name}' Table ...COMPLETE!")
         except ClientError as e:
             error_code = e.response['Error']['Code']
             if error_code == 'ResourceNotFoundException':
