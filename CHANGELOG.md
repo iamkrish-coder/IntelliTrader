@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.8...v3.4.0) (2024-03-25)
+
+
+### Features
+
+* added caching and ability to get and put items from aws dynamo db, Topics saved to aws dynamodb ([6648ae5](https://github.com/iamkrish-coder/IntelliTrader/commit/6648ae53511e302b706c3d4a6d0d8edea8e85ef8))
+
 ## [3.3.8](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.7...v3.3.8) (2024-03-23)
 
 
