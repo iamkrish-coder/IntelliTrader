@@ -2,10 +2,13 @@
 
 import pandas as pd
 import numpy as np
-import datetime as dt
 import yfinance as yf
 import calendar
 import math
+import hashlib
+import datetime
+import json
+import uuid
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
@@ -206,7 +209,7 @@ class SharedHandler:
         return ohlcv_today_data
 
     def get_duration_week(self, depth=1):
-        today = dt.date.today()
+        today = datetime.date.today()
         current_year = today.year
         current_month = today.month
         current_day = today.weekday()
@@ -223,7 +226,7 @@ class SharedHandler:
         return duration
 
     def get_duration_month(self, depth=1):
-        today = dt.date.today()
+        today = datetime.date.today()
         current_year = today.year
         current_month = today.month
         current_day = today.day
@@ -267,7 +270,7 @@ class SharedHandler:
         return pd.DataFrame(contracts)
 
     def get_options_with_expiry(contracts, expiry_span):
-        contracts['time_to_expiry'] = (pd.to_datetime(contracts['expiry']) - dt.datetime.now()).dt.days
+        contracts['time_to_expiry'] = (pd.to_datetime(contracts['expiry']) - datetime.datetime.now()).datetime.days
         next_expiry_in_days = np.sort(contracts['time_to_expiry'].unique())
         if expiry_span <= len(next_expiry_in_days):
             expiry_eta = next_expiry_in_days[expiry_span]
@@ -290,3 +293,13 @@ class SharedHandler:
         contracts.sort_values(by=['strike'], inplace=True, ignore_index=True)
         atm_index = (abs(contracts['strike'] - current_index_price).argmin()) + 1
         return contracts.iloc[atm_index:atm_index+strike_span] 
+
+    def generate_record_hash(self, record):
+        # Create a unique hash from the string data
+        hash_object = hashlib.sha256(record.encode("utf-8"))
+        return hash_object.hexdigest()
+
+    def get_current_timestamp(self):
+        current_timestamp = datetime.datetime.now(datetime.timezone.utc)
+        formatted_timestamp = current_timestamp.strftime("%Y%m%d%H%M")
+        return formatted_timestamp

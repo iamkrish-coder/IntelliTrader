@@ -22,9 +22,10 @@ from source.modules.configurations.shared_parameters import SharedParameters
 
 class ActionController(BaseAction):
     
-    def __init__(self, connection, modules, configuration):
+    def __init__(self, connection, modules, configuration, database):
         super().__init__(connection, modules) 
         self.configuration  = configuration
+        self.database       = database
         self.run_count      = 0        
         self.watchlist      = None
         self.parameters     = None

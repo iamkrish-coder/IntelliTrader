@@ -15,13 +15,11 @@ from pytz import utc
 from source.constants import *  
 from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import * 
-from source.controllers.strategy_controller import StrategyController
-from source.controllers.action_controller import ActionController
-from source.controllers.database_controller import DatabaseController
 from source.language.resources_EN_IN import ResourceStrings
 from source.modules.BaseModules import BaseModules
 from source.modules.configurations.configuration_module import Configuration
 from source.modules.connection.connection_module import Connection
+from source.controllers.BaseController import BaseController
 
 # utils Import
 from source.utils.logging_utils import *
@@ -38,21 +36,23 @@ configure_logging()
 
 class IntelliTrader:
     def __init__(self):
-        self.connection = None
-        self.modules = None
-        self.configuration = None
-        self.strategy_instance = None
+        self.connection         = None
+        self.module             = None
+        self.configuration      = None
+        self.controller         = None
+        self.strategy_instance  = None
         self.scheduler_instance = None
+        self.cancelled          = False
         self.initialize_components()
         self.initialize_logging()
-        self.cancelled = False
 
 
     def initialize_components(self):
         """ Establishes connection, initializes modules and configuration."""
-        self.connection = Connection().connect_to_broker()
-        self.modules = BaseModules(self.connection).get_all_modules()
+        self.connection    = Connection().connect_to_broker()
+        self.module        = BaseModules(self.connection).get_all_modules()
         self.configuration = Configuration().read_input_configuration()
+        self.controller    = BaseController(self.connection, self.module, self.configuration).get_all_controllers()
        
     def initialize_logging(self):
         """ Establishes Logging capabilities """
@@ -74,7 +74,23 @@ class IntelliTrader:
 
     def get_configuration(self):
         return self.configuration
+ 
 
+    ###########################################
+    ###########################################
+    #                RUN ALL                  #  
+    ###########################################
+    ###########################################   
+
+    async def run_async_task(self):
+        self.initialize_database_controller(),  
+        tasks = [
+            self.initialize_strategy_controller(),
+            # self.initialize_action_controller(),
+            # self.initialize_monitoring_controller()
+        ]
+        await asyncio.gather(*tasks)
+        
 
     ###########################################
     ###########################################
@@ -85,10 +101,7 @@ class IntelliTrader:
     def initialize_database_controller(self):
         """ Setup Database Pre-Requisites."""
         logger = logging.getLogger(DATABASE_LOGGER_NAME)
-
-        # Instantiate the Database Instance
-        database_instance = DatabaseController(self.connection, self.modules, self.configuration)        
-        database_instance.initialize() 
+        self.controller['database'].initialize() 
       
 
     ###########################################
@@ -100,12 +113,8 @@ class IntelliTrader:
     async def initialize_strategy_controller(self):
         """Starts the scanning process for watchlist stocks."""
         logger = logging.getLogger(STRATEGY_LOGGER_NAME)
-
-        # Instantiate the Strategy Instance
-        strategy_instance = StrategyController(self.connection, self.modules, self.configuration)        
-        await strategy_instance.initialize() # FOR TESTING 
+        await self.controller['strategy'].initialize() # FOR TESTING 
         
-
         # Instantiate the Scheduler Instance 
         # scheduler_instance = Scheduler(self.configuration, strategy_instance, None, ASYNCIO) 
         
@@ -123,11 +132,7 @@ class IntelliTrader:
     async def initialize_action_controller(self):
         """Processes any generated alerts from the scanner."""
         logger = logging.getLogger(ACTION_LOGGER_NAME)
-        y = 0
-        while not self.cancelled: 
-            logger.info(f"Running Actions...{y} Times")
-            y += 1
-            await asyncio.sleep(10)
+        await self.controller['action'].initialize()
 
 
     ###########################################
@@ -139,26 +144,7 @@ class IntelliTrader:
     async def initialize_monitoring_controller(self):
         """Monitors existing trades and performs necessary actions."""
         logger = logging.getLogger(MONITORING_LOGGER_NAME)
-        z = 0
-        while not self.cancelled: 
-            logger.info(f"Running Monitoring...{z} Times")
-            z += 1
-            await asyncio.sleep(10)
-
-
-    ###########################################
-    ###########################################
-    #                RUN ALL                  #  
-    ###########################################
-    ###########################################   
-
-    async def run_async_task(self):
-        tasks = [
-            # self.initialize_strategy_controller()
-            # self.initialize_action_controller(),
-            # self.initialize_monitoring_controller()
-        ]
-        await asyncio.gather(*tasks)
+        await self.controller['monitoring'].initialize()        
 
 
 ######################################################################################
@@ -171,6 +157,14 @@ if __name__ == "__main__":
     trader = IntelliTrader()
     configuration = trader.get_configuration()
  
+    # Approach 3: Asyncio
+    try:
+        asyncio.run(trader.run_async_task())
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        print("\nCaught keyboard interrupt. Canceling tasks...\n")
+
+
+
     # Start website
     # app = create_web_app(configuration)
     # url = f'http://{HOST}:{PORT}/'
@@ -210,9 +204,3 @@ if __name__ == "__main__":
 
     """
     
-    # Approach 3: Asyncio
-    try:
-        trader.initialize_database_controller()           
-        asyncio.run(trader.run_async_task())
-    except (KeyboardInterrupt, asyncio.CancelledError):
-        print("\nCaught keyboard interrupt. Canceling tasks...\n")

@@ -4,31 +4,80 @@ import time
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
+from source.utils.caching_utils import *
 from source.aws.sqs.aws_sqs_manager import aws_sqs_publish
 from source.aws.sns.aws_sns_manager import aws_sns_publish
+from source.models.topics_model import TopicsModel
 
 class StrategyPublisher:
-    def __init__(self, modules, parameters, alerts, aws_service):
-        self.modules     = modules
-        self.parameters  = parameters
-        self.alerts      = alerts
-        self.aws_service = aws_service
-        self.sns_client  = boto3.client(SNS, region_name=REGION_NAME)
-        self.sqs_client  = boto3.client(SQS, region_name=REGION_NAME)
-
+    def __init__(self, modules, parameters, database, alerts, aws_service):
+        self.modules       = modules
+        self.parameters    = parameters
+        self.database      = database
+        self.alerts        = alerts
+        self.aws_service   = aws_service
+        self.sns_client    = boto3.client(SNS, region_name=REGION_NAME)
+        self.sqs_client    = boto3.client(SQS, region_name=REGION_NAME)
+        
     def initialize(self):
         return self.publish()
+    
+    def _db_(self, dataset):
+        """
+        Saves the topic data with caching logic.
+
+        Args:
+            topic_arn (str): The ARN of the topic.
+            topic_name (str): The name of the topic.
+        """
+        
+        topic_arn = dataset["topicArn"]
+        topic_name = dataset["topicName"]
+
+        # Check disk cache
+        cached_topic = get_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, topic_arn)
+
+        if not cached_topic:
+            # Not in any cache, fetch from database
+            table_key = { "topic_arn": topic_arn }
+            
+            """ @AWS_DynamoDB """
+            existing_topic = self.database.manage_table_records(Table_Events.GET.value, Tables.TABLE_TOPICS.value, table_key)
+            
+            if existing_topic:
+                cached_topic = existing_topic  # Cache the retrieved topic
+            else:
+                # Topic doesn't exist, create and save it
+                object_topics_model_handler = TopicsModel(topic_arn, topic_name)
+                data = object_topics_model_handler.convert_object_to_dict()
+                
+                """ @AWS_DynamoDB """
+                self.database.manage_table_records(Table_Events.PUT.value, Tables.TABLE_TOPICS.value, data)
+                cached_topic = data  
+
+            # Cache the retrieved/created topic into disk cache
+            set_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, topic_arn, cached_topic)
+
 
     def publish(self):
         
         ###############
         # SNS PUBLISH #
         ###############
-        if self.aws_service == SNS:
-            successfully_published = []
-            strategy_id = self.parameters.get('strategy_id')
-            topic_arn = self.get_aws_sns_arn_name(strategy_id)
         
+        if self.aws_service == SNS:
+            
+            successfully_published = []
+            strategy_id            = self.parameters.get('strategy_id')
+            topic_arn, topic_name  = self.get_aws_sns_arn_name(strategy_id)
+            
+            dataset = {
+                "topicArn": topic_arn,
+                "topicName": topic_name
+            }
+            
+            self._db_(dataset)
+
             for alert in self.alerts:
                 exchange, symbol, token = alert.split(",")         
                 message = f"{exchange.strip()}, {symbol.strip()}, {token.strip()}"
@@ -118,5 +167,5 @@ class StrategyPublisher:
         emum_topic_name = topic_name
         
         arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}"
-        return arn_formatted
+        return arn_formatted, topic_name
     
