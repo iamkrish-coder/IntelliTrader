@@ -31,12 +31,14 @@ from source.modules.configurations.shared_parameters import SharedParameters
 
 class StrategyController(BaseStrategy):
     
-    def __init__(self, connection, modules, configuration):
+    def __init__(self, connection, modules, configuration, database):
         super().__init__(connection, modules) 
-        self.configuration  = configuration
-        self.run_count      = 0
-        self.parameters     = None
-        self.base_timeframe = None
+        self.configuration   = configuration
+        self.database        = database
+        self.run_count       = 0
+        self.parameters      = None
+        self.alerts          = None
+        self.base_timeframe  = None
         
     ###########################################
     # Initialize Strategy Handler
@@ -66,7 +68,7 @@ class StrategyController(BaseStrategy):
 
         object_parameters_handler = SharedParameters(settings)
         object_parameters_handler.initialize()
-        self.parameters     = object_parameters_handler.get_parameters()
+        self.parameters = object_parameters_handler.get_parameters()
 
         # 2. Perform market analysis
         object_market_analysis_handler = StrategyMarketAnalysis(self.modules, self.parameters)
@@ -90,17 +92,16 @@ class StrategyController(BaseStrategy):
             print(f"Error fetching candlestick data: {e}. Skipping indicator calculation.")
             
         else:
-          
             # 5. Calculate indicators
             object_indicators_handler = StrategyIndicators(self.modules, self.parameters, candlestick_data_list)
             indicators_data_list = object_indicators_handler.initialize()
 
             # 6. Scan for trading signals
             object_scanner_handler = StrategyScanner(self.modules, self.parameters, candlestick_data_list, indicators_data_list)
-            alerts = object_scanner_handler.initialize()
+            self.alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
-            object_publisher_handler = StrategyPublisher(self.modules, self.parameters, alerts, SNS)
+            object_publisher_handler = StrategyPublisher(self.modules, self.parameters, self.database, self.alerts, SNS)
             object_publisher_handler.initialize()
 
 

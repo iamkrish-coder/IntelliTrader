@@ -73,6 +73,27 @@ class AWSDynamoDB:
 
         return response
 
+    def put_item(self, item):
+        try:
+            response = self.table.put_item(Item=item)
+            return response  
+
+        except ClientError as error:
+            error_code = error.response['Error']['Code']
+            if error_code == 'ConditionalCheckFailedException':
+                # Handle conditional check failure (e.g., attempt to insert duplicate item with unique key)
+                log_error(f"Conditional check failed for item: {item}")
+            elif error_code == 'ProvisionedThroughputExceededException':
+                # Handle exceeding provisioned throughput capacity
+                log_error(f"Throughput capacity exceeded for put operation.")
+            elif error_code == 'ThrottlingException':
+                # Handle throttling exception (e.g., too many requests in a short period)
+                log_error(f"Throttling exception occurred. Retrying...")
+            else:
+                # Handle other unexpected ClientErrors
+                log_error(f"Unexpected client error: {error}")
+
+
     def get_item(self, key):
         response = None
         try:
@@ -81,13 +102,6 @@ class AWSDynamoDB:
         except ClientError as e:
             # Implement appropriate logging or error handling here
             return None
-
-    def put_item(self, item):
-        try:
-            self.table.put_item(Item=item)  
-        except ClientError as e:
-            # Implement appropriate logging or error handling here
-            pass
 
     def update_item(self, key, update_expression, **kwargs):
         try:

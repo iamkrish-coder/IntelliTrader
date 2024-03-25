@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import datetime as dt
+import datetime
 import requests
 import calendar
 import source.modules.shared.nse_data_api as _nseData
@@ -110,48 +110,48 @@ class Fetch:
                         log_error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
                         return None
                 
-                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, datetime.date.today()-datetime.timedelta(duration), datetime.date.today(), timeframe))
                    
                 
                     # Transform data for Last Available Date
-                    current_time = dt.datetime.now().time()
-                    if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
+                    current_time = datetime.datetime.now().time()
+                    if current_time >= datetime.time(0, 0) and current_time < datetime.time(9, 15):
                         pass
                     else:
                         data['date'] = pd.to_datetime(data['date'])
-                        today_date = dt.datetime.now().date()
+                        today_date = datetime.datetime.now().date()
                         while True:
-                            if today_date in data['date'].dt.date.unique():
-                                data = data[data['date'].dt.date == today_date]
+                            if today_date in data['date'].datetime.date.unique():
+                                data = data[data['date'].datetime.date == today_date]
                                 break
                             else:
-                                today_date -= dt.timedelta(days=1) 
+                                today_date -= datetime.timedelta(days=1) 
                             
                     log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                 
                 elif timeframe.__contains__('minute'):
                     # Fetch Minutes Data
                     duration = duration['minute']
-                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, datetime.date.today()-datetime.timedelta(duration), datetime.date.today(), timeframe)) 
                     log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
             
                 elif timeframe.__contains__('hour'):
                     # Fetch Hours Data
                     duration = duration['hour']               
-                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, datetime.date.today()-datetime.timedelta(duration), datetime.date.today(), timeframe)) 
                     log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('day'):
                     # Fetch Daily Data
                     duration = duration['day']                              
-                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, datetime.date.today()-datetime.timedelta(duration), datetime.date.today(), timeframe))   
                     log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('week'):
                     # Fetch Weekly Data
                     timeframe = 'day'
                     duration = duration['week']                                              
-                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))    
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, datetime.date.today()-datetime.timedelta(duration), datetime.date.today(), timeframe))    
                     data = self.aggregate_to_weekly(data)
                     log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
@@ -159,7 +159,7 @@ class Fetch:
                     # Fetch Monthly Data
                     timeframe = 'day'
                     duration = duration['month']                                                             
-                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
+                    data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, datetime.date.today()-datetime.timedelta(duration), datetime.date.today(), timeframe))   
                     data = self.aggregate_to_monthly(data)
                     log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
@@ -231,16 +231,16 @@ class Fetch:
                 case _:
                     lookback_period_threshold = 1
 
-            start_date = dt.date.today()-dt.timedelta(duration)
-            end_date = dt.date.today()
+            start_date = datetime.date.today()-datetime.timedelta(duration)
+            end_date = datetime.date.today()
             
             data = pd.DataFrame(columns=['date', 'open', 'high', 'low', 'close', 'volume'])
             while True:
-                if start_date.date() >= (end_date - dt.timedelta(lookback_period_threshold)):
+                if start_date.date() >= (end_date - datetime.timedelta(lookback_period_threshold)):
                     data = data._append(pd.DataFrame(self.prop['kite'].historical_data(instrument_token, start_date, end_date, timeframe)), ignore_index=True)
                     break
                 else:
-                    end_date = start_date + dt.timedelta(lookback_period_threshold)
+                    end_date = start_date + datetime.timedelta(lookback_period_threshold)
                     data = data._append(pd.DataFrame(self.prop['kite'].historical_data(instrument_token, start_date, end_date, timeframe)), ignore_index=True)
                     start_date = end_date
     

@@ -2,7 +2,6 @@
 
 import asyncio
 import datetime
-import shutil
 import time
 import os
 
@@ -24,6 +23,7 @@ class StrategyCandlesticks:
         self.timeframe                    = parameters.get('timeframe')
         self.historical_data_subscription = parameters.get('historical_data_subscription')
         self.cache_path                   = CACHE_PATH
+        self.market_start_time            = datetime.time(hour=9, minute=15)
         
     def initialize(self):
         return self.scan_watchlist_stocks()
@@ -65,15 +65,6 @@ class StrategyCandlesticks:
             except OSError as e:
                 print(f"Error creating directory: {e}")
 
-            # Remove old cache directories
-            old_cache_dirs = [os.path.join(CACHE_PATH, dir) for dir in os.listdir(CACHE_PATH) if dir != formatted_date]
-            for dir in old_cache_dirs:
-                try:
-                    if os.path.isdir(dir):
-                        shutil.rmtree(dir)  
-                except OSError as e:
-                    print(f"Error removing directory {dir}: {e}")
-
         # Individual cache objects for timeframes
         timeframe_caches = {}
 
@@ -94,7 +85,7 @@ class StrategyCandlesticks:
 
                 minutes = int((timeframe.split("today")[1]).split("minute")[0])
                 current_time = now.time()
-                target_time = datetime.datetime.combine(now.date(), datetime.time(hour=9, minute=15))  
+                target_time = datetime.datetime.combine(now.date(), self.market_start_time)  
                 target_time += datetime.timedelta(minutes=minutes)  
 
                 # Check if current time is past the target time
@@ -109,6 +100,9 @@ class StrategyCandlesticks:
                 else:
                     print(f"Waiting for {timeframe} data to be available...")
                     
+                if current_time <= self.market_start_time:
+                    candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                    candlestick_data[timeframe] = candles
             else:
                 # TODAY, WEEKLY and MONTHLY timeframe, proceed with regular cache operations
                 cached_data = timeframe_caches[timeframe].get(cache_key)

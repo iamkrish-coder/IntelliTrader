@@ -23,10 +23,10 @@ class DatabaseCreateTable:
         for table_name, display_name in tables_list.items():
             table_properties[table_name] = self.build_table_definition(display_name)  
 
-        object_dynamodb_create_handler = AWSDynamoDB()
+        dynamodb_client = AWSDynamoDB()
         for table_name, properties in table_properties.items():
             try:
-                object_dynamodb_create_handler.create_table(properties)
+                dynamodb_client.create_table(properties)
             except ClientError as e:
                 log_error(f"Error creating table '{table_name}': {e}")
                 
@@ -54,21 +54,21 @@ class DatabaseCreateTable:
 
             table_properties['table_schema'] = [
                 {
-                    'AttributeName': 'Id',
+                    'AttributeName': 'topic_arn',
                     'KeyType': 'HASH'  
                 },
                 {
-                    'AttributeName': 'TopicName',
+                    'AttributeName': 'created_date',
                     'KeyType': 'RANGE' 
                 }
             ]
             table_properties['attribute_definitions'] = [
                 {
-                    'AttributeName': 'Id',
+                    'AttributeName': 'topic_arn',
                     'AttributeType': 'S'  
                 },
                 {
-                    'AttributeName': 'TopicName',
+                    'AttributeName': 'created_date',
                     'AttributeType': 'S'  
                 }
             ]

@@ -19,6 +19,6 @@ class DatabaseDeleteTable:
         if self.table_name is None:
             return False
         
-        object_dynamodb_delete_handler = AWSDynamoDB(self.table_name)
-        object_dynamodb_delete_handler.delete_table()
+        dynamodb_client = AWSDynamoDB(self.table_name)
+        dynamodb_client.delete_table()
         

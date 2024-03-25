@@ -1,5 +1,6 @@
 # ENUMS
 from enum import Enum
+from re import M
 from source.constants.constants import ARN
 
 class AWS_SQS(Enum):
@@ -27,7 +28,21 @@ class AWS_SNS(Enum):
     SNS        = 'sns'
     REGION     = 'ap-south-1'
     ACCOUNT_ID = '265153260161'
+
+class Cache_Type(Enum):
+    DISK   = "disk"
+    MEMORY = "memory"
     
+class Tables(Enum):
+    TABLE_TOPICS = 'Topics'
+    TABLE_ALERTS = 'Alerts'
+
+class Table_Events(Enum):
+    PUT = 'put'
+    GET = 'get'
+    UPDATE = 'update'
+    DELETE = 'delete'
+
 class Topics(Enum):
     TOPIC_1     = 'IntelliTrader_T1'
     TOPIC_2     = 'IntelliTrader_T2'
