@@ -97,8 +97,8 @@ class IntelliTrader:
         self.initialize_database_connection(),  
         
         self.strategy_controller_instance   = StrategyController(self.controller)
-        self.action_controller_instance     = ActionController(self.controller)
-        self.monitoring_controller_instance = None
+        # self.action_controller_instance     = ActionController(self.controller)
+        # self.monitoring_controller_instance = None
         
         tasks = [
             self.strategy_controller(),
