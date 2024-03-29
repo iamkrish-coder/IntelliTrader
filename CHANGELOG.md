@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.4.0...v3.5.0) (2024-03-29)
+
+
+### Features
+
+* database changes, needs further refactoring. Lot of changes done to the framework code ([991b332](https://github.com/iamkrish-coder/IntelliTrader/commit/991b332da67313695f338cdf53f67c0dd5140ccf))
+
 ## [3.4.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.3.8...v3.4.0) (2024-03-25)
 
 
