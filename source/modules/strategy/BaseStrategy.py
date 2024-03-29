@@ -1,4 +1,5 @@
-# strategies/BaseStrategy.py
+# IntelliTrader\source\modules\strategy\BaseStrategy.py
+
 from abc import ABC, abstractmethod
 from source.modules.shared.shared_handler import SharedHandler
 from sys import modules

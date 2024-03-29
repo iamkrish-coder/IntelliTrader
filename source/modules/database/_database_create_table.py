@@ -3,74 +3,68 @@
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
+from source.modules.database.comparison_operator import ComparisonOperators
 from source.aws.DynamoDB.aws_dynamodb import AWSDynamoDB
 from botocore.client import ClientError
 
+import json
+
 class DatabaseCreateTable:
-    def __init__(self, configuration):
-        self.configuration = configuration
+    def __init__(self, table_configuration):
+        self.table_configuration = table_configuration
 
     def initialize(self):
         return self.create_tables()
-    
+
     def create_tables(self):
-        # Create Required Tables
-        tables_list = {
-            'table_1': 'Topics'
-        }
+        
+        tables_list = self.table_configuration
 
         table_properties = {}
-        for table_name, display_name in tables_list.items():
-            table_properties[table_name] = self.build_table_definition(display_name)  
+        for table_name, table_config in tables_list.items():
+            table_properties[table_name] = self.build_table_definition(table_config)
 
-        dynamodb_client = AWSDynamoDB()
+        dynamodb_resource = AWSDynamoDB()
         for table_name, properties in table_properties.items():
             try:
-                dynamodb_client.create_table(properties)
+                dynamodb_resource.create_table(properties)
             except ClientError as e:
                 log_error(f"Error creating table '{table_name}': {e}")
                 
+    def build_table_definition(self, table_config):
 
-    def build_table_definition(self, table_name):
-        """
-        Defines the table structure for either Topics or Alerts table.
+        table_key_name = table_config['table_key']
+        hash_key_name = table_config['hash_key']
+        sort_key_name = table_config.get('sort_key') 
 
-        Args:
-            table_name (str): The name of the table to be created ("Topics" or "Alerts").
-
-        Returns:
-            dict: A dictionary containing the table properties for creating the table.
-        """
-
-        table_properties = {
-            'table_name': table_name
+        table_definition = {
+            'table_name': table_key_name,
+            'table_schema': [
+                {
+                    'AttributeName': hash_key_name,
+                    'KeyType': 'HASH'
+                },
+                # Only include sort key definition if sort_key_name is not empty
+                *([
+                    {
+                        'AttributeName': sort_key_name,
+                        'KeyType': 'RANGE'
+                    }
+                ] if sort_key_name else [])
+            ],
+            'attribute_definitions': [
+                {
+                    'AttributeName': hash_key_name,
+                    'AttributeType': 'S'
+                },
+                # Only include sort key attribute definition if sort_key_name is not empty
+                *([
+                    {
+                        'AttributeName': sort_key_name,
+                        'AttributeType': 'S'
+                    }
+                ] if sort_key_name else [])
+            ]
         }
 
-        ######################################
-        # Define table properties for topics #
-        ######################################
-
-        if table_name == "Topics":
-
-            table_properties['table_schema'] = [
-                {
-                    'AttributeName': 'topic_arn',
-                    'KeyType': 'HASH'  
-                },
-                {
-                    'AttributeName': 'created_date',
-                    'KeyType': 'RANGE' 
-                }
-            ]
-            table_properties['attribute_definitions'] = [
-                {
-                    'AttributeName': 'topic_arn',
-                    'AttributeType': 'S'  
-                },
-                {
-                    'AttributeName': 'created_date',
-                    'AttributeType': 'S'  
-                }
-            ]
-
-        return table_properties
+        return table_definition

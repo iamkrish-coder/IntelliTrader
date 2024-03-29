@@ -16,10 +16,16 @@ from source.constants import *
 from source.enumerations.enums import *
 from source.enumerations.resource_string_enums import * 
 from source.language.resources_EN_IN import ResourceStrings
+
 from source.modules.BaseModules import BaseModules
-from source.modules.configurations.configuration_module import Configuration
 from source.modules.connection.connection_module import Connection
+from source.modules.configurations.configuration_module import Configuration
+from source.modules.database.database_module import Database
+
 from source.controllers.BaseController import BaseController
+from source.controllers.strategy_controller import StrategyController
+from source.controllers.action_controller import ActionController
+# from source.controllers.monitoring_controller import MonitoringController
 
 # utils Import
 from source.utils.logging_utils import *
@@ -36,24 +42,29 @@ configure_logging()
 
 class IntelliTrader:
     def __init__(self):
-        self.connection         = None
-        self.module             = None
-        self.configuration      = None
-        self.controller         = None
-        self.strategy_instance  = None
-        self.scheduler_instance = None
-        self.cancelled          = False
-        self.initialize_components()
+        self.connection                     = None
+        self.modules                        = None
+        self.configuration                  = None
+        self.database                       = None
+        self.strategy_controller_instance   = None
+        self.action_controller_instance     = None
+        self.monitoring_controller_instance = None
+        self.scheduler_instance             = None
+        self.cancelled                      = False
+        self.controller                     = self.initialize_components()
         self.initialize_logging()
 
 
     def initialize_components(self):
         """ Establishes connection, initializes modules and configuration."""
-        self.connection    = Connection().connect_to_broker()
-        self.module        = BaseModules(self.connection).get_all_modules()
-        self.configuration = Configuration().read_input_configuration()
-        self.controller    = BaseController(self.connection, self.module, self.configuration).get_all_controllers()
-       
+        self.connection            = Connection().connect_to_broker()
+        self.modules               = BaseModules(self.connection).get_all_modules()
+        self.app_configuration     = Configuration().read_app_configuration()
+        self.table_configuration   = Configuration().read_table_configuration()       
+        self.database              = Database(self.connection, self.modules, self.app_configuration, self.table_configuration)
+        return (BaseController(self.connection, self.modules, self.app_configuration, self.database))
+
+
     def initialize_logging(self):
         """ Establishes Logging capabilities """
         database_log_path   = os.path.join(OUTPUT_PATH, 'database.log')
@@ -73,7 +84,7 @@ class IntelliTrader:
 
 
     def get_configuration(self):
-        return self.configuration
+        return self.app_configuration
  
 
     ###########################################
@@ -83,40 +94,45 @@ class IntelliTrader:
     ###########################################   
 
     async def run_async_task(self):
-        self.initialize_database_controller(),  
+        self.initialize_database_connection(),  
+        
+        self.strategy_controller_instance   = StrategyController(self.controller)
+        self.action_controller_instance     = ActionController(self.controller)
+        self.monitoring_controller_instance = None
+        
         tasks = [
-            self.initialize_strategy_controller(),
-            # self.initialize_action_controller(),
-            # self.initialize_monitoring_controller()
+            self.strategy_controller(),
+            # self.action_controller(),
+            # self.monitoring_controller()
         ]
         await asyncio.gather(*tasks)
-        
+
 
     ###########################################
     ###########################################
-    #            DATABASE CONTROLLER          # 
+    #            DATABASE CONNECTION          # 
     ###########################################
     ###########################################    
 
-    def initialize_database_controller(self):
-        """ Setup Database Pre-Requisites."""
+    def initialize_database_connection(self):
+        """ Establishes Database Connection."""
         logger = logging.getLogger(DATABASE_LOGGER_NAME)
-        self.controller['database'].initialize() 
+        self.database.initialize()
       
-
+      
     ###########################################
     ###########################################
     #            STRATEGY CONTROLLER          # 
     ###########################################
     ###########################################    
 
-    async def initialize_strategy_controller(self):
+    async def strategy_controller(self):
         """Starts the scanning process for watchlist stocks."""
         logger = logging.getLogger(STRATEGY_LOGGER_NAME)
-        await self.controller['strategy'].initialize() # FOR TESTING 
+        await self.strategy_controller_instance.initialize() # FOR TESTING 
         
         # Instantiate the Scheduler Instance 
-        # scheduler_instance = Scheduler(self.configuration, strategy_instance, None, ASYNCIO) 
+        # scheduler_instance = Scheduler(self.configuration, strategy_controller_instance, None, ASYNCIO) 
         
         # # Start Scheduler
         # scheduler_instance.start_scheduler()
@@ -129,10 +145,10 @@ class IntelliTrader:
     ###########################################
     ###########################################    
 
-    async def initialize_action_controller(self):
+    async def action_controller(self):
         """Processes any generated alerts from the scanner."""
         logger = logging.getLogger(ACTION_LOGGER_NAME)
-        await self.controller['action'].initialize()
+        await self.action_controller_instance.initialize()
 
 
     ###########################################
@@ -141,10 +157,10 @@ class IntelliTrader:
     ###########################################
     ###########################################    
 
-    async def initialize_monitoring_controller(self):
+    async def monitoring_controller(self):
         """Monitors existing trades and performs necessary actions."""
         logger = logging.getLogger(MONITORING_LOGGER_NAME)
-        await self.controller['monitoring'].initialize()        
+        await self.monitoring_controller_instance.initialize()        
 
 
 ######################################################################################
@@ -155,7 +171,6 @@ class IntelliTrader:
 
 if __name__ == "__main__":
     trader = IntelliTrader()
-    configuration = trader.get_configuration()
  
     # Approach 3: Asyncio
     try:
@@ -166,6 +181,7 @@ if __name__ == "__main__":
 
 
     # Start website
+    # configuration = trader.get_configuration()
     # app = create_web_app(configuration)
     # url = f'http://{HOST}:{PORT}/'
     # webbrowser.open(url)

@@ -3,6 +3,7 @@
 import boto3
 from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key, Attr
 from source.utils.logging_utils import *
 from source.constants.constants import REGION_NAME
 
@@ -11,32 +12,41 @@ class AWSDynamoDB:
     def __init__(self, table_name = None, region_name=REGION_NAME):
         self.table_name = table_name
         self.dynamodb_resource = boto3.resource('dynamodb', region_name=region_name)
-        if self.table_name:
-            self.table = self.dynamodb_resource.Table(self.table_name)
+        self.table = self.dynamodb_resource.Table(self.table_name)
+
+
+    def check_table_exists(self):
+        try:
+            self.table.load()
+            exists = True
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+                exists = False
+            else:
+                log_error(
+                    "Couldn't check for existence of %s. Here's why: %s: %s",
+                    self.table_name,
+                    e.response["Error"]["Code"],
+                    e.response["Error"]["Message"],
+                )
+                raise
+        return exists
+            
 
     def create_table(self, table_properties):
-        """
-        Generic Create Table function that takes in a dictionary of properties and creates a DynamoDB table.
-        table_properties dictionary should have the following keys:
-            - table_name: Name of the table to be created
-            - table_schema: List of key-value pairs that define the table schema
-            - attribute_definitions: List of key-value pairs that define the attribute definitions
-        """
         response = None
         table_name = table_properties['table_name']
         table_schema = table_properties['table_schema']
         attribute_definitions = table_properties['attribute_definitions']
         
         # Check if table exists before creating
-        try:
-            table = self.dynamodb_resource.Table(table_name)
-            table_id_exists = table.table_id
-            log_info(f"Table '{table_name}' already exists. Skipping creation.")
-        except botocore.exceptions.ClientError as e:
-            error_code = e.response['Error']['Code']
+        table_exists = self.check_table_exists()        
             
-            if error_code == 'ResourceNotFoundException':
-                # Create table if it doesn't exist
+        if table_exists:
+            log_info(f"Table '{table_name}' already exists. Skipping creation.")
+        else:
+                
+            try:
                 log_info(f"Creating table '{table_name}'...")
                 response = self.dynamodb_resource.create_table(
                     TableName=table_name,
@@ -49,21 +59,28 @@ class AWSDynamoDB:
                 )
                 response.wait_until_exists()
                 log_info(f"Create '{table_name}' Table ...COMPLETE!")
-            else:
-                log_error(f"Error creating table '{self.table_name}': {e}")
                 
+            except ClientError as e:
+                log_error(
+                    "Error creating table %s. Reason: %s: %s",
+                    self.table_name,
+                    e.response["Error"]["Code"],
+                    e.response["Error"]["Message"],
+                )
+                raise
+
         return response
 
-    def delete_table(self):
-        """
-        Deletes a DynamoDB table.
 
-        """
+    def delete_table(self):
         response = None
         try:
             log_info(f"Deleting table '{self.table_name}'...")
             response = self.table.delete()
-            log_info(f"Delete '{self.table_name}' Table ...COMPLETE!")
+            if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+                log_info(f"Delete '{self.table_name}' Table ...COMPLETE!")
+            return response  
+        
         except ClientError as e:
             error_code = e.response['Error']['Code']
             if error_code == 'ResourceNotFoundException':
@@ -73,9 +90,13 @@ class AWSDynamoDB:
 
         return response
 
+
     def put_item(self, item):
+        response = None       
         try:
             response = self.table.put_item(Item=item)
+            if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+                log_info("Item added successfully!")
             return response  
 
         except ClientError as error:
@@ -94,25 +115,50 @@ class AWSDynamoDB:
                 log_error(f"Unexpected client error: {error}")
 
 
-    def get_item(self, key):
+    def query_items(self, **arguments):
+        response = None       
+        try:
+            response = self.table.query(**arguments)
+            return response.get('Items', []) 
+        except ClientError as e:
+            print(e)
+            exit()
+            return []
+
+
+    def get_item(self, key_expression):
         response = None
         try:
-            response = self.table.get_item(Key=key)
+            response = self.table.get_item(Key=key_expression)
             return response.get('Item')  
         except ClientError as e:
             # Implement appropriate logging or error handling here
-            return None
+            return response
 
-    def update_item(self, key, update_expression, **kwargs):
+
+    def scan_items(self, **kwargs):
+        response = None
         try:
-            self.table.update_item(Key=key, UpdateExpression=update_expression, **kwargs)
+            response = self.table.scan(**kwargs)
+            return response.get('Items', [])
+        except ClientError as e:
+            # Implement appropriate logging or error handling here
+            return response
+
+        
+    def update_item(self, key, update_expression, **kwargs):
+        response = None       
+        try:
+            response = self.table.update_item(Key=key, UpdateExpression=update_expression, **kwargs)
         except ClientError as e:
             # Implement appropriate logging or error handling here
             pass
 
+
     def delete_item(self, key):
+        response = None 
         try:
-            self.table.delete_item(Key=key)  
+            response = self.table.delete_item(Key=key)  
         except ClientError as e:
             # Implement appropriate logging or error handling here
             pass

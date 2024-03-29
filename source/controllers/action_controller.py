@@ -8,10 +8,10 @@ import asyncio
 from ast import List
 from time import sleep
 from pandas import qcut
-from source.enumerations.enums import Strategy
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
+from source.controllers.BaseController import BaseController  
 from source.modules.action.BaseAction import BaseAction
 from source.modules.action._action_configurations import ActionConfigurations
 from source.modules.action._action_subscriber import ActionSubscriber
@@ -20,12 +20,10 @@ from source.modules.action._action_candlesticks import ActionCandlesticks
 from source.modules.action._action_evaluate_secondary_conditions import ActionEvaluateSecondaryConditions
 from source.modules.configurations.shared_parameters import SharedParameters
 
-class ActionController(BaseAction):
+class ActionController(BaseController):
     
-    def __init__(self, connection, modules, configuration, database):
-        super().__init__(connection, modules) 
-        self.configuration  = configuration
-        self.database       = database
+    def __init__(self, _base_):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count      = 0        
         self.watchlist      = None
         self.parameters     = None
