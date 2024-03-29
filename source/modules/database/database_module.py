@@ -20,33 +20,42 @@ class Database():
     
     def __init__(self, connection, modules, app_configuration, table_configuration):
         super().__init__() 
-        self.connection               = connection
-        self.modules                  = modules
-        self.app_configuration        = app_configuration
-        self.table_configuration      = table_configuration        
-        self.table_name_to_delete     = None
-        self.table                    = None
-        self.data                     = None
+        self.connection                     = connection
+        self.modules                        = modules
+        self.app_configuration              = app_configuration
+        self.table_configuration            = table_configuration        
+        self.tables_list                    = None
+        self.table_to_delete                = None # Get this from app_config // Todo
+        self.data                           = None
         
     ###########################################
     # Initialize Database Controller
     ###########################################  
     
     def initialize(self):
-        log_info(f"We are setting up the database for the first time. Hang tight, we're on it!")        
+        log_info(f"We are setting up the database for the first time. Hang tight, we're on it!")    
         return self.manage_tables()   
     
+                   
     def manage_tables(self):
         """
         Pre-Requisite Database Operations
         """
-        # 1. Create Required Tables
-        object_create_table_handler = DatabaseCreateTable(self.table_configuration)
-        object_create_table_handler.initialize()
+
+        for table_config in self.table_configuration.values():
+            table_name = table_config["table_key"] 
         
-        # 2. Delete Existing Tables
-        object_delete_table_handler = DatabaseDeleteTable(self.table_configuration, self.table_name_to_delete)
-        object_delete_table_handler.initialize()
+            # 1. Create Required Tables
+            object_create_table_handler = DatabaseCreateTable(table_name, table_config)
+            object_create_table_handler.initialize()
+        
+            # 2. Delete Existing Tables
+            if table_name != self.table_to_delete:
+                continue
+            else:
+                object_delete_table_handler = DatabaseDeleteTable(table_name, table_config)
+                object_delete_table_handler.initialize()
+
 
     def manage_table_records(self, event, table_name, table_data, custom_method=None, filters=None):
 
