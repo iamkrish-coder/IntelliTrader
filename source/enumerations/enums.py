@@ -34,12 +34,13 @@ class Cache_Type(Enum):
     MEMORY = "memory"
     
 class Tables(Enum):
-    TABLE_TOPICS = 'Topics'
-    TABLE_ALERTS = 'Alerts'
+    TABLE_TOPICS = 'topics'
+    TABLE_ALERTS = 'alerts'
 
 class Table_Events(Enum):
     PUT = 'put'
     GET = 'get'
+    QUERY = 'query'
     UPDATE = 'update'
     DELETE = 'delete'
 

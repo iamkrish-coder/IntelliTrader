@@ -11,7 +11,14 @@ class Configuration:
      pass
     
     @classmethod
-    def read_input_configuration(self):
-        with open(CONFIGURATION_PATH + '/config.json', 'r') as f:
-            config = json.load(f)
-        return config
+    def read_app_configuration(self):
+        with open(CONFIGURATION_PATH + '/' + APP_CONFIGURATION_FILE, 'r') as f:
+            app_config = json.load(f)
+        return app_config
+    
+
+    @classmethod
+    def read_table_configuration(self):
+        with open(CONFIGURATION_PATH + '/' + TABLE_CONFIGURATION_FILE, 'r') as f:
+            table_config = json.load(f)
+        return table_config   

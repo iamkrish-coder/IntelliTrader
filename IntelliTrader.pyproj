@@ -31,8 +31,10 @@
     <Compile Include="source\aws\SNS\aws_endpoint_subscription.py" />
     <Compile Include="source\controllers\action_controller.py" />
     <Compile Include="source\controllers\BaseController.py" />
-    <Compile Include="source\controllers\database_controller.py" />
+    <Compile Include="source\modules\database\comparison_operator.py" />
+    <Compile Include="source\modules\database\database_module.py" />
     <Compile Include="source\controllers\strategy_controller.py" />
+    <Compile Include="source\models\BaseModel.py" />
     <Compile Include="source\models\topics_model.py" />
     <Compile Include="source\modules\configurations\configuration_module.py" />
     <Compile Include="source\modules\connection\connection_module.py" />
@@ -109,8 +111,9 @@
     <Content Include="README.md" />
     <Content Include="release-please-config.json" />
     <Content Include="requirements.txt" />
-    <Content Include="source\modules\configurations\config.json" />
+    <Content Include="source\modules\configurations\app_config.json" />
     <Content Include="source\data\basket\default_basket.csv" />
+    <Content Include="source\modules\configurations\table_config.json" />
     <Content Include="source\static\css\custom.css" />
     <Content Include="source\static\css\font-awesome.min.css" />
     <Content Include="source\static\css\ie.css" />

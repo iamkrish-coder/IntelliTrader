@@ -2,10 +2,9 @@
 
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.modules.strategy.BaseStrategy import BaseStrategy
 from source.utils.logging_utils import *
 
-class ActionEvaluateSecondaryConditions(BaseStrategy):
+class ActionEvaluateSecondaryConditions():
     def __init__(self, modules, candlesticks_data_list, parameters):
         self.modules = modules
         self.candlesticks_data_list = candlesticks_data_list

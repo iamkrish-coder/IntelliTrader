@@ -32,8 +32,8 @@ def create_cache_path(cache_path):
             os.makedirs(cache_path, exist_ok=True)
         except OSError as e:
             log_error(f"Error creating cache directory: {e}")    
-
-
+        
+        
 def clear_cache(cache_name, category):
     """
     This function clears the specified cache.
@@ -41,13 +41,16 @@ def clear_cache(cache_name, category):
     Args:
         cache_name (str): The name of the cache to clear (e.g., "topics").
     """
-    cache_path = get_cache_path(category)        
-    disk_cache = Cache(cache_path)   
+    if category:
+        cache_path = get_cache_path(category)        
+        disk_cache = Cache(cache_path)   
 
-    if cache_name != "disk":
-        raise ValueError(f"Invalid cache name: {cache_name}")  
+        if cache_name != "disk":
+            raise ValueError(f"Invalid cache name: {cache_name}")  
 
-    disk_cache.clear()
+        disk_cache.clear()
+    else:    
+        remove_cache_directories()
     print(f"Cache {cache_name} cleared.")
 
 

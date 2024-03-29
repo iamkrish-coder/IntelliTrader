@@ -18,45 +18,51 @@ class StrategyPublisher:
         self.aws_service   = aws_service
         self.sns_client    = boto3.client(SNS, region_name=REGION_NAME)
         self.sqs_client    = boto3.client(SQS, region_name=REGION_NAME)
+        self.topic_arn     = None
+        self.topic_name    = None
+        self.creation_date = time.strftime("%Y-%m-%d %H:%M:%S")
         
     def initialize(self):
         return self.publish()
     
+
     def _db_(self, dataset):
         """
         Saves the topic data with caching logic.
 
         Args:
-            topic_arn (str): The ARN of the topic.
-            topic_name (str): The name of the topic.
+            dataset (str): The dataset collection
         """
+               
+        # Check existing disk cache  
+        cached_key = dataset["topic_name"]
+        cached_value = get_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, cached_key)
         
-        topic_arn = dataset["topicArn"]
-        topic_name = dataset["topicName"]
+        if not cached_value:
 
-        # Check disk cache
-        cached_topic = get_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, topic_arn)
+            # Model Collections   
+            model_object        = TopicsModel(**dataset)
+            model_configuration = self.database.table_configuration[Tables.TABLE_TOPICS.value]
+            model_data          = model_object.convert_table_rows_to_dict(model_configuration)
 
-        if not cached_topic:
-            # Not in any cache, fetch from database
-            table_key = { "topic_arn": topic_arn }
-            
             """ @AWS_DynamoDB """
-            existing_topic = self.database.manage_table_records(Table_Events.GET.value, Tables.TABLE_TOPICS.value, table_key)
+            filters = {
+                "topic_name" : dataset["topic_name"],
+                "is_active" : False
+                }
+            # existing_topic = self.database.manage_table_records(Table_Events.GET.value, Tables.TABLE_TOPICS.value, model_data)
+            existing_topic = self.database.manage_table_records(Table_Events.QUERY.value, Tables.TABLE_TOPICS.value, model_data, 'custom_query_1', filters)
             
             if existing_topic:
-                cached_topic = existing_topic  # Cache the retrieved topic
+                cached_value = existing_topic 
             else:
-                # Topic doesn't exist, create and save it
-                object_topics_model_handler = TopicsModel(topic_arn, topic_name)
-                data = object_topics_model_handler.convert_object_to_dict()
-                
+                # Topic doesn't exist, create and save it               
                 """ @AWS_DynamoDB """
-                self.database.manage_table_records(Table_Events.PUT.value, Tables.TABLE_TOPICS.value, data)
-                cached_topic = data  
-
+                self.database.manage_table_records(Table_Events.PUT.value, Tables.TABLE_TOPICS.value, model_data["row_data"])               
+                cached_value = model_data["row_data"]  
+                
             # Cache the retrieved/created topic into disk cache
-            set_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, topic_arn, cached_topic)
+            # set_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, cached_key, cached_value)
 
 
     def publish(self):
@@ -71,9 +77,11 @@ class StrategyPublisher:
             strategy_id            = self.parameters.get('strategy_id')
             topic_arn, topic_name  = self.get_aws_sns_arn_name(strategy_id)
             
+            """ Collect all column values to pass to DB handler"""
             dataset = {
-                "topicArn": topic_arn,
-                "topicName": topic_name
+                "topic_arn": topic_arn,
+                "topic_name": topic_name,
+                "created_date": self.creation_date
             }
             
             self._db_(dataset)

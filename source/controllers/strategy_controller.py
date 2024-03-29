@@ -8,18 +8,16 @@ import boto3
 import uuid
 import pandas as pd
 
-from functools import wraps  
-from source.enumerations.enums import Strategy
+from functools import wraps
 from ast import arg
 from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
-
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
-from source.modules.strategy.BaseStrategy import BaseStrategy
+from source.controllers.BaseController import BaseController  
 from source.modules.strategy._strategy_configurations import StrategyConfigurations
 from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
 from source.modules.strategy._strategy_watchlist import StrategyWatchlist
@@ -29,12 +27,10 @@ from source.modules.strategy._strategy_scanner import StrategyScanner
 from source.modules.strategy._strategy_publisher import StrategyPublisher
 from source.modules.configurations.shared_parameters import SharedParameters
 
-class StrategyController(BaseStrategy):
+class StrategyController(BaseController):
     
-    def __init__(self, connection, modules, configuration, database):
-        super().__init__(connection, modules) 
-        self.configuration   = configuration
-        self.database        = database
+    def __init__(self, _base_):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count       = 0
         self.parameters      = None
         self.alerts          = None
@@ -44,7 +40,7 @@ class StrategyController(BaseStrategy):
     # Initialize Strategy Handler
     ###########################################
     
-    async def initialize(self):
+    async def initialize(self):       
         log_info(f"Running Strategy...{self.run_count} Times")
         return await self.strategy_handler()    
     

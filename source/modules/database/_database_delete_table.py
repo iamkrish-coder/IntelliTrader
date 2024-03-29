@@ -3,6 +3,7 @@
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
+from source.modules.database.comparison_operator import ComparisonOperators
 from source.aws.DynamoDB.aws_dynamodb import AWSDynamoDB
 from botocore.client import ClientError
 
@@ -19,6 +20,6 @@ class DatabaseDeleteTable:
         if self.table_name is None:
             return False
         
-        dynamodb_client = AWSDynamoDB(self.table_name)
-        dynamodb_client.delete_table()
+        dynamodb_resource = AWSDynamoDB(self.table_name)
+        dynamodb_resource.delete_table()
         

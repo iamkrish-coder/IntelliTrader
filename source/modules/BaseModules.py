@@ -8,7 +8,6 @@ from source.modules.orders.orders_module import Orders
 from source.modules.streaming.streaming_module import Ticker
 from source.modules.indicators.indicators_module import Indicator
 
-
 class BaseModules:
     def __init__(self, connection):
         self.connection = connection

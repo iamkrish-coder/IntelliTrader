@@ -14,13 +14,19 @@ from source.modules.database._database_insert_record import DatabaseInsertRecord
 # from source.modules.database._database_delete_record import DatabaseDeleteRecord
 from source.modules.database._database_fetch_record import DatabaseFetchRecord
 
+import json
  
-class DatabaseController(BaseDatabase):
+class Database():
     
-    def __init__(self, connection, modules, configuration):
-        super().__init__(connection, modules) 
-        self.configuration  = configuration
-        self.table_name_to_delete = None
+    def __init__(self, connection, modules, app_configuration, table_configuration):
+        super().__init__() 
+        self.connection               = connection
+        self.modules                  = modules
+        self.app_configuration        = app_configuration
+        self.table_configuration      = table_configuration        
+        self.table_name_to_delete     = None
+        self.table                    = None
+        self.data                     = None
         
     ###########################################
     # Initialize Database Controller
@@ -35,24 +41,23 @@ class DatabaseController(BaseDatabase):
         Pre-Requisite Database Operations
         """
         # 1. Create Required Tables
-        object_create_table_handler = DatabaseCreateTable(self.configuration)
+        object_create_table_handler = DatabaseCreateTable(self.table_configuration)
         object_create_table_handler.initialize()
         
         # 2. Delete Existing Tables
-        object_delete_table_handler = DatabaseDeleteTable(self.configuration, self.table_name_to_delete)
+        object_delete_table_handler = DatabaseDeleteTable(self.table_configuration, self.table_name_to_delete)
         object_delete_table_handler.initialize()
-        
 
-    def manage_table_records(self, event, table, data):
+    def manage_table_records(self, event, table_name, table_data, custom_method=None, filters=None):
+
         match event:
-            case "get":
-                object_fetch_record_handler = DatabaseFetchRecord(self.configuration, table, data)
-                object_fetch_record_handler.initialize()
+            case "get" | "query":                
+                object_fetch_record_handler = DatabaseFetchRecord(self.table_configuration, table_name, table_data, custom_method, filters)
+                return object_fetch_record_handler.initialize(event)
 
             case "put":
-                # Insert
-                object_insert_record_handler = DatabaseInsertRecord(self.configuration, table, data)
-                object_insert_record_handler.initialize()
+                object_insert_record_handler = DatabaseInsertRecord(self.table_configuration, table_name, table_data, custom_method, filters)
+                return object_insert_record_handler.initialize(event)
 
             case "update":
                 # Handle "update" event logic here

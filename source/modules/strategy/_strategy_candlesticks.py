@@ -100,9 +100,9 @@ class StrategyCandlesticks:
                 else:
                     print(f"Waiting for {timeframe} data to be available...")
                     
-                if current_time <= self.market_start_time:
-                    candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
-                    candlestick_data[timeframe] = candles
+                # if current_time <= self.market_start_time:
+                #     candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                #     candlestick_data[timeframe] = candles
             else:
                 # TODAY, WEEKLY and MONTHLY timeframe, proceed with regular cache operations
                 cached_data = timeframe_caches[timeframe].get(cache_key)
