@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.5.0...v3.6.0) (2024-03-30)
+
+
+### Features
+
+* revised database code, dynamodb functions implemented to retrieve data, fixed cache issues of candlesticks, improved logging ([94b381f](https://github.com/iamkrish-coder/IntelliTrader/commit/94b381f6a2f89e09187f79cda96ea45c35b1f86c))
+
+
+### Bug Fixes
+
+* auto update config for tables when a table is deleted ([976af32](https://github.com/iamkrish-coder/IntelliTrader/commit/976af32aa8b6e24890fcfe731e62ddf390f22733))
+* create table changes to adapt to boto3, integrated the aws sdk api call directly from the database create table class ([118b0e5](https://github.com/iamkrish-coder/IntelliTrader/commit/118b0e5169b0fbcb48e54c75b8a484873ae79f46))
+* integrate boto3 into delete table module ([b0e6a97](https://github.com/iamkrish-coder/IntelliTrader/commit/b0e6a97d88b7cf01b592fd7d9520154d0602e972))
+
 ## [3.5.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.4.0...v3.5.0) (2024-03-29)
 
 
