@@ -95,7 +95,6 @@ class IntelliTrader:
 
     async def run_async_task(self):
         self.initialize_database_connection(),  
-        exit()
         self.strategy_controller_instance   = StrategyController(self.controller)
         # self.action_controller_instance     = ActionController(self.controller)
         # self.monitoring_controller_instance = None

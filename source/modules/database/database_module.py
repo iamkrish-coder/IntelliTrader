@@ -46,26 +46,27 @@ class Database():
             table_name = table_config["table_key"] 
         
             # 1. Create Required Tables
-            object_create_table_handler = DatabaseCreateTable(table_name, table_config)
+            object_create_table_handler = DatabaseCreateTable(table_config, table_name)
             object_create_table_handler.initialize()
         
             # 2. Delete Existing Tables
             if table_name != self.table_to_delete:
                 continue
             else:
-                object_delete_table_handler = DatabaseDeleteTable(table_name, table_config)
+                object_delete_table_handler = DatabaseDeleteTable(table_config, table_name)
                 object_delete_table_handler.initialize()
 
 
-    def manage_table_records(self, event, table_name, table_data, custom_method=None, filters=None):
+    def manage_table_records(self, event, table_name, table_data, custom_method=None, filters=None, operators=None):
 
+        tables_config = self.table_configuration
         match event:
-            case "get" | "query":                
-                object_fetch_record_handler = DatabaseFetchRecord(self.table_configuration, table_name, table_data, custom_method, filters)
+            case "get" | "query" | "scan":                
+                object_fetch_record_handler = DatabaseFetchRecord(tables_config, table_name, table_data, custom_method, filters, operators)
                 return object_fetch_record_handler.initialize(event)
 
             case "put":
-                object_insert_record_handler = DatabaseInsertRecord(self.table_configuration, table_name, table_data, custom_method, filters)
+                object_insert_record_handler = DatabaseInsertRecord(tables_config, table_name, table_data, custom_method, filters, operators)
                 return object_insert_record_handler.initialize(event)
 
             case "update":

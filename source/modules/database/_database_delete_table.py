@@ -8,15 +8,14 @@ from source.modules.database.comparison_operator import ComparisonOperators
 from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
-
 import boto3
 import json
 
 class DatabaseDeleteTable:
-    def __init__(self, table_name, table_configuration):
+    def __init__(self, table_configuration, table_name):
 
-        self.table_name          = table_name
         self.table_configuration = table_configuration
+        self.table_name          = table_name
         self.dynamodb_resource   = boto3.resource('dynamodb', region_name=REGION_NAME)
         self.dynamodb_table      = self.dynamodb_resource.Table(self.table_name)
         
@@ -31,19 +30,16 @@ class DatabaseDeleteTable:
             try:
                 log_info(f"Deleting table '{self.table_name}'...")
                 response = self.dynamodb_table.delete()
+                
                 if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-                    
                     self.update_table_configuration(self.table_name)
                     log_info(f"Delete '{self.table_name}' Table ...COMPLETE!")
-
-            except ClientError as e:
-                log_error(
-                    "Couldn't delete table. Here's why: %s: %s",
-                    e.response["Error"]["Code"],
-                    e.response["Error"]["Message"]
-                )
+                    return response
+                
+            except ClientError as e:               
+                log_error(f"Error deleting table {self.table_name}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
                 raise
-
+            
         return response
         
 

@@ -11,10 +11,10 @@ from boto3.dynamodb.conditions import Key, Attr
 import boto3
 
 class DatabaseCreateTable:
-    def __init__(self, table_name, table_configuration):
+    def __init__(self, table_configuration, table_name):
 
-        self.table_name          = table_name
         self.table_configuration = table_configuration
+        self.table_name          = table_name
         self.dynamodb_resource   = boto3.resource('dynamodb', region_name=REGION_NAME)
         self.dynamodb_table      = self.dynamodb_resource.Table(self.table_name)
 
@@ -46,14 +46,11 @@ class DatabaseCreateTable:
                 )
                 response.wait_until_exists()
                 log_info(f"Create '{self.table_name}' Table ...COMPLETE!")
+                
             except ClientError as e:
-                log_error(
-                    "Error creating table %s. Here's why: %s: %s",
-                    self.table_name,
-                    e.response["Error"]["Code"],
-                    e.response["Error"]["Message"]
-                )
+                log_error(f"Error creating table {self.table_name}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
                 raise
+
         else:
             log_info(f"Table '{self.table_name}' already exists.")
                                 
