@@ -31,6 +31,15 @@ class StrategyScanner(BaseStrategy):
         results = []
 
         for stock_index, (candlestick_data, indicator_data) in enumerate(zip(self.candlesticks_data_list, self.indicators_data_list)):
+            candles           = None
+            candles_daily     = None
+            candles_weekly    = None
+            candles_monthly   = None
+            candles_today_5m  = None
+            candles_today_15m = None
+            candles_today_30m = None
+            candles_today_60m = None
+            
             try:
                 # Extracting stock details from candlestick_data
                 exchange = candlestick_data['exchange']
@@ -38,14 +47,31 @@ class StrategyScanner(BaseStrategy):
                 token = candlestick_data['token']
 
                 # Extracting candlestick data
-                candles           = candlestick_data['candlestick_data'][self.candles_timeframe]  # First dataframe
-                candles_daily     = candlestick_data['candlestick_data'][DAY]  # Second dataframe
-                candles_weekly    = candlestick_data['candlestick_data'][WEEK]  # Third dataframe
-                candles_monthly   = candlestick_data['candlestick_data'][MONTH]  # Fourth dataframe
-                candles_today_5m  = candlestick_data['candlestick_data'][TODAY_5M]  # Fifth dataframe
-                candles_today_15m = candlestick_data['candlestick_data'][TODAY_15M]  # Sixth dataframe
-                candles_today_30m = candlestick_data['candlestick_data'][TODAY_30M]  # Seventh dataframe
-                candles_today_60m = candlestick_data['candlestick_data'][TODAY_60M]  # Eighth dataframe
+                candles           = candlestick_data['candlestick_data'][self.candles_timeframe]    # First dataframe
+                candles_daily     = candlestick_data['candlestick_data'][DAY]                       # Second dataframe
+                candles_weekly    = candlestick_data['candlestick_data'][WEEK]                      # Third dataframe
+                candles_monthly   = candlestick_data['candlestick_data'][MONTH]                     # Fourth dataframe
+
+                try:
+                    candles_today_5m  = candlestick_data['candlestick_data'][TODAY_5M]              # Fifth dataframe
+                except KeyError:
+                    candles_today_5m  = None
+
+                try:
+                    candles_today_15m = candlestick_data['candlestick_data'][TODAY_15M]             # Sixth dataframe
+                except KeyError:
+                    candles_today_15m = None
+
+                try:
+                    candles_today_30m = candlestick_data['candlestick_data'][TODAY_30M]             # Seventh dataframe
+                except KeyError:
+                    candles_today_30m = None
+
+                try:
+                    candles_today_60m = candlestick_data['candlestick_data'][TODAY_60M]             # Eighth dataframe
+                except KeyError:
+                    candles_today_60m = None
+                    
 
                 # Default Candles
                 last_open, last_high, last_low, last_close, last_volume = self.get_nth_last_prices(candles, 1)
@@ -68,13 +94,29 @@ class StrategyScanner(BaseStrategy):
                 third_last_open_monthly, third_last_high_monthly, third_last_low_monthly, third_last_close_monthly, third_last_volume_monthly = self.get_nth_last_prices(candles_monthly, 3)
 
                 # Today Candles
-                first_open_today_5m, first_high_today_5m, first_low_today_5m, first_close_today_5m, first_volume_today_5m = self.get_nth_first_prices(candles_today_5m, n=1)
-                first_open_today_15m, first_high_today_15m, first_low_today_15m, first_close_today_15m, first_volume_today_15m = self.get_nth_first_prices(candles_today_15m, n=1)
-                first_open_today_30m, first_high_today_30m, first_low_today_30m, first_close_today_30m, first_volume_today_30m = self.get_nth_first_prices(candles_today_30m, n=1)
-                first_open_today_60m, first_high_today_60m, first_low_today_60m, first_close_today_60m, first_volume_today_60m = self.get_nth_first_prices(candles_today_60m, n=1)
+                try:
+                    first_open_today_5m, first_high_today_5m, first_low_today_5m, first_close_today_5m, first_volume_today_5m = self.get_nth_first_prices(candles_today_5m, n=1)
+                except (AttributeError, ValueError, TypeError):
+                    first_open_today_5m = first_high_today_5m = first_low_today_5m = first_close_today_5m = first_volume_today_5m = None
+
+                try:
+                    first_open_today_15m, first_high_today_15m, first_low_today_15m, first_close_today_15m, first_volume_today_15m = self.get_nth_first_prices(candles_today_15m, n=1)
+                except (AttributeError, ValueError, TypeError):
+                    first_open_today_15m = first_high_today_15m = first_low_today_15m = first_close_today_15m = first_volume_today_15m = None
+
+                try:
+                    first_open_today_30m, first_high_today_30m, first_low_today_30m, first_close_today_30m, first_volume_today_30m = self.get_nth_first_prices(candles_today_30m, n=1)
+                except (AttributeError, ValueError, TypeError):
+                    first_open_today_30m = first_high_today_30m = first_low_today_30m = first_close_today_30m = first_volume_today_30m = None
+
+                try:
+                    first_open_today_60m, first_high_today_60m, first_low_today_60m, first_close_today_60m, first_volume_today_60m = self.get_nth_first_prices(candles_today_60m, n=1)
+                except (AttributeError, ValueError, TypeError):
+                    first_open_today_60m = first_high_today_60m = first_low_today_60m = first_close_today_60m = first_volume_today_60m = None
 
                 # Retrieve indicators for the current stock
                 indicator_data = indicator_data['indicators_data']
+
 
                 # Proceed with your evaluation logic here, using candlesticks_data and indicator_data
 

@@ -1,6 +1,7 @@
 # handlers/strategy
 import boto3
 import time
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
@@ -8,6 +9,7 @@ from source.utils.caching_utils import *
 from source.aws.sqs.aws_sqs_manager import aws_sqs_publish
 from source.aws.sns.aws_sns_manager import aws_sns_publish
 from source.models.topics_model import TopicsModel
+from boto3.dynamodb.conditions import Attr
 
 class StrategyPublisher:
     def __init__(self, modules, parameters, database, alerts, aws_service):
@@ -26,14 +28,14 @@ class StrategyPublisher:
         return self.publish()
     
 
-    def _db_(self, dataset):
+    def db_handler(self, dataset):
         """
         Saves the topic data with caching logic.
 
         Args:
             dataset (str): The dataset collection
         """
-               
+         
         # Check existing disk cache  
         cached_key = dataset["topic_name"]
         cached_value = get_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, cached_key)
@@ -46,23 +48,18 @@ class StrategyPublisher:
             model_data          = model_object.convert_table_rows_to_dict(model_configuration)
 
             """ @AWS_DynamoDB """
-            filters = {
-                "topic_name" : dataset["topic_name"],
-                "is_active" : False
-                }
-            # existing_topic = self.database.manage_table_records(Table_Events.GET.value, Tables.TABLE_TOPICS.value, model_data)
-            existing_topic = self.database.manage_table_records(Table_Events.QUERY.value, Tables.TABLE_TOPICS.value, model_data, 'custom_query_1', filters)
-            
+            existing_topic = self.database.manage_table_records(Events.GET.value, Tables.TABLE_TOPICS.value, model_data)
+                                
             if existing_topic:
                 cached_value = existing_topic 
             else:
                 # Topic doesn't exist, create and save it               
                 """ @AWS_DynamoDB """
-                self.database.manage_table_records(Table_Events.PUT.value, Tables.TABLE_TOPICS.value, model_data["row_data"])               
+                self.database.manage_table_records(Events.PUT.value, Tables.TABLE_TOPICS.value, model_data)             
                 cached_value = model_data["row_data"]  
                 
             # Cache the retrieved/created topic into disk cache
-            # set_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, cached_key, cached_value)
+            set_cached_item(Cache_Type.DISK.value, CACHE_TOPICS_DIR, cached_key, cached_value)
 
 
     def publish(self):
@@ -84,8 +81,8 @@ class StrategyPublisher:
                 "created_date": self.creation_date
             }
             
-            self._db_(dataset)
-
+            self.db_handler(dataset)
+            
             for alert in self.alerts:
                 exchange, symbol, token = alert.split(",")         
                 message = f"{exchange.strip()}, {symbol.strip()}, {token.strip()}"

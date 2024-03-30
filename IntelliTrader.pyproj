@@ -26,7 +26,7 @@
   <ItemGroup>
     <Compile Include="IntelliTrader_web.py" />
     <Compile Include="IntelliTrader.py" />
-    <Compile Include="source\aws\DynamoDB\aws_dynamodb.py" />
+    <Compile Include="source\aws\DynamoDB\aws_dynamoDB_interface.py" />
     <Compile Include="source\aws\SecretsManager\aws_secrets_manager.py" />
     <Compile Include="source\aws\SNS\aws_endpoint_subscription.py" />
     <Compile Include="source\controllers\action_controller.py" />

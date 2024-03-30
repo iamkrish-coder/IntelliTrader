@@ -37,10 +37,11 @@ class Tables(Enum):
     TABLE_TOPICS = 'topics'
     TABLE_ALERTS = 'alerts'
 
-class Table_Events(Enum):
-    PUT = 'put'
-    GET = 'get'
-    QUERY = 'query'
+class Events(Enum):
+    PUT    = 'put'
+    GET    = 'get'
+    QUERY  = 'query'
+    SCAN   = 'scan'
     UPDATE = 'update'
     DELETE = 'delete'
 
@@ -58,8 +59,8 @@ class Market_Sentiment(Enum):
 
 class Variety(Enum):
     REGULAR = 'REGULAR'
-    AMO = 'AMO'
-    CO = 'CO'
+    AMO     = 'AMO'
+    CO      = 'CO'
     ICEBERG = 'ICEBERG'
     AUCTION = 'AUCTION'
 

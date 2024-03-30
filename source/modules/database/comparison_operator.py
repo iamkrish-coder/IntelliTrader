@@ -7,3 +7,4 @@ class ComparisonOperators:
     LTE = 'lte'  # Less than or equal to
     NE = 'ne'  # Not equal to
     BETWEEN = 'between'  # Between
+    

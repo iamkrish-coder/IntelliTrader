@@ -54,8 +54,14 @@ class StrategyCandlesticks:
 
         # Get current date
         now = datetime.datetime.now()
-        formatted_date = now.strftime("%Y-%m-%d")
+        previous_day = now - datetime.timedelta(days=1)        
+        current_time = now.time()
 
+        if current_time <= self.market_start_time:
+            formatted_date = previous_day.strftime("%Y-%m-%d")
+        else:
+            formatted_date = now.strftime("%Y-%m-%d")
+            
         # Check if cache directory needs to be updated
         if not os.path.exists(self.cache_path) or self.cache_path.split("/")[-1] != formatted_date:
             # Cache path doesn't exist or date has changed, create new directory
@@ -69,7 +75,8 @@ class StrategyCandlesticks:
         timeframe_caches = {}
 
         # Timeframes to cache
-        timeframes_to_cache = [DAY, WEEK, MONTH, TODAY_5M, TODAY_15M, TODAY_30M, TODAY_60M]
+        timeframes_to_cache = [DAY, WEEK, MONTH, TODAY_5M] 
+        """ TODAY_15M, TODAY_30M, TODAY_60M """
       
         for timeframe in timeframes_to_cache:
             # Create separate cache object for each timeframe
@@ -84,7 +91,6 @@ class StrategyCandlesticks:
             if timeframe.startswith("today"):
 
                 minutes = int((timeframe.split("today")[1]).split("minute")[0])
-                current_time = now.time()
                 target_time = datetime.datetime.combine(now.date(), self.market_start_time)  
                 target_time += datetime.timedelta(minutes=minutes)  
 
@@ -98,13 +104,18 @@ class StrategyCandlesticks:
                         candlestick_data[timeframe] = candles
                         timeframe_caches[timeframe].set(cache_key, candles)  
                 else:
-                    print(f"Waiting for {timeframe} data to be available...")
-                    
-                # if current_time <= self.market_start_time:
-                #     candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
-                #     candlestick_data[timeframe] = candles
+                    cached_data = timeframe_caches[timeframe].get(cache_key)
+                    if cached_data is not None:
+                        candlestick_data[timeframe] = cached_data
+                    elif current_time <= self.market_start_time:
+                        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                        candlestick_data[timeframe] = candles
+                        timeframe_caches[timeframe].set(cache_key, candles)   
+                    else:    
+                        log_warn(f"Waiting for {timeframe} live data to be available after market opens, using previous day data...")
+                        
             else:
-                # TODAY, WEEKLY and MONTHLY timeframe, proceed with regular cache operations
+                # DAILY, WEEKLY and MONTHLY timeframe, proceed with regular cache operations
                 cached_data = timeframe_caches[timeframe].get(cache_key)
                 if cached_data is not None:
                     candlestick_data[timeframe] = cached_data
