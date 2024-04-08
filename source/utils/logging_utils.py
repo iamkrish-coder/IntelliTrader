@@ -84,23 +84,37 @@ def get_message(resource_string):
 def log_info(message_enum, *args, **kwargs):
     if kwargs:
         formatted_message = ResourceStrings.get(message_enum)    
-        formatted_message = formatted_message.format(**kwargs)
+        if formatted_message:
+            formatted_message = formatted_message.format(**kwargs)
+        else:
+            formatted_message = get_message(message_enum)
     elif args:
         formatted_message = ResourceStrings.get(message_enum)            
-        formatted_message = formatted_message.format(*args)
+        if formatted_message:
+            formatted_message = formatted_message.format(*args)
+        else:
+            formatted_message = get_message(message_enum)
     else:
         formatted_message = get_message(message_enum)
         
     logger = logging.getLogger(__name__)
     logger.info(formatted_message)
 
+
 def log_error(message_enum, *args, **kwargs):
     if kwargs:
         formatted_message = ResourceStrings.get(message_enum)    
-        formatted_message = formatted_message.format(**kwargs)
+        if formatted_message:
+            formatted_message = formatted_message.format(**kwargs)
+        else:
+            formatted_message = get_message(message_enum)
+        
     elif args:
-        formatted_message = ResourceStrings.get(message_enum)            
-        formatted_message = formatted_message.format(*args)
+        formatted_message = ResourceStrings.get(message_enum)    
+        if formatted_message:
+            formatted_message = formatted_message.format(*args)
+        else:
+            formatted_message = get_message(message_enum)
     else:
         formatted_message = get_message(message_enum)
         
@@ -111,10 +125,16 @@ def log_error(message_enum, *args, **kwargs):
 def log_warn(message_enum, *args, **kwargs):
     if kwargs:
         formatted_message = ResourceStrings.get(message_enum)    
-        formatted_message = formatted_message.format(**kwargs)
+        if formatted_message:
+            formatted_message = formatted_message.format(**kwargs)
+        else:
+            formatted_message = get_message(message_enum)
     elif args:
         formatted_message = ResourceStrings.get(message_enum)            
-        formatted_message = formatted_message.format(*args)
+        if formatted_message:
+            formatted_message = formatted_message.format(*args)
+        else:
+            formatted_message = get_message(message_enum)
     else:
         formatted_message = get_message(message_enum)
         

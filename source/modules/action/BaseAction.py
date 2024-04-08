@@ -1,7 +1,8 @@
-# strategies/base_actions.py
+# IntelliTrader\source\modules\action\BaseAction.py
+
 from abc import ABC, abstractmethod
-from sys import modules
 from source.modules.shared.shared_handler import SharedHandler
+from sys import modules
 
 class BaseAction(ABC, SharedHandler):
     def __init__(self, connection, modules):

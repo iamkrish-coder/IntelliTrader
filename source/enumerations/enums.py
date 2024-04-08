@@ -1,5 +1,6 @@
 # ENUMS
 from enum import Enum
+from re import M
 from source.constants.constants import ARN
 
 class AWS_SQS(Enum):
@@ -27,7 +28,23 @@ class AWS_SNS(Enum):
     SNS        = 'sns'
     REGION     = 'ap-south-1'
     ACCOUNT_ID = '265153260161'
+
+class Cache_Type(Enum):
+    DISK   = "disk"
+    MEMORY = "memory"
     
+class Tables(Enum):
+    TABLE_TOPICS = 'topics'
+    TABLE_ALERTS = 'alerts'
+
+class Events(Enum):
+    PUT    = 'put'
+    GET    = 'get'
+    QUERY  = 'query'
+    SCAN   = 'scan'
+    UPDATE = 'update'
+    DELETE = 'delete'
+
 class Topics(Enum):
     TOPIC_1     = 'IntelliTrader_T1'
     TOPIC_2     = 'IntelliTrader_T2'
@@ -42,8 +59,8 @@ class Market_Sentiment(Enum):
 
 class Variety(Enum):
     REGULAR = 'REGULAR'
-    AMO = 'AMO'
-    CO = 'CO'
+    AMO     = 'AMO'
+    CO      = 'CO'
     ICEBERG = 'ICEBERG'
     AUCTION = 'AUCTION'
 

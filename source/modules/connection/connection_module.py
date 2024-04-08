@@ -35,7 +35,7 @@ class Connection:
         access_token = None
         
         api_key = self.secret_keys.get('api_key')
-        auth_date = datetime.datetime.now().strftime('%d%H')
+        auth_date = datetime.datetime.now().strftime('%d')
         access_token_file = f"{ACCESS_TOKEN_PATH + '_' + auth_date}"
         encrypt_token_file = f"{ENCRYPT_TOKEN_PATH + '_' + auth_date}"
         
@@ -79,7 +79,7 @@ class Connection:
 
 
     def establish_old_connection(self, api_key):
-        auth_date = datetime.datetime.now().strftime('%d%H')
+        auth_date = datetime.datetime.now().strftime('%d')
         access_token_file = f"{ACCESS_TOKEN_PATH + '_' + auth_date}"
 
         if os.path.isfile(access_token_file):
@@ -145,7 +145,7 @@ class Connection:
 
     def get_encrypt_token(self, userid, password, twofa):
         encrypt_token = None
-        auth_date = datetime.datetime.now().strftime('%d%H')
+        auth_date = datetime.datetime.now().strftime('%d')
         encrypt_token_file = f"{ENCRYPT_TOKEN_PATH + '_' + auth_date}"
 
         # Check if the encrypt token file exists
@@ -171,9 +171,15 @@ class Connection:
         return encrypt_token
 
 
+    def is_totp_login_successful(self, url):
+        """Checks if the URL indicates a successful login."""
+        url_parts = url.split('request_token=')
+        if len(url_parts) > 1:
+            return True
+
     def broker_login(self, KiteConnect=None, KiteTicker=None):
         # Assign properties
-        auth_date  = datetime.datetime.now().strftime('%d%H')
+        auth_date  = datetime.datetime.now().strftime('%d')
         api_key    = self.secret_keys.get('api_key')
         secret_key = self.secret_keys.get('secret_key')
         user_id    = self.secret_keys.get('user_id')
@@ -234,35 +240,58 @@ class Connection:
             totp = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/div[2]/div/div/form/div[1]/input'))
             )
-            authkey = pyotp.TOTP(mfa_token)
-            totp.send_keys(authkey.now())
+            
+            try:
+                authkey = pyotp.TOTP(mfa_token)
+                totp.send_keys(authkey.now())         
+                time.sleep(3) 
+                url = driver.current_url
+                # Check for successful login 
+                login_successful = self.is_totp_login_successful(url)  
 
-            sleep(3)
+            except ValueError:
+                user_entered_code = input("Automatic TOTP failed. Please Enter Google Authenticator Code: ")
+                totp.send_keys(user_entered_code)
+                try:
+                    time.sleep(3) 
+                    url = driver.current_url
+                    # Check for successful login
+                    login_successful = self.is_totp_login_successful(url)
+
+                except Exception as e:
+                    print("Error submitting code:", e)
+
 
             # Request token generation
             if self.api_subscription_inactive == False:
                 
-                url = driver.current_url
-                url_parts = url.split('request_token=')
-                if len(url_parts) > 1:
-                    initial_token = url_parts[1].split('&')[0]
-                    token_str = str(initial_token)
-                    Helper().write_token_output('.zerodha_request_token' + '_' + auth_date, token_str)
-                    log_info("Generate Kite Request Token ...COMPLETE!")
+                if login_successful:
+                    
+                    url = driver.current_url
+                    url_parts = url.split('request_token=')
+                    if len(url_parts) > 1:
+                        initial_token = url_parts[1].split('&')[0]
+                        token_str = str(initial_token)
+                        Helper().write_token_output('.zerodha_request_token' + '_' + auth_date, token_str)
+                        log_info("Generate Kite Request Token ...COMPLETE!")
+                    else:
+                        log_error("Kite Request Token Not Found")
+
+                    # Access token generation
+                    data = kite.generate_session(initial_token, api_secret=secret_key)
+                    access_token = data['access_token']
+                    token_str = str(access_token)
+                    Helper().write_token_output('.zerodha_access_token' + '_' + auth_date, token_str)
+                    log_info("Generate Kite Access Token ...COMPLETE!")
+
+                    # Kite Ticker Subscription
+                    kite_ticker = KiteTicker(api_key, access_token)
+
+                    return kite, kite_ticker, access_token
+                
                 else:
-                    log_error("Kite Request Token Not Found")
-
-                # Access token generation
-                data = kite.generate_session(initial_token, api_secret=secret_key)
-                access_token = data['access_token']
-                token_str = str(access_token)
-                Helper().write_token_output('.zerodha_access_token' + '_' + auth_date, token_str)
-                log_info("Generate Kite Access Token ...COMPLETE!")
-
-                # Kite Ticker Subscription
-                kite_ticker = KiteTicker(api_key, access_token)
-
-                return kite, kite_ticker, access_token
+                    log_error("MFA autentication failed, Please try again after some time!")
+                    exit()
             
             else:
                  return kite

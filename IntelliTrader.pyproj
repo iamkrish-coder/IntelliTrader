@@ -26,12 +26,16 @@
   <ItemGroup>
     <Compile Include="IntelliTrader_web.py" />
     <Compile Include="IntelliTrader.py" />
-    <Compile Include="source\aws\DynamoDB\aws_dynamodb.py" />
+    <Compile Include="source\aws\DynamoDB\aws_dynamoDB_interface.py" />
     <Compile Include="source\aws\SecretsManager\aws_secrets_manager.py" />
     <Compile Include="source\aws\SNS\aws_endpoint_subscription.py" />
     <Compile Include="source\controllers\action_controller.py" />
-    <Compile Include="source\controllers\database_controller.py" />
+    <Compile Include="source\controllers\BaseController.py" />
+    <Compile Include="source\modules\database\comparison_operator.py" />
+    <Compile Include="source\modules\database\database_module.py" />
     <Compile Include="source\controllers\strategy_controller.py" />
+    <Compile Include="source\models\BaseModel.py" />
+    <Compile Include="source\models\topics_model.py" />
     <Compile Include="source\modules\configurations\configuration_module.py" />
     <Compile Include="source\modules\connection\connection_module.py" />
     <Compile Include="source\constants\constants.py" />
@@ -39,6 +43,8 @@
     <Compile Include="source\enumerations\resource_string_enums.py" />
     <Compile Include="source\modules\connection\kiteconnect_offline.py" />
     <Compile Include="source\modules\database\BaseDatabase.py" />
+    <Compile Include="source\modules\database\_database_fetch_record.py" />
+    <Compile Include="source\modules\database\_database_insert_record.py" />
     <Compile Include="source\modules\database\_database_delete_table.py" />
     <Compile Include="source\modules\database\_database_create_table.py" />
     <Compile Include="source\modules\fetch\fetch_module.py" />
@@ -82,6 +88,7 @@
     <Compile Include="source\aws\SNS\aws_sns_manager.py" />
     <Compile Include="source\aws\SQS\aws_sqs_manager.py" />
     <Compile Include="source\language\resources_EN_IN.py" />
+    <Compile Include="source\utils\caching_utils.py" />
     <Compile Include="source\utils\logging_utils.py" />
     <Compile Include="source\modules\shared\market_durations_api.py" />
     <Compile Include="source\modules\shared\nse_data_api.py" />
@@ -104,8 +111,9 @@
     <Content Include="README.md" />
     <Content Include="release-please-config.json" />
     <Content Include="requirements.txt" />
-    <Content Include="source\modules\configurations\config.json" />
+    <Content Include="source\modules\configurations\app_config.json" />
     <Content Include="source\data\basket\default_basket.csv" />
+    <Content Include="source\modules\configurations\table_config.json" />
     <Content Include="source\static\css\custom.css" />
     <Content Include="source\static\css\font-awesome.min.css" />
     <Content Include="source\static\css\ie.css" />
@@ -184,6 +192,7 @@
     <Folder Include="source\modules\" />
     <Folder Include="source\modules\trades\" />
     <Folder Include="source\language\" />
+    <Folder Include="source\models\" />
     <Folder Include="source\utils\" />
     <Folder Include="source\services\" />
     <Folder Include="source\queue\" />

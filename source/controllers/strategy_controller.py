@@ -8,18 +8,16 @@ import boto3
 import uuid
 import pandas as pd
 
-from functools import wraps  
-from source.enumerations.enums import Strategy
+from functools import wraps
 from ast import arg
 from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
-
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
-from source.modules.strategy.BaseStrategy import BaseStrategy
+from source.controllers.BaseController import BaseController  
 from source.modules.strategy._strategy_configurations import StrategyConfigurations
 from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
 from source.modules.strategy._strategy_watchlist import StrategyWatchlist
@@ -29,20 +27,20 @@ from source.modules.strategy._strategy_scanner import StrategyScanner
 from source.modules.strategy._strategy_publisher import StrategyPublisher
 from source.modules.configurations.shared_parameters import SharedParameters
 
-class StrategyController(BaseStrategy):
+class StrategyController(BaseController):
     
-    def __init__(self, connection, modules, configuration):
-        super().__init__(connection, modules) 
-        self.configuration  = configuration
-        self.run_count      = 0
-        self.parameters     = None
-        self.base_timeframe = None
+    def __init__(self, _base_):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
+        self.run_count       = 0
+        self.parameters      = None
+        self.alerts          = None
+        self.base_timeframe  = None
         
     ###########################################
     # Initialize Strategy Handler
     ###########################################
     
-    async def initialize(self):
+    async def initialize(self):       
         log_info(f"Running Strategy...{self.run_count} Times")
         return await self.strategy_handler()    
     
@@ -66,7 +64,7 @@ class StrategyController(BaseStrategy):
 
         object_parameters_handler = SharedParameters(settings)
         object_parameters_handler.initialize()
-        self.parameters     = object_parameters_handler.get_parameters()
+        self.parameters = object_parameters_handler.get_parameters()
 
         # 2. Perform market analysis
         object_market_analysis_handler = StrategyMarketAnalysis(self.modules, self.parameters)
@@ -90,17 +88,16 @@ class StrategyController(BaseStrategy):
             print(f"Error fetching candlestick data: {e}. Skipping indicator calculation.")
             
         else:
-          
             # 5. Calculate indicators
             object_indicators_handler = StrategyIndicators(self.modules, self.parameters, candlestick_data_list)
             indicators_data_list = object_indicators_handler.initialize()
 
             # 6. Scan for trading signals
             object_scanner_handler = StrategyScanner(self.modules, self.parameters, candlestick_data_list, indicators_data_list)
-            alerts = object_scanner_handler.initialize()
+            self.alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
-            object_publisher_handler = StrategyPublisher(self.modules, self.parameters, alerts, SNS)
+            object_publisher_handler = StrategyPublisher(self.modules, self.parameters, self.database, self.alerts, SNS)
             object_publisher_handler.initialize()
 
 
