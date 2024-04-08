@@ -1,7 +1,7 @@
 import boto3
 from boto3.session import botocore
 
-def aws_sns_publish(sqs_client, topic_arn, message, subject=""):
+def aws_sns_publish(sns_client, topic_arn, message, subject=""):
     """
     Publishes a message to an SNS topic.
 
@@ -10,7 +10,7 @@ def aws_sns_publish(sqs_client, topic_arn, message, subject=""):
         message (str): The message content to publish.
         subject (str, optional): The subject of the message. Defaults to "".
     """
-    response = sqs_client.publish(
+    response = sns_client.publish(
         TopicArn=topic_arn,
         Message=message,
         Subject=subject

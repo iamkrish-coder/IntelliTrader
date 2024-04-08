@@ -29,9 +29,10 @@
     <Compile Include="source\aws\DynamoDB\aws_dynamoDB_interface.py" />
     <Compile Include="source\aws\SecretsManager\aws_secrets_manager.py" />
     <Compile Include="source\aws\SNS\aws_endpoint_subscription.py" />
+    <Compile Include="source\configurations\configuration.py" />
+    <Compile Include="source\configurations\shared_parameters.py" />
     <Compile Include="source\controllers\action_controller.py" />
     <Compile Include="source\controllers\BaseController.py" />
-    <Compile Include="source\modules\database\comparison_operator.py" />
     <Compile Include="source\modules\database\database_module.py" />
     <Compile Include="source\controllers\strategy_controller.py" />
     <Compile Include="source\models\BaseModel.py" />
@@ -111,6 +112,11 @@
     <Content Include="README.md" />
     <Content Include="release-please-config.json" />
     <Content Include="requirements.txt" />
+    <Content Include="source\configurations\app_config.json" />
+    <Content Include="source\configurations\table_config.json" />
+    <Content Include="source\configurations\__pycache__\configuration.cpython-312.pyc" />
+    <Content Include="source\configurations\__pycache__\configuration_module.cpython-312.pyc" />
+    <Content Include="source\configurations\__pycache__\shared_parameters.cpython-312.pyc" />
     <Content Include="source\modules\configurations\app_config.json" />
     <Content Include="source\data\basket\default_basket.csv" />
     <Content Include="source\modules\configurations\table_config.json" />
@@ -171,6 +177,8 @@
     <Folder Include="source\aws\SQS\" />
     <Folder Include="source\aws\SNS\" />
     <Folder Include="source\aws\SecretsManager\" />
+    <Folder Include="source\configurations\" />
+    <Folder Include="source\configurations\__pycache__\" />
     <Folder Include="source\constants\" />
     <Folder Include="source\data\" />
     <Folder Include="source\data\basket\" />

@@ -9,9 +9,10 @@ from source.aws.sqs.aws_sqs_manager import aws_sqs_subscribe
 from source.aws.sns.aws_sns_manager import aws_sns_subscribe
 
 class ActionSubscriber:
-    def __init__(self, modules, parameters, aws_service):
+    def __init__(self, modules, parameters, database, aws_service):
         self.modules     = modules
         self.parameters  = parameters
+        self.database      = database
         self.aws_service = aws_service
         self.alerts      = None
         self.sns_client  = boto3.client(SNS, region_name=REGION_NAME)
@@ -20,13 +21,48 @@ class ActionSubscriber:
     def initialize(self):
         return self.subscribe()
 
+    def database_request(self, request):
+
+        log_info(f"Requesting AWS DynamoDB: {request}")
+
+        if request == "get-existing-topics":
+            """ @AWS_DynamoDB """
+            self.existing_topic = self.database.manage_table_records(Events.GET.value, Tables.TABLE_TOPICS.value, self.model_data)
+
+        if request == "save-new-topics":
+            """ @AWS_DynamoDB """
+            self.database.manage_table_records(Events.PUT.value, Tables.TABLE_TOPICS.value, self.model_data)             
+
+        if request == "update-topics-to-active":
+            """ @AWS_DynamoDB """
+            self.database.manage_table_records(Events.UPDATE.value, Tables.TABLE_TOPICS.value, self.model_data)   
+
+        return True
+  
+    def data_model_mapper(self, data, model_class, table_name):
+        model_object = model_class(**data)
+        model_configuration = self.database.table_configuration[table_name]
+        data_model = model_object.convert_table_rows_to_dict(model_configuration)
+        return data_model
+
     def subscribe(self):
         
         ###################
         # SNS SUBSCRIBE #
         ###################
         if self.aws_service == SNS:
-            pass
+
+            successfully_subscribed = []
+            strategy_id = self.parameters.get('strategy_id')
+            topic_arn, topic_name  = self.generate_aws_sns_arn_name(strategy_id)                        
+            
+            dataset = {
+                "topic_arn": topic_arn,
+                "topic_name": topic_name,
+                "is_subscribed": False,
+                "is_active": True
+            }            
+            self.database_request(_function_="get-inactive-topics")
 
 
         #################

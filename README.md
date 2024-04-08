@@ -143,3 +143,28 @@ time_to_expiry: 4
 # data = get_historical_data(symbol, start_date, end_date)
 # print(data)
 
+Architecture Flow:
+
+Publisher: Your Python application publishes a message to an SNS topic.
+SNS Topic: The SNS topic routes the message to all its subscribers.
+SQS Queue: In this case, the subscriber is your SQS queue. The message gets delivered to the SQS queue.
+Subscriber: Your Python application (acting as the subscriber) polls the SQS queue for new messages.
+Message Processing: Upon receiving a message, your application processes the message content.
+Diagram:
+
++-------------------+      +-------------------+      +-------------------+
+| Publisher App     |----->| SNS Topic         |----->| SQS Queue           |
++-------------------+      +-------------------+      +-------------------+
+                         ^                         |
+                         | Receives message        | (Subscriber)
+                         |                         |
++-------------------+      +-------------------+
+| Subscriber App     |----->| SQS Queue (Polling) |----->| Message Processing |
++-------------------+      +-------------------+      +-------------------+
+Explanation:
+
+The publisher application sends a message to the SNS topic.
+The SNS topic, acting as a pub/sub mechanism, forwards the message to all its subscribers, which in this case is a single SQS queue.
+The SQS queue acts as a buffer, storing the message until the subscriber application polls it.
+The subscriber application periodically polls the SQS queue for new messages.
+Upon receiving a message, the subscriber application extracts and processes the message content according to your application logic.

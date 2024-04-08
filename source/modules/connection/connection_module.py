@@ -35,7 +35,7 @@ class Connection:
         access_token = None
         
         api_key = self.secret_keys.get('api_key')
-        auth_date = datetime.datetime.now().strftime('%d')
+        auth_date = datetime.datetime.now().strftime('%d%H')
         access_token_file = f"{ACCESS_TOKEN_PATH + '_' + auth_date}"
         encrypt_token_file = f"{ENCRYPT_TOKEN_PATH + '_' + auth_date}"
         
@@ -79,7 +79,7 @@ class Connection:
 
 
     def establish_old_connection(self, api_key):
-        auth_date = datetime.datetime.now().strftime('%d')
+        auth_date = datetime.datetime.now().strftime('%d%H')
         access_token_file = f"{ACCESS_TOKEN_PATH + '_' + auth_date}"
 
         if os.path.isfile(access_token_file):
@@ -145,7 +145,7 @@ class Connection:
 
     def get_encrypt_token(self, userid, password, twofa):
         encrypt_token = None
-        auth_date = datetime.datetime.now().strftime('%d')
+        auth_date = datetime.datetime.now().strftime('%d%H')
         encrypt_token_file = f"{ENCRYPT_TOKEN_PATH + '_' + auth_date}"
 
         # Check if the encrypt token file exists
@@ -179,7 +179,7 @@ class Connection:
 
     def broker_login(self, KiteConnect=None, KiteTicker=None):
         # Assign properties
-        auth_date  = datetime.datetime.now().strftime('%d')
+        auth_date  = datetime.datetime.now().strftime('%d%H')
         api_key    = self.secret_keys.get('api_key')
         secret_key = self.secret_keys.get('secret_key')
         user_id    = self.secret_keys.get('user_id')

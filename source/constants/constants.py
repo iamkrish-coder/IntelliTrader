@@ -1,4 +1,9 @@
 # Constants
+import datetime
+
+now = datetime.datetime.now()
+CURRENT_DATE = now.strftime("%Y-%m-%d")
+
 SECRET_NAME               = 'IntelliTrader'
 REGION_NAME               = 'ap-south-1'
 HOST                      = '127.0.0.1'
@@ -10,15 +15,16 @@ SQS                       = 'sqs'
 EXCHANGE_NSE              = 'NSE'
 EXCHANGE_BSE              = 'BSE'
 SOURCE_PATH               = './source'
+CONFIGURATION_PATH        = './source/configurations'
 OUTPUT_PATH               = './source/output'
 DATA_PATH                 = './source/data'
 TEMPLATES_PATH            = './source/templates'
 CACHE_PATH                = './source/cache'
 STATIC_FILE_PATH          = './source/static'
-ACCESS_TOKEN_PATH         = './source/output/.zerodha_access_token'
-REQUEST_TOKEN_PATH        = './source/output/.zerodha_request_token'
-ENCRYPT_TOKEN_PATH        = './source/output/.zerodha_encrypt_token'
-CONFIGURATION_PATH        = './source/modules/configurations'
+CACHE_CONNECTION_PATH     = f'./source/cache/{CURRENT_DATE}/connection'
+ACCESS_TOKEN_PATH         = f'./source/cache/{CURRENT_DATE}/connection/.zerodha_access_token'
+REQUEST_TOKEN_PATH        = f'./source/cache/{CURRENT_DATE}/connection/.zerodha_request_token'
+ENCRYPT_TOKEN_PATH        = f'./source/cache/{CURRENT_DATE}/connection/.zerodha_encrypt_token'
 DEFAULT_BASKET            = './source/data/basket/default_basket.csv'
 HISTORICAL_DATA_PATH_1M   = './source/data/historical/1minute'
 HISTORICAL_DATA_PATH_3M   = './source/data/historical/3minute'
@@ -80,6 +86,8 @@ EXCHANGE_NFO              = "NFO"
 EXCHANGE_CDS              = "CDS"
 EXCHANGE_BFO              = "BFO"
 EXCHANGE_MCX              = "MCX"
-TABLE_TOPICS              = "Topics"
-TABLE_ALERTS              = "Alerts"
+TABLE_TOPICS              = "topics"
+TABLE_ALERTS              = "alerts"
 CACHE_TOPICS_DIR          = "topics"
+CACHE_CANDLESTICKS_DIR    = "candlesticks"
+CACHE_CONNECTION_DIR      = "connection"

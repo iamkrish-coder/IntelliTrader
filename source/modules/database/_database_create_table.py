@@ -3,25 +3,20 @@
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
-from source.modules.database.comparison_operator import ComparisonOperators
-
 from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
 import boto3
 
 class DatabaseCreateTable:
-    def __init__(self, table_configuration, table_name):
-
-        self.table_configuration = table_configuration
+    def __init__(self, table_name, table_configuration):
         self.table_name          = table_name
+        self.table_configuration = table_configuration
         self.dynamodb_resource   = boto3.resource('dynamodb', region_name=REGION_NAME)
         self.dynamodb_table      = self.dynamodb_resource.Table(self.table_name)
 
-        
     def initialize(self):
         return self.create_tables()
-
 
     def create_tables(self):
 
@@ -59,14 +54,14 @@ class DatabaseCreateTable:
         
         table_config = self.table_configuration
         table_key_name = table_config['table_key']
-        hash_key_name  = table_config['hash_key']
+        partition_key_name  = table_config['partition_key']
         sort_key_name  = table_config['sort_key'] 
 
         table_definition = {
             'table_name': table_key_name,
             'table_schema': [
                 {
-                    'AttributeName': hash_key_name,
+                    'AttributeName': partition_key_name,
                     'KeyType': 'HASH'
                 },
                 # Only include sort key definition if sort_key_name is not empty
@@ -79,7 +74,7 @@ class DatabaseCreateTable:
             ],
             'attribute_definitions': [
                 {
-                    'AttributeName': hash_key_name,
+                    'AttributeName': partition_key_name,
                     'AttributeType': 'S'
                 },
                 # Only include sort key attribute definition if sort_key_name is not empty
@@ -93,8 +88,6 @@ class DatabaseCreateTable:
         }
 
         return table_definition
-
-
 
     def check_table_exists(self):
         try:

@@ -10,7 +10,7 @@ from source.modules.database.BaseDatabase import BaseDatabase
 from source.modules.database._database_create_table import DatabaseCreateTable
 from source.modules.database._database_delete_table import DatabaseDeleteTable
 from source.modules.database._database_insert_record import DatabaseInsertRecord
-# from source.modules.database._database_update_record import DatabaseUpdateRecord 
+from source.modules.database._database_update_record import DatabaseUpdateRecord 
 # from source.modules.database._database_delete_record import DatabaseDeleteRecord
 from source.modules.database._database_fetch_record import DatabaseFetchRecord
 
@@ -26,7 +26,6 @@ class Database():
         self.table_configuration            = table_configuration        
         self.tables_list                    = None
         self.table_to_delete                = None # Get this from app_config // Todo
-        self.data                           = None
         
     ###########################################
     # Initialize Database Controller
@@ -35,43 +34,48 @@ class Database():
     def initialize(self):
         log_info(f"We are setting up the database for the first time. Hang tight, we're on it!")    
         return self.manage_tables()   
-    
-                   
+                       
     def manage_tables(self):
         """
         Pre-Requisite Database Operations
         """
-
-        for table_config in self.table_configuration.values():
-            table_name = table_config["table_key"] 
+        if len(self.table_configuration) == 0:
+            log_info(f"No tables to manage.")
+            return
+            
+        for config in self.table_configuration.values():
+            table = config["table_key"] 
         
             # 1. Create Required Tables
-            object_create_table_handler = DatabaseCreateTable(table_config, table_name)
+            object_create_table_handler = DatabaseCreateTable(table, config)
             object_create_table_handler.initialize()
         
             # 2. Delete Existing Tables
-            if table_name != self.table_to_delete:
+            if table != self.table_to_delete:
                 continue
             else:
-                object_delete_table_handler = DatabaseDeleteTable(table_config, table_name)
+                object_delete_table_handler = DatabaseDeleteTable(table, config)
                 object_delete_table_handler.initialize()
 
+    def manage_table_records(self, dataset):
 
-    def manage_table_records(self, event, table_name, table_data, custom_method=None, filters=None, operators=None):
+        event = dataset.get("event")
+        table = dataset.get("table")
+        config = dataset.get("config")
+        data = dataset.get("data")
 
-        tables_config = self.table_configuration
         match event:
             case "get" | "query" | "scan":                
-                object_fetch_record_handler = DatabaseFetchRecord(tables_config, table_name, table_data, custom_method, filters, operators)
-                return object_fetch_record_handler.initialize(event)
+                object_fetch_record_handler = DatabaseFetchRecord(event, table, config, data)
+                return object_fetch_record_handler.initialize()
 
             case "put":
-                object_insert_record_handler = DatabaseInsertRecord(tables_config, table_name, table_data, custom_method, filters, operators)
-                return object_insert_record_handler.initialize(event)
+                object_insert_record_handler = DatabaseInsertRecord(event, table, config, data)
+                return object_insert_record_handler.initialize()
 
             case "update":
-                # Handle "update" event logic here
-                pass
+                object_update_record_handler = DatabaseUpdateRecord(event, table, config, data)
+                return object_update_record_handler.initialize()
 
             case "delete":
                 # Handle "delete" event logic here
