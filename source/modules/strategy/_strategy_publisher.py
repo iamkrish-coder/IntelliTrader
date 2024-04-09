@@ -143,14 +143,9 @@ class StrategyPublisher:
                         )
                         if cached_value is not None:
                             for item in cached_value:
-                                if config.get("partition_key") in item:
-                                    topic_arn_value = cached_value.get(item)
-                                if (
-                                    config.get("sort_key") in item
-                                    and config.get("sort_key") != ""
-                                ):
-                                    topic_name_value = cached_value.get(item)
-
+                                topic_arn_value = item.get("topic_arn")
+                                topic_name_value = item.get("topic_name")
+                       
                         dataset = {
                             "topic_arn": topic_arn_value,
                             "topic_name": topic_name_value,
