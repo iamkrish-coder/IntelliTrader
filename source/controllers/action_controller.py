@@ -1,24 +1,29 @@
-# # strategies/actions_handler.py
-import datetime
+# strategies/actions_handler.py
+
+import os
 import time
+import datetime
+import json
+import asyncio
 import math
 import boto3
-import asyncio
+import uuid
+import pandas as pd
 
 from ast import List
 from time import sleep
 from pandas import qcut
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
 from source.controllers.BaseController import BaseController  
-from source.modules.action.BaseAction import BaseAction
 from source.modules.action._action_configurations import ActionConfigurations
 from source.modules.action._action_subscriber import ActionSubscriber
 from source.modules.action._action_process_alerts import ActionProcessAlerts
 from source.modules.action._action_candlesticks import ActionCandlesticks
 from source.modules.action._action_evaluate_secondary_conditions import ActionEvaluateSecondaryConditions
-from source.modules.configurations.shared_parameters import SharedParameters
+from source.configurations.shared_parameters import SharedParameters
 
 class ActionController(BaseController):
     
@@ -49,12 +54,6 @@ class ActionController(BaseController):
             6. Potentially evaluate secondary conditions based on the candlestick data (commented out).
             7. Potentially update the monitored state based on the evaluation (commented out).
             8. Potentially return candlestick data if conditions are met (commented out).
-
-        **Current functionality:**
-            - Loads configurations and parameters from ActionConfigurations and ActionParameters handlers.
-
-        **Note:** The commented-out sections suggest potential functionalities that are not currently implemented. 
-        These sections might be placeholders for future development or might require additional information about the specific actions your strategy performs.
         """
 
         # 1. Load configurations and parameters
@@ -65,8 +64,8 @@ class ActionController(BaseController):
         object_parameters_handler.initialize()
         self.parameters = object_parameters_handler.get_parameters()
 
-        subscriber_handler = ActionSubscriber(self.modules, self.parameters)
-        message = subscriber_handler.initialize()
+        object_subscriber_handler = ActionSubscriber(self.modules, self.parameters, self.database, SNS)
+        subscribed_topics = object_subscriber_handler.initialize()
         
         # alert_handlers = ActionProcessAlerts(self.modules, message, self.parameters)
         # watchlist = alert_handlers.initialize()

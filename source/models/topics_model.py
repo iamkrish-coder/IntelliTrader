@@ -1,17 +1,16 @@
 # source/models/topics_model.py
 
 from source.models.BaseModel import BaseModel
-from datetime import datetime
 
 class TopicsModel(BaseModel):
     def __init__(self, 
-            topic_arn, 
-            created_date, 
-            topic_name, 
-            is_active     = False, 
-            is_published  = True, 
-            is_subscribed = False, 
-            is_deleted    = False):
+            topic_arn     = None, 
+            created_date  = None, 
+            topic_name    = None, 
+            is_active     = None, 
+            is_published  = None, 
+            is_subscribed = None, 
+            is_deleted    = None):
         super().__init__()
 
         self.topic_arn        = topic_arn

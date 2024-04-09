@@ -80,7 +80,7 @@ class StrategyCandlesticks:
       
         for timeframe in timeframes_to_cache:
             # Create separate cache object for each timeframe
-            timeframe_cache_path = os.path.join(self.cache_path, timeframe.lower())
+            timeframe_cache_path = os.path.join(self.cache_path, CACHE_CANDLESTICKS_DIR, timeframe.lower())
             os.makedirs(timeframe_cache_path, exist_ok=True)  # Create folder for timeframe
             timeframe_caches[timeframe] = Cache(timeframe_cache_path)
 
@@ -138,7 +138,6 @@ class StrategyCandlesticks:
         try:
             for i, stock in enumerate(self.trading_watchlist, start=1):        
                 
-
                 self.trading_exchange = stock.get('exchange')
                 self.trading_symbol = stock.get('tradingsymbol')
                 if self.trading_exchange is None or self.trading_symbol is None:

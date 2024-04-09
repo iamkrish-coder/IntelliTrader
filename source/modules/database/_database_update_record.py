@@ -16,7 +16,7 @@ def restricted_access(allowed_activities):
         return wrapper
     return decorator
 
-class DatabaseInsertRecord:
+class DatabaseUpdateRecord:
     def __init__(self, event, table, config, data):
         self.event = event
         self.table = table
@@ -25,19 +25,24 @@ class DatabaseInsertRecord:
 
     def initialize(self):
         match self.event:
-            case "put":
-                return self.put_record()
+            case "update":
+                return self.update_record()
             case _:
-                log_error(f"Invalid event type: {event}, Error inserting record!")
-    
-    def put_record(self):
+                log_error(f"Invalid event type: {event}, Error updating record!")
+           
+    def update_record(self):
 
         table = self.table
         data = self.data
         attribute_data = data.get("attributes")
         attributes = attribute_data.get("row_data")
+        partition = attribute_data.get("partition_object")   
+        sort = attribute_data.get("sort_object")   
+        # Remove keys from update data
+        _keys = [partition.get("key")]
+        if sort:
+            _keys.append(sort.get("key"))  
 
-        object_dynamodb = DynamoDB(table=table, attribute_data=attributes)
-        return object_dynamodb.put()
-
-        
+        attributes = {k: v for k, v in attributes.items() if k not in _keys and v is not None}
+        object_dynamodb = DynamoDB(table=table, attribute_data=attributes, partition_key=partition, sort_key=sort)
+        return object_dynamodb.update()

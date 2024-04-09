@@ -16,12 +16,15 @@ def generate_cache_key():
     """
     pass
     
-def get_cache_path(category):
+def get_cache_path(cache_directory, cache_sub_directory=None):
     
     now = datetime.datetime.now()
     formatted_date = now.strftime("%Y-%m-%d")
     # Construct the cache path with subfolder
-    cache_path = os.path.join(CACHE_PATH, formatted_date, category)
+    if cache_sub_directory:
+        cache_path = os.path.join(CACHE_PATH, formatted_date, cache_directory, cache_sub_directory)
+    else:    
+        cache_path = os.path.join(CACHE_PATH, formatted_date, cache_directory)
     return cache_path
 
 
@@ -34,24 +37,36 @@ def create_cache_path(cache_path):
             log_error(f"Error creating cache directory: {e}")    
         
         
-def clear_cache(cache_name, category):
-    """
-    This function clears the specified cache.
+def clear_cache(cache_name, cache_directory=None):
 
-    Args:
-        cache_name (str): The name of the cache to clear (e.g., "topics").
-    """
-    if category:
-        cache_path = get_cache_path(category)        
+    if cache_directory:
+        cache_path = get_cache_path(cache_directory)        
         disk_cache = Cache(cache_path)   
 
         if cache_name != "disk":
             raise ValueError(f"Invalid cache name: {cache_name}")  
 
         disk_cache.clear()
+        try:
+            if os.path.isdir(cache_path):
+                shutil.rmtree(cache_path)
+        except OSError as e:
+            log_error(f"Error removing directory {cache_path}: {e}")      
     else:    
         remove_cache_directories()
-    print(f"Cache {cache_name} cleared.")
+
+def remove_cache(cache_name, cache_directory=None):
+
+    if cache_directory:
+        cache_path = get_cache_path(cache_directory)        
+
+        try:
+            if os.path.isdir(cache_path):
+                shutil.rmtree(cache_path)
+        except OSError as e:
+            log_error(f"Error removing directory {cache_path}: {e}")      
+    else:    
+        remove_cache_directories()
 
 
 def remove_cache_directories():
@@ -68,7 +83,7 @@ def remove_cache_directories():
             log_error(f"Error removing directory {dir}: {e}")           
 
 
-def get_cached_item(cache_name, category, key):
+def get_cached_item(cache_name, cache_directory, key):
     """
     This function retrieves an item from the specified cache.
 
@@ -79,7 +94,8 @@ def get_cached_item(cache_name, category, key):
     Returns:
         object: The cached item or None if not found.
     """
-    cache_path = get_cache_path(category)        
+    cache_sub_directory = key
+    cache_path = get_cache_path(cache_directory, cache_sub_directory)        
     disk_cache = Cache(cache_path)    
     
     if cache_name != "disk":
@@ -88,7 +104,7 @@ def get_cached_item(cache_name, category, key):
     return disk_cache.get(key)
 
 
-def set_cached_item(cache_name, category, key, value):
+def set_cached_item(cache_name, cache_directory, key, value):
     """
     This function sets an item in the specified cache with expiration.
 
@@ -97,7 +113,8 @@ def set_cached_item(cache_name, category, key, value):
         key (str): The unique key for the cached item.
         value (object): The item to be cached.
     """
-    cache_path = get_cache_path(category)      
+    cache_sub_directory = key
+    cache_path = get_cache_path(cache_directory, cache_sub_directory)      
     create_cache_path(cache_path)
     disk_cache = Cache(cache_path)
     
