@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.6.0...v3.7.0) (2024-04-09)
+
+
+### Features
+
+* updated database queries, refactored caching utils, connection modules, moved configurations outside modules directory ([b9e3f78](https://github.com/iamkrish-coder/IntelliTrader/commit/b9e3f788afaa6dcb1a137e1f173ea80ae49f7161))
+
+
+### Bug Fixes
+
+* refactored publisher and database code to ([98752c0](https://github.com/iamkrish-coder/IntelliTrader/commit/98752c0221f40cbe6670e0dad7504f00ae801c86))
+* remove unwanted cache file creation, fix the list error, remove comparison operator file ([848c6aa](https://github.com/iamkrish-coder/IntelliTrader/commit/848c6aa66814f3710c20c7f7b8d44774d76e1513))
+
 ## [3.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.5.0...v3.6.0) (2024-03-30)
 
 
