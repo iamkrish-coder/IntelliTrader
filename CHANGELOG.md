@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.7.0...v3.7.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* update timeframe text in console output ([ab2928c](https://github.com/iamkrish-coder/IntelliTrader/commit/ab2928ca1703e57db64282901e60718de1f9d5de))
+
 ## [3.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.6.0...v3.7.0) (2024-04-09)
 
 
