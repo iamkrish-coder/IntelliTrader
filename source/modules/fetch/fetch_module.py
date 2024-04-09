@@ -112,7 +112,6 @@ class Fetch:
                 
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))
                    
-                
                     # Transform data for Last Available Date
                     current_time = dt.datetime.now().time()
                     if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
@@ -133,19 +132,22 @@ class Fetch:
                     # Fetch Minutes Data
                     duration = duration['minute']
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = timeframe                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
             
                 elif timeframe.__contains__('hour'):
                     # Fetch Hours Data
                     duration = duration['hour']               
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = HOUR                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('day'):
                     # Fetch Daily Data
                     duration = duration['day']                              
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = DAY                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('week'):
                     # Fetch Weekly Data
@@ -153,7 +155,8 @@ class Fetch:
                     duration = duration['week']                                              
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))    
                     data = self.aggregate_to_weekly(data)
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = WEEK                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
                 elif timeframe.__contains__('month'):
                     # Fetch Monthly Data
@@ -161,7 +164,8 @@ class Fetch:
                     duration = duration['month']                                                             
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
                     data = self.aggregate_to_monthly(data)
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = MONTH                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
                 else:
                     data = None
