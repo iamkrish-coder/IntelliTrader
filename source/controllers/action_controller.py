@@ -30,8 +30,8 @@ class ActionController(BaseController):
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count      = 0        
-        self.watchlist      = None
         self.parameters     = None
+        self.watchlist      = None
         
     ###########################################
     # Initialize Actions Controller
@@ -65,9 +65,11 @@ class ActionController(BaseController):
         self.parameters = object_parameters_handler.get_parameters()
 
         object_subscriber_handler = ActionSubscriber(self.modules, self.parameters, self.database, SNS)
-        subscribed_topics = object_subscriber_handler.initialize()
+        messages = object_subscriber_handler.initialize()
+        print(messages)
+        exit()
         
-        # alert_handlers = ActionProcessAlerts(self.modules, message, self.parameters)
+        # alert_handlers = ActionProcessAlerts(self.modules, messages, self.parameters)
         # watchlist = alert_handlers.initialize()
 
         # candlesticks_handler = ActionCandlesticks(self.modules, watchlist, self.parameters)

@@ -37,7 +37,6 @@ class StrategyController(BaseController):
         self.run_count       = 0
         self.parameters      = None
         self.alerts          = None
-        self.base_timeframe  = None
         
     ###########################################
     # Initialize Strategy Handler

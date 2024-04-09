@@ -3,10 +3,6 @@ from enum import Enum
 from re import M
 from source.constants.constants import ARN
 
-class AWS_SQS(Enum):
-    ACCOUNT_ID = '265153260161'
-    URL        = 'https://sqs.ap-south-1.amazonaws.com'
-
 class Logger(Enum):
     DATABASE_LOGGER   = "database_logger"
     STRATEGY_LOGGER   = "strategy_logger"
@@ -21,6 +17,14 @@ class Queues(Enum):
     QUEUE_4     = 'IntelliTrader_Q4.fifo'
     QUEUE_5     = 'IntelliTrader_Q5.fifo'
     QUEUE_6     = 'IntelliTrader_Q6.fifo'
+
+class AWS_SQS(Enum):
+    ARN        = 'arn'
+    AWS        = 'aws'
+    SQS        = 'sqs'
+    REGION     = 'ap-south-1'
+    ACCOUNT_ID = '265153260161'
+    URL        = 'https://sqs.ap-south-1.amazonaws.com'
 
 class AWS_SNS(Enum):
     ARN        = 'arn'
