@@ -33,7 +33,9 @@ class Database():
     
     def initialize(self):
         log_info(f"We are setting up the database for the first time. Hang tight, we're on it!")    
-        return self.manage_tables()   
+        self.manage_tables()
+        # self.manage_queues() # TODO
+        # self.manage_topics() # TODO
                        
     def manage_tables(self):
         """

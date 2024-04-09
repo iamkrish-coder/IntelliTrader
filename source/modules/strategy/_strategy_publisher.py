@@ -26,8 +26,10 @@ class StrategyPublisher:
 
     def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
 
+        attributes = None
         config = self.database.table_configuration[table]
-        attributes = model(**dataset).convert_table_rows_to_dict(config)
+        if model:
+            attributes = model(**dataset).convert_table_rows_to_dict(config)        
         return {
             "event": event,
             "table": table,
@@ -36,13 +38,63 @@ class StrategyPublisher:
                 "attributes": attributes,
                 "projection": projection,
                 "filters": filters,
-            },
+            }
         }
 
     def database_request(self, request):
 
         log_info(f"Requesting AWS DynamoDB...")
         return self.database.manage_table_records(request)
+
+    def generate_aws_sns_topic_name(self, strategy_id):
+
+        # Create a mapping between strategy IDs and topic names
+        strategy_id_enum = Strategy[f"ALGORITHM_{strategy_id}"]
+        strategy_topic_mapping = {
+            Strategy.ALGORITHM_1: Topics.TOPIC_1,
+            Strategy.ALGORITHM_2: Topics.TOPIC_2,
+            Strategy.ALGORITHM_3: Topics.TOPIC_3,
+            Strategy.ALGORITHM_4: Topics.TOPIC_4,
+            Strategy.ALGORITHM_5: Topics.TOPIC_5,
+            Strategy.ALGORITHM_6: Topics.TOPIC_6,
+        }
+
+        if strategy_id_enum in strategy_topic_mapping:
+            return strategy_topic_mapping[strategy_id_enum].value
+        else:
+            return None
+
+    def generate_aws_sns_topic_arn(self, strategy_id):
+
+        # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
+        topic_name = self.generate_aws_sns_topic_name(strategy_id)
+
+        enum_arn = AWS_SNS.ARN.value
+        emum_aws = AWS_SNS.AWS.value
+        emum_sns = AWS_SNS.SNS.value
+        emum_region = AWS_SNS.REGION.value
+        emum_account_id = AWS_SNS.ACCOUNT_ID.value
+        emum_topic_name = topic_name
+
+        arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}.fifo"
+        return arn_formatted, topic_name
+
+    def get_aws_sqs_queue_name(self, strategy_id):
+        # Create a mapping between strategy IDs and queue names
+        strategy_id_enum = Strategy[f"algorithm_{strategy_id}"]
+        strategy_queue_mapping = {
+            Strategy.ALGORITHM_1: Queues.QUEUE_1,
+            Strategy.ALGORITHM_2: Queues.QUEUE_2,
+            Strategy.ALGORITHM_3: Queues.QUEUE_3,
+            Strategy.ALGORITHM_4: Queues.QUEUE_4,
+            Strategy.ALGORITHM_5: Queues.QUEUE_5,
+            Strategy.ALGORITHM_6: Queues.QUEUE_6
+        }
+
+        if strategy_id_enum in strategy_queue_mapping:
+            return strategy_queue_mapping[strategy_id_enum].value
+        else:
+            return None 
 
     def get_or_create_topic(self):
 
@@ -87,6 +139,7 @@ class StrategyPublisher:
             self.database_request(create_topic_params)
             cached_value = [dataset]
 
+        cached_key = f"{TABLE_TOPICS}_{self.topic_name}"
         set_cached_item(
             Cache_Type.DISK.value, 
             CACHE_TOPICS_DIR, 
@@ -94,7 +147,7 @@ class StrategyPublisher:
             cached_value
         )
 
-    def update_topic_published_status(self):
+    def set_topic_published_status(self):
 
         log_info(f"Updating SNS Topic status...")                                
         dataset = {
@@ -110,8 +163,9 @@ class StrategyPublisher:
             dataset=dataset,
         )
         self.database_request(update_topic_params)
-        cached_value = [dataset]
 
+        cached_key = f"{TABLE_TOPICS}_{self.topic_name}_{IS_PUBLISHED}"
+        cached_value = [dataset]
         set_cached_item(
             Cache_Type.DISK.value,
             CACHE_TOPICS_DIR,
@@ -119,49 +173,20 @@ class StrategyPublisher:
             cached_value,
         ) 
 
-    def get_aws_sns_topic_name(self, strategy_id):
-
-        # Create a mapping between strategy IDs and topic names
-        strategy_id_enum = Strategy[f"ALGORITHM_{strategy_id}"]
-        strategy_topic_mapping = {
-            Strategy.ALGORITHM_1: Topics.TOPIC_1,
-            Strategy.ALGORITHM_2: Topics.TOPIC_2,
-            Strategy.ALGORITHM_3: Topics.TOPIC_3,
-            Strategy.ALGORITHM_4: Topics.TOPIC_4,
-            Strategy.ALGORITHM_5: Topics.TOPIC_5,
-            Strategy.ALGORITHM_6: Topics.TOPIC_6,
-        }
-
-        if strategy_id_enum in strategy_topic_mapping:
-            return strategy_topic_mapping[strategy_id_enum].value
-        else:
-            return None
-
-    def generate_aws_sns_arn_name(self, strategy_id):
-
-        # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
-        topic_name = self.get_aws_sns_topic_name(strategy_id)
-
-        enum_arn = AWS_SNS.ARN.value
-        emum_aws = AWS_SNS.AWS.value
-        emum_sns = AWS_SNS.SNS.value
-        emum_region = AWS_SNS.REGION.value
-        emum_account_id = AWS_SNS.ACCOUNT_ID.value
-        emum_topic_name = topic_name
-
-        arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}"
-        return arn_formatted, topic_name
-
     def publish(self):
         ###############
         # SNS PUBLISH #
         ###############
-        date_time_now = time.strftime("%Y-%m-%d %H:%M:%S")
+        self.date_time_now = time.strftime("%Y-%m-%d %H:%M:%S")
         if self.aws_service == SNS:
 
             successfully_published = []
-            strategy_id = self.parameters.get("strategy_id")
-            self.topic_arn, self.topic_name = self.generate_aws_sns_arn_name(strategy_id)
+            strategy_id = self.parameters.get('strategy_id')
+            if strategy_id is None:
+                log_error("Strategy ID is missing from parameters.")
+                return None    
+
+            self.topic_arn, self.topic_name = self.generate_aws_sns_topic_arn(strategy_id)
 
             # Check existing disk cache
             cached_key = f"{TABLE_TOPICS}_{self.topic_name}"
@@ -180,9 +205,7 @@ class StrategyPublisher:
                 subject = "Stock Alert"
 
                 try:
-                    response = aws_sns_publish(
-                        self.sns_client, self.topic_arn, message, subject
-                    )
+                    response = aws_sns_publish(self.sns_client, self.topic_arn, message, subject)
                     if "MessageId" in response:
                         successfully_published.append(message)
                     else:
@@ -203,7 +226,7 @@ class StrategyPublisher:
                         )
 
                         if cached_value is None:
-                            self.update_topic_published_status()
+                            self.set_topic_published_status()
 
                     log_info("Alerts Published ...COMPLETE!")
                     break
@@ -220,7 +243,7 @@ class StrategyPublisher:
                 log_error("Strategy ID is missing from parameters.")
                 return None
 
-            self.strategy_queue = self.get_queue_name(strategy_id)
+            self.strategy_queue = self.get_aws_sqs_queue_name(strategy_id)
             if self.strategy_queue is None:
                 log_error(f"Queue name not found for Strategy {strategy_id}.")
                 return None
