@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.7.1...v3.8.0) (2024-04-09)
+
+
+### Features
+
+* setup SNS to SQS fanout, now messages published to SNS topics are fan out to SQS queue ([08f3c1c](https://github.com/iamkrish-coder/IntelliTrader/commit/08f3c1cf3ee5e709df52f345091974a2d5181750))
+
 ## [3.7.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.7.0...v3.7.1) (2024-04-09)
 
 
