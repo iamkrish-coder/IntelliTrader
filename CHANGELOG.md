@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.8.0...v3.9.0) (2024-04-10)
+
+
+### Features
+
+* Improved the configuration parameter parsing to be more dynamic, fixed issues with publishing and subscribing the topic and queues, fixed the action initialization throwing async None Type error upon execution. ([1f2a51b](https://github.com/iamkrish-coder/IntelliTrader/commit/1f2a51be396d8fd7c38b2be95d45d9b3fcd9255a))
+
 ## [3.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.7.1...v3.8.0) (2024-04-09)
 
 
