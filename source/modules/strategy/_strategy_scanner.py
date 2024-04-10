@@ -2,8 +2,8 @@
 
 from source.constants.constants import *
 from source.enumerations.enums import *
-from source.modules.strategy.BaseStrategy import BaseStrategy
 from source.utils.logging_utils import *
+from source.modules.strategy.BaseStrategy import BaseStrategy
 
 class StrategyScanner(BaseStrategy):
     def __init__(self, modules, parameters, candlesticks_data_list, indicators_data_list, candles_timeframe = None):
@@ -11,7 +11,7 @@ class StrategyScanner(BaseStrategy):
         self.parameters             = parameters
         self.candlesticks_data_list = candlesticks_data_list
         self.indicators_data_list   = indicators_data_list
-        self.candles_timeframe      = candles_timeframe or self.parameters['timeframe']
+        self.candles_timeframe      = candles_timeframe or self.parameters['strategy_params.timeframe']
         
     def initialize(self):
         return self.scan_primary_conditions()

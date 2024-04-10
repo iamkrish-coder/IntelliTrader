@@ -105,11 +105,10 @@ class IntelliTrader:
 
             tasks = [
                 self.strategy_controller(),
-                self.action_controller()
+                # self.action_controller()
                 # self.monitoring_controller()
             ]
             await asyncio.gather(*tasks)
-
 
 
     ###########################################

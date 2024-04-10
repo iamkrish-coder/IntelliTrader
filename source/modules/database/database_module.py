@@ -16,10 +16,9 @@ from source.modules.database._database_fetch_record import DatabaseFetchRecord
 
 import json
  
-class Database():
+class Database(BaseDatabase):
     
     def __init__(self, connection, modules, app_configuration, table_configuration):
-        super().__init__() 
         self.connection                     = connection
         self.modules                        = modules
         self.app_configuration              = app_configuration
@@ -34,8 +33,8 @@ class Database():
     def initialize(self):
         log_info(f"We are setting up the database for the first time. Hang tight, we're on it!")    
         self.manage_tables()
-        # self.manage_queues() # TODO
-        # self.manage_topics() # TODO
+        # self.manage_queues()
+        # self.manage_topics()
                        
     def manage_tables(self):
         """
@@ -59,6 +58,18 @@ class Database():
                 object_delete_table_handler = DatabaseDeleteTable(table, config)
                 object_delete_table_handler.initialize()
 
+    def manage_topics(self):
+        """
+        Pre-Requisite Topic Operations
+        """
+        pass
+        
+    def manage_queues(self):
+        """
+        Pre-Requisite Queue Operations
+        """
+        pass
+        
     def manage_table_records(self, dataset):
 
         event = dataset.get("event")

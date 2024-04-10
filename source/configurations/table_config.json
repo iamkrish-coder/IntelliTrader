@@ -2,6 +2,13 @@
     "topics": {
         "table_key": "topics",
         "partition_key": "topic_arn",
-        "sort_key": ""
+        "sort_key": "",
+        "default": ["IntelliTrader_T1", "IntelliTrader_T2", "IntelliTrader_T3"]
+    },
+    "queues": {
+        "table_key": "queues",
+        "partition_key": "queue_arn",
+        "sort_key": "",
+        "default": ["IntelliTrader_Q1", "IntelliTrader_Q2", "IntelliTrader_Q3"]
     }
 }

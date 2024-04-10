@@ -31,17 +31,13 @@ class ActionController(BaseController):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count      = 0        
         self.parameters     = None
-        self.watchlist      = None
-        
-    ###########################################
-    # Initialize Actions Controller
-    ###########################################        
+        self.watchlist      = None    
 
-    def initialize(self):
+    async def initialize(self):
         log_info(f"Running actions...{self.run_count} Times")        
-        return self.action_handler()    
+        return await self.action_handler()    
 
-    def action_handler(self):
+    async def action_handler(self):
         """
         This method handles the execution of an action, likely related to monitoring or processing alerts for a trading strategy.
 
@@ -59,7 +55,7 @@ class ActionController(BaseController):
         # 1. Load configurations and parameters
         object_configuration_handler = ActionConfigurations(self.configuration)
         settings = object_configuration_handler.initialize()
-            
+
         object_parameters_handler = SharedParameters(settings)
         object_parameters_handler.initialize()
         self.parameters = object_parameters_handler.get_parameters()
@@ -67,7 +63,6 @@ class ActionController(BaseController):
         object_subscriber_handler = ActionSubscriber(self.modules, self.parameters, self.database, SNS)
         messages = object_subscriber_handler.initialize()
         print(messages)
-        exit()
         
         # alert_handlers = ActionProcessAlerts(self.modules, messages, self.parameters)
         # watchlist = alert_handlers.initialize()
