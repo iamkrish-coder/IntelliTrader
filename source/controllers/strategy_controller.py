@@ -31,16 +31,11 @@ from source.modules.strategy._strategy_publisher import StrategyPublisher
 from source.configurations.shared_parameters import SharedParameters
 
 class StrategyController(BaseController):
-    
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count       = 0
         self.parameters      = None
         self.alerts          = None
-        
-    ###########################################
-    # Initialize Strategy Handler
-    ###########################################
     
     async def initialize(self):       
         log_info(f"Running Strategy...{self.run_count} Times")

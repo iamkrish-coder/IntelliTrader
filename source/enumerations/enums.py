@@ -11,12 +11,12 @@ class Logger(Enum):
     TRADE_LOGGER      = "trade_logger"
 
 class Queues(Enum):
-    QUEUE_1     = 'IntelliTrader_Q1.fifo'
-    QUEUE_2     = 'IntelliTrader_Q2.fifo'
-    QUEUE_3     = 'IntelliTrader_Q3.fifo'
-    QUEUE_4     = 'IntelliTrader_Q4.fifo'
-    QUEUE_5     = 'IntelliTrader_Q5.fifo'
-    QUEUE_6     = 'IntelliTrader_Q6.fifo'
+    QUEUE_1     = 'IntelliTrader_Q1'
+    QUEUE_2     = 'IntelliTrader_Q2'
+    QUEUE_3     = 'IntelliTrader_Q3'
+    QUEUE_4     = 'IntelliTrader_Q4'
+    QUEUE_5     = 'IntelliTrader_Q5'
+    QUEUE_6     = 'IntelliTrader_Q6'
 
 class AWS_SQS(Enum):
     ARN        = 'arn'
@@ -25,6 +25,14 @@ class AWS_SQS(Enum):
     REGION     = 'ap-south-1'
     ACCOUNT_ID = '265153260161'
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
+
+class Topics(Enum):
+    TOPIC_1     = 'IntelliTrader_T1'
+    TOPIC_2     = 'IntelliTrader_T2'
+    TOPIC_3     = 'IntelliTrader_T3'
+    TOPIC_4     = 'IntelliTrader_T4'
+    TOPIC_5     = 'IntelliTrader_T5'
+    TOPIC_6     = 'IntelliTrader_T6'
 
 class AWS_SNS(Enum):
     ARN        = 'arn'
@@ -39,6 +47,7 @@ class Cache_Type(Enum):
     
 class Tables(Enum):
     TABLE_TOPICS = 'topics'
+    TABLE_QUEUES = 'queues'
     TABLE_ALERTS = 'alerts'
 
 class Events(Enum):
@@ -48,14 +57,6 @@ class Events(Enum):
     SCAN   = 'scan'
     UPDATE = 'update'
     DELETE = 'delete'
-
-class Topics(Enum):
-    TOPIC_1     = 'IntelliTrader_T1'
-    TOPIC_2     = 'IntelliTrader_T2'
-    TOPIC_3     = 'IntelliTrader_T3'
-    TOPIC_4     = 'IntelliTrader_T4'
-    TOPIC_5     = 'IntelliTrader_T5'
-    TOPIC_6     = 'IntelliTrader_T6'
 
 class Market_Sentiment(Enum):
     POSITIVE = 'POSITIVE'

@@ -4,6 +4,8 @@
   "secret_name": "IntelliTrader",
   "region_name": "ap-south-1",
   "runtime": "5minute",
+  "topic_type": "fifo",
+  "queue_type": "fifo",
   "market_trade": true,
   "market_trade_params": {
     "market_indices": {
@@ -56,7 +58,7 @@
   },
   "strategy": "1",
   "strategy_1_params": {
-    "id": "1",
+    "strategy_id": "1",
     "exchange": "NSE",
     "symbol": "default",
     "timeframe": "5minute",
