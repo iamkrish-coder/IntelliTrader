@@ -2,10 +2,14 @@
 """
 DatabaseController
 """
+import json
 
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
+from source.aws.sns.aws_sns_create_topic import AwsSnsCreateTopic
+from source.aws.sns.aws_sns_delete_topic import AwsSnsDeleteTopic
+
 from source.modules.database.BaseDatabase import BaseDatabase
 from source.modules.database._database_create_table import DatabaseCreateTable
 from source.modules.database._database_delete_table import DatabaseDeleteTable
@@ -14,7 +18,6 @@ from source.modules.database._database_update_record import DatabaseUpdateRecord
 # from source.modules.database._database_delete_record import DatabaseDeleteRecord
 from source.modules.database._database_fetch_record import DatabaseFetchRecord
 
-import json
  
 class Database(BaseDatabase):
     
@@ -46,23 +49,25 @@ class Database(BaseDatabase):
             
         for config in self.table_configuration.values():
             table = config["table_key"] 
-        
-            # 1. Create Required Tables
-            object_create_table_handler = DatabaseCreateTable(table, config)
-            object_create_table_handler.initialize()
-        
-            # 2. Delete Existing Tables
+
+            # 1. Delete Existing Tables
             if table != self.table_to_delete:
                 continue
             else:
                 object_delete_table_handler = DatabaseDeleteTable(table, config)
                 object_delete_table_handler.initialize()
 
+            # 2. Create Required Tables
+            object_create_table_handler = DatabaseCreateTable(table, config)
+            object_create_table_handler.initialize()
+
+
     def manage_topics(self):
         """
         Pre-Requisite Topic Operations
         """
-        pass
+        
+
         
     def manage_queues(self):
         """
