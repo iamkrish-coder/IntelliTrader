@@ -1,5 +1,6 @@
 import boto3
 
+from botocore.exceptions import ClientError
 from source.aws.sns.BaseSnsManager import BaseSnsManager
 from source.constants.constants import *
 from source.enumerations.enums import *
@@ -9,12 +10,12 @@ from source.utils.caching_utils import *
 class UnsubscribeTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
-    def __init__(self, subscription):
+    def __init__(self, subscription_arn=None):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
         self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
-        self.subscription = subscription
+        self.subscription_arn = subscription_arn
 
 
     def execute(self):
@@ -22,8 +23,9 @@ class UnsubscribeTopic(BaseSnsManager):
         Unsubscribes and deletes a subscription.
         """
         try:
-            self.subscription.delete()
-            log_info("Deleted subscription %s.", self.subscription.arn)
+            if self.subscription_arn is not None and self.subscription_arn != "":
+                self.sns_resource.unsubscribe(SubscriptionArn=self.subscription_arn)
+                log_info("Deleted subscription %s.", self.subscription_arn)
         except ClientError:
-            log_error("Couldn't delete subscription %s.", self.subscription.arn)
+            log_error("Couldn't delete subscription %s.", self.subscription_arn)
             raise

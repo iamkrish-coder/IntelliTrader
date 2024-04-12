@@ -137,7 +137,7 @@ class StrategyPublisher(BaseStrategy):
                 log_error("Strategy ID is missing from parameters.")
                 return None    
 
-            self.topic_arn, self.topic_name = self.generate_aws_sns_topic_arn(strategy_id, topic_type)
+            self.topic_arn, self.topic_name = self.generate_aws_sns_topic_details(strategy_id, topic_type)
 
             # Check existing disk cache
             cached_key = f"{TABLE_TOPICS}_{self.topic_name}"

@@ -304,9 +304,9 @@ class Fetch:
     # Fetch backtest data
     def fetch_backtest_data(self, args):        
         if(args['backtest_timeframe'] == 'latest'):
-            return(self.fetch_backtest_latest_data(_nseData, args))
+            return self.fetch_backtest_latest_data(_nseData, args)
         else:
-            return(self.fetch_backtest_historical_data(args))
+            return self.fetch_backtest_historical_data(args)
                 
     def fetch_backtest_latest_data(_nseData, dataset):
         # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty

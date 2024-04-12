@@ -25,35 +25,35 @@ class Indicator:
     def use_indicator(self, indicator_option, dataset, period=0):
         match indicator_option:
             case 'rsi':
-                return(self.option_rsi(dataset, period))
+                return self.option_rsi(dataset, period)
             case 'wma':
-                return(self.option_wma(dataset, period))
+                return self.option_wma(dataset, period)
             case 'sma':
-                return(self.option_sma(dataset, period))
+                return self.option_sma(dataset, period)
             case 'ema':
-                return(self.option_ema(dataset, period))               
+                return self.option_ema(dataset, period)               
             case 'supertrend':
-                return(self.option_supertrend(dataset, period))
+                return self.option_supertrend(dataset, period)
             case 'macd':
-                return(self.option_macd(dataset, period))                
+                return self.option_macd(dataset, period)                
             case 'atr':
-                return(self.option_atr(dataset, period))
+                return self.option_atr(dataset, period)
             case 'williams_r':
-                return(self.option_williams_r(dataset, period))
+                return self.option_williams_r(dataset, period)
             case 'vwap':
-                return(self.option_vwap(dataset, period))
+                return self.option_vwap(dataset, period)
             case 'adx':
-                return(self.option_adx(dataset, period))
+                return self.option_adx(dataset, period)
             case 'stochastic':
-                return(self.option_stochastic(dataset, period))
+                return self.option_stochastic(dataset, period)
             case 'renko':
-                return(self.option_renko(dataset, period))
+                return self.option_renko(dataset, period)
             case 'bollinger_bands':
-                return(self.option_bollinger_bands(dataset, period))
+                return self.option_bollinger_bands(dataset, period)
             case 'truerange':
-                return(self.option_truerange(dataset, period))                 
+                return self.option_truerange(dataset, period)                 
             case 'average_truerange':
-                return(self.option_average_truerange(dataset, period))                   
+                return self.option_average_truerange(dataset, period)                   
             case _:
                 self.invalid_option(dataset)
 

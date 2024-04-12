@@ -1,14 +1,14 @@
 # aws_dynamodb.py
 
+import boto3
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
 from source.aws.DynamoDB.aws_dynamo_expression_builder import DynamoExpressionBuilder
 from boto3.resources.model import DefinitionWithParams
-from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
-import boto3
 
 class DynamoDB:
     def __init__(self, table, attribute_data=None, partition_key=None, sort_key=None, projection=None, filters=None):

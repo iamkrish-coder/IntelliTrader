@@ -1,5 +1,6 @@
 import boto3
 
+from botocore.exceptions import ClientError
 from source.aws.sns.BaseSnsManager import BaseSnsManager
 from source.constants.constants import *
 from source.enumerations.enums import *
@@ -9,12 +10,12 @@ from source.utils.caching_utils import *
 class ListSubscriptions(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
-    def __init__(self, topic=None):
+    def __init__(self, topic_arn=None):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
         self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
-        self.topic = topic
+        self.topic_arn = topic_arn
 
 
     def execute(self):
@@ -26,13 +27,13 @@ class ListSubscriptions(BaseSnsManager):
         :return: An iterator that yields the subscriptions.
         """
         try:
-            if self.topic is None:
-                subs_iter = self.sns_resource.subscriptions.all()
+            if self.topic_arn is None:
+                response = self.sns_resource.list_subscriptions()
             else:
-                subs_iter = self.topic.subscriptions.all()
-            logger.info("Got subscriptions.")
+                response = self.sns_resource.list_subscriptions_by_topic(TopicArn=self.topic_arn)
+            log_info("Received subscriptions.")
         except ClientError:
-            logger.exception("Couldn't get subscriptions.")
+            log_error("Couldn't get subscriptions.")
             raise
         else:
-            return subs_iter
+            return response

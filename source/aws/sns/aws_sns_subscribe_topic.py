@@ -1,5 +1,6 @@
 import boto3
 
+from botocore.exceptions import ClientError
 from source.aws.sns.BaseSnsManager import BaseSnsManager
 from source.constants.constants import *
 from source.enumerations.enums import *

@@ -1,5 +1,6 @@
 import boto3
 
+from botocore.exceptions import ClientError
 from source.aws.sns.BaseSnsManager import BaseSnsManager
 from source.constants.constants import *
 from source.enumerations.enums import *
@@ -23,10 +24,10 @@ class ListTopics(BaseSnsManager):
         :return: An iterator that yields the topics.
         """
         try:
-            topics_iter = self.sns_resource.topics.all()
-            logger.info("Got topics.")
+            response = self.sns_resource.list_topics()
+            log_info("Received topics")
         except ClientError:
-            logger.exception("Couldn't get topics.")
+            log_error("Couldn't get topics.")
             raise
         else:
-            return topics_iter        
+            return response     

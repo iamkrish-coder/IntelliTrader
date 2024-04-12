@@ -322,7 +322,7 @@ class SharedHandler:
         else:
             return None
 
-    def generate_aws_sns_topic_arn(self, strategy_id, topic_type=None):
+    def generate_aws_sns_topic_details(self, strategy_id, topic_type=None):
 
         # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
         topic_name = self.generate_aws_sns_topic_name(strategy_id)
@@ -360,7 +360,7 @@ class SharedHandler:
         else:
             return None 
 
-    def generate_aws_sqs_queue_arn(self, strategy_id, queue_type=None):
+    def generate_aws_sqs_queue_details(self, strategy_id, queue_type=None):
             
         # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
         queue_name  = self.get_aws_sqs_queue_name(strategy_id)

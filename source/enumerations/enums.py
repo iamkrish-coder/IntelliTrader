@@ -14,6 +14,9 @@ class Queues(Enum):
     QUEUE_1     = 'IntelliTrader_Q1'
     QUEUE_2     = 'IntelliTrader_Q2'
     QUEUE_3     = 'IntelliTrader_Q3'
+    QUEUE_4     = 'IntelliTrader_Q4'
+    QUEUE_5     = 'IntelliTrader_Q5'
+    QUEUE_6     = 'IntelliTrader_Q6'
 
 class AWS_SQS(Enum):
     ARN        = 'arn'
@@ -27,6 +30,9 @@ class Topics(Enum):
     TOPIC_1     = 'IntelliTrader_T1'
     TOPIC_2     = 'IntelliTrader_T2'
     TOPIC_3     = 'IntelliTrader_T3'
+    TOPIC_4     = 'IntelliTrader_T4'
+    TOPIC_5     = 'IntelliTrader_T5'
+    TOPIC_6     = 'IntelliTrader_T6'
 
 class AWS_SNS(Enum):
     ARN        = 'arn'
@@ -43,6 +49,7 @@ class Tables(Enum):
     TABLE_TOPICS = 'topics'
     TABLE_QUEUES = 'queues'
     TABLE_ALERTS = 'alerts'
+    TABLE_STRATEGIES = 'strategies'
 
 class Events(Enum):
     PUT    = 'put'

@@ -1,5 +1,6 @@
 import boto3
 
+from botocore.exceptions import ClientError
 from source.aws.sns.BaseSnsManager import BaseSnsManager
 from source.constants.constants import *
 from source.enumerations.enums import *
@@ -34,7 +35,7 @@ class CreateTopic(BaseSnsManager):
     def create_standard_topic(self):        
         try:
             topic = self.sns_resource.create_topic(Name=self.name)
-            log_info("Created topic %s with ARN %s.", self.name, topic.arn)
+            log_info("Created topic %s with ARN %s.", self.name, topic.get("TopicArn"))
         except ClientError:
             log_error("Couldn't create topic %s.", self.name)
             raise
