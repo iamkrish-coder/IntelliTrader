@@ -305,22 +305,9 @@ class SharedHandler:
         return formatted_timestamp
 
     def generate_aws_sns_topic_name(self, strategy_id):
-
-        # Create a mapping between strategy IDs and topic names
-        strategy_id_enum = Strategy[f"ALGORITHM_{strategy_id}"]
-        strategy_topic_mapping = {
-            Strategy.ALGORITHM_1: Topics.TOPIC_1,
-            Strategy.ALGORITHM_2: Topics.TOPIC_2,
-            Strategy.ALGORITHM_3: Topics.TOPIC_3,
-            Strategy.ALGORITHM_4: Topics.TOPIC_4,
-            Strategy.ALGORITHM_5: Topics.TOPIC_5,
-            Strategy.ALGORITHM_6: Topics.TOPIC_6,
-        }
-
-        if strategy_id_enum in strategy_topic_mapping:
-            return strategy_topic_mapping[strategy_id_enum].value
-        else:
-            return None
+        if strategy_id is None:
+            log_error("Strategy ID cannot be None")
+        return f"TOPIC-STR-{strategy_id}"
 
     def generate_aws_sns_topic_details(self, strategy_id, topic_type=None):
 
@@ -343,22 +330,9 @@ class SharedHandler:
         return arn_formatted, topic_name        
 
     def get_aws_sqs_queue_name(self, strategy_id):
-
-        # Create a mapping between strategy IDs and queue names
-        strategy_id_enum = Strategy[f"ALGORITHM_{strategy_id}"]
-        strategy_queue_mapping = {
-            Strategy.ALGORITHM_1: Queues.QUEUE_1,
-            Strategy.ALGORITHM_2: Queues.QUEUE_2,
-            Strategy.ALGORITHM_3: Queues.QUEUE_3,
-            Strategy.ALGORITHM_4: Queues.QUEUE_4,
-            Strategy.ALGORITHM_5: Queues.QUEUE_5,
-            Strategy.ALGORITHM_6: Queues.QUEUE_6
-        }
-
-        if strategy_id_enum in strategy_queue_mapping:
-            return strategy_queue_mapping[strategy_id_enum].value
-        else:
-            return None 
+        if strategy_id is None:
+            log_error("Strategy ID cannot be None")
+        return f"QUEUE-STR-{strategy_id}"
 
     def generate_aws_sqs_queue_details(self, strategy_id, queue_type=None):
             

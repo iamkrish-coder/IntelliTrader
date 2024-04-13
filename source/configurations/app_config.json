@@ -6,6 +6,9 @@
   "runtime": "5minute",
   "topic_type": "fifo",
   "queue_type": "fifo",
+  "reset_tables": false,
+  "reset_topics": false,
+  "reset_queues": false,
   "market_trade": true,
   "market_trade_params": {
     "market_indices": {

@@ -31,7 +31,7 @@ class DatabaseDeleteTable:
                     self.remove_table_cache()
                     self.update_table_configuration()
 
-                log_info(f"Delete '{self.table_name}' Table ...COMPLETE!")
+                log_info(f"Table '{self.table_name}' deleted ...COMPLETE!")
                 return response
                 
             except ClientError as e:               
@@ -56,7 +56,7 @@ class DatabaseDeleteTable:
         # Check if the deleted table name exists in the config
         if deleted_table_name in config_data:
             # Remove the entry associated with the deleted table name
-            del config_data[deleted_table_name]
+            # del config_data[deleted_table_name] # Commented out for now
             log_info(f"Configuration '{deleted_table_name}' removal ...COMPLETE!")
         else:
             log_info(f"Table '{deleted_table_name}' not found in the configuration.")

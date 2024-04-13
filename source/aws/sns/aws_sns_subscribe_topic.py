@@ -10,14 +10,15 @@ from source.utils.caching_utils import *
 class SubscribeTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
-    def __init__(self, topic, protocol, endpoint):
+    def __init__(self, topic_arn, protocol, endpoint, attributes):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
         self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
-        self.topic = topic
+        self.topic_arn = topic_arn
         self.protocol = protocol    
         self.endpoint = endpoint
+        self.attributes = attributes
 
 
     def execute(self):
@@ -35,14 +36,17 @@ class SubscribeTopic(BaseSnsManager):
         :return: The newly added subscription.
         """
         try:
-            subscription = self.topic.subscribe(
-                Protocol=self.protocol, Endpoint=self.endpoint, ReturnSubscriptionArn=True
+            subscription = self.sns_resource.subscribe(
+                TopicArn=self.topic_arn,
+                Protocol=self.protocol,
+                Endpoint=self.endpoint,
+                Attributes=self.attributes,
+                ReturnSubscriptionArn=True
             )
-            log_info("Subscribed %s %s to topic %s.", self.protocol, self.endpoint, self.topic.arn)
+            log_info("Subscribed %s %s to topic %s.", self.protocol, self.endpoint, self.topic_arn)
         except ClientError:
             log_error(
-                "Couldn't subscribe %s %s to topic %s.", self.protocol, self.endpoint, self.topic.arn
-            )
+                "Couldn't subscribe %s %s to topic %s.", self.protocol, self.endpoint, self.topic_arn)
             raise
         else:
             return subscription
