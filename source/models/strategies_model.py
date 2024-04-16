@@ -9,7 +9,7 @@ class StrategiesModel(BaseModel):
         strategy_id=None,
         strategy_name=None,
         strategy_description=None,
-        created_date=None
+        created_date=None,
     ):
         super().__init__()
 

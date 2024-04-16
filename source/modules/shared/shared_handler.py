@@ -307,7 +307,7 @@ class SharedHandler:
     def generate_aws_sns_topic_name(self, strategy_id):
         if strategy_id is None:
             log_error("Strategy ID cannot be None")
-        return f"TOPIC-STR-{strategy_id}"
+        return f"T-STR-{strategy_id}"
 
     def generate_aws_sns_topic_details(self, strategy_id, topic_type=None):
 
@@ -332,7 +332,7 @@ class SharedHandler:
     def get_aws_sqs_queue_name(self, strategy_id):
         if strategy_id is None:
             log_error("Strategy ID cannot be None")
-        return f"QUEUE-STR-{strategy_id}"
+        return f"Q-STR-{strategy_id}"
 
     def generate_aws_sqs_queue_details(self, strategy_id, queue_type=None):
             
@@ -360,3 +360,16 @@ class SharedHandler:
         # Get the SQS queue URL
         queue_url = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{queue_name}'
         return queue_url
+
+    def generate_strategy_details(self, filename):
+        if os.path.isfile(os.path.join(ALGORITHM_PATH, filename)) and not filename.startswith('.'):
+            strategy_name = os.path.splitext(filename)[0]
+            parts = strategy_name.split('-')
+
+            # Check if the split length matches the expected format (4 parts)
+            if len(parts) != 4:
+                log_error(f"Warning: Unexpected format for strategy name: {strategy_name}")
+                return
+
+            strategy_id, name, description = parts[1], parts[2], parts[3]
+            return strategy_id, name, description

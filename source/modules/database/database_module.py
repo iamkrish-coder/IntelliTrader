@@ -32,10 +32,8 @@ class Database(BaseDatabase):
         self.object_sns_topics_manager = SNSTopicsManager()
         self.topic_mode = self.app_configuration.get("topic_type")
         self.queue_mode = self.app_configuration.get("queue_type")
-        self.reset_tables = self.app_configuration.get("reset_tables")
-        self.reset_topics = self.app_configuration.get("reset_topics")
-        self.reset_queues = self.app_configuration.get("reset_queues")
-
+        self.reset_app = self.app_configuration.get("reset_app")
+        self.strategy_list = []
 
     ###########################################
     # Initialize Database Controller
@@ -43,12 +41,12 @@ class Database(BaseDatabase):
 
     def initialize(self):
         log_info(f" ********* Setting up the application requirements... Hang tight, we're on it! ********* ")
+        self.restore_factory_defaults()
         self.manage_tables()
         self.manage_strategies()
         self.manage_topics()
         self.manage_queues()
         self.manage_subscriptions()
-
 
     def prepare_request_parameters(self, event, table, model, dataset=None, projection=[], filters={}):
         attributes = None
@@ -71,6 +69,27 @@ class Database(BaseDatabase):
         log_info(f"Requesting AWS DynamoDB...")
         return self.manage_table_records(request)
 
+    def restore_factory_defaults(self):
+        # Reset Tables (if required)
+        if self.reset_app is True:           
+            log_info("Resetting the application to its factory defaults. Please wait...")
+            # Delete Tables
+            for config in self.table_configuration.values():
+                table = config["table_key"]
+                object_delete_table_handler = DatabaseDeleteTable(table, config)
+                object_delete_table_handler.initialize()
+
+            # Delete Topics
+            list_topics = self.object_sns_topics_manager.get_action("list_topics", **{})
+            topics_list = (list_topics.execute()).get("Topics")
+
+            # Reset Topics (if required)  
+            for topics in topics_list:
+                topic_arn = topics.get("TopicArn")
+                arguments = {"topic_arn": topic_arn}
+                delete_topic = self.object_sns_topics_manager.get_action("delete_topic", **arguments)
+                delete_topic.execute()
+
 
     def manage_tables(self):
         """
@@ -80,73 +99,14 @@ class Database(BaseDatabase):
             log_info(f"No tables to manage.")
             return
 
-        # 1. Delete Specified Tables
-        if self.reset_tables is not None and self.reset_tables is not False:
-            tables_to_delete = []
-            if self.reset_tables is True:
-                tables_to_delete = "ALL"
-            elif isinstance(self.reset_tables, list):
-                tables_to_delete = self.reset_tables  
-            else:
-                tables_to_delete = []  
-
-            for config in self.table_configuration.values():
-                table = config["table_key"]
-                if table in tables_to_delete or tables_to_delete == "ALL":
-                    object_delete_table_handler = DatabaseDeleteTable(table, config)
-                    object_delete_table_handler.initialize()
-
-        # 2. Create Required Tables
+        # Create Required Tables
         for config in self.table_configuration.values():
             table = config["table_key"]
             object_create_table_handler = DatabaseCreateTable(table, config)
             object_create_table_handler.initialize()
-            
-
-    def sync_strategies(self):
-        """
-        Load/Sync Strategies to cloud
-        """
-        saved_strategy_list = []
-        if self.strategy_list is not None:
-            for strategy in self.strategy_list:
-                saved_strategy_list.append(strategy.get("strategy_id"))
-
-        for filename in os.listdir(ALGORITHM_PATH):
-            if os.path.isfile(os.path.join(ALGORITHM_PATH, filename)) and not filename.startswith('.'):
-                strategy_name = os.path.splitext(filename)[0]
-                parts = strategy_name.split('-')
-
-                # Check if the split length matches the expected format (4 parts)
-                if len(parts) != 4:
-                    log_error(f"Warning: Unexpected format for strategy name: {strategy_name}")
-                    continue
-
-                strategy_id, name, description = parts[1], parts[2], parts[3]
-                current_date = time.strftime("%Y-%m-%d %H:%M:%S")        
-
-                if strategy_id in saved_strategy_list:
-                    continue
-    
-                dataset = {
-                    "strategy_id": strategy_id,
-                    "strategy_name": name,
-                    "strategy_description": description,
-                    "created_date": current_date
-                }
-                save_strategies = self.prepare_request_parameters(
-                    event=Events.PUT.value,
-                    table=Tables.TABLE_STRATEGIES.value,
-                    model=StrategiesModel,
-                    dataset=dataset
-                )
-                self.database_request(save_strategies)
 
         
-    def manage_strategies(self):
-        """
-        Pre-Requisite Strategy Operations
-        """
+    def get_strategy_list(self):
         dataset = None
         list_strategies = self.prepare_request_parameters(
             event=Events.SCAN.value,
@@ -156,7 +116,40 @@ class Database(BaseDatabase):
             projection=["strategy_id", "strategy_name"],
         )
         self.strategy_list = self.manage_table_records(list_strategies)
-        self.sync_strategies()
+
+
+    def manage_strategies(self):
+        """
+        Pre-Requisite Strategy Operations
+        """
+        saved_strategy_list = []
+        self.get_strategy_list()
+
+        if self.strategy_list is not None:
+            for strategy in self.strategy_list:
+                saved_strategy_list.append(strategy.get("strategy_id"))
+
+        for filename in os.listdir(ALGORITHM_PATH):
+            strategy_id, name, description = self.generate_strategy_details(filename)
+
+            if strategy_id in saved_strategy_list:
+                continue
+
+            current_date = time.strftime("%Y-%m-%d %H:%M:%S")        
+            dataset = {
+                "strategy_id": strategy_id,
+                "strategy_name": name,
+                "strategy_description": description,
+                "created_date": current_date
+            }
+            save_strategies = self.prepare_request_parameters(
+                event=Events.PUT.value,
+                table=Tables.TABLE_STRATEGIES.value,
+                model=StrategiesModel,
+                dataset=dataset
+            )
+            self.database_request(save_strategies)
+
         strategy = self.app_configuration.get("strategy")
         self.selected_strategy = self.app_configuration.get(f"strategy_{strategy}_params").get("strategy_id")
 
@@ -171,15 +164,10 @@ class Database(BaseDatabase):
         response = list_topics.execute()
         topics_list = response.get("Topics")
 
-        # Delete Topic
-        if self.reset_topics is not None and self.reset_topics is True:
-            for topics in topics_list:
-                topic_arn = topics.get("TopicArn")
-                arguments = {"topic_arn": topic_arn}
-                delete_topic = self.object_sns_topics_manager.get_action("delete_topic", **arguments)
-                delete_topic.execute()
-
         # Create Topic
+        if self.strategy_list is None:
+            self.get_strategy_list()
+            
         if self.strategy_list is None:
             log_info(f"No Strategy Topics to manage.")
             return
@@ -197,13 +185,13 @@ class Database(BaseDatabase):
                     log_info(f"Skipping topic creation for Strategy {strategy_id}")
                     continue
 
-                # Create Topic in AWS SNS and add entry to AWS DynamoDB
+                # Create Topic in AWS SNS 
                 arguments = {"mode": self.topic_mode, "name": topic_name}
                 create_topic = self.object_sns_topics_manager.get_action("create_topic", **arguments)
                 create_topic.execute()
                 
+                # Add entry to AWS DynamoDB
                 current_date = time.strftime("%Y-%m-%d %H:%M:%S")      
-
                 dataset = {
                     "topic_arn": topic_arn,
                     "topic_name": topic_name,
@@ -252,13 +240,17 @@ class Database(BaseDatabase):
                 "attributes": {},
             }
             subscribe_topic = self.object_sns_topics_manager.get_action("subscribe_topic", **arguments)
-            # subscribe_topic.execute()
+            subscribe_topic.execute()
 
-        if self.app_configuration.get("reset_topics"):
+            # TODO : Update DB is_subscribed = True
+
+        if self.app_configuration.get("app_reset"):
             subscription_arn = ""
             arguments = {"subscription_arn": subscription_arn}
             unsubscribe_topic = self.object_sns_topics_manager.get_action("unsubscribe_topic", **arguments)
-            # unsubscribe_topic.execute()
+            unsubscribe_topic.execute()
+
+            # TODO : Update DB is_subscribed = False and is_active = False
 
 
     def manage_table_records(self, dataset):

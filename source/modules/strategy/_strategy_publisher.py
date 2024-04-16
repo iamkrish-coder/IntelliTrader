@@ -47,7 +47,6 @@ class StrategyPublisher(BaseStrategy):
         return self.database.manage_table_records(request)
 
     def get_or_create_topic(self):
-
         log_info(f"Checking Existing SNS Topic...")
         dataset = {
                     "topic_arn": self.topic_arn,

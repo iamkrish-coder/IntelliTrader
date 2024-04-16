@@ -13,9 +13,7 @@ class StrategyConfigurations:
         
     def manage_configurations(self):
         try:
-            strategy_id = int(self.configuration.get("strategy"))
-            strategy_enum = Strategy(strategy_id)
-            strategy_name = strategy_enum.name
+            strategy_id = self.configuration.get("strategy")
 
             # Initialize Settings
             config = self.configuration
@@ -34,8 +32,8 @@ class StrategyConfigurations:
             if config['market_trade']:
                 settings['market_params'] = config['market_trade_params']
 
-            # Retrieve strategy params dynamically (assuming strategy_enum exists)
-            strategy_param_key = f"strategy_{strategy_enum.value}_params"
+            # Retrieve strategy params dynamically (assuming strategy_id exists)
+            strategy_param_key = f"strategy_{strategy_id}_params"
             settings['strategy_params'] = config.get(strategy_param_key)
 
             # Common params (assuming it's always a dict)

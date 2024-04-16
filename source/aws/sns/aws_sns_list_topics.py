@@ -25,7 +25,6 @@ class ListTopics(BaseSnsManager):
         """
         try:
             response = self.sns_resource.list_topics()
-            log_info("Received topics")
         except ClientError:
             log_error("Couldn't get topics.")
             raise

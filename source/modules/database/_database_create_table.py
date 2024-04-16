@@ -29,7 +29,7 @@ class DatabaseCreateTable:
             table_properties = self.build_table_definition()
             
             try:
-                log_info(f"Creating table '{self.table_name}'...")
+                log_info(f"Creating '{self.table_name}'...")
                 response                  = self.dynamodb_resource.create_table(
                     TableName             = self.table_name,
                     KeySchema             = table_properties['table_schema'],
@@ -40,7 +40,7 @@ class DatabaseCreateTable:
                     }
                 )
                 response.wait_until_exists()
-                log_info(f"Create '{self.table_name}' Table ...COMPLETE!")
+                log_info(f"Create '{self.table_name}' table ...COMPLETE!")
                 
             except ClientError as e:
                 log_error(f"Error creating table {self.table_name}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
