@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.10.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.9.0...v3.10.0) (2024-04-17)
+
+
+### Features
+
+* Improved SNS Class managment, split all SNS actions to their own implmenting classes ([f0bf226](https://github.com/iamkrish-coder/IntelliTrader/commit/f0bf2268e0f8e00300d4ef6cb3666523956ee3ca))
+* Major refactoring for logging, also completed all functions within SNS operations. ([39f4d0c](https://github.com/iamkrish-coder/IntelliTrader/commit/39f4d0ca501c88e5a5bd2966384362e780b6989f))
+* Strategies and Topics Prefill and management ([cb97a98](https://github.com/iamkrish-coder/IntelliTrader/commit/cb97a98c1901caa09b6512482c2aa3f67279a599))
+
 ## [3.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.8.0...v3.9.0) (2024-04-10)
 
 
