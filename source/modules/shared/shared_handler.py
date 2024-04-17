@@ -305,24 +305,11 @@ class SharedHandler:
         return formatted_timestamp
 
     def generate_aws_sns_topic_name(self, strategy_id):
+        if strategy_id is None:
+            log_error("Strategy ID cannot be None")
+        return f"T-STR-{strategy_id}"
 
-        # Create a mapping between strategy IDs and topic names
-        strategy_id_enum = Strategy[f"ALGORITHM_{strategy_id}"]
-        strategy_topic_mapping = {
-            Strategy.ALGORITHM_1: Topics.TOPIC_1,
-            Strategy.ALGORITHM_2: Topics.TOPIC_2,
-            Strategy.ALGORITHM_3: Topics.TOPIC_3,
-            Strategy.ALGORITHM_4: Topics.TOPIC_4,
-            Strategy.ALGORITHM_5: Topics.TOPIC_5,
-            Strategy.ALGORITHM_6: Topics.TOPIC_6,
-        }
-
-        if strategy_id_enum in strategy_topic_mapping:
-            return strategy_topic_mapping[strategy_id_enum].value
-        else:
-            return None
-
-    def generate_aws_sns_topic_arn(self, strategy_id, topic_type=None):
+    def generate_aws_sns_topic_details(self, strategy_id, topic_type=None):
 
         # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
         topic_name = self.generate_aws_sns_topic_name(strategy_id)
@@ -343,24 +330,11 @@ class SharedHandler:
         return arn_formatted, topic_name        
 
     def get_aws_sqs_queue_name(self, strategy_id):
+        if strategy_id is None:
+            log_error("Strategy ID cannot be None")
+        return f"Q-STR-{strategy_id}"
 
-        # Create a mapping between strategy IDs and queue names
-        strategy_id_enum = Strategy[f"ALGORITHM_{strategy_id}"]
-        strategy_queue_mapping = {
-            Strategy.ALGORITHM_1: Queues.QUEUE_1,
-            Strategy.ALGORITHM_2: Queues.QUEUE_2,
-            Strategy.ALGORITHM_3: Queues.QUEUE_3,
-            Strategy.ALGORITHM_4: Queues.QUEUE_4,
-            Strategy.ALGORITHM_5: Queues.QUEUE_5,
-            Strategy.ALGORITHM_6: Queues.QUEUE_6
-        }
-
-        if strategy_id_enum in strategy_queue_mapping:
-            return strategy_queue_mapping[strategy_id_enum].value
-        else:
-            return None 
-
-    def generate_aws_sqs_queue_arn(self, strategy_id, queue_type=None):
+    def generate_aws_sqs_queue_details(self, strategy_id, queue_type=None):
             
         # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
         queue_name  = self.get_aws_sqs_queue_name(strategy_id)
@@ -386,3 +360,16 @@ class SharedHandler:
         # Get the SQS queue URL
         queue_url = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{queue_name}'
         return queue_url
+
+    def generate_strategy_details(self, filename):
+        if os.path.isfile(os.path.join(ALGORITHM_PATH, filename)) and not filename.startswith('.'):
+            strategy_name = os.path.splitext(filename)[0]
+            parts = strategy_name.split('-')
+
+            # Check if the split length matches the expected format (4 parts)
+            if len(parts) != 4:
+                log_error(f"Warning: Unexpected format for strategy name: {strategy_name}")
+                return
+
+            strategy_id, name, description = parts[1], parts[2], parts[3]
+            return strategy_id, name, description

@@ -82,8 +82,8 @@ class ActionEvaluateSecondaryConditions():
             
                         return True 
                     
-                    except Exception as e:
-                        log_error(f"An error occurred while evaluating secondary conditions for Long Trade: {str(e)}")
+                    except Exception as error:
+                        log_error(f"An error occurred while evaluating secondary conditions for Long Trade: {str(error)}")
                         return False
 
 
@@ -113,12 +113,12 @@ class ActionEvaluateSecondaryConditions():
                         #     return False
                     
                         return True 
-                    except Exception as e:
-                        log_error(f"An error occurred while evaluating secondary conditions for Short Trade: {str(e)}")
+                    except Exception as error:
+                        log_error(f"An error occurred while evaluating secondary conditions for Short Trade: {str(error)}")
                         return False
             
-            except Exception as e:
-                log_error(f"An error occurred while evaluating secondary conditions for {symbol}: {str(e)}")
+            except Exception as error:
+                log_error(f"An error occurred while evaluating secondary conditions for {symbol}: {str(error)}")
 
         return results
 

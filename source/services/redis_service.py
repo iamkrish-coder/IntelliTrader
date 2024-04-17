@@ -11,8 +11,8 @@ class RedisServiceController:
             try:
                 subprocess.run(['wsl', 'sudo', 'service', 'redis-server', 'start'], check=True)
                 log_info("Redis server started successfully.")
-            except subprocess.CalledProcessError as e:
-                log_error(f"Error starting Redis server: {e}")
+            except subprocess.CalledProcessError as error:
+                log_error(f"Error starting Redis server: {error}")
         else:
             log_info("Redis server is already running.")
             
@@ -21,8 +21,8 @@ class RedisServiceController:
             # Execute the command to stop the Redis server in WSL
             subprocess.run(['wsl', 'sudo', 'service', 'redis-server', 'stop'], check=True)
             log_info("Redis server stopped successfully.")
-        except subprocess.CalledProcessError as e:
-            log_error(f"Error stopping Redis server: {e}")
+        except subprocess.CalledProcessError as error:
+            log_error(f"Error stopping Redis server: {error}")
 
     def is_redis_running(self):
         # Attempt to connect to the Redis server's default port

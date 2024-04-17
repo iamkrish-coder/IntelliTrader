@@ -81,8 +81,8 @@ class StrategyController(BaseController):
             if not candlestick_data_list:
                 log_info("No candlestick data returned. Skipping indicator calculation.")
                 
-        except Exception as e:
-            print(f"Error fetching candlestick data: {e}. Skipping indicator calculation.")
+        except Exception as error:
+            print(f"Error fetching candlestick data: {error}. Skipping indicator calculation.")
             
         else:
             # 5. Calculate indicators

@@ -1,5 +1,6 @@
 import boto3
 import json
+
 from source.utils.logging_utils import *
 from botocore.exceptions import ClientError
 
@@ -17,6 +18,6 @@ def get_secret(secret, region):
         secret_data = response['SecretString']
         log_info(f"Retrieving Secret Keys From AWS Secrets Manager ...COMPLETE!")
         return secret_data
-    except ClientError as e:
-        log_error(f"Error retrieving secret: {e}")
-        raise e
+    except ClientError as error:
+        log_error(f"Error retrieving secret: {error}")
+        raise error

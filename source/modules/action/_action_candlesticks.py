@@ -69,7 +69,7 @@ class ActionCandlesticks:
                     'token': self.trading_token,
                     'candlestick_data': candlestick_data
                 })
-        except Exception as e:
-            log_error(f"An error occurred while monitoring stock alerts: {str(e)}")
+        except Exception as error:
+            log_error(f"An error occurred while monitoring stock alerts: {str(error)}")
 
         return candlestick_data_list

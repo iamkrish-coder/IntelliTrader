@@ -10,14 +10,6 @@ class Logger(Enum):
     MONITORING_LOGGER = "monitoring_logger"
     TRADE_LOGGER      = "trade_logger"
 
-class Queues(Enum):
-    QUEUE_1     = 'IntelliTrader_Q1'
-    QUEUE_2     = 'IntelliTrader_Q2'
-    QUEUE_3     = 'IntelliTrader_Q3'
-    QUEUE_4     = 'IntelliTrader_Q4'
-    QUEUE_5     = 'IntelliTrader_Q5'
-    QUEUE_6     = 'IntelliTrader_Q6'
-
 class AWS_SQS(Enum):
     ARN        = 'arn'
     AWS        = 'aws'
@@ -26,6 +18,14 @@ class AWS_SQS(Enum):
     ACCOUNT_ID = '265153260161'
     URL        = 'https://sqs.ap-south-1.amazonaws.com'
 
+class Queues(Enum):
+    QUEUE_1     = 'IntelliTrader_Q1'
+    QUEUE_2     = 'IntelliTrader_Q2'
+    QUEUE_3     = 'IntelliTrader_Q3'
+    QUEUE_4     = 'IntelliTrader_Q4'
+    QUEUE_5     = 'IntelliTrader_Q5'
+    QUEUE_6     = 'IntelliTrader_Q6'
+
 class Topics(Enum):
     TOPIC_1     = 'IntelliTrader_T1'
     TOPIC_2     = 'IntelliTrader_T2'
@@ -33,6 +33,14 @@ class Topics(Enum):
     TOPIC_4     = 'IntelliTrader_T4'
     TOPIC_5     = 'IntelliTrader_T5'
     TOPIC_6     = 'IntelliTrader_T6'
+
+class Strategy(Enum):
+    ALGORITHM_1  = 1
+    ALGORITHM_2  = 2
+    ALGORITHM_3  = 3   
+    ALGORITHM_4  = 4
+    ALGORITHM_5  = 5
+    ALGORITHM_6  = 6 
 
 class AWS_SNS(Enum):
     ARN        = 'arn'
@@ -49,6 +57,7 @@ class Tables(Enum):
     TABLE_TOPICS = 'topics'
     TABLE_QUEUES = 'queues'
     TABLE_ALERTS = 'alerts'
+    TABLE_STRATEGIES = 'strategies'
 
 class Events(Enum):
     PUT    = 'put'
@@ -97,14 +106,6 @@ class Validity(Enum):
 class Strategy_Type(Enum):
     LONG  = 'LONG'
     SHORT = 'SHORT'
-
-class Strategy(Enum):
-    ALGORITHM_1  = 1
-    ALGORITHM_2  = 2
-    ALGORITHM_3  = 3   
-    ALGORITHM_4  = 4
-    ALGORITHM_5  = 5
-    ALGORITHM_6  = 6 
 
 class RSI(Enum):
     RSI_5  = 5

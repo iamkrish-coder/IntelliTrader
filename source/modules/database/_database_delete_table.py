@@ -23,28 +23,32 @@ class DatabaseDeleteTable:
     def delete_table(self):      
         response = None
         if self.table_name is not None:
-            try:
-                log_info(f"Deleting table '{self.table_name}'...")
-                response = self.dynamodb_table.delete()
-                
-                if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-                    self.remove_table_cache()
-                    self.update_table_configuration()
+            """ Check If Table Exists """
+            table_exists = self.check_table_exists()  
 
-                log_info(f"Delete '{self.table_name}' Table ...COMPLETE!")
-                return response
+            if table_exists:
+                try:
+                    log_info(f"Resetting '{self.table_name}'...")
+                    response = self.dynamodb_table.delete()
+                    
+                    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+                        self.remove_table_cache()
+                        self.update_table_configuration()
+
+                    log_info(f"Delete '{self.table_name}' table ...COMPLETE!")
+                    return response
+                    
+                except ClientError as error:               
+                    log_error(f"Error deleting table {self.table_name}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+                    raise error
                 
-            except ClientError as e:               
-                log_error(f"Error deleting table {self.table_name}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-                raise
-            
-        return response
+            return response
         
     def remove_table_cache(self):
         deleted_table_name = cache_directory = self.table_name
         cache_directory = self.table_name
         remove_cache(Cache_Type.DISK.value, cache_directory)
-        log_info(f"Clear '{deleted_table_name}' cache ...COMPLETE!")
+        log_info(f"Delete '{deleted_table_name}' cache ...COMPLETE!")
 
     def update_table_configuration(self):
         deleted_table_name = self.table_name
@@ -56,11 +60,28 @@ class DatabaseDeleteTable:
         # Check if the deleted table name exists in the config
         if deleted_table_name in config_data:
             # Remove the entry associated with the deleted table name
-            del config_data[deleted_table_name]
-            log_info(f"Configuration '{deleted_table_name}' removal ...COMPLETE!")
+            # del config_data[deleted_table_name] # Commented out for now
+            log_info(f"Delete '{deleted_table_name}' configuration ...COMPLETE!")
         else:
             log_info(f"Table '{deleted_table_name}' not found in the configuration.")
     
         # Write the updated config back to the file
         with open(CONFIGURATION_PATH + '/' + TABLE_CONFIGURATION_FILE, 'w') as file:
             json.dump(config_data, file, indent=4)        
+
+    def check_table_exists(self):
+        try:
+            self.dynamodb_table.load()
+            exists = True
+        except ClientError as error:
+            if error.response['Error']['Code'] == 'ResourceNotFoundException':
+                exists = False
+            else:
+                log_error(
+                    "Couldn't check for existence of %s. Here's why: %s: %s",
+                    self.table_name,
+                    error.response["Error"]["Code"],
+                    error.response["Error"]["Message"],
+                )
+                raise error
+        return exists

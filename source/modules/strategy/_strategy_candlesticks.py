@@ -68,8 +68,8 @@ class StrategyCandlesticks:
             self.cache_path = os.path.join(CACHE_PATH, formatted_date)
             try:
                 os.makedirs(self.cache_path, exist_ok=True)
-            except OSError as e:
-                print(f"Error creating directory: {e}")
+            except OSError as error:
+                print(f"Error creating directory: {error}")
 
         # Individual cache objects for timeframes
         timeframe_caches = {}
@@ -163,7 +163,7 @@ class StrategyCandlesticks:
                     'candlestick_data': candlestick_data
                 })
 
-        except Exception as e:
-            log_error(f"An error occurred while scanning watchlist stocks: {str(e)}")
+        except Exception as error:
+            log_error(f"An error occurred while scanning watchlist stocks: {str(error)}")
 
         return candlestick_data_list

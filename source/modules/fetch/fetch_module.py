@@ -39,8 +39,8 @@ class Fetch:
                 instrument_token = instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]
                 log_info(f'::::::: Instrument ::::::: Exchange: {exchange} Symbol: {symbol} Token: {instrument_token} ...COMPLETE!')
                 return instrument_token
-            except Exception as e:
-                log_warn(f"An exception occurred: {e}")
+            except Exception as error:
+                log_warn(f"An exception occurred: {error}")
                 exit()
         else:
             log_warn(f'Please verify that the exchange {exchange} and symbol {symbol} are present.')
@@ -59,8 +59,8 @@ class Fetch:
                 for symbol in symbol_list:
                     token_list.append(int(instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]))
                 return token_list
-            except Exception as e:
-                log_warn(f"An exception occurred: {e}")
+            except Exception as error:
+                log_warn(f"An exception occurred: {error}")
                 exit()
         else:
             log_warn(f'Please verify that the exchange [{exchange}] and symbol_list [{symbol_list}] are present.')
@@ -180,9 +180,9 @@ class Fetch:
                 log_warn(f'Please verify that the exchange [{exchange}], symbol [{symbol}], timeframe[{timeframe}] and duration[{duration}] are present.')
                 return None
         
-        except Exception as e:
+        except Exception as error:
             # Handle the permission error with a user-friendly message
-            error_message = f"Error fetching historical data: {e}. Your API subscription might be expired. Please renew your subscription to continue."
+            error_message = f"Error fetching historical data: {error}. Your API subscription might be expired. Please renew your subscription to continue."
             raise ValueError(error_message)
 
 
@@ -304,9 +304,9 @@ class Fetch:
     # Fetch backtest data
     def fetch_backtest_data(self, args):        
         if(args['backtest_timeframe'] == 'latest'):
-            return(self.fetch_backtest_latest_data(_nseData, args))
+            return self.fetch_backtest_latest_data(_nseData, args)
         else:
-            return(self.fetch_backtest_historical_data(args))
+            return self.fetch_backtest_historical_data(args)
                 
     def fetch_backtest_latest_data(_nseData, dataset):
         # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty
@@ -323,8 +323,8 @@ class Fetch:
                 return df_subset
             else:
                 log_info("Error fetching data or data is empty.")
-        except Exception as e:
-            log_info(f"Error fetching data for {dataset['symbol']}: {str(e)}")
+        except Exception as error:
+            log_info(f"Error fetching data for {dataset['symbol']}: {str(error)}")
             return None
 
     def fetch_backtest_historical_data(self, args):

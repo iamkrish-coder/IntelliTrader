@@ -29,7 +29,7 @@ def aws_sqs_subscribe(sqs_client, queue_url):
             WaitTimeSeconds = 5
         )
         return response
-    except botocore.exceptions.ClientError as e:
-        print(f"Error receiving SQS messages: {e}")
+    except botocore.exceptions.ClientError as error:
+        print(f"Error receiving SQS messages: {error}")
         return None
 

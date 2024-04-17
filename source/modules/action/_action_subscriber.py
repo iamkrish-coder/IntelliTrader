@@ -85,7 +85,7 @@ class ActionSubscriber(BaseAction):
             
             queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_arn(strategy_id, queue_type)
 
-            topic_arn, topic_name = self.generate_aws_sns_topic_arn(strategy_id, topic_type)    
+            topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, topic_type)    
 
             topic_arns = self.get_topics_for_subscription()
 

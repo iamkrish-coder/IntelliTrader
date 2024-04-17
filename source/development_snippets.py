@@ -199,8 +199,8 @@ try:
         # '20': rsi[-2] <= 60,
         # '21': wma5[-1] > wma20[-1]
     }
-except Exception as e:
-    log_error(f"An error occurred while evaluating primary conditions: {str(e)}")
+except Exception as error:
+    log_error(f"An error occurred while evaluating primary conditions: {str(error)}")
 
         
 # Log and display each Condition check
@@ -250,8 +250,8 @@ def initialize_strategy(self, configuration):
 
         self.execute_strategy(**settings)
 
-    except Exception as e:
-        log_info(f"An error occurred: {e}")
+    except Exception as error:
+        log_info(f"An error occurred: {error}")
 
 ##########################################
 Execute Strategy
@@ -502,8 +502,8 @@ def evaluate_primary_conditions(self, candlestick_data, indicator_data):
             # '20': rsi[-2] <= 60,
             # '21': wma5[-1] > wma20[-1]
         }
-    except Exception as e:
-        log_error(f"An error occurred while evaluating primary conditions: {str(e)}")
+    except Exception as error:
+        log_error(f"An error occurred while evaluating primary conditions: {str(error)}")
 
         
     # Log and display each Condition check

@@ -80,64 +80,41 @@ def get_message(resource_string):
         # logging.warning(f"get_message received a non-enum string: {resource_string}")
         return resource_string
 
+def log_message(message, level, *args, **kwargs):
+    """
+    Logs a message with the specified level.
 
-def log_info(message_enum, *args, **kwargs):
+    Args:
+    message: An enumeration value representing the message key.
+    level: The logging level (e.g., logging.INFO, logging.ERROR).
+    *args: Positional arguments for message formatting.
+    **kwargs: Keyword arguments for message formatting.
+    """
+    formatted_message = ResourceStrings.get(message)  
+    if not formatted_message:
+        formatted_message = message
     if kwargs:
-        formatted_message = ResourceStrings.get(message_enum)    
-        if formatted_message:
-            formatted_message = formatted_message.format(**kwargs)
-        else:
-            formatted_message = get_message(message_enum)
+        formatted_message = formatted_message.format(**kwargs)
     elif args:
-        formatted_message = ResourceStrings.get(message_enum)            
-        if formatted_message:
+        if "%" in formatted_message:
+            formatted_message = formatted_message % args
+        else:
             formatted_message = formatted_message.format(*args)
-        else:
-            formatted_message = get_message(message_enum)
     else:
-        formatted_message = get_message(message_enum)
-        
+        formatted_message = get_message(message)
+
     logger = logging.getLogger(__name__)
-    logger.info(formatted_message)
+    logger.log(level, formatted_message)
 
+def log_info(message, *args, **kwargs):
+    """Logs a message with INFO level."""
+    log_message(message, logging.INFO, *args, **kwargs)
 
-def log_error(message_enum, *args, **kwargs):
-    if kwargs:
-        formatted_message = ResourceStrings.get(message_enum)    
-        if formatted_message:
-            formatted_message = formatted_message.format(**kwargs)
-        else:
-            formatted_message = get_message(message_enum)
-        
-    elif args:
-        formatted_message = ResourceStrings.get(message_enum)    
-        if formatted_message:
-            formatted_message = formatted_message.format(*args)
-        else:
-            formatted_message = get_message(message_enum)
-    else:
-        formatted_message = get_message(message_enum)
-        
-    logger = logging.getLogger(__name__)
-    logger.error(formatted_message)
+def log_error(message, *args, **kwargs):
+    """Logs a message with ERROR level."""
+    log_message(message, logging.ERROR, *args, **kwargs)
 
-
-def log_warn(message_enum, *args, **kwargs):
-    if kwargs:
-        formatted_message = ResourceStrings.get(message_enum)    
-        if formatted_message:
-            formatted_message = formatted_message.format(**kwargs)
-        else:
-            formatted_message = get_message(message_enum)
-    elif args:
-        formatted_message = ResourceStrings.get(message_enum)            
-        if formatted_message:
-            formatted_message = formatted_message.format(*args)
-        else:
-            formatted_message = get_message(message_enum)
-    else:
-        formatted_message = get_message(message_enum)
-        
-    logger = logging.getLogger(__name__)
-    logger.warning(formatted_message)
+def log_warn(message, *args, **kwargs):
+    """Logs a message with WARNING level."""
+    log_message(message, logging.WARNING, *args, **kwargs)
 

@@ -1,14 +1,14 @@
 # aws_dynamodb.py
 
+import boto3
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
 from source.aws.DynamoDB.aws_dynamo_expression_builder import DynamoExpressionBuilder
 from boto3.resources.model import DefinitionWithParams
-from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
-import boto3
 
 class DynamoDB:
     def __init__(self, table, attribute_data=None, partition_key=None, sort_key=None, projection=None, filters=None):
@@ -38,9 +38,9 @@ class DynamoDB:
                 log_info("Item updated successfully!")
                 return response
 
-        except ClientError as e:           
-            log_error(f"Error updating item {self.attribute_data} from table {self.table}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-            raise
+        except ClientError as error:           
+            log_error(f"Error updating item {self.attribute_data} from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+            raise error
         return response  
 
     def put(self):
@@ -58,9 +58,9 @@ class DynamoDB:
                 log_info("Item added successfully!")
                 return response
             
-        except ClientError as e:           
-            log_error(f"Error adding item {self.attribute_data} from table {self.table}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-            raise
+        except ClientError as error:           
+            log_error(f"Error adding item {self.attribute_data} from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+            raise error
         return response  
 
     def scan(self):
@@ -84,9 +84,9 @@ class DynamoDB:
                     log_info(f"Record fetched successfully: {response}")                        
                     return response["Items"]
 
-        except ClientError as e:
-            log_error(f"Error fetching record from table {self.table}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-            raise      
+        except ClientError as error:
+            log_error(f"Error fetching record from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+            raise error
         return response
         
     def query(self):
@@ -111,8 +111,8 @@ class DynamoDB:
                     log_info(f"Record fetched successfully: {response}")                        
                     return response["Items"]
 
-        except ClientError as e:
-            log_error(f"Error fetching record from table {self.table}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-            raise
+        except ClientError as error:
+            log_error(f"Error fetching record from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+            raise error
         return response
         

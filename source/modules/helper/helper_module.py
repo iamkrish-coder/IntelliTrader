@@ -28,8 +28,8 @@ class Helper:
         connection_cache_path = os.path.join(CACHE_PATH, CURRENT_DATE, CACHE_CONNECTION_DIR)        
         try:
             os.makedirs(connection_cache_path, exist_ok=True)
-        except OSError as e:
-            print(f"Error creating directory: {e}")
+        except OSError as error:
+            print(f"Error creating directory: {error}")
 
         with open(os.path.join(connection_cache_path, filename), 'w') as file:
             if isinstance(data, dict):
@@ -81,5 +81,5 @@ class Helper:
             print(f"\n ******** {label} ********\n")
             print(formatted_json)
 
-        except Exception as e:
-            log_error(f"Error occurred while formatting data: {str(e)}")
+        except Exception as error:
+            log_error(f"Error occurred while formatting data: {str(error)}")

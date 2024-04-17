@@ -104,8 +104,8 @@ class Orders:
                                         validity         = trade_validity)
 
             log_info(f"Market order placed. Order ID: {order_id}")
-        except Exception as e:
-            log_info("Order placement failed: {}".format(e))
+        except Exception as error:
+            log_info("Order placement failed: {}".format(error))
 
         return 
 
@@ -136,8 +136,8 @@ class Orders:
             else:
                 error_message = response["error_type"] + ": " + response["message"]
                 log_error(f"Limit order placement failed. Error: {error_message}")
-        except Exception as e:
-            log_info(f"Order placement failed: {e}")
+        except Exception as error:
+            log_info(f"Order placement failed: {error}")
 
     # Place a stop loss order for a stock with given quantity
     def create_sl_order():
@@ -155,8 +155,8 @@ class Orders:
             try:
                 single_gtt = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
                 log_info(f"Single leg gtt order trigger_id: {single_gtt['trigger_id']}")
-            except Exception as e:
-                log_error(f"Error placing single leg gtt order: {e}")
+            except Exception as error:
+                log_error(f"Error placing single leg gtt order: {error}")
         
         # Place two-leg(OCO) gtt order
         elif gtt_type == 'oco':            
@@ -164,8 +164,8 @@ class Orders:
             try:
                 gtt_oco = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
                 log_info(f"GTT OCO trigger_id: {gtt_oco['trigger_id']}")
-            except Exception as e:
-                log_info(f"Error placing gtt oco order: {e}")
+            except Exception as error:
+                log_info(f"Error placing gtt oco order: {error}")
 
         else:
             log_warn("Error placing gtt order, gtt type is not defined")

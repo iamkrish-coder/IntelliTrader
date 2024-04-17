@@ -131,7 +131,7 @@ class StrategyScanner(BaseStrategy):
                     message = f"{exchange}, {symbol}, {token}"
                     results.append(message)
 
-            except Exception as e:
-                log_error(f"An error occurred while evaluating primary conditions for {symbol}: {str(e)}")
+            except Exception as error:
+                log_error(f"An error occurred while evaluating primary conditions for {symbol}: {str(error)}")
 
         return results

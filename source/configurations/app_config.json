@@ -6,6 +6,7 @@
   "runtime": "5minute",
   "topic_type": "fifo",
   "queue_type": "fifo",
+  "reset_app": false,
   "market_trade": true,
   "market_trade_params": {
     "market_indices": {
@@ -56,9 +57,9 @@
     "product": "CNC",
     "validity": "DAY"
   },
-  "strategy": "1",
-  "strategy_1_params": {
-    "strategy_id": "1",
+  "strategy": "001",
+  "strategy_001_params": {
+    "strategy_id": "001",
     "exchange": "NSE",
     "symbol": "default",
     "timeframe": "5minute",

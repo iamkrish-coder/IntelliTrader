@@ -1,6 +1,35 @@
 import boto3
 import uuid
+
 from boto3.session import botocore
+from botocore.exceptions import ClientError
+from source.aws.sns.aws_sns_create_topic import CreateTopic
+from source.aws.sns.aws_sns_delete_topic import DeleteTopic
+from source.aws.sns.aws_sns_list_subscriptions import ListSubscriptions
+from source.aws.sns.aws_sns_list_topics import ListTopics   
+from source.aws.sns.aws_sns_publish_topic import PublishTopic
+from source.aws.sns.aws_sns_subscribe_topic import SubscribeTopic
+from source.aws.sns.aws_sns_unsubscribe_topic import UnsubscribeTopic
+
+
+class SNSTopicsManager:
+    def __init__(self):
+        self.actions = {
+            "create_topic": CreateTopic,
+            "delete_topic": DeleteTopic,
+            "list_subscriptions": ListSubscriptions,
+            "list_topics": ListTopics,
+            "publish_topic": PublishTopic,
+            "subscribe_topic": SubscribeTopic,
+            "unsubscribe_topic": UnsubscribeTopic
+        }
+
+    def get_action(self, action_type, **kwargs):
+        action_class = self.actions.get(action_type)
+        if not action_class:
+            raise ValueError(f"Invalid SNS action: {action_type}")
+
+        return action_class(**kwargs)
 
 def aws_sns_publish(sns_client, topic_arn, message, subject=""):
     """
@@ -41,8 +70,8 @@ def aws_sns_subscribe(sns_client, topic_arn, protocol, endpoint):
     try:
         response = sns_client.subscribe(TopicArn=topic_arn, Protocol=protocol, Endpoint=endpoint)
         return response
-    except botocore.exceptions.ClientError as e:
-        print(f"Error subscribing to SNS topic: {e}")
+    except botocore.exceptions.ClientError as error:
+        print(f"Error subscribing to SNS topic: {error}")
         return None
 
 
@@ -55,6 +84,6 @@ def aws_sns_receive(sns_client, subscription_arn):
             SubscriptionArn=subscription_arn, MaxNumberOfMessages=10
         )
         return response
-    except botocore.exceptions.ClientError as e:
-        print(f"Error receiving SNS messages: {e}")
+    except botocore.exceptions.ClientError as error:
+        print(f"Error receiving SNS messages: {error}")
         return None
