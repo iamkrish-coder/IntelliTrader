@@ -33,8 +33,8 @@ def create_cache_path(cache_path):
     if not os.path.exists(cache_path):
         try:
             os.makedirs(cache_path, exist_ok=True)
-        except OSError as e:
-            log_error(f"Error creating cache directory: {e}")    
+        except OSError as error:
+            log_error(f"Error creating cache directory: {error}")    
         
         
 def clear_cache(cache_name, cache_directory=None):
@@ -50,8 +50,8 @@ def clear_cache(cache_name, cache_directory=None):
         try:
             if os.path.isdir(cache_path):
                 shutil.rmtree(cache_path)
-        except OSError as e:
-            log_error(f"Error removing directory {cache_path}: {e}")      
+        except OSError as error:
+            log_error(f"Error removing directory {cache_path}: {error}")      
     else:    
         remove_cache_directories()
 
@@ -63,8 +63,8 @@ def remove_cache(cache_name, cache_directory=None):
         try:
             if os.path.isdir(cache_path):
                 shutil.rmtree(cache_path)
-        except OSError as e:
-            log_error(f"Error removing directory {cache_path}: {e}")      
+        except OSError as error:
+            log_error(f"Error removing directory {cache_path}: {error}")      
     else:    
         remove_cache_directories()
 
@@ -79,8 +79,8 @@ def remove_cache_directories():
         try:
             if os.path.isdir(dir):
                 shutil.rmtree(dir)  
-        except OSError as e:
-            log_error(f"Error removing directory {dir}: {e}")           
+        except OSError as error:
+            log_error(f"Error removing directory {dir}: {error}")           
 
 
 def get_cached_item(cache_name, cache_directory, key):

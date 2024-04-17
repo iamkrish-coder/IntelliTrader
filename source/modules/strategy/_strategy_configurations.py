@@ -41,7 +41,7 @@ class StrategyConfigurations:
             
             return settings
 
-        except Exception as e:
-            log_info(f"An error occurred retrieving Application Settings: {e}")
+        except Exception as error:
+            log_info(f"An error occurred retrieving Application Settings: {error}")
             return None
 

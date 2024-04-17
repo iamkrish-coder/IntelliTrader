@@ -160,8 +160,8 @@ class StrategyPublisher(BaseStrategy):
                         successfully_published.append(message)
                     else:
                         log_error("Failed to get Message ID in response.")
-                except Exception as e:
-                    log_error(f"Error publishing message to SNS: {str(e)}")
+                except Exception as error:
+                    log_error(f"Error publishing message to SNS: {str(error)}")
 
                 time.sleep(1)
 
@@ -212,8 +212,8 @@ class StrategyPublisher(BaseStrategy):
                         successfully_published.append(message)
                     else:
                         log_error("Failed to get Message ID in response.")
-                except Exception as e:
-                    log_error(f"Error publishing message to SQS: {str(e)}")
+                except Exception as error:
+                    log_error(f"Error publishing message to SQS: {str(error)}")
 
                 time.sleep(1)
                 if len(successfully_published) == len(self.alerts):

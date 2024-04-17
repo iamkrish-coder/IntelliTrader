@@ -139,7 +139,7 @@ class Connection:
     def remove_file(self, file_path):
         try:
             os.remove(file_path)
-        except Exception as e:
+        except Exception as error:
             log_error(ERROR.REMOVE_FILE_ERROR, file_path)
 
 
@@ -258,8 +258,8 @@ class Connection:
                     # Check for successful login
                     login_successful = self.is_totp_login_successful(url)
 
-                except Exception as e:
-                    print("Error submitting code:", e)
+                except Exception as error:
+                    print("Error submitting code:", error)
 
 
             # Request token generation
@@ -296,9 +296,9 @@ class Connection:
             else:
                  return kite
 
-        except Exception as e:
-            log_error(f"Error during broker login: {e}")
-            raise
+        except Exception as error:
+            log_error(f"Error during broker login: {error}")
+            raise error
 
         finally:
             if driver:

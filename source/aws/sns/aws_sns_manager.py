@@ -70,8 +70,8 @@ def aws_sns_subscribe(sns_client, topic_arn, protocol, endpoint):
     try:
         response = sns_client.subscribe(TopicArn=topic_arn, Protocol=protocol, Endpoint=endpoint)
         return response
-    except botocore.exceptions.ClientError as e:
-        print(f"Error subscribing to SNS topic: {e}")
+    except botocore.exceptions.ClientError as error:
+        print(f"Error subscribing to SNS topic: {error}")
         return None
 
 
@@ -84,6 +84,6 @@ def aws_sns_receive(sns_client, subscription_arn):
             SubscriptionArn=subscription_arn, MaxNumberOfMessages=10
         )
         return response
-    except botocore.exceptions.ClientError as e:
-        print(f"Error receiving SNS messages: {e}")
+    except botocore.exceptions.ClientError as error:
+        print(f"Error receiving SNS messages: {error}")
         return None

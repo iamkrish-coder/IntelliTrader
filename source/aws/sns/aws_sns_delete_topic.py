@@ -25,8 +25,8 @@ class DeleteTopic(BaseSnsManager):
         try:
             self.sns_resource.delete_topic(TopicArn=self.topic_arn)
             log_info("Deleted topic %s.", self.topic_arn)
-        except ClientError:
+        except ClientError as error:
             log_error("Couldn't delete topic %s.", self.topic.arn)
-            raise
+            raise error
 
 

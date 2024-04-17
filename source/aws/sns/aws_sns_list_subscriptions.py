@@ -31,8 +31,8 @@ class ListSubscriptions(BaseSnsManager):
                 response = self.sns_resource.list_subscriptions()
             else:
                 response = self.sns_resource.list_subscriptions_by_topic(TopicArn=self.topic_arn)
-        except ClientError:
+        except ClientError as error:
             log_error("Couldn't get subscriptions.")
-            raise
+            raise error
         else:
             return response

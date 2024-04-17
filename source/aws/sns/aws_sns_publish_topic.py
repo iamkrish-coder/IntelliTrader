@@ -51,9 +51,9 @@ class PublishTopic(BaseSnsManager):
                 self.attributes,
                 self.topic.arn,
             )
-        except ClientError:
+        except ClientError as error:
             log_error("Couldn't publish message to topic %s.", self.topic.arn)
-            raise
+            raise error
         else:
             return message_id
 

@@ -30,8 +30,8 @@ class ActionProcessAlerts:
                 ReceiptHandle=receipt_handle
             )
             log_info(f"Deleted message from Queue: {self.message}")
-        except Exception as e:
-            log_error(f"Error deleting message from Queue: {str(e)}")
+        except Exception as error:
+            log_error(f"Error deleting message from Queue: {str(error)}")
 
     def process_alerts(self):
         if self.alerts is None:

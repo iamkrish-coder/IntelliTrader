@@ -36,9 +36,9 @@ class CreateTopic(BaseSnsManager):
         try:
             topic = self.sns_resource.create_topic(Name=self.name)
             log_info("Created topic %s with ARN %s.", self.name, topic.get("TopicArn"))
-        except ClientError:
+        except ClientError as error:
             log_error("Couldn't create topic %s.", self.name)
-            raise
+            raise error
         else:
             return topic
 
@@ -61,8 +61,9 @@ class CreateTopic(BaseSnsManager):
                     "ContentBasedDeduplication": str(False),
                 },
             )
-            log_info("Created FIFO topic with name=%s.", self.name)
-            return topic
+            log_info("Created FIFO topic %s with ARN %s.", self.name, topic.get("TopicArn"))
         except ClientError as error:
-            log_error("Couldn't create topic with name=%s!", self.name)
+            log_error("Couldn't create topic %s.", self.name)
             raise error
+        else:
+            return topic            

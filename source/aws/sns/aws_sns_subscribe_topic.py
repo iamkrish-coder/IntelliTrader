@@ -44,9 +44,9 @@ class SubscribeTopic(BaseSnsManager):
                 ReturnSubscriptionArn=True
             )
             log_info("Subscribed %s %s to topic %s.", self.protocol, self.endpoint, self.topic_arn)
-        except ClientError:
+        except ClientError as error:
             log_error(
                 "Couldn't subscribe %s %s to topic %s.", self.protocol, self.endpoint, self.topic_arn)
-            raise
+            raise error
         else:
             return subscription

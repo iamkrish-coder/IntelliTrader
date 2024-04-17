@@ -26,6 +26,6 @@ class UnsubscribeTopic(BaseSnsManager):
             if self.subscription_arn is not None and self.subscription_arn != "":
                 self.sns_resource.unsubscribe(SubscriptionArn=self.subscription_arn)
                 log_info("Deleted subscription %s.", self.subscription_arn)
-        except ClientError:
+        except ClientError as error:
             log_error("Couldn't delete subscription %s.", self.subscription_arn)
-            raise
+            raise error

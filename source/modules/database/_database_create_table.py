@@ -42,9 +42,9 @@ class DatabaseCreateTable:
                 response.wait_until_exists()
                 log_info(f"Create '{self.table_name}' table ...COMPLETE!")
                 
-            except ClientError as e:
-                log_error(f"Error creating table {self.table_name}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-                raise
+            except ClientError as error:
+                log_error(f"Error creating table {self.table_name}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+                raise error
 
         else:
             log_info(f"Table '{self.table_name}' already exists.")
@@ -93,15 +93,15 @@ class DatabaseCreateTable:
         try:
             self.dynamodb_table.load()
             exists = True
-        except ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        except ClientError as error:
+            if error.response['Error']['Code'] == 'ResourceNotFoundException':
                 exists = False
             else:
                 log_error(
                     "Couldn't check for existence of %s. Here's why: %s: %s",
                     self.table_name,
-                    e.response["Error"]["Code"],
-                    e.response["Error"]["Message"],
+                    error.response["Error"]["Code"],
+                    error.response["Error"]["Message"],
                 )
-                raise
+                raise error
         return exists
