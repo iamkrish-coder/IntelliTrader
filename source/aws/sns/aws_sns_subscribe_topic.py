@@ -14,7 +14,7 @@ class SubscribeTopic(BaseSnsManager):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
-        self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
+        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.topic_arn = topic_arn
         self.protocol = protocol    
         self.endpoint = endpoint
@@ -36,7 +36,7 @@ class SubscribeTopic(BaseSnsManager):
         :return: The newly added subscription.
         """
         try:
-            subscription = self.sns_resource.subscribe(
+            response = self.sns_client.subscribe(
                 TopicArn=self.topic_arn,
                 Protocol=self.protocol,
                 Endpoint=self.endpoint,
@@ -49,4 +49,4 @@ class SubscribeTopic(BaseSnsManager):
                 "Couldn't subscribe %s %s to topic %s.", self.protocol, self.endpoint, self.topic_arn)
             raise error
         else:
-            return subscription
+            return response

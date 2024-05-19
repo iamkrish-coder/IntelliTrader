@@ -14,7 +14,7 @@ class ListTopics(BaseSnsManager):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
-        self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
+        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
 
 
     def execute(self):
@@ -24,7 +24,7 @@ class ListTopics(BaseSnsManager):
         :return: An iterator that yields the topics.
         """
         try:
-            response = self.sns_resource.list_topics()
+            response = self.sns_client.list_topics()
         except ClientError as error:
             log_error("Couldn't get topics.")
             raise error

@@ -14,7 +14,7 @@ class DeleteTopic(BaseSnsManager):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
-        self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
+        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.topic_arn = topic_arn
         
 
@@ -23,7 +23,7 @@ class DeleteTopic(BaseSnsManager):
         Deletes a topic. All subscriptions to the topic are also deleted.
         """
         try:
-            self.sns_resource.delete_topic(TopicArn=self.topic_arn)
+            self.sns_client.delete_topic(TopicArn=self.topic_arn)
             log_info("Deleted topic %s.", self.topic_arn)
         except ClientError as error:
             log_error("Couldn't delete topic %s.", self.topic.arn)

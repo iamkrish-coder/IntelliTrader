@@ -128,7 +128,7 @@ class StrategyPublisher(BaseStrategy):
         ###############
         self.date_time_now = time.strftime("%Y-%m-%d %H:%M:%S")
         if self.aws_service == SNS:
-
+ 
             successfully_published = []
             topic_type = self.parameters.get('runtime_params.topic_type')            
             strategy_id = self.parameters.get('strategy_params.strategy_id')

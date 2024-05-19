@@ -14,7 +14,7 @@ class ListSubscriptions(BaseSnsManager):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
-        self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
+        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.topic_arn = topic_arn
 
 
@@ -28,9 +28,9 @@ class ListSubscriptions(BaseSnsManager):
         """
         try:
             if self.topic_arn is None:
-                response = self.sns_resource.list_subscriptions()
+                response = self.sns_client.list_subscriptions()
             else:
-                response = self.sns_resource.list_subscriptions_by_topic(TopicArn=self.topic_arn)
+                response = self.sns_client.list_subscriptions_by_topic(TopicArn=self.topic_arn)
         except ClientError as error:
             log_error("Couldn't get subscriptions.")
             raise error
