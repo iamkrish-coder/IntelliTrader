@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.10.0...v3.11.0) (2024-05-22)
+
+
+### Features
+
+* Refactor code and update TODO ([695b882](https://github.com/iamkrish-coder/IntelliTrader/commit/695b8827ae74fc7716213a972cd411da36dbb844))
+
 ## [3.10.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.9.0...v3.10.0) (2024-04-17)
 
 
