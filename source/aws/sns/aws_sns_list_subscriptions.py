@@ -10,12 +10,13 @@ from source.utils.caching_utils import *
 class ListSubscriptions(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
-    def __init__(self, topic_arn=None):
+    def __init__(self, topic_arn=None, next_token=None):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.topic_arn = topic_arn
+        self.next_token = next_token
 
 
     def execute(self):
@@ -27,8 +28,11 @@ class ListSubscriptions(BaseSnsManager):
         :return: An iterator that yields the subscriptions.
         """
         try:
-            if self.topic_arn is None:
-                response = self.sns_client.list_subscriptions()
+            if self.topic_arn is None :
+                if  self.next_token is not None:
+                    response = self.sns_client.list_subscriptions(NextToken=self.next_token)
+                else:
+                    response = self.sns_client.list_subscriptions()
             else:
                 response = self.sns_client.list_subscriptions_by_topic(TopicArn=self.topic_arn)
         except ClientError as error:

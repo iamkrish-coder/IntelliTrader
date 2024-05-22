@@ -51,6 +51,7 @@ class Database(BaseDatabase):
         self.manage_topics()
         self.manage_queues()
         self.manage_subscriptions()
+        
 
     def prepare_request_parameters(self, event, table, model, dataset=None, projection=[], filters={}):
         attributes = None
@@ -78,11 +79,15 @@ class Database(BaseDatabase):
         # Reset Tables (if required)
         if self.reset_app is True:           
             log_info("Resetting the application to its factory defaults. Please wait...")
-            # Delete Tables / Caches / Configs
+
+            # Delete Tables | Delete Caches | Delete Configs
             for config in self.table_configuration.values():
                 table = config["table_key"]
                 object_delete_table_handler = DatabaseDeleteTable(table, config)
                 object_delete_table_handler.initialize()
+                            
+            # Delete Subscriptions 
+            self.delete_subscriptions()
 
             # Delete Topics
             self.delete_topics()
@@ -91,15 +96,30 @@ class Database(BaseDatabase):
             self.delete_queues()
 
 
+    def delete_subscriptions(self):
+        list_subscriptions = self.object_sns_manager.get_action("list_subscriptions", **{})
+        subscriptions = list_subscriptions.execute()
+        subscription_list = subscriptions.get("Subscriptions")
+        if subscription_list is not None:
+            for subscription in subscription_list:
+                subscription_arn = subscription.get("SubscriptionArn")
+                arguments = {"subscription_arn": subscription_arn}
+                unsubscribe_topic = self.object_sns_manager.get_action("unsubscribe_topic", **arguments)
+                unsubscribe_topic.execute()
+                # TODO : Update DB is_subscribed = False and is_active = False
+
+
+
     def delete_topics(self):
         list_topics = self.object_sns_manager.get_action("list_topics", **{})
         topics_list = (list_topics.execute()).get("Topics")
 
-        for topics in topics_list:
-            topic_arn = topics.get("TopicArn")
-            arguments = {"topic_arn": topic_arn}
-            delete_topic = self.object_sns_manager.get_action("delete_topic", **arguments)
-            delete_topic.execute()
+        if topics_list is not None:
+            for topics in topics_list:
+                topic_arn = topics.get("TopicArn")
+                arguments = {"topic_arn": topic_arn}
+                delete_topic = self.object_sns_manager.get_action("delete_topic", **arguments)
+                delete_topic.execute()
 
 
     def delete_queues(self):
@@ -282,7 +302,7 @@ class Database(BaseDatabase):
                     dataset=dataset
                 )
                 self.database_request(save_queues)      
-
+            
 
     def manage_subscriptions(self):
         """
@@ -299,8 +319,24 @@ class Database(BaseDatabase):
             # List Subscriptions
             arguments = {"topic_arn": topic_arn}
             list_subscriptions = self.object_sns_manager.get_action("list_subscriptions", **arguments)
-            list_subscriptions.execute()
+            subscriptions = list_subscriptions.execute()
+            subscription_list = subscriptions.get("Subscriptions")
 
+            if subscription_list is not None and subscription_list != []:
+                for subscription in subscription_list:
+                    if subscription.get("Endpoint") != queue_arn:
+                        self.create_save_subscriptions(topic_arn, queue_arn)
+                        log_info(f"Subscription created for {topic_name}!")
+                    else:
+                        log_info(f"Skipping Subscription creation for {topic_name}, Topic already Subscribed!")                        
+            else:
+                self.create_save_subscriptions(topic_arn, queue_arn)
+                log_info(f"Subscription created for {topic_name}!")
+
+
+    def create_save_subscriptions(self, topic_arn, queue_arn):
+        # Create Subscription in AWS SNS 
+        if topic_arn is not None and queue_arn is not None:
             arguments = {
                 "topic_arn": topic_arn,
                 "protocol": SQS,
@@ -310,16 +346,21 @@ class Database(BaseDatabase):
             subscribe_topic = self.object_sns_manager.get_action("subscribe_topic", **arguments)
             subscribe_topic.execute()
 
-            # TODO : Update DB is_subscribed = True
-
-        if self.app_configuration.get("app_reset"):
-            subscription_arn = ""
-            arguments = {"subscription_arn": subscription_arn}
-            unsubscribe_topic = self.object_sns_manager.get_action("unsubscribe_topic", **arguments)
-            unsubscribe_topic.execute()
-
-            # TODO : Update DB is_subscribed = False and is_active = False
-
+            # Add entry to AWS DynamoDB
+            modified_date = time.strftime("%Y-%m-%d %H:%M:%S")      
+            dataset = {
+                "topic_arn": topic_arn,
+                "modified_date": modified_date,
+                "is_subscribed": True,
+                "is_active": True
+            }
+            update_topics = self.prepare_request_parameters(
+                event=Events.UPDATE.value,
+                table=Tables.TABLE_TOPICS.value,
+                model=TopicsModel,
+                dataset=dataset
+            )
+            self.database_request(update_topics)
 
     def manage_table_records(self, dataset):
         event = dataset.get("event")
@@ -346,4 +387,3 @@ class Database(BaseDatabase):
 
             case _:  # Default case
                 log_warn(f"Unknown event type: {event}")
-                # You could raise an exception here if needed

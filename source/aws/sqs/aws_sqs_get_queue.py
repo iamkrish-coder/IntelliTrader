@@ -27,7 +27,7 @@ class GetQueue(BaseSqsManager):
         :return: None
         """
         try:
-            response = self.sqs_client.delete_queue(
+            response = self.sqs_client.get_queue_url(
                 QueueName=self.queue_name
             )
             log_info("Got queue '%s' with URL=%s", self.queue_name, response.get("QueueUrl"))
