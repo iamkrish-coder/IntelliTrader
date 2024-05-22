@@ -2,8 +2,10 @@
 
 import os
 import time
+import datetime
 import json
 import asyncio
+import math
 import boto3
 import uuid
 import pandas as pd
@@ -14,6 +16,7 @@ from ctypes import alignment
 from numpy import histogram
 from turtle import st
 from msilib.schema import CustomAction
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
@@ -25,20 +28,14 @@ from source.modules.strategy._strategy_candlesticks import StrategyCandlesticks
 from source.modules.strategy._strategy_indicators import StrategyIndicators
 from source.modules.strategy._strategy_scanner import StrategyScanner
 from source.modules.strategy._strategy_publisher import StrategyPublisher
-from source.modules.configurations.shared_parameters import SharedParameters
+from source.configurations.shared_parameters import SharedParameters
 
 class StrategyController(BaseController):
-    
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count       = 0
         self.parameters      = None
         self.alerts          = None
-        self.base_timeframe  = None
-        
-    ###########################################
-    # Initialize Strategy Handler
-    ###########################################
     
     async def initialize(self):       
         log_info(f"Running Strategy...{self.run_count} Times")
@@ -84,8 +81,8 @@ class StrategyController(BaseController):
             if not candlestick_data_list:
                 log_info("No candlestick data returned. Skipping indicator calculation.")
                 
-        except Exception as e:
-            print(f"Error fetching candlestick data: {e}. Skipping indicator calculation.")
+        except Exception as error:
+            print(f"Error fetching candlestick data: {error}. Skipping indicator calculation.")
             
         else:
             # 5. Calculate indicators
@@ -100,8 +97,4 @@ class StrategyController(BaseController):
             object_publisher_handler = StrategyPublisher(self.modules, self.parameters, self.database, self.alerts, SNS)
             object_publisher_handler.initialize()
 
-
-
-
-        
-   
+            self.run_count += 1

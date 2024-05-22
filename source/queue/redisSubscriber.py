@@ -18,8 +18,8 @@ class RedisSubscriber:
             for message in self.pubsub.listen():
                 if message['type'] == 'message':
                     self.handle_message(message)
-        except Exception as e:
-            log_error(f"An error occurred while listening for messages: {str(e)}")
+        except Exception as error:
+            log_error(f"An error occurred while listening for messages: {str(error)}")
 
     def stop_subscription(self):
         self.pubsub.unsubscribe(self.queue)

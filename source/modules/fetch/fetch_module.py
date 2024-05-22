@@ -39,8 +39,8 @@ class Fetch:
                 instrument_token = instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]
                 log_info(f'::::::: Instrument ::::::: Exchange: {exchange} Symbol: {symbol} Token: {instrument_token} ...COMPLETE!')
                 return instrument_token
-            except Exception as e:
-                log_warn(f"An exception occurred: {e}")
+            except Exception as error:
+                log_warn(f"An exception occurred: {error}")
                 exit()
         else:
             log_warn(f'Please verify that the exchange {exchange} and symbol {symbol} are present.')
@@ -59,8 +59,8 @@ class Fetch:
                 for symbol in symbol_list:
                     token_list.append(int(instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]))
                 return token_list
-            except Exception as e:
-                log_warn(f"An exception occurred: {e}")
+            except Exception as error:
+                log_warn(f"An exception occurred: {error}")
                 exit()
         else:
             log_warn(f'Please verify that the exchange [{exchange}] and symbol_list [{symbol_list}] are present.')
@@ -112,7 +112,6 @@ class Fetch:
                 
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))
                    
-                
                     # Transform data for Last Available Date
                     current_time = dt.datetime.now().time()
                     if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
@@ -133,19 +132,22 @@ class Fetch:
                     # Fetch Minutes Data
                     duration = duration['minute']
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = timeframe                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
             
                 elif timeframe.__contains__('hour'):
                     # Fetch Hours Data
                     duration = duration['hour']               
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe)) 
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = HOUR                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('day'):
                     # Fetch Daily Data
                     duration = duration['day']                              
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = DAY                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('week'):
                     # Fetch Weekly Data
@@ -153,7 +155,8 @@ class Fetch:
                     duration = duration['week']                                              
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))    
                     data = self.aggregate_to_weekly(data)
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = WEEK                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
                 elif timeframe.__contains__('month'):
                     # Fetch Monthly Data
@@ -161,7 +164,8 @@ class Fetch:
                     duration = duration['month']                                                             
                     data = pd.DataFrame(self.prop['kite'].historical_data(instrument_token, dt.date.today()-dt.timedelta(duration), dt.date.today(), timeframe))   
                     data = self.aggregate_to_monthly(data)
-                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                    timeframe_text = MONTH                    
+                    log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
                     
                 else:
                     data = None
@@ -176,9 +180,9 @@ class Fetch:
                 log_warn(f'Please verify that the exchange [{exchange}], symbol [{symbol}], timeframe[{timeframe}] and duration[{duration}] are present.')
                 return None
         
-        except Exception as e:
+        except Exception as error:
             # Handle the permission error with a user-friendly message
-            error_message = f"Error fetching historical data: {e}. Your API subscription might be expired. Please renew your subscription to continue."
+            error_message = f"Error fetching historical data: {error}. Your API subscription might be expired. Please renew your subscription to continue."
             raise ValueError(error_message)
 
 
@@ -300,9 +304,9 @@ class Fetch:
     # Fetch backtest data
     def fetch_backtest_data(self, args):        
         if(args['backtest_timeframe'] == 'latest'):
-            return(self.fetch_backtest_latest_data(_nseData, args))
+            return self.fetch_backtest_latest_data(_nseData, args)
         else:
-            return(self.fetch_backtest_historical_data(args))
+            return self.fetch_backtest_historical_data(args)
                 
     def fetch_backtest_latest_data(_nseData, dataset):
         # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty
@@ -319,8 +323,8 @@ class Fetch:
                 return df_subset
             else:
                 log_info("Error fetching data or data is empty.")
-        except Exception as e:
-            log_info(f"Error fetching data for {dataset['symbol']}: {str(e)}")
+        except Exception as error:
+            log_info(f"Error fetching data for {dataset['symbol']}: {str(error)}")
             return None
 
     def fetch_backtest_historical_data(self, args):

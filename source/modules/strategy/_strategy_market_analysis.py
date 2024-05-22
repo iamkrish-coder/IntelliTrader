@@ -8,8 +8,8 @@ class StrategyMarketAnalysis:
     def __init__(self, modules, parameters):
         self.modules           = modules
         self.parameters        = parameters
-        self.market_params     = parameters.get('market_trade')
-        self.market_indices    = parameters.get('market_indices')
+        self.market_params     = self.parameters.get('runtime_params.market_trade')
+        self.market_indices    = self.parameters.get('market_params.market_indices')
         self.market_sentiment  = None
     
     def initialize(self):

@@ -1,28 +1,37 @@
 import pandas as pd
 import os
 import json
+import datetime
+import time
 from source.constants.constants import *
 from source.utils.logging_utils import *
 
 class Helper:
     def __init__(self, params=None):
         self.prop = params
-        self.output_path = OUTPUT_PATH
         self.create_output_directory()
 
     def create_output_directory(self):
-        if not os.path.exists(self.output_path):
-            os.mkdir(self.output_path)
+        if not os.path.exists(OUTPUT_PATH):
+            os.mkdir(OUTPUT_PATH)
     
     def write_text_output(self, filename, data):
-        with open(os.path.join(self.output_path, filename), 'w') as file:
+        with open(os.path.join(OUTPUT_PATH, filename), 'w') as file:
             if isinstance(data, dict):
                 json.dump(data, file, indent=4)
             else:
                 file.write(str(data))
 
     def write_token_output(self, filename, data):
-        with open(os.path.join(self.output_path, filename), 'w') as file:
+        now = datetime.datetime.now()
+        CURRENT_DATE = now.strftime("%Y-%m-%d")
+        connection_cache_path = os.path.join(CACHE_PATH, CURRENT_DATE, CACHE_CONNECTION_DIR)        
+        try:
+            os.makedirs(connection_cache_path, exist_ok=True)
+        except OSError as error:
+            print(f"Error creating directory: {error}")
+
+        with open(os.path.join(connection_cache_path, filename), 'w') as file:
             if isinstance(data, dict):
                 json.dump(data, file, indent=4)
             else:
@@ -31,11 +40,11 @@ class Helper:
     def write_csv_output(self, filename, data):
         csv_data = pd.DataFrame(data)
         if filename.endswith('.csv'):
-            csv_data.to_csv(os.path.join(self.output_path, filename), index=False)
+            csv_data.to_csv(os.path.join(OUTPUT_PATH, filename), index=False)
         else:            
             symbol = filename.split("_")[1]
             os.makedirs(symbol, exist_ok=True)  
-            full_path = os.path.join(self.output_path, filename)
+            full_path = os.path.join(OUTPUT_PATH, filename)
             csv_data.to_csv(full_path, index=False)
 
     def convert_enum_to_class_name(self, enum_name):
@@ -63,7 +72,6 @@ class Helper:
         """
         
         try:
-            
             # Convert the dictionary back to a formatted JSON string
             if prettier:
                 formatted_json = json.dumps(dictionary_data, indent=indent)
@@ -73,5 +81,5 @@ class Helper:
             print(f"\n ******** {label} ********\n")
             print(formatted_json)
 
-        except Exception as e:
-            log_error(f"Error occurred while formatting data: {str(e)}")
+        except Exception as error:
+            log_error(f"Error occurred while formatting data: {str(error)}")

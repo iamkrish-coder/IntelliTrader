@@ -13,38 +13,35 @@ class StrategyConfigurations:
         
     def manage_configurations(self):
         try:
-            debugger = self.configuration.get("debugger")
-            live_trade = self.configuration.get("live_trade")
-            virtual_trade = self.configuration.get("virtual_trade")
-            market_trade = self.configuration.get("market_trade")
-
-            strategy_id = int(self.configuration.get("strategy"))
-            strategy_enum = Strategy(strategy_id)
-            strategy_name = strategy_enum.name
+            strategy_id = self.configuration.get("strategy")
 
             # Initialize Settings
+            config = self.configuration
             settings = {}
-            
-            settings['main_params'] = {
-                    "debugger": debugger,
-                    "live_trade": live_trade,
-                    "virtual_trade": virtual_trade,
-                    "market_trade": market_trade
-                }
 
-            if live_trade:
-                settings['trade_params'] = self.configuration.get("live_trade_params")
-            elif virtual_trade and not live_trade:
-                settings['trade_params'] = self.configuration.get("virtual_trade_params")
-            
-            if market_trade:
-                settings['market_params'] = self.configuration.get("market_trade_params")
-                    
-            settings['strategy_params'] = self.configuration.get(f"strategy_{strategy_enum.value}_params")
-            settings['common_params']   = self.configuration.get("common_trade_params")
+            # Store non-dict top-level items in main_params
+            main_params = {key: value for key, value in config.items() if not isinstance(value, dict)}
+            settings['runtime_params'] = main_params
 
+            # Handle trade and market params based on trade flags
+            if config['live_trade']:
+                settings['trade_params'] = config['live_trade_params']
+            elif config['virtual_trade'] and not config['live_trade']:
+                settings['trade_params'] = config['virtual_trade_params']
+
+            if config['market_trade']:
+                settings['market_params'] = config['market_trade_params']
+
+            # Retrieve strategy params dynamically (assuming strategy_id exists)
+            strategy_param_key = f"strategy_{strategy_id}_params"
+            settings['strategy_params'] = config.get(strategy_param_key)
+
+            # Common params (assuming it's always a dict)
+            settings['common_params'] = config.get("common_trade_params", {})
+            
             return settings
 
-        except Exception as e:
-            log_info(f"An error occurred retrieving Application Settings: {e}")
+        except Exception as error:
+            log_info(f"An error occurred retrieving Application Settings: {error}")
             return None
+

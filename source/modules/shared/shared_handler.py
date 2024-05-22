@@ -303,3 +303,73 @@ class SharedHandler:
         current_timestamp = datetime.datetime.now(datetime.timezone.utc)
         formatted_timestamp = current_timestamp.strftime("%Y%m%d%H%M")
         return formatted_timestamp
+
+    def generate_aws_sns_topic_name(self, strategy_id):
+        if strategy_id is None:
+            log_error("Strategy ID cannot be None")
+        return f"T-STR-{strategy_id}"
+
+    def generate_aws_sns_topic_details(self, strategy_id, topic_type=None):
+
+        # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
+        topic_name = self.generate_aws_sns_topic_name(strategy_id)
+
+        enum_arn = AWS_SNS.ARN.value
+        emum_aws = AWS_SNS.AWS.value
+        emum_sns = AWS_SNS.SNS.value
+        emum_region = AWS_SNS.REGION.value
+        emum_account_id = AWS_SNS.ACCOUNT_ID.value
+        emum_topic_name = topic_name
+
+        if topic_type == FIFO:
+            topic_name = topic_name + ".fifo"
+            arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}" + ".fifo"
+        else:
+            arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}"     
+
+        return arn_formatted, topic_name        
+
+    def get_aws_sqs_queue_name(self, strategy_id):
+        if strategy_id is None:
+            log_error("Strategy ID cannot be None")
+        return f"Q-STR-{strategy_id}"
+
+    def generate_aws_sqs_queue_details(self, strategy_id, queue_type=None):
+            
+        # ARN Template: arn:aws:sns:<region>:<account-id>:<topic-name>
+        queue_name  = self.get_aws_sqs_queue_name(strategy_id)
+        queue_url = self.get_aws_sqs_queue_url(queue_name)
+
+        enum_arn        = AWS_SQS.ARN.value
+        emum_aws        = AWS_SQS.AWS.value
+        emum_sqs        = AWS_SQS.SQS.value
+        emum_region     = AWS_SQS.REGION.value
+        emum_account_id = AWS_SQS.ACCOUNT_ID.value
+        emum_queue_name = queue_name
+        
+        if queue_type == FIFO:
+            queue_name = queue_name + ".fifo"
+            queue_arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sqs}:{emum_region}:{emum_account_id}:{emum_queue_name}" + ".fifo"
+            queue_url = queue_url + ".fifo"
+        else:
+            queue_arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sqs}:{emum_region}:{emum_account_id}:{emum_queue_name}"                
+
+        return queue_arn_formatted, queue_name, queue_url        
+
+    def get_aws_sqs_queue_url(self, queue_name):
+        # Get the SQS queue URL
+        queue_url = f'{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{queue_name}'
+        return queue_url
+
+    def generate_strategy_details(self, filename):
+        if os.path.isfile(os.path.join(ALGORITHM_PATH, filename)) and not filename.startswith('.'):
+            strategy_name = os.path.splitext(filename)[0]
+            parts = strategy_name.split('-')
+
+            # Check if the split length matches the expected format (4 parts)
+            if len(parts) != 4:
+                log_error(f"Warning: Unexpected format for strategy name: {strategy_name}")
+                return
+
+            strategy_id, name, description = parts[1], parts[2], parts[3]
+            return strategy_id, name, description

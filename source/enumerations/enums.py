@@ -3,10 +3,6 @@ from enum import Enum
 from re import M
 from source.constants.constants import ARN
 
-class AWS_SQS(Enum):
-    ACCOUNT_ID = '265153260161'
-    URL        = 'https://sqs.ap-south-1.amazonaws.com'
-
 class Logger(Enum):
     DATABASE_LOGGER   = "database_logger"
     STRATEGY_LOGGER   = "strategy_logger"
@@ -14,13 +10,37 @@ class Logger(Enum):
     MONITORING_LOGGER = "monitoring_logger"
     TRADE_LOGGER      = "trade_logger"
 
+class AWS_SQS(Enum):
+    ARN        = 'arn'
+    AWS        = 'aws'
+    SQS        = 'sqs'
+    REGION     = 'ap-south-1'
+    ACCOUNT_ID = '265153260161'
+    URL        = 'https://sqs.ap-south-1.amazonaws.com'
+
 class Queues(Enum):
-    QUEUE_1     = 'IntelliTrader_Q1.fifo'
-    QUEUE_2     = 'IntelliTrader_Q2.fifo'
-    QUEUE_3     = 'IntelliTrader_Q3.fifo'
-    QUEUE_4     = 'IntelliTrader_Q4.fifo'
-    QUEUE_5     = 'IntelliTrader_Q5.fifo'
-    QUEUE_6     = 'IntelliTrader_Q6.fifo'
+    QUEUE_1     = 'IntelliTrader_Q1'
+    QUEUE_2     = 'IntelliTrader_Q2'
+    QUEUE_3     = 'IntelliTrader_Q3'
+    QUEUE_4     = 'IntelliTrader_Q4'
+    QUEUE_5     = 'IntelliTrader_Q5'
+    QUEUE_6     = 'IntelliTrader_Q6'
+
+class Topics(Enum):
+    TOPIC_1     = 'IntelliTrader_T1'
+    TOPIC_2     = 'IntelliTrader_T2'
+    TOPIC_3     = 'IntelliTrader_T3'
+    TOPIC_4     = 'IntelliTrader_T4'
+    TOPIC_5     = 'IntelliTrader_T5'
+    TOPIC_6     = 'IntelliTrader_T6'
+
+class Strategy(Enum):
+    ALGORITHM_1  = 1
+    ALGORITHM_2  = 2
+    ALGORITHM_3  = 3   
+    ALGORITHM_4  = 4
+    ALGORITHM_5  = 5
+    ALGORITHM_6  = 6 
 
 class AWS_SNS(Enum):
     ARN        = 'arn'
@@ -35,7 +55,9 @@ class Cache_Type(Enum):
     
 class Tables(Enum):
     TABLE_TOPICS = 'topics'
+    TABLE_QUEUES = 'queues'
     TABLE_ALERTS = 'alerts'
+    TABLE_STRATEGIES = 'strategies'
 
 class Events(Enum):
     PUT    = 'put'
@@ -44,14 +66,6 @@ class Events(Enum):
     SCAN   = 'scan'
     UPDATE = 'update'
     DELETE = 'delete'
-
-class Topics(Enum):
-    TOPIC_1     = 'IntelliTrader_T1'
-    TOPIC_2     = 'IntelliTrader_T2'
-    TOPIC_3     = 'IntelliTrader_T3'
-    TOPIC_4     = 'IntelliTrader_T4'
-    TOPIC_5     = 'IntelliTrader_T5'
-    TOPIC_6     = 'IntelliTrader_T6'
 
 class Market_Sentiment(Enum):
     POSITIVE = 'POSITIVE'
@@ -92,14 +106,6 @@ class Validity(Enum):
 class Strategy_Type(Enum):
     LONG  = 'LONG'
     SHORT = 'SHORT'
-
-class Strategy(Enum):
-    ALGORITHM_1  = 1
-    ALGORITHM_2  = 2
-    ALGORITHM_3  = 3   
-    ALGORITHM_4  = 4
-    ALGORITHM_5  = 5
-    ALGORITHM_6  = 6 
 
 class RSI(Enum):
     RSI_5  = 5

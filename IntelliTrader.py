@@ -12,14 +12,14 @@ from flask import Flask, render_template, request, redirect, session
 from pytz import utc
 
 # Custom application modules
-from source.constants import *  
+from source.constants import *
 from source.enumerations.enums import *
-from source.enumerations.resource_string_enums import * 
+from source.enumerations.resource_string_enums import *
 from source.language.resources_EN_IN import ResourceStrings
+from source.configurations.configuration import Configuration
 
 from source.modules.BaseModules import BaseModules
 from source.modules.connection.connection_module import Connection
-from source.modules.configurations.configuration_module import Configuration
 from source.modules.database.database_module import Database
 
 from source.controllers.BaseController import BaseController
@@ -40,41 +40,45 @@ except ImportError:
 # Application initialization
 configure_logging()
 
+
 class IntelliTrader:
     def __init__(self):
-        self.connection                     = None
-        self.modules                        = None
-        self.configuration                  = None
-        self.database                       = None
-        self.strategy_controller_instance   = None
-        self.action_controller_instance     = None
+        self.connection = None
+        self.modules = None
+        self.configuration = None
+        self.database = None
+        self.strategy_controller_instance = None
+        self.action_controller_instance = None
         self.monitoring_controller_instance = None
-        self.scheduler_instance             = None
-        self.cancelled                      = False
-        self.controller                     = self.initialize_components()
+        self.scheduler_instance = None
+        self.cancelled = False
+        self.controller = self.initialize_components()
         self.initialize_logging()
 
-
     def initialize_components(self):
-        """ Establishes connection, initializes modules and configuration."""
-        self.connection            = Connection().connect_to_broker()
-        self.modules               = BaseModules(self.connection).get_all_modules()
-        self.app_configuration     = Configuration().read_app_configuration()
-        self.table_configuration   = Configuration().read_table_configuration()       
-        self.database              = Database(self.connection, self.modules, self.app_configuration, self.table_configuration)
-        return (BaseController(self.connection, self.modules, self.app_configuration, self.database))
+        """Establishes connection, initializes modules and configuration."""
+        self.connection = Connection().connect_to_broker()
+        self.modules = BaseModules(self.connection).get_all_modules()
+        self.app_configuration = Configuration().read_app_configuration()
+        self.table_configuration = Configuration().read_table_configuration()
 
+        if self.app_configuration is not None and self.table_configuration is not None:
+            self.database = Database(self.connection, self.modules, self.app_configuration, self.table_configuration)
+            return BaseController(self.connection, self.modules, self.app_configuration, self.database)
+        else:
+            log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
+            return None
 
     def initialize_logging(self):
-        """ Establishes Logging capabilities """
-        database_log_path   = os.path.join(OUTPUT_PATH, 'database.log')
-        strategy_log_path   = os.path.join(OUTPUT_PATH, 'strategy.log')
-        action_log_path     = os.path.join(OUTPUT_PATH, 'actions.log')
-        monitoring_log_path = os.path.join(OUTPUT_PATH, 'monitoring.log')
-        
+        """Establishes Logging capabilities"""
+        database_log_path = os.path.join(OUTPUT_PATH, "database.log")
+        strategy_log_path = os.path.join(OUTPUT_PATH, "strategy.log")
+        action_log_path = os.path.join(OUTPUT_PATH, "actions.log")
+        monitoring_log_path = os.path.join(OUTPUT_PATH, "monitoring.log")
+
         # Create named loggers with desired levels (optional)
         database_logger = logging.getLogger(Logger.DATABASE_LOGGER.value)
-        database_logger.setLevel(logging.DEBUG)        
+        database_logger.setLevel(logging.DEBUG)
         strategy_logger = logging.getLogger(Logger.STRATEGY_LOGGER.value)
         strategy_logger.setLevel(logging.DEBUG)
         action_logger = logging.getLogger(Logger.ACTION_LOGGER.value)
@@ -82,102 +86,104 @@ class IntelliTrader:
         monitoring_logger = logging.getLogger(Logger.MONITORING_LOGGER.value)
         monitoring_logger.setLevel(logging.DEBUG)
 
-
     def get_configuration(self):
         return self.app_configuration
- 
 
     ###########################################
     ###########################################
-    #                RUN ALL                  #  
+    #                RUN ALL                  #
     ###########################################
-    ###########################################   
+    ###########################################
 
     async def run_async_task(self):
-        self.initialize_database_connection(),  
-        self.strategy_controller_instance   = StrategyController(self.controller)
-        # self.action_controller_instance     = ActionController(self.controller)
-        # self.monitoring_controller_instance = None
-        
-        tasks = [
-            self.strategy_controller(),
-            # self.action_controller(),
-            # self.monitoring_controller()
-        ]
-        await asyncio.gather(*tasks)
+
+        if self.controller is not None:
+            self.initialize_database_connection()
+            self.strategy_controller_instance = StrategyController(self.controller)
+            self.action_controller_instance = ActionController(self.controller)
+            # self.monitoring_controller_instance = None
+
+            tasks = [
+                self.strategy_controller(),
+                # self.action_controller()
+                # self.monitoring_controller()
+            ]
+            await asyncio.gather(*tasks)
 
 
     ###########################################
     ###########################################
-    #            DATABASE CONNECTION          # 
+    #            DATABASE CONNECTION          #
     ###########################################
-    ###########################################    
+    ###########################################
 
     def initialize_database_connection(self):
-        """ Establishes Database Connection."""
+        """Establishes Database Connection."""
         logger = logging.getLogger(DATABASE_LOGGER_NAME)
         self.database.initialize()
-      
-      
+
     ###########################################
     ###########################################
-    #            STRATEGY CONTROLLER          # 
+    #            STRATEGY CONTROLLER          #
     ###########################################
-    ###########################################    
+    ###########################################
 
     async def strategy_controller(self):
         """Starts the scanning process for watchlist stocks."""
         logger = logging.getLogger(STRATEGY_LOGGER_NAME)
-        await self.strategy_controller_instance.initialize() # FOR TESTING 
-        
-        # Instantiate the Scheduler Instance 
-        # scheduler_instance = Scheduler(self.configuration, strategy_controller_instance, None, ASYNCIO) 
-        
+        await self.strategy_controller_instance.initialize()  # FOR TESTING
+
+        # Instantiate the Scheduler Instance
+        # scheduler_instance = Scheduler(self.configuration, strategy_controller_instance, None, ASYNCIO)
+
         # # Start Scheduler
         # scheduler_instance.start_scheduler()
         # await asyncio.sleep(6000)
 
-
     ###########################################
     ###########################################
-    #            ACTION CONTROLLER            # 
+    #            ACTION CONTROLLER            #
     ###########################################
-    ###########################################    
+    ###########################################
 
     async def action_controller(self):
         """Processes any generated alerts from the scanner."""
         logger = logging.getLogger(ACTION_LOGGER_NAME)
         await self.action_controller_instance.initialize()
 
+        # Instantiate the Scheduler Instance
+        # scheduler_instance = Scheduler(self.configuration, action_controller_instance, None, ASYNCIO)
+
+        # # Start Scheduler
+        # scheduler_instance.start_scheduler()
+        # await asyncio.sleep(6000)
 
     ###########################################
     ###########################################
-    #          MONITORING CONTROLLER          #  
+    #          MONITORING CONTROLLER          #
     ###########################################
-    ###########################################    
+    ###########################################
 
     async def monitoring_controller(self):
         """Monitors existing trades and performs necessary actions."""
         logger = logging.getLogger(MONITORING_LOGGER_NAME)
-        await self.monitoring_controller_instance.initialize()        
+        await self.monitoring_controller_instance.initialize()
 
 
 ######################################################################################
 ######################################################################################
-#                                   APP START                                        #  
+#                                   APP START                                        #
 ######################################################################################
-######################################################################################   
+######################################################################################
 
 if __name__ == "__main__":
     trader = IntelliTrader()
- 
+
     # Approach 3: Asyncio
     try:
         asyncio.run(trader.run_async_task())
     except (KeyboardInterrupt, asyncio.CancelledError):
         print("\nCaught keyboard interrupt. Canceling tasks...\n")
-
-
 
     # Start website
     # configuration = trader.get_configuration()
@@ -185,7 +191,7 @@ if __name__ == "__main__":
     # url = f'http://{HOST}:{PORT}/'
     # webbrowser.open(url)
     # app.run(host=HOST, port=PORT)
-    
+
     # Approach 1: Threading
 
     """
@@ -205,7 +211,7 @@ if __name__ == "__main__":
     """
 
     # Approach 2: Multiprocessing
-    
+
     """
     
     process1 = Process(target=trader.initialize_strategy_controller)
@@ -218,4 +224,3 @@ if __name__ == "__main__":
     process3.start()
 
     """
-    

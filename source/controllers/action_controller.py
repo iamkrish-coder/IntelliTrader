@@ -1,42 +1,43 @@
-# # strategies/actions_handler.py
-import datetime
+# strategies/actions_handler.py
+
+import os
 import time
+import datetime
+import json
+import asyncio
 import math
 import boto3
-import asyncio
+import uuid
+import pandas as pd
 
 from ast import List
 from time import sleep
 from pandas import qcut
+
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
 from source.controllers.BaseController import BaseController  
-from source.modules.action.BaseAction import BaseAction
 from source.modules.action._action_configurations import ActionConfigurations
 from source.modules.action._action_subscriber import ActionSubscriber
 from source.modules.action._action_process_alerts import ActionProcessAlerts
 from source.modules.action._action_candlesticks import ActionCandlesticks
 from source.modules.action._action_evaluate_secondary_conditions import ActionEvaluateSecondaryConditions
-from source.modules.configurations.shared_parameters import SharedParameters
+from source.configurations.shared_parameters import SharedParameters
 
 class ActionController(BaseController):
     
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.run_count      = 0        
-        self.watchlist      = None
         self.parameters     = None
-        
-    ###########################################
-    # Initialize Actions Controller
-    ###########################################        
+        self.watchlist      = None    
 
-    def initialize(self):
+    async def initialize(self):
         log_info(f"Running actions...{self.run_count} Times")        
-        return self.action_handler()    
+        return await self.action_handler()    
 
-    def action_handler(self):
+    async def action_handler(self):
         """
         This method handles the execution of an action, likely related to monitoring or processing alerts for a trading strategy.
 
@@ -49,26 +50,21 @@ class ActionController(BaseController):
             6. Potentially evaluate secondary conditions based on the candlestick data (commented out).
             7. Potentially update the monitored state based on the evaluation (commented out).
             8. Potentially return candlestick data if conditions are met (commented out).
-
-        **Current functionality:**
-            - Loads configurations and parameters from ActionConfigurations and ActionParameters handlers.
-
-        **Note:** The commented-out sections suggest potential functionalities that are not currently implemented. 
-        These sections might be placeholders for future development or might require additional information about the specific actions your strategy performs.
         """
 
         # 1. Load configurations and parameters
         object_configuration_handler = ActionConfigurations(self.configuration)
         settings = object_configuration_handler.initialize()
-            
+
         object_parameters_handler = SharedParameters(settings)
         object_parameters_handler.initialize()
         self.parameters = object_parameters_handler.get_parameters()
 
-        subscriber_handler = ActionSubscriber(self.modules, self.parameters)
-        message = subscriber_handler.initialize()
+        object_subscriber_handler = ActionSubscriber(self.modules, self.parameters, self.database, SNS)
+        messages = object_subscriber_handler.initialize()
+        print(messages)
         
-        # alert_handlers = ActionProcessAlerts(self.modules, message, self.parameters)
+        # alert_handlers = ActionProcessAlerts(self.modules, messages, self.parameters)
         # watchlist = alert_handlers.initialize()
 
         # candlesticks_handler = ActionCandlesticks(self.modules, watchlist, self.parameters)

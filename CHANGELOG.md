@@ -1,5 +1,55 @@
 # Changelog
 
+## [3.11.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.10.0...v3.11.0) (2024-05-22)
+
+
+### Features
+
+* Refactor code and update TODO ([695b882](https://github.com/iamkrish-coder/IntelliTrader/commit/695b8827ae74fc7716213a972cd411da36dbb844))
+
+## [3.10.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.9.0...v3.10.0) (2024-04-17)
+
+
+### Features
+
+* Improved SNS Class managment, split all SNS actions to their own implmenting classes ([f0bf226](https://github.com/iamkrish-coder/IntelliTrader/commit/f0bf2268e0f8e00300d4ef6cb3666523956ee3ca))
+* Major refactoring for logging, also completed all functions within SNS operations. ([39f4d0c](https://github.com/iamkrish-coder/IntelliTrader/commit/39f4d0ca501c88e5a5bd2966384362e780b6989f))
+* Strategies and Topics Prefill and management ([cb97a98](https://github.com/iamkrish-coder/IntelliTrader/commit/cb97a98c1901caa09b6512482c2aa3f67279a599))
+
+## [3.9.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.8.0...v3.9.0) (2024-04-10)
+
+
+### Features
+
+* Improved the configuration parameter parsing to be more dynamic, fixed issues with publishing and subscribing the topic and queues, fixed the action initialization throwing async None Type error upon execution. ([1f2a51b](https://github.com/iamkrish-coder/IntelliTrader/commit/1f2a51be396d8fd7c38b2be95d45d9b3fcd9255a))
+
+## [3.8.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.7.1...v3.8.0) (2024-04-09)
+
+
+### Features
+
+* setup SNS to SQS fanout, now messages published to SNS topics are fan out to SQS queue ([08f3c1c](https://github.com/iamkrish-coder/IntelliTrader/commit/08f3c1cf3ee5e709df52f345091974a2d5181750))
+
+## [3.7.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.7.0...v3.7.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* update timeframe text in console output ([ab2928c](https://github.com/iamkrish-coder/IntelliTrader/commit/ab2928ca1703e57db64282901e60718de1f9d5de))
+
+## [3.7.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.6.0...v3.7.0) (2024-04-09)
+
+
+### Features
+
+* updated database queries, refactored caching utils, connection modules, moved configurations outside modules directory ([b9e3f78](https://github.com/iamkrish-coder/IntelliTrader/commit/b9e3f788afaa6dcb1a137e1f173ea80ae49f7161))
+
+
+### Bug Fixes
+
+* refactored publisher and database code to ([98752c0](https://github.com/iamkrish-coder/IntelliTrader/commit/98752c0221f40cbe6670e0dad7504f00ae801c86))
+* remove unwanted cache file creation, fix the list error, remove comparison operator file ([848c6aa](https://github.com/iamkrish-coder/IntelliTrader/commit/848c6aa66814f3710c20c7f7b8d44774d76e1513))
+
 ## [3.6.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.5.0...v3.6.0) (2024-03-30)
 
 

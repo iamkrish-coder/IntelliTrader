@@ -9,7 +9,7 @@ class StrategyIndicators:
         self.modules           = modules
         self.parameters        = parameters
         self.candlesticks_data = candlestick_data
-        self.candles_timeframe = candles_timeframe or self.parameters['timeframe']
+        self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']
           
     def initialize(self):
         return self.calculate_indicators()

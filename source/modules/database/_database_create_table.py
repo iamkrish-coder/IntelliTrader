@@ -3,25 +3,20 @@
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
-from source.modules.database.comparison_operator import ComparisonOperators
-
 from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
 import boto3
 
 class DatabaseCreateTable:
-    def __init__(self, table_configuration, table_name):
-
-        self.table_configuration = table_configuration
+    def __init__(self, table_name, table_configuration):
         self.table_name          = table_name
+        self.table_configuration = table_configuration
         self.dynamodb_resource   = boto3.resource('dynamodb', region_name=REGION_NAME)
         self.dynamodb_table      = self.dynamodb_resource.Table(self.table_name)
 
-        
     def initialize(self):
         return self.create_tables()
-
 
     def create_tables(self):
 
@@ -34,7 +29,7 @@ class DatabaseCreateTable:
             table_properties = self.build_table_definition()
             
             try:
-                log_info(f"Creating table '{self.table_name}'...")
+                log_info(f"Creating '{self.table_name}'...")
                 response                  = self.dynamodb_resource.create_table(
                     TableName             = self.table_name,
                     KeySchema             = table_properties['table_schema'],
@@ -45,11 +40,11 @@ class DatabaseCreateTable:
                     }
                 )
                 response.wait_until_exists()
-                log_info(f"Create '{self.table_name}' Table ...COMPLETE!")
+                log_info(f"Create '{self.table_name}' table ...COMPLETE!")
                 
-            except ClientError as e:
-                log_error(f"Error creating table {self.table_name}. Here's why: {e.response["Error"]["Code"]}: {e.response["Error"]["Message"]}")
-                raise
+            except ClientError as error:
+                log_error(f"Error creating table {self.table_name}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+                raise error
 
         else:
             log_info(f"Table '{self.table_name}' already exists.")
@@ -59,14 +54,14 @@ class DatabaseCreateTable:
         
         table_config = self.table_configuration
         table_key_name = table_config['table_key']
-        hash_key_name  = table_config['hash_key']
+        partition_key_name  = table_config['partition_key']
         sort_key_name  = table_config['sort_key'] 
 
         table_definition = {
             'table_name': table_key_name,
             'table_schema': [
                 {
-                    'AttributeName': hash_key_name,
+                    'AttributeName': partition_key_name,
                     'KeyType': 'HASH'
                 },
                 # Only include sort key definition if sort_key_name is not empty
@@ -79,7 +74,7 @@ class DatabaseCreateTable:
             ],
             'attribute_definitions': [
                 {
-                    'AttributeName': hash_key_name,
+                    'AttributeName': partition_key_name,
                     'AttributeType': 'S'
                 },
                 # Only include sort key attribute definition if sort_key_name is not empty
@@ -94,21 +89,19 @@ class DatabaseCreateTable:
 
         return table_definition
 
-
-
     def check_table_exists(self):
         try:
             self.dynamodb_table.load()
             exists = True
-        except ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        except ClientError as error:
+            if error.response['Error']['Code'] == 'ResourceNotFoundException':
                 exists = False
             else:
                 log_error(
                     "Couldn't check for existence of %s. Here's why: %s: %s",
                     self.table_name,
-                    e.response["Error"]["Code"],
-                    e.response["Error"]["Message"],
+                    error.response["Error"]["Code"],
+                    error.response["Error"]["Message"],
                 )
-                raise
+                raise error
         return exists

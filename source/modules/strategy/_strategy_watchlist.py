@@ -9,8 +9,8 @@ class StrategyWatchlist:
     def __init__(self, modules, parameters):
         self.modules = modules      
         self.parameters = parameters
-        self.exchange = parameters.get('exchange')
-        self.symbol   = parameters.get('symbol')
+        self.exchange = self.parameters.get('strategy_params.exchange')
+        self.symbol   = self.parameters.get('strategy_params.symbol')
         
     def initialize(self):
         return self.get_stock_watchlist()

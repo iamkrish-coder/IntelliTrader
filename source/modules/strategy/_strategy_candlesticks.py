@@ -20,8 +20,8 @@ class StrategyCandlesticks:
         self.trading_symbol               = None
         self.trading_token                = None
         self.trading_timeframe            = None    
-        self.timeframe                    = parameters.get('timeframe')
-        self.historical_data_subscription = parameters.get('historical_data_subscription')
+        self.timeframe                    = parameters.get('strategy_params.timeframe')
+        self.historical_data_subscription = parameters.get('trade_params.historical_data_subscription')
         self.cache_path                   = CACHE_PATH
         self.market_start_time            = datetime.time(hour=9, minute=15)
         
@@ -68,8 +68,8 @@ class StrategyCandlesticks:
             self.cache_path = os.path.join(CACHE_PATH, formatted_date)
             try:
                 os.makedirs(self.cache_path, exist_ok=True)
-            except OSError as e:
-                print(f"Error creating directory: {e}")
+            except OSError as error:
+                print(f"Error creating directory: {error}")
 
         # Individual cache objects for timeframes
         timeframe_caches = {}
@@ -80,7 +80,7 @@ class StrategyCandlesticks:
       
         for timeframe in timeframes_to_cache:
             # Create separate cache object for each timeframe
-            timeframe_cache_path = os.path.join(self.cache_path, timeframe.lower())
+            timeframe_cache_path = os.path.join(self.cache_path, CACHE_CANDLESTICKS_DIR, timeframe.lower())
             os.makedirs(timeframe_cache_path, exist_ok=True)  # Create folder for timeframe
             timeframe_caches[timeframe] = Cache(timeframe_cache_path)
 
@@ -138,7 +138,6 @@ class StrategyCandlesticks:
         try:
             for i, stock in enumerate(self.trading_watchlist, start=1):        
                 
-
                 self.trading_exchange = stock.get('exchange')
                 self.trading_symbol = stock.get('tradingsymbol')
                 if self.trading_exchange is None or self.trading_symbol is None:
@@ -164,7 +163,7 @@ class StrategyCandlesticks:
                     'candlestick_data': candlestick_data
                 })
 
-        except Exception as e:
-            log_error(f"An error occurred while scanning watchlist stocks: {str(e)}")
+        except Exception as error:
+            log_error(f"An error occurred while scanning watchlist stocks: {str(error)}")
 
         return candlestick_data_list
