@@ -12,7 +12,7 @@ from source.aws.sns.aws_sns_subscribe_topic import SubscribeTopic
 from source.aws.sns.aws_sns_unsubscribe_topic import UnsubscribeTopic
 
 
-class SNSTopicsManager:
+class SNSManager:
     def __init__(self):
         self.actions = {
             "create_topic": CreateTopic,

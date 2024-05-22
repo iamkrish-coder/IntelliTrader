@@ -14,7 +14,7 @@ class CreateTopic(BaseSnsManager):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
-        self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
+        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
         self.name = name
 
@@ -34,13 +34,13 @@ class CreateTopic(BaseSnsManager):
 
     def create_standard_topic(self):        
         try:
-            topic = self.sns_resource.create_topic(Name=self.name)
-            log_info("Created topic %s with ARN %s.", self.name, topic.get("TopicArn"))
+            response = self.sns_client.create_topic(Name=self.name)
+            log_info("Created topic %s with ARN %s.", self.name, response.get("TopicArn"))
         except ClientError as error:
             log_error("Couldn't create topic %s.", self.name)
             raise error
         else:
-            return topic
+            return response
 
 
     def create_fifo_topic(self):
@@ -54,16 +54,16 @@ class CreateTopic(BaseSnsManager):
         :return: The new topic.
         """
         try:
-            topic = self.sns_resource.create_topic(
+            response = self.sns_client.create_topic(
                 Name=self.name,
                 Attributes={
                     "FifoTopic": str(True),
                     "ContentBasedDeduplication": str(False),
                 },
             )
-            log_info("Created FIFO topic %s with ARN %s.", self.name, topic.get("TopicArn"))
+            log_info("Created FIFO topic %s with ARN %s.", self.name, response.get("TopicArn"))
         except ClientError as error:
             log_error("Couldn't create topic %s.", self.name)
             raise error
         else:
-            return topic            
+            return response            

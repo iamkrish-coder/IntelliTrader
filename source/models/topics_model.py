@@ -10,6 +10,7 @@ class TopicsModel(BaseModel):
         topic_name=None,
         strategy_id=None,
         created_date=None,
+        modified_date=None,
         is_active=None,
         is_published=None,
         is_subscribed=None,
@@ -21,6 +22,7 @@ class TopicsModel(BaseModel):
         self.topic_name = topic_name
         self.strategy_id = strategy_id
         self.created_date = created_date
+        self.modified_date = modified_date
         self.is_active = is_active
         self.is_published = is_published
         self.is_subscribed = is_subscribed

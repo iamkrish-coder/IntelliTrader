@@ -14,7 +14,7 @@ class CreateQueue(BaseSqsManager):
         """
         :param sqs_resource: A Boto3 Amazon SQS resource.
         """
-        self.sqs_resource = boto3.client(SQS, region_name=REGION_NAME)
+        self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.mode = mode
         self.name = name
 
@@ -37,23 +37,13 @@ class CreateQueue(BaseSqsManager):
     def create_standard_queue(self):       
 
         try:
-            queue = self.sqs_resource.create_queue(
-                QueueName=self.name, 
-                Attributes={
-                    'DelaySeconds': '5',
-                    'MaximumMessageSize': '',
-                    'MessageRetentionPeriod': '86400',
-                    'Policy': '',
-                    'ReceiveMessageWaitTimeSeconds': '',
-                    'VisibilityTimeout': ''
-                }
-            )
-            log_info("Created queue '%s' with URL=%s", self.name, queue.get("QueueUrl"))
+            response = self.sqs_client.create_queue(QueueName=self.name)
+            log_info("Created queue '%s' with URL=%s", self.name, response.get("QueueUrl"))
         except ClientError as error:
             log_error("Couldn't create queue %s.", self.name)
             raise error
         else:
-            return queue
+            return response
 
 
     def create_fifo_queue(self):
@@ -68,22 +58,16 @@ class CreateQueue(BaseSqsManager):
         """
 
         try:
-            queue = self.sqs_resource.create_queue(
+            response = self.sqs_client.create_queue(
                 QueueName=self.name,
                 Attributes={
                     'FifoQueue': str(True),
-                    'ContentBasedDeduplication': str(True),
-                    'DelaySeconds': '5',
-                    'MaximumMessageSize': '',
-                    'MessageRetentionPeriod': '3600',
-                    'Policy': '',
-                    'ReceiveMessageWaitTimeSeconds': '',
-                    'VisibilityTimeout': ''
+                    'ContentBasedDeduplication': str(True)
                 },
             )
-            log_info("Created FIFO queue '%s' with URL=%s", self.name, queue.get("QueueUrl"))
+            log_info("Created FIFO queue '%s' with URL=%s", self.name, response.get("QueueUrl"))
         except ClientError as error:
             log_error("Couldn't create queue %s.", self.name)
             raise error
         else:
-            return queue
+            return response

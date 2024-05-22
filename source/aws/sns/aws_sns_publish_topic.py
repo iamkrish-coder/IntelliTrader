@@ -15,7 +15,7 @@ class PublishTopic(BaseSnsManager):
         """
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
-        self.sns_resource = boto3.client(SNS, region_name=REGION_NAME)
+        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
         self.topic = topic
         self.message = message 
