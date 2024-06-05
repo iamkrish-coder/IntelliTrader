@@ -3,13 +3,13 @@ import uuid
 
 from boto3.session import botocore
 from botocore.exceptions import ClientError
-from source.aws.sns.aws_sns_create_topic import CreateTopic
-from source.aws.sns.aws_sns_delete_topic import DeleteTopic
-from source.aws.sns.aws_sns_list_subscriptions import ListSubscriptions
-from source.aws.sns.aws_sns_list_topics import ListTopics   
-from source.aws.sns.aws_sns_publish_topic import PublishTopic
-from source.aws.sns.aws_sns_subscribe_topic import SubscribeTopic
-from source.aws.sns.aws_sns_unsubscribe_topic import UnsubscribeTopic
+from source.aws.SNS.aws_sns_create_topic import CreateTopic
+from source.aws.SNS.aws_sns_delete_topic import DeleteTopic
+from source.aws.SNS.aws_sns_list_subscriptions import ListSubscriptions
+from source.aws.SNS.aws_sns_list_topics import ListTopics   
+from source.aws.SNS.aws_sns_publish_topic import PublishTopic
+from source.aws.SNS.aws_sns_subscribe_topic import SubscribeTopic
+from source.aws.SNS.aws_sns_unsubscribe_topic import UnsubscribeTopic
 
 
 class SNSManager:

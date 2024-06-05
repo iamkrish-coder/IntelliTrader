@@ -1,7 +1,7 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.sqs.BaseSqsManager import BaseSqsManager
+from source.aws.SQS.BaseSqsManager import BaseSqsManager
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *

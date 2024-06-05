@@ -3,14 +3,14 @@ import uuid
 
 from boto3.session import botocore
 from botocore.exceptions import ClientError
-from source.aws.sqs.aws_sqs_create_queue import CreateQueue
-from source.aws.sqs.aws_sqs_delete_queue import DeleteQueue
-from source.aws.sqs.aws_sqs_list_queues import ListQueues   
-from source.aws.sqs.aws_sqs_get_queue import GetQueue
-from source.aws.sqs.aws_sqs_purge_queue import PurgeQueue
-from source.aws.sqs.aws_sqs_publish_message import PublishQueueMessage
-from source.aws.sqs.aws_sqs_subscribe_message import SubscribeQueueMessage
-from source.aws.sqs.aws_sqs_delete_message import DeleteQueueMessage
+from source.aws.SQS.aws_sqs_create_queue import CreateQueue
+from source.aws.SQS.aws_sqs_delete_queue import DeleteQueue
+from source.aws.SQS.aws_sqs_list_queues import ListQueues   
+from source.aws.SQS.aws_sqs_get_queue import GetQueue
+from source.aws.SQS.aws_sqs_purge_queue import PurgeQueue
+from source.aws.SQS.aws_sqs_publish_message import PublishQueueMessage
+from source.aws.SQS.aws_sqs_subscribe_message import SubscribeQueueMessage
+from source.aws.SQS.aws_sqs_delete_message import DeleteQueueMessage
 
 
 class SQSManager:

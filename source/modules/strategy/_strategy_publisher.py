@@ -6,8 +6,8 @@ from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
 from source.utils.caching_utils import *
-from source.aws.sqs.aws_sqs_manager import aws_sqs_publish
-from source.aws.sns.aws_sns_manager import aws_sns_publish
+from source.aws.SQS.aws_sqs_manager import aws_sqs_publish
+from source.aws.SNS.aws_sns_manager import aws_sns_publish
 from source.models.topics_model import TopicsModel
 from source.modules.strategy.BaseStrategy import BaseStrategy
 

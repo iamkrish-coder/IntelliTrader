@@ -8,3 +8,5 @@ Todo:
 ✔ Multiple Subscriptions to a Single Topic - Needs Validation @done(24-05-22 11:12)
 ✔ Separate Subscription and Un-Subscription @done(24-05-22 11:12)
 ✔ Set is_subscribed value to Table on successful Subscription @done(24-05-22 11:12)
+☐ Refactor Publish to SNS
+☐ Refactor Subscription to SQS Queue for Data Passed from SNS

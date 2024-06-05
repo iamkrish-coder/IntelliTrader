@@ -21,6 +21,7 @@ from source.configurations.configuration import Configuration
 from source.modules.BaseModules import BaseModules
 from source.modules.connection.connection_module import Connection
 from source.modules.database.database_module import Database
+from source.modules.strategy.strategy_module import Strategy as StrategyModule 
 
 from source.controllers.BaseController import BaseController
 from source.controllers.strategy_controller import StrategyController
@@ -47,6 +48,7 @@ class IntelliTrader:
         self.modules = None
         self.configuration = None
         self.database = None
+        self.strategy = None
         self.strategy_controller_instance = None
         self.action_controller_instance = None
         self.monitoring_controller_instance = None
@@ -64,6 +66,8 @@ class IntelliTrader:
 
         if self.app_configuration is not None and self.table_configuration is not None:
             self.database = Database(self.connection, self.modules, self.app_configuration, self.table_configuration)
+            self.strategy = StrategyModule(self.connection, self.modules, self.app_configuration, self.table_configuration)
+
             return BaseController(self.connection, self.modules, self.app_configuration, self.database)
         else:
             log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
@@ -99,13 +103,15 @@ class IntelliTrader:
 
         if self.controller is not None:
             self.initialize_database_connection()
+            self.initialize_module_prerequisites()
+
             self.strategy_controller_instance = StrategyController(self.controller)
             self.action_controller_instance = ActionController(self.controller)
             # self.monitoring_controller_instance = None
 
             tasks = [
                 self.strategy_controller(),
-                # self.action_controller()
+                # self.action_controller(),
                 # self.monitoring_controller()
             ]
             await asyncio.gather(*tasks)
@@ -121,6 +127,19 @@ class IntelliTrader:
         """Establishes Database Connection."""
         logger = logging.getLogger(DATABASE_LOGGER_NAME)
         self.database.initialize()
+
+
+    ###########################################
+    ###########################################
+    #            MODULE PRE-REQUISITES        #
+    ###########################################
+    ###########################################
+
+    def initialize_module_prerequisites(self):
+        """Establishes Module Prerequisites."""
+        logger = logging.getLogger(STRATEGY_LOGGER_NAME)
+        self.strategy.initialize()
+
 
     ###########################################
     ###########################################
@@ -140,6 +159,7 @@ class IntelliTrader:
         # scheduler_instance.start_scheduler()
         # await asyncio.sleep(6000)
 
+
     ###########################################
     ###########################################
     #            ACTION CONTROLLER            #
@@ -157,6 +177,7 @@ class IntelliTrader:
         # # Start Scheduler
         # scheduler_instance.start_scheduler()
         # await asyncio.sleep(6000)
+
 
     ###########################################
     ###########################################
@@ -191,6 +212,9 @@ if __name__ == "__main__":
     # url = f'http://{HOST}:{PORT}/'
     # webbrowser.open(url)
     # app.run(host=HOST, port=PORT)
+
+
+    """ DEPRECATED METHODS """
 
     # Approach 1: Threading
 
