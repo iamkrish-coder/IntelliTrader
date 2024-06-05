@@ -2,7 +2,7 @@ import boto3
 import uuid
 
 from botocore.exceptions import ClientError
-from source.aws.sns.BaseSnsManager import BaseSnsManager
+from source.aws.SNS.BaseSnsManager import BaseSnsManager
 from source.constants.constants import *
 from source.enumerations.enums import *
 from source.utils.logging_utils import *
