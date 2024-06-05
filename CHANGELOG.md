@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.11.0...v3.11.1) (2024-06-05)
+
+
+### Features
+
+* Modified Strategy module and Database Module to be independent ([a558964](https://github.com/iamkrish-coder/IntelliTrader/commit/a5589645677e93ebeb074acb95a61856509ac654))
+
 ## [3.11.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.10.0...v3.11.0) (2024-05-22)
 
 
