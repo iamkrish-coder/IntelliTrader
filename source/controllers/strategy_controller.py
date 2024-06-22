@@ -36,7 +36,7 @@ class StrategyController(BaseController):
         self.run_count       = 0
         self.parameters      = None
         self.alerts          = None
-    
+
     async def initialize(self):       
         log_info(f"Running Strategy...{self.run_count} Times")
         return await self.strategy_handler()    

@@ -8,6 +8,7 @@ from source.utils.logging_utils import *
 from source.utils.caching_utils import *
 from source.aws.SQS.aws_sqs_manager import aws_sqs_publish
 from source.aws.SNS.aws_sns_manager import aws_sns_publish
+from source.aws.SNS.aws_sns_manager import SNSManager
 from source.models.topics_model import TopicsModel
 from source.modules.strategy.BaseStrategy import BaseStrategy
 
@@ -19,9 +20,10 @@ class StrategyPublisher(BaseStrategy):
         self.database = database
         self.alerts = alerts
         self.aws_service = aws_service
-        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
-        self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
-
+        self.object_sns_manager = SNSManager()
+        self.strategy_id = self.parameters.get('strategy_params.strategy_id')
+        self.topic_mode = self.parameters.get('runtime_params.topic_type')   
+        
     def initialize(self):
         return self.publish()
 
@@ -49,9 +51,9 @@ class StrategyPublisher(BaseStrategy):
     def get_or_create_topic(self):
         log_info(f"Checking Existing SNS Topic...")
         dataset = {
-                    "topic_arn": self.topic_arn,
+                    "topic_arn": topic_arn,
                     "created_date": self.date_time_now,
-                    "topic_name": self.topic_name,
+                    "topic_name": topic_name,
                     "is_active": False,
                     "is_published": False,
                     "is_subscribed": False,
@@ -71,9 +73,9 @@ class StrategyPublisher(BaseStrategy):
         else:
             log_info(f"Creating SNS Topic...")
             dataset = {
-                "topic_arn": self.topic_arn,
+                "topic_arn": topic_arn,
                 "created_date": self.date_time_now,
-                "topic_name": self.topic_name,
+                "topic_name": topic_name,
                 "is_active": False,
                 "is_published": False,
                 "is_subscribed": False,
@@ -88,7 +90,7 @@ class StrategyPublisher(BaseStrategy):
             self.database_request(create_topic_params)
             cached_value = [dataset]
 
-        cached_key = f"{TABLE_TOPICS}_{self.topic_name}"
+        cached_key = f"{TABLE_TOPICS}_{topic_name}"
         set_cached_item(
             Cache_Type.DISK.value, 
             CACHE_TOPICS_DIR, 
@@ -100,8 +102,8 @@ class StrategyPublisher(BaseStrategy):
 
         log_info(f"Updating SNS Topic status...")                                
         dataset = {
-            "topic_arn": self.topic_arn,
-            "topic_name": self.topic_name,
+            "topic_arn": topic_arn,
+            "topic_name": topic_name,
             "is_active": True,
             "is_published": True,
         }
@@ -113,7 +115,7 @@ class StrategyPublisher(BaseStrategy):
         )
         self.database_request(update_topic_params)
 
-        cached_key = f"{TABLE_TOPICS}_{self.topic_name}_{IS_PUBLISHED}"
+        cached_key = f"{TABLE_TOPICS}_{topic_name}_{IS_PUBLISHED}"
         cached_value = [dataset]
         set_cached_item(
             Cache_Type.DISK.value,
@@ -128,18 +130,15 @@ class StrategyPublisher(BaseStrategy):
         ###############
         self.date_time_now = time.strftime("%Y-%m-%d %H:%M:%S")
         if self.aws_service == SNS:
- 
             successfully_published = []
-            topic_type = self.parameters.get('runtime_params.topic_type')            
-            strategy_id = self.parameters.get('strategy_params.strategy_id')
-            if strategy_id is None:
+            if self.strategy_id is None:
                 log_error("Strategy ID is missing from parameters.")
                 return None    
 
-            self.topic_arn, self.topic_name = self.generate_aws_sns_topic_details(strategy_id, topic_type)
+            topic_arn, topic_name = self.generate_aws_sns_topic_details(self.strategy_id, self.topic_mode)
 
             # Check existing disk cache
-            cached_key = f"{TABLE_TOPICS}_{self.topic_name}"
+            cached_key = f"{TABLE_TOPICS}_{topic_name}"
             cached_value = get_cached_item(
                 Cache_Type.DISK.value, 
                 CACHE_TOPICS_DIR, 
@@ -155,7 +154,13 @@ class StrategyPublisher(BaseStrategy):
                 subject = "Stock Alert"
 
                 try:
-                    response = aws_sns_publish(self.sns_client, self.topic_arn, message, subject)
+                    
+                    # Publish to SNS 
+                    arguments = {"mode": self.topic_mode, "topic": topic_name, "message": message, "subject": subject}
+                    publish_topic = self.object_sns_manager.get_action("publish_topic", **arguments)
+                    publish_topic.execute()
+
+                    # response = aws_sns_publish(self.sns_client, topic_arn, message, subject)
                     if "MessageId" in response:
                         successfully_published.append(message)
                     else:
@@ -168,7 +173,7 @@ class StrategyPublisher(BaseStrategy):
                 if len(successfully_published) == len(self.alerts):
                     config = self.database.table_configuration.get(Tables.TABLE_TOPICS.value)
                     if config:
-                        cached_key = f"{TABLE_TOPICS}_{self.topic_name}_{IS_PUBLISHED}"
+                        cached_key = f"{TABLE_TOPICS}_{topic_name}_{IS_PUBLISHED}"
                         cached_value = get_cached_item(
                             Cache_Type.DISK.value, 
                             CACHE_TOPICS_DIR, 
@@ -186,15 +191,13 @@ class StrategyPublisher(BaseStrategy):
         ###############
         if self.aws_service == SQS:
             successfully_published = []
-            strategy_id = self.parameters.get("strategy_id")
-
-            if strategy_id is None:
+            if self.strategy_id is None:
                 log_error("Strategy ID is missing from parameters.")
                 return None
 
-            self.strategy_queue = self.get_aws_sqs_queue_name(strategy_id)
+            self.strategy_queue = self.get_aws_sqs_queue_name(self.strategy_id)
             if self.strategy_queue is None:
-                log_error(f"Queue name not found for Strategy {strategy_id}.")
+                log_error(f"Queue name not found for Strategy {self.strategy_id}.")
                 return None
 
             url = (
