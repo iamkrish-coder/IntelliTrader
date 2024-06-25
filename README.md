@@ -4,6 +4,20 @@
 
 ## Development Notes
 
+
+pip install -r requirements.txt
+
+pip list --outdated
+
+Upgrade the packages Manually for now
+
+Build new requirements.txt File
+
+pip install pipreqs
+
+pipreqs --force  /home/srikrishnan/Desktop/Projects/IntelliTrader > requirements.txt
+
+
 ### Historical API Frequency and Limit on Number of Candles Fetched
 
 - **Minute: 60 days**
