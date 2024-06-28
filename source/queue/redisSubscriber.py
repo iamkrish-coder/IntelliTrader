@@ -1,5 +1,6 @@
 import redis
-from source.utils.logging_utils import *
+from ..utils.logging_utils import *
+
 
 class RedisSubscriber:
     def __init__(self, queue, callback):

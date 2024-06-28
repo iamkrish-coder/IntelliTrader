@@ -1,12 +1,13 @@
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
 
-class Trade:
+
+class BaseTrade:
     def __init__(self, modules, transaction_type, order_type):
-        self.modules          = modules
+        self.modules = modules
         self.transaction_type = transaction_type
-        self.order_type       = order_type
+        self.order_type = order_type
 
     def execute_trade(self):
         if self.transaction_type == Transaction_Type.BUY.value:
@@ -18,7 +19,8 @@ class Trade:
 
     def create_trade_order(self, order_params):
         if all(param is not None for param in order_params):
-            if self.order_type in [Order_Type.MARKET.value, Order_Type.LIMIT.value, Order_Type.SL.value, Order_Type.SL_M.value, Order_Type.GTT.value]:
+            if self.order_type in [Order_Type.MARKET.value, Order_Type.LIMIT.value, Order_Type.SL.value,
+                                   Order_Type.SL_M.value, Order_Type.GTT.value]:
                 # Handle various order types
                 self.modules['orders'].initialize_order(self.order_type, order_params)
                 return True
@@ -30,7 +32,7 @@ class Trade:
             # Handle missing common parameters
             print("Some required parameters for the order are missing. Order Placement Failed!")
             return False
-        
+
     def buy(self):
         raise NotImplementedError("Subclasses must implement buy()")
 

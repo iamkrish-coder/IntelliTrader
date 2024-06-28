@@ -1,4 +1,5 @@
-from source.modules.trades.BaseTrade import BaseTrade
+import BaseTrade
+
 
 class OptionTrade(BaseTrade):
     def buy(self):

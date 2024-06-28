@@ -3,8 +3,9 @@ import os
 import json
 import datetime
 import time
-from source.constants.constants import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...utils.logging_utils import *
+
 
 class Helper:
     def __init__(self, params=None):
@@ -14,7 +15,7 @@ class Helper:
     def create_output_directory(self):
         if not os.path.exists(OUTPUT_PATH):
             os.mkdir(OUTPUT_PATH)
-    
+
     def write_text_output(self, filename, data):
         with open(os.path.join(OUTPUT_PATH, filename), 'w') as file:
             if isinstance(data, dict):
@@ -25,7 +26,7 @@ class Helper:
     def write_token_output(self, filename, data):
         now = datetime.datetime.now()
         CURRENT_DATE = now.strftime("%Y-%m-%d")
-        connection_cache_path = os.path.join(CACHE_PATH, CURRENT_DATE, CACHE_CONNECTION_DIR)        
+        connection_cache_path = os.path.join(CACHE_PATH, CURRENT_DATE, CACHE_CONNECTION_DIR)
         try:
             os.makedirs(connection_cache_path, exist_ok=True)
         except OSError as error:
@@ -41,9 +42,9 @@ class Helper:
         csv_data = pd.DataFrame(data)
         if filename.endswith('.csv'):
             csv_data.to_csv(os.path.join(OUTPUT_PATH, filename), index=False)
-        else:            
+        else:
             symbol = filename.split("_")[1]
-            os.makedirs(symbol, exist_ok=True)  
+            os.makedirs(symbol, exist_ok=True)
             full_path = os.path.join(OUTPUT_PATH, filename)
             csv_data.to_csv(full_path, index=False)
 
@@ -58,7 +59,7 @@ class Helper:
         # end_time = time.time()
         # execution_time = end_time - start_time
         # log_info(f"Execution time: {execution_time} seconds")
-   
+
     def format_json_output_print(self, dictionary_data, label, prettier=False, indent=4):
         """
         Formats JSON data into a human-readable string.
@@ -70,14 +71,14 @@ class Helper:
         Returns:
         - str: Formatted JSON string.
         """
-        
+
         try:
             # Convert the dictionary back to a formatted JSON string
             if prettier:
                 formatted_json = json.dumps(dictionary_data, indent=indent)
             else:
                 formatted_json = dictionary_data
-                
+
             print(f"\n ******** {label} ********\n")
             print(formatted_json)
 

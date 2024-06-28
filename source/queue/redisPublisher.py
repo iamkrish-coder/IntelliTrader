@@ -1,5 +1,6 @@
 import redis
 
+
 class RedisPublisher:
     def __init__(self, queue):
         self.queue = queue
@@ -7,4 +8,3 @@ class RedisPublisher:
 
     def publish_message(self, message):
         self.redis_client.publish(self.queue, message)
-

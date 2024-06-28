@@ -1,31 +1,27 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from datetime import datetime
-from pytz import utc
-from source.utils.logging_utils import *  
-
 import asyncio
-import time
-import os
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
+from pytz import utc
+
+from ..utils.logging_utils import *
 
 
 class Scheduler:
 
-    def __init__(self, configuration, task_instance = None, runtime = None, mode = 'blocking'):
+    def __init__(self, configuration, task_instance=None, runtime=None, mode='blocking'):
         self._scheduler = None
         self.configuration = configuration
         self.task_instance = task_instance
         self.task_runtime = runtime
         self.mode = mode
 
-
     def get_scheduled_runtime(self):
         """
         Retrieves the scheduled runtime from the configuration.
 
         Args:
-            configuration (dict): Configuration dictionary containing the 'runtime' key.
 
         Returns:
             str: The parsed runtime string (e.g., '*/5 minute', '*/2 hour').
@@ -38,34 +34,31 @@ class Scheduler:
             raise ValueError("Missing 'runtime' configuration for scheduling.")
         return runtime
 
-        
-    def start_scheduler(self, task_instance = None):
+    def start_scheduler(self, task_instance=None):
         """Reads runtime configuration, task object, schedules runtime and mode of scheduler."""
         if self.task_runtime is None or "minute" not in self.task_runtime or "hour" not in self.task_runtime:
             self.task_runtime = self.get_scheduled_runtime()
-        
+
         if self.task_instance is None:
             self.task_instance = task_instance
 
         if self.mode == "blocking":
             self.schedule_task_blocking(self.task_instance, self.task_runtime)
         elif self.mode == "background":
-            self.schedule_task_background(self.task_instance, self.task_runtime)   
+            self.schedule_task_background(self.task_instance, self.task_runtime)
         elif self.mode == "asyncio":
             asyncio.create_task(self.run_async_function())
-        else: 
+        else:
             log_error("Invalid scheduler mode. Expected 'blocking', 'background', or 'asyncio'.")
 
     async def run_async_function(self):
         if self.mode == "asyncio":
             await self.schedule_task_asyncio(self.task_instance, self.task_runtime)
 
+    # ASYNCIO ##########################################################################
+    # ASYNCIO ##########################################################################
+    # ASYNCIO ##########################################################################
 
-
-    # ASYNCIO ##########################################################################
-    # ASYNCIO ##########################################################################
-    # ASYNCIO ##########################################################################
-       
     async def schedule_task_asyncio(self, task_instance, task_runtime):
         """
         Schedules the task initialization using an AsyncIOScheduler (requires asyncio).
@@ -95,9 +88,9 @@ class Scheduler:
             ValueError: If the runtime format is invalid (expected 'minute' or 'hour').
         """
         if "minute" in task_runtime:
-            min = int(task_runtime.split("minute")[0])
-            min = int(1)
-            self._scheduler.add_job(task_instance.initialize, trigger='cron', minute=f'*/{min}', timezone=utc)
+            minute = int(task_runtime.split("minute")[0])
+            minute = int(1)
+            self._scheduler.add_job(task_instance.initialize, trigger='cron', minute=f'*/{minute}', timezone=utc)
         elif "hour" in task_runtime:
             hrs = int(task_runtime.split("hour")[0])
             self._scheduler.add_job(task_instance.initialize, trigger='cron', hour=f'*/{hrs}', timezone=utc)
@@ -106,8 +99,6 @@ class Scheduler:
 
         print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
         self._scheduler.start()
-        
-
 
     # BLOCKING ##########################################################################
     # BLOCKING ##########################################################################
@@ -127,8 +118,8 @@ class Scheduler:
         self._scheduler = BlockingScheduler()
         try:
             if "minute" in task_runtime:
-                min = int(task_runtime.split("minute")[0])
-                self._scheduler.add_job(task_instance.initialize, trigger='cron', minute=f'*/{min}', timezone=utc)
+                minute = int(task_runtime.split("minute")[0])
+                self._scheduler.add_job(task_instance.initialize, trigger='cron', minute=f'*/{minute}', timezone=utc)
             elif "hour" in task_runtime:
                 hrs = int(task_runtime.split("hour")[0])
                 self._scheduler.add_job(task_instance.initialize, trigger='cron', hour=f'*/{hrs}', timezone=utc)
@@ -137,7 +128,7 @@ class Scheduler:
 
             print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
             self._scheduler.start()
-            
+
         except (KeyboardInterrupt, SystemExit):
             self._scheduler.shutdown()
 
@@ -159,8 +150,8 @@ class Scheduler:
         self._scheduler = BackgroundScheduler()
         try:
             if "minute" in task_runtime:
-                min = int(task_runtime.split("minute")[0])
-                self._scheduler.add_job(task_instance.initialize, trigger='cron', minute=f'*/{min}', timezone=utc)
+                minute = int(task_runtime.split("minute")[0])
+                self._scheduler.add_job(task_instance.initialize, trigger='cron', minute=f'*/{minute}', timezone=utc)
             elif "hour" in task_runtime:
                 hrs = int(task_runtime.split("hour")[0])
                 self._scheduler.add_job(task_instance.initialize, trigger='cron', hour=f'*/{hrs}', timezone=utc)
@@ -169,8 +160,6 @@ class Scheduler:
 
             print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
             self._scheduler.start()
-            
+
         except (KeyboardInterrupt, SystemExit):
             self._scheduler.shutdown()
-
-
