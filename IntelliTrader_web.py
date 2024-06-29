@@ -1,7 +1,7 @@
 # IntelliTrader_web.py
 
 from flask import Flask, render_template, request, redirect, session
-from source.constants.constants import *
+from source.constants.const import *
 from source.enumerations.enums import *
 import os
 
@@ -24,5 +24,3 @@ def create_web_app(configuration):
         return render_template('login.html')
 
     return app
-
-

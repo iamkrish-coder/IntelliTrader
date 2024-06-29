@@ -3,10 +3,11 @@
 import logging
 import colorlog
 import os
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.enumerations.resource_string_enums import INFO, ERROR, WARN
-from source.language.resources_EN_IN import ResourceStrings
+from ..constants.const import *
+from ..enumerations.enums import *
+from ..enumerations.resource_string_enums import INFO, ERROR, WARN
+from ..language.resources_EN_IN import ResourceStrings
+
 
 def configure_logging():
     """Configures logging with a console handler (optional)."""
@@ -60,6 +61,7 @@ def configure_logging():
     intelliTrader_handler.setFormatter(plain_formatter)
     root_logger.addHandler(intelliTrader_handler)
 
+
 def get_message(resource_string):
     """Retrieves message from ResourceStrings or returns the input string if not found.
 
@@ -80,6 +82,7 @@ def get_message(resource_string):
         # logging.warning(f"get_message received a non-enum string: {resource_string}")
         return resource_string
 
+
 def log_message(message, level, *args, **kwargs):
     """
     Logs a message with the specified level.
@@ -90,7 +93,7 @@ def log_message(message, level, *args, **kwargs):
     *args: Positional arguments for message formatting.
     **kwargs: Keyword arguments for message formatting.
     """
-    formatted_message = ResourceStrings.get(message)  
+    formatted_message = ResourceStrings.get(message)
     if not formatted_message:
         formatted_message = message
     if kwargs:
@@ -106,15 +109,17 @@ def log_message(message, level, *args, **kwargs):
     logger = logging.getLogger(__name__)
     logger.log(level, formatted_message)
 
+
 def log_info(message, *args, **kwargs):
     """Logs a message with INFO level."""
     log_message(message, logging.INFO, *args, **kwargs)
+
 
 def log_error(message, *args, **kwargs):
     """Logs a message with ERROR level."""
     log_message(message, logging.ERROR, *args, **kwargs)
 
+
 def log_warn(message, *args, **kwargs):
     """Logs a message with WARNING level."""
     log_message(message, logging.WARNING, *args, **kwargs)
-

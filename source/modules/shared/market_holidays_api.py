@@ -1,13 +1,14 @@
-from queue import Empty
+import datetime as dt
 import requests
 from bs4 import BeautifulSoup
-import datetime as dt
-from source.utils.logging_utils import *
+from ...utils.logging_utils import *
+
 
 def market_holidays(url):
     # Send a GET request to the URL
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/58.0.3029.110 Safari/537.3'
     }
     response = requests.get(url, headers=headers)
 
@@ -15,7 +16,7 @@ def market_holidays(url):
     if response.status_code == 200:
         # Parse the HTML content of the webpage
         soup = BeautifulSoup(response.content, 'html.parser')
-    
+
         # Find the section containing holiday calendar data
         holiday_section = soup.find('section', id='holidays')
 
@@ -26,15 +27,14 @@ def market_holidays(url):
             for row in rows[1:]:  # Skip the header row
                 columns = row.find_all('td')
                 if columns:
-                    holiday_weekday = columns[0].text.strip()
-                    holiday_date = columns[1].text.strip() 
+                    holiday_date = columns[1].text.strip()
                     holiday_description = columns[2].text.strip()
                     holiday_date = dt.datetime.strptime(holiday_date, '%d %b %Y').date()
 
                     holidays.append({'date': holiday_date, 'description': holiday_description})
                 else:
                     break
-                
+
             return holidays
         else:
             log_info("Holiday calendar data not found on the webpage.")

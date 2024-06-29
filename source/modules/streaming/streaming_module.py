@@ -1,20 +1,27 @@
-import pandas as pd
-import os
 import datetime as dt
 import time
-from source.modules.helper.helper_module import Helper
-from source.utils.logging_utils import *
+from ...utils.logging_utils import *
+
 
 class Ticker:
     def __init__(self, params):
+        self.mode = None
+        self.exit_time = None
+        self.entry_price = None
+        self.target_profit = None
+        self.stop_loss = None
+        self.target_profit_points = None
+        self.stop_loss_points = None
         self.prop = params
         self.tokens = []
-        self.ticker_data = []  
+        self.ticker_data = []
 
-    # Callback for successful connection.
+        # Callback for successful connection.
+
     def on_connect(self, ws, response):
         log_info(f"Successfully connected. Response: {response}")
         ticker_token = self.tokens
+        ticker_mode = None
         ws.subscribe(ticker_token)
 
         if self.mode.lower() == "ltp":
@@ -29,7 +36,6 @@ class Ticker:
         ws.set_mode(ticker_mode, ticker_token)
         log_info(f"Subscribe to tokens in Full/LTP/Quote mode: {ticker_token}")
 
-
     # Callback when current connection is closed.
     def on_close(self, ws, code, reason):
         log_info(f"Connection closed: {code} - {reason}")
@@ -43,7 +49,7 @@ class Ticker:
     # Callback when reconnect is on progress
     def on_reconnect(self, ws, attempts_count):
         log_info(f"Reconnecting: {attempts_count}")
-        
+
     # Callback when all reconnect failed (exhausted max retries)
     def on_noreconnect(self, ws):
         log_info("Reconnect failed.")
@@ -55,9 +61,8 @@ class Ticker:
             self.ticker_data.extend(ticks)
             self.process_ticker_data(ws)
 
-
     # Process the stored ticker data or perform any required operations
-    def process_ticker_data(self, ws):  
+    def process_ticker_data(self, ws):
         begin_time = time.time()
         for tick in self.ticker_data:
             log_info(f"Ticks: {tick}")
@@ -81,12 +86,12 @@ class Ticker:
 
             # if (time.time() - begin_time) > 120: # run for 2 minutes
             #     ws.close() # close the connection after some time
-        
+
     def connect_to_ticker(self, tokens, mode, user_settings):
         self.tokens = tokens
         self.mode = mode
-        self.exit_time = dt.time(15,30)
-        
+        self.exit_time = dt.time(15, 30)
+
         # Access user settings using dictionary keys
         self.entry_price = float(user_settings.get("en_price", 0))
         self.target_profit = float(user_settings.get("tp_price", 0))
