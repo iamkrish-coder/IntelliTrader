@@ -1,7 +1,7 @@
 from source.enumerations.resource_string_enums import INFO, ERROR, WARN
 
 ResourceStrings = {
-    
+
     #####################################################################################################
     # INFO MESSAGES
     #####################################################################################################
@@ -20,20 +20,19 @@ ResourceStrings = {
     INFO.LIMIT_ORDER_PLACED: "LIMIT ORDER PLACED SUCCESSFULLY.",
     INFO.SINGLE_LEG_GTT_PLACED: "SINGLE LEG GTT ORDER PLACED.",
     INFO.GTT_OCO_PLACED: "GTT OCO ORDER PLACED.",
-    INFO.EVALUATING_STRATEGY: "EVALUATING STRATEGY: {}",  
-    INFO.MESSAGE_PUBLISHED: "MESSAGE PUBLISHED: {}",  
+    INFO.EVALUATING_STRATEGY: "EVALUATING STRATEGY: {}",
+    INFO.MESSAGE_PUBLISHED: "MESSAGE PUBLISHED: {}",
     INFO.REDIS_SERVER_STARTED: "REDIS SERVER STARTED.",
     INFO.REDIS_SERVER_ALREADY_RUNNING: "REDIS SERVER ALREADY RUNNING.",
     INFO.REDIS_SERVER_STOPPED: "REDIS SERVER STOPPED SUCCESSFULLY.",
     INFO.SUCCESSFULLY_CONNECTED: "Successfully connected.",
-    INFO.CURRENT_MODE: "Current mode: {}", 
+    INFO.CURRENT_MODE: "Current mode: {}",
 
     #####################################################################################################
     # WARNING MESSAGES
     #####################################################################################################
 
-    WARN.NO_DATA_FOUND: "No data found for {}", 
-
+    WARN.NO_DATA_FOUND: "No data found for {}",
 
     #####################################################################################################
     # ERROR MESSAGES
@@ -41,11 +40,11 @@ ResourceStrings = {
 
     ERROR.SYMBOL_NOT_FOUND: "Symbol not found in the dataset or the dataset is empty.",
     ERROR.ERROR_FETCHING_DATA: "Error fetching data or data is empty.",
-    ERROR.ERROR_RETRIEVING_APPLICATION_SETTINGS: "An error occurred retrieving Application Settings: {}", 
-    ERROR.ORDER_PLACEMENT_FAILED: "Order placement failed: {}",  
-    ERROR.ERROR_PLACING_GTT_OCO_ORDER: "Error placing gtt oco order: {}",  
-    ERROR.AN_ERROR_OCCURRED: "An error occurred: {}",  
-    ERROR.CONNECTION_CLOSED: "Connection closed: {} - {}",  
-    ERROR.CONNECTION_ERROR: "Connection error: {} - {}",  
+    ERROR.ERROR_RETRIEVING_APPLICATION_SETTINGS: "An error occurred retrieving Application Settings: {}",
+    ERROR.ORDER_PLACEMENT_FAILED: "Order placement failed: {}",
+    ERROR.ERROR_PLACING_GTT_OCO_ORDER: "Error placing gtt oco order: {}",
+    ERROR.AN_ERROR_OCCURRED: "An error occurred: {}",
+    ERROR.CONNECTION_CLOSED: "Connection closed: {} - {}",
+    ERROR.CONNECTION_ERROR: "Connection error: {} - {}",
     ERROR.RECONNECT_FAILED: "Reconnect failed."
 }

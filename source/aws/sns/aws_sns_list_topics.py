@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SNS.BaseSnsManager import BaseSnsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSnsManager import BaseSnsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class ListTopics(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
@@ -15,7 +16,6 @@ class ListTopics(BaseSnsManager):
         :param sns_resource: A Boto3 Amazon SNS resource.
         """
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
-
 
     def execute(self):
         """
@@ -29,4 +29,4 @@ class ListTopics(BaseSnsManager):
             log_error("Couldn't get topics.")
             raise error
         else:
-            return response     
+            return response

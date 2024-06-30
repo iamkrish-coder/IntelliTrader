@@ -1,8 +1,9 @@
 # handlers/actions
 
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+
 
 class ActionConfigurations:
     def __init__(self, configuration):
@@ -10,7 +11,7 @@ class ActionConfigurations:
 
     def initialize(self):
         return self.manage_configurations()
-        
+
     def manage_configurations(self):
         try:
             strategy_id = int(self.configuration.get("strategy"))
@@ -40,7 +41,7 @@ class ActionConfigurations:
 
             # Common params (assuming it's always a dict)
             settings['common_params'] = config.get("common_trade_params", {})
-            
+
             return settings
 
         except Exception as error:

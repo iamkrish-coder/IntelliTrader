@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def rsi(dataset, period=14):
     """
     Calculate the Relative Strength Index (RSI) based on the provided dataset.
@@ -11,13 +12,13 @@ def rsi(dataset, period=14):
     Returns:
     - list: A list of closing prices (float) calculated based on the dataset.
     """
-    
+
     # Check if dataset contains the required columns
     data = dataset['close'] if 'close' in dataset else None
-    
+
     if data is None:
         return None
-    
+
     # Check if data has sufficient length for RSI calculations
     if len(data) < period:
         return None

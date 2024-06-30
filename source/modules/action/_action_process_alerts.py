@@ -6,9 +6,9 @@ import time
 import math
 import boto3
 from time import sleep
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
 
 
 class ActionProcessAlerts:
@@ -16,10 +16,10 @@ class ActionProcessAlerts:
         self.modules = modules
         self.alerts = alerts
         self.parameters = parameters
-        self.sqs = boto3.client(SQS, region_name=REGION_NAME)  
+        self.sqs = boto3.client(SQS, region_name=REGION_NAME)
         self.monitored_stocks = []
         self.is_stock_monitored = False
-        
+
     def initialize(self):
         return self.process_alerts()
 
@@ -47,7 +47,8 @@ class ActionProcessAlerts:
                 self.message = message['Body']
                 self.receipt_handle = message['ReceiptHandle']
                 self.trading_exchange, self.trading_symbol, self.trading_token = self.message.split(',')
-                self.monitored_stocks.append((self.trading_exchange.strip(), self.trading_symbol.strip(), self.trading_token.strip()))
+                self.monitored_stocks.append(
+                    (self.trading_exchange.strip(), self.trading_symbol.strip(), self.trading_token.strip()))
                 self.delete_message_from_queue(self.receipt_handle)
 
         else:

@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SQS.BaseSqsManager import BaseSqsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSqsManager import BaseSqsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class PublishQueueMessage(BaseSqsManager):
     """Encapsulates Amazon SQS queue."""
@@ -14,10 +15,11 @@ class PublishQueueMessage(BaseSqsManager):
         """
         :param sqs_resource: A Boto3 Amazon SQS resource.
         """
+        self.message_attributes = None
+        self.message_body = None
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.queue_url = queue_url
         self.receipt_handle = receipt_handle
-
 
     def execute(self):
         """
@@ -28,13 +30,11 @@ class PublishQueueMessage(BaseSqsManager):
         :param message_attributes: Custom attributes of the message. These are key-value
                                 pairs that can be whatever you want.
         :return: The response from SQS that contains the assigned message ID.
-        """    
-        if not message_attributes:
-            message_attributes = {}
+        """
 
         try:
             response = self.sqs_client.send_message(
-                MessageBody=self.message_body, 
+                MessageBody=self.message_body,
                 MessageAttributes=self.message_attributes
             )
         except ClientError as error:
@@ -42,5 +42,3 @@ class PublishQueueMessage(BaseSqsManager):
             raise error
         else:
             return response
-
-

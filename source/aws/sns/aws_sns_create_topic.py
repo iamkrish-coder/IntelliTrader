@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SNS.BaseSnsManager import BaseSnsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSnsManager import BaseSnsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class CreateTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
@@ -17,7 +18,6 @@ class CreateTopic(BaseSnsManager):
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
         self.name = name
-
 
     def execute(self):
         """
@@ -31,8 +31,7 @@ class CreateTopic(BaseSnsManager):
         elif self.mode == FIFO:
             return self.create_fifo_topic()
 
-
-    def create_standard_topic(self):        
+    def create_standard_topic(self):
         try:
             response = self.sns_client.create_topic(Name=self.name)
             log_info("Created topic %s with ARN %s.", self.name, response.get("TopicArn"))
@@ -41,7 +40,6 @@ class CreateTopic(BaseSnsManager):
             raise error
         else:
             return response
-
 
     def create_fifo_topic(self):
         """
@@ -66,4 +64,4 @@ class CreateTopic(BaseSnsManager):
             log_error("Couldn't create topic %s.", self.name)
             raise error
         else:
-            return response            
+            return response

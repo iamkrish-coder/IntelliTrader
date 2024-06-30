@@ -6,6 +6,3 @@ class BaseController:
         self.modules = modules
         self.configuration = configuration
         self.database = database 
-        
-
-

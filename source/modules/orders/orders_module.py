@@ -1,7 +1,8 @@
 from source.modules.helper.helper_module import Helper
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+
 
 class Orders:
     def __init__(self, params):
@@ -17,14 +18,14 @@ class Orders:
         elif type_of_order == Order_Type.SL_M.value:
             return self.create_slm_order(order_parameters)
         elif type_of_order == Order_Type.GTT.value:
-            return self.create_gtt_order(order_parameters)        
+            return self.create_gtt_order(order_parameters)
         else:
             log_error("Invalid order type")
             return None
 
     # Place a market order for a stock with given quantity
     def create_market_order(self, order_parameters):
-        
+
         trade_variety, trade_exchange, trade_symbol, trade_transaction, trade_quantity, trade_product, trade_ordertype, trade_validity = order_parameters
 
         # Define mapping dictionaries for each parameter
@@ -94,22 +95,23 @@ class Orders:
             return False
 
         try:
-            order_id = self.prop['kite'].place_order(tradingsymbol = trade_symbol,
-                                        exchange         = trade_exchange,
-                                        transaction_type = trade_transaction,
-                                        quantity         = trade_quantity,
-                                        variety          = trade_variety,
-                                        order_type       = trade_ordertype,
-                                        product          = trade_product,
-                                        validity         = trade_validity)
+            order_id = self.prop['kite'].place_order(tradingsymbol=trade_symbol,
+                                                     exchange=trade_exchange,
+                                                     transaction_type=trade_transaction,
+                                                     quantity=trade_quantity,
+                                                     variety=trade_variety,
+                                                     order_type=trade_ordertype,
+                                                     product=trade_product,
+                                                     validity=trade_validity)
 
             log_info(f"Market order placed. Order ID: {order_id}")
         except Exception as error:
             log_info("Order placement failed: {}".format(error))
 
-        return 
+        return
 
-    # Place a limit order for a stock with given quantity
+        # Place a limit order for a stock with given quantity
+
     def create_limit_order(self, variety, symbol, transaction, quantity, product, limit_price):
         if transaction == 'buy':
             transaction_type = self.prop['kite'].TRANSACTION_TYPE_BUY
@@ -140,11 +142,11 @@ class Orders:
             log_info(f"Order placement failed: {error}")
 
     # Place a stop loss order for a stock with given quantity
-    def create_sl_order():
+    def create_sl_order(self):
         pass
-    
+
     # Place a stop loss market order for a stock with given quantity
-    def create_slm_order():
+    def create_slm_order(self):
         pass
 
     # Place a gtt limit order for a stock with given order details
@@ -153,16 +155,20 @@ class Orders:
         if gtt_type == 'single':
             gtt_trigger_type = 'GTT_TYPE_SINGLE'
             try:
-                single_gtt = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
+                single_gtt = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol,
+                                                         exchange=exchange, trigger_values=trigger_values,
+                                                         last_price=last_price, orders=order_list)
                 log_info(f"Single leg gtt order trigger_id: {single_gtt['trigger_id']}")
             except Exception as error:
                 log_error(f"Error placing single leg gtt order: {error}")
-        
+
         # Place two-leg(OCO) gtt order
-        elif gtt_type == 'oco':            
+        elif gtt_type == 'oco':
             gtt_trigger_type = 'GTT_TYPE_OCO'
             try:
-                gtt_oco = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol, exchange=exchange, trigger_values=trigger_values, last_price=last_price, orders=order_list)
+                gtt_oco = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol,
+                                                      exchange=exchange, trigger_values=trigger_values,
+                                                      last_price=last_price, orders=order_list)
                 log_info(f"GTT OCO trigger_id: {gtt_oco['trigger_id']}")
             except Exception as error:
                 log_info(f"Error placing gtt oco order: {error}")

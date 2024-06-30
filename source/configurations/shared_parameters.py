@@ -23,4 +23,3 @@ class SharedParameters:
             else:
                 flat_params[key] = value
         return flat_params
-

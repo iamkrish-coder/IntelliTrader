@@ -13,7 +13,7 @@ from pytz import utc
 
 # Custom application modules
 from source.constants import *
-from source.enumerations.enums import *
+from ..enumerations.enums import *
 from source.enumerations.resource_string_enums import *
 from source.language.resources_EN_IN import ResourceStrings
 from source.configurations.configuration import Configuration
@@ -23,13 +23,13 @@ from source.modules.connection.connection_module import Connection
 from source.modules.database.database_module import Database
 from source.modules.strategy.strategy_module import Strategy as StrategyModule 
 
-from source.controllers.BaseController import BaseController
-from source.controllers.strategy_controller import StrategyController
-from source.controllers.action_controller import ActionController
-# from source.controllers.monitoring_controller import MonitoringController
+from ..controllers.BaseController import BaseController
+from ..controllers.strategy_controller import StrategyController
+from ..controllers.action_controller import ActionController
+# from ..controllers.monitoring_controller import MonitoringController
 
 # utils Import
-from source.utils.logging_utils import *
+from ..utils.logging_utils import *
 from source.utils.scheduler_utils import Scheduler
 
 # IntelliTrader web application (if applicable)

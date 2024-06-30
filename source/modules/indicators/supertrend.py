@@ -1,10 +1,8 @@
-import pandas as pd
-
 def supertrend(dataset, period=[7, 3]):
     # Check if dataset contains the required columns
     if 'close' not in dataset or 'high' not in dataset or 'low' not in dataset:
         return None
-    
+
     dataset['close'] = dataset['close'].astype(float)
     dataset['high'] = dataset['high'].astype(float)
     dataset['low'] = dataset['low'].astype(float)

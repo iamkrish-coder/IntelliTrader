@@ -1,22 +1,20 @@
-import os
-import datetime as dt
-import time
 import pandas as pd
-import source.modules.indicators.ma as ma
-from source.modules.indicators.rsi import rsi
-from source.modules.indicators.supertrend import supertrend
-from source.modules.indicators.macd import macd
-from source.modules.indicators.atr import atr
-from source.modules.indicators.williams_r import williams_r
-from source.modules.indicators.vwap import vwap
-from source.modules.indicators.adx import adx
-from source.modules.indicators.stochastic import stochastic
-from source.modules.indicators.renko import renko
-from source.modules.indicators.bollinger_bands import bollinger_bands
-from source.modules.indicators.truerange import truerange
-from source.modules.indicators.average_truerange import average_truerange
-from source.modules.helper.helper_module import Helper
-from source.utils.logging_utils import *
+
+import ma as ma
+from adx import adx
+from atr import atr
+from average_truerange import average_truerange
+from bollinger_bands import bollinger_bands
+from macd import macd
+from renko import renko
+from rsi import rsi
+from stochastic import stochastic
+from supertrend import supertrend
+from truerange import truerange
+from vwap import vwap
+from williams_r import williams_r
+from ...utils.logging_utils import *
+
 
 class Indicator:
     def __init__(self, params):
@@ -31,11 +29,11 @@ class Indicator:
             case 'sma':
                 return self.option_sma(dataset, period)
             case 'ema':
-                return self.option_ema(dataset, period)               
+                return self.option_ema(dataset, period)
             case 'supertrend':
                 return self.option_supertrend(dataset, period)
             case 'macd':
-                return self.option_macd(dataset, period)                
+                return self.option_macd(dataset, period)
             case 'atr':
                 return self.option_atr(dataset, period)
             case 'williams_r':
@@ -51,9 +49,9 @@ class Indicator:
             case 'bollinger_bands':
                 return self.option_bollinger_bands(dataset, period)
             case 'truerange':
-                return self.option_truerange(dataset, period)                 
+                return self.option_truerange(dataset, period)
             case 'average_truerange':
-                return self.option_average_truerange(dataset, period)                   
+                return self.option_average_truerange(dataset, period)
             case _:
                 self.invalid_option(dataset)
 
@@ -67,11 +65,11 @@ class Indicator:
                 rsi_values = rsi(pdf, period)
                 return rsi_values
             else:
-                log_error("Failed to calculate RSI") 
+                log_error("Failed to calculate RSI")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
-    
+
     # WMA
     def option_wma(self, dataset, period):
         try:
@@ -81,7 +79,7 @@ class Indicator:
                 wma_values = ma.wma(pdf, period)
                 return wma_values
             else:
-                log_error("Failed to calculate WMA") 
+                log_error("Failed to calculate WMA")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -96,7 +94,7 @@ class Indicator:
                 sma_values = ma.sma(pdf, period)
                 return sma_values
             else:
-                log_error("Failed to calculate SMA") 
+                log_error("Failed to calculate SMA")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -111,11 +109,11 @@ class Indicator:
                 ema_values = ma.ema(pdf, period)
                 return ema_values
             else:
-                log_error("Failed to calculate EMA") 
+                log_error("Failed to calculate EMA")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
-            
+
     # SUPERTREND
     def option_supertrend(self, dataset, period):
         try:
@@ -161,7 +159,7 @@ class Indicator:
                 atr_values = atr(pdf, period)
                 return atr_values
             else:
-                log_error("Failed to calculate ATR") 
+                log_error("Failed to calculate ATR")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -176,7 +174,7 @@ class Indicator:
                 williams_values = williams_r(pdf, period)
                 return williams_values
             else:
-                log_error("Failed to calculate Williams Range") 
+                log_error("Failed to calculate Williams Range")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -188,10 +186,10 @@ class Indicator:
             if dataset is not None:
                 # Calculate VWAP
                 pdf = pd.DataFrame(dataset)
-                vwap_values = vwap(pdf, period) 
+                vwap_values = vwap(pdf, period)
                 return vwap_values
             else:
-                log_error("Failed to calculate VWAP") 
+                log_error("Failed to calculate VWAP")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -203,10 +201,10 @@ class Indicator:
             if dataset is not None:
                 # Calculate ADX
                 pdf = pd.DataFrame(dataset)
-                adx_values = adx(pdf, period) 
+                adx_values = adx(pdf, period)
                 return adx_values
             else:
-                log_error("Failed to calculate ADX") 
+                log_error("Failed to calculate ADX")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -225,11 +223,11 @@ class Indicator:
                 }
                 return stochastic_values
             else:
-                log_error("Failed to calculate Stochastic") 
+                log_error("Failed to calculate Stochastic")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
-    
+
     # RENKO
     def option_renko(self, dataset, period):
         try:
@@ -237,10 +235,10 @@ class Indicator:
             if dataset is not None:
                 # Calculate Renko Bricks
                 pdf = pd.DataFrame(dataset)
-                renko_values = renko(pdf, period)  
+                renko_values = renko(pdf, period)
                 return renko_values
             else:
-                log_error("Failed to calculate Renko") 
+                log_error("Failed to calculate Renko")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -254,13 +252,13 @@ class Indicator:
                 pdf = pd.DataFrame(dataset)
                 upper_band, middle_band, lower_band = bollinger_bands(pdf, period)
                 bollinger_values = {
-                    "upper_band": upper_band.tolist(), 
+                    "upper_band": upper_band.tolist(),
                     "middle_band": middle_band.tolist(),
                     "lower_band": lower_band.tolist()
                 }
                 return bollinger_values
             else:
-                log_error("Failed to calculate Bollinger Bands") 
+                log_error("Failed to calculate Bollinger Bands")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -275,7 +273,7 @@ class Indicator:
                 truerange_values = truerange(pdf, period)
                 return truerange_values
             else:
-                log_error("Failed to calculate True Range") 
+                log_error("Failed to calculate True Range")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
@@ -290,12 +288,11 @@ class Indicator:
                 average_truerange_values = average_truerange(pdf, period)
                 return average_truerange_values
             else:
-                log_error("Failed to calculate Average True Range") 
+                log_error("Failed to calculate Average True Range")
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
-            
+
     def invalid_option(self, dataset):
         # Invalid indicator option provided
-        log_warn("The indicator option provided is not valid") 
-        
+        log_warn("The indicator option provided is not valid")

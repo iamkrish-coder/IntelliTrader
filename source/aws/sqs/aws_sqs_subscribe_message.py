@@ -1,23 +1,23 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SQS.BaseSqsManager import BaseSqsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSqsManager import BaseSqsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class SubscribeQueueMessage(BaseSqsManager):
     """Encapsulates Amazon SQS queue."""
 
-    def __init__(self, queue_url):
+    def __init__(self, queue_url, receipt_handle):
         """
         :param sqs_resource: A Boto3 Amazon SQS resource.
         """
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.queue_url = queue_url
         self.receipt_handle = receipt_handle
-
 
     def execute(self):
         """
@@ -52,5 +52,4 @@ class SubscribeQueueMessage(BaseSqsManager):
             log_error("Couldn't receive message from queue: %s", response.get("QueueName"))
             raise error
         else:
-            return response     
-
+            return response

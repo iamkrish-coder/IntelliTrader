@@ -114,7 +114,7 @@ class Fetch:
 
                     # Transform data for Last Available Date
                     current_time = dt.datetime.now().time()
-                    if current_time >= dt.time(0, 0) and current_time < dt.time(9, 15):
+                    if dt.time(0, 0) <= current_time < dt.time(9, 15):
                         pass
                     else:
                         data['date'] = pd.to_datetime(data['date'])
@@ -325,12 +325,12 @@ class Fetch:
 
     # Fetch backtest data
     def fetch_backtest_data(self, args):
-        if (args['backtest_timeframe'] == 'latest'):
+        if args['backtest_timeframe'] == 'latest':
             return self.fetch_backtest_latest_data(NSEDataApi, args)
         else:
             return self.fetch_backtest_historical_data(args)
 
-    def fetch_backtest_latest_data(NSEDataApi, dataset):
+    def fetch_backtest_latest_data(self, NSEDataApi, dataset):
         # Check if the 'symbol' key is present in the 'dataset' and 'dataset' is not empty
         if 'symbol' not in dataset or not dataset:
             log_info("Symbol not found in the dataset or the dataset is empty.")

@@ -1,8 +1,9 @@
 # handlers/strategy
 
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+
 
 class StrategyConfigurations:
     def __init__(self, configuration):
@@ -10,7 +11,7 @@ class StrategyConfigurations:
 
     def initialize(self):
         return self.manage_configurations()
-        
+
     def manage_configurations(self):
         try:
             strategy_id = self.configuration.get("strategy")
@@ -38,10 +39,9 @@ class StrategyConfigurations:
 
             # Common params (assuming it's always a dict)
             settings['common_params'] = config.get("common_trade_params", {})
-            
+
             return settings
 
         except Exception as error:
             log_info(f"An error occurred retrieving Application Settings: {error}")
             return None
-

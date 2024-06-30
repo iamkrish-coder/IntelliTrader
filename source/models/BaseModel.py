@@ -1,7 +1,6 @@
 # IntelliTrader\source\models\BaseModel.py
 
 from abc import ABC, abstractmethod
-from datetime import datetime
 import time
 
 
@@ -27,14 +26,14 @@ class BaseModel(ABC):
         partition_key_value = data_dict["row_data"][partition_key_name]
 
         data_dict["partition_object"] = {
-            "key_value": { 
-                partition_key_name: partition_key_value 
+            "key_value": {
+                partition_key_name: partition_key_value
             },
             "key": partition_key_name,
             "value": partition_key_value,
             "condition": {
-                partition_key_name : { 
-                    "eq":  partition_key_value 
+                partition_key_name: {
+                    "eq": partition_key_value
                 }
             }
         }
@@ -43,16 +42,16 @@ class BaseModel(ABC):
         sort_key_name = table_configuration.get("sort_key")
         if sort_key_name:
             sort_key_value = data_dict["row_data"][sort_key_name]
-            
+
             data_dict["sort_object"] = {
-                "key_value": { 
-                    sort_key_name: sort_key_value 
+                "key_value": {
+                    sort_key_name: sort_key_value
                 },
                 "key": sort_key_name,
                 "value": sort_key_value,
                 "condition": {
-                    sort_key_name : { 
-                        "eq":  sort_key_value 
+                    sort_key_name: {
+                        "eq": sort_key_value
                     }
                 }
             }

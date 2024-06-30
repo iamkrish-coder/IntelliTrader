@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SNS.BaseSnsManager import BaseSnsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSnsManager import BaseSnsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class SubscribeTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
@@ -16,10 +17,9 @@ class SubscribeTopic(BaseSnsManager):
         """
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.topic_arn = topic_arn
-        self.protocol = protocol    
+        self.protocol = protocol
         self.endpoint = endpoint
         self.attributes = attributes
-
 
     def execute(self):
         """

@@ -1,15 +1,14 @@
-import pandas as pd
 import numpy as np
 
+
 def macd(dataset, period=[12, 26, 9]):
-    
-    short_period = period[0] 
+    short_period = period[0]
     long_period = period[1]
     signal_period = period[2]
-    
+
     # Check if dataset contains the required columns
     data = dataset['close'] if 'close' in dataset else None
-    
+
     if data is not None and not data.empty:
         # Check if data has sufficient length for MACD calculations
         if len(data) < long_period:

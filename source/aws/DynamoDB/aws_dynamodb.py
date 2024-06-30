@@ -2,13 +2,14 @@
 
 import boto3
 
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ..constants.const import *
+from ..enumerations.enums import *
+from ..utils.logging_utils import *
 from source.aws.DynamoDB.aws_dynamo_expression_builder import DynamoExpressionBuilder
 from boto3.resources.model import DefinitionWithParams
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
+
 
 class DynamoDB:
     def __init__(self, table, attribute_data=None, partition_key=None, sort_key=None, projection=None, filters=None):
@@ -24,12 +25,12 @@ class DynamoDB:
 
     def update(self):
 
-        response = None       
+        response = None
         expression = (
             self.builder \
-            .use_key_expression(self.partition_key, self.sort_key) \
-            .use_update_expression(self.attribute_data) \
-            .build()
+                .use_key_expression(self.partition_key, self.sort_key) \
+                .use_update_expression(self.attribute_data) \
+                .build()
         )
 
         try:
@@ -38,18 +39,19 @@ class DynamoDB:
                 log_info("Item updated successfully!")
                 return response
 
-        except ClientError as error:           
-            log_error(f"Error updating item {self.attribute_data} from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+        except ClientError as error:
+            log_error(
+                f"Error updating item {self.attribute_data} from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
             raise error
-        return response  
+        return response
 
     def put(self):
 
-        response = None       
+        response = None
         expression = (
             self.builder \
-            .use_item(self.attribute_data) \
-            .build()
+                .use_item(self.attribute_data) \
+                .build()
         )
 
         try:
@@ -57,20 +59,21 @@ class DynamoDB:
             if response['ResponseMetadata']['HTTPStatusCode'] == 200:
                 log_info("Item added successfully!")
                 return response
-            
-        except ClientError as error:           
-            log_error(f"Error adding item {self.attribute_data} from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+
+        except ClientError as error:
+            log_error(
+                f"Error adding item {self.attribute_data} from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
             raise error
-        return response  
+        return response
 
     def scan(self):
 
-        response = None       
+        response = None
         expression = (
             self.builder \
-            .use_filter(self.filters) \
-            .use_projection(self.projection) \
-            .build()
+                .use_filter(self.filters) \
+                .use_projection(self.projection) \
+                .build()
         )
 
         try:
@@ -81,23 +84,24 @@ class DynamoDB:
                     log_info(f"Record not found in table {self.table}. Table might be empty.")
                     return None
                 else:
-                    log_info(f"Record fetched successfully: {response}")                        
+                    log_info(f"Record fetched successfully: {response}")
                     return response["Items"]
 
         except ClientError as error:
-            log_error(f"Error fetching record from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+            log_error(
+                f"Error fetching record from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
             raise error
         return response
-        
+
     def query(self):
 
-        response = None       
+        response = None
         expression = (
             self.builder \
-            .use_key_condition_expression(self.partition_key, self.sort_key) \
-            .use_filter(self.filters) \
-            .use_projection(self.projection) \
-            .build()
+                .use_key_condition_expression(self.partition_key, self.sort_key) \
+                .use_filter(self.filters) \
+                .use_projection(self.projection) \
+                .build()
         )
 
         try:
@@ -108,11 +112,11 @@ class DynamoDB:
                     log_info(f"Record not found in table {self.table}. Table might be empty.")
                     return None
                 else:
-                    log_info(f"Record fetched successfully: {response}")                        
+                    log_info(f"Record fetched successfully: {response}")
                     return response["Items"]
 
         except ClientError as error:
-            log_error(f"Error fetching record from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
+            log_error(
+                f"Error fetching record from table {self.table}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
             raise error
         return response
-        

@@ -3,13 +3,13 @@ import uuid
 
 from boto3.session import botocore
 from botocore.exceptions import ClientError
-from source.aws.SNS.aws_sns_create_topic import CreateTopic
-from source.aws.SNS.aws_sns_delete_topic import DeleteTopic
-from source.aws.SNS.aws_sns_list_subscriptions import ListSubscriptions
-from source.aws.SNS.aws_sns_list_topics import ListTopics   
-from source.aws.SNS.aws_sns_publish_topic import PublishTopic
-from source.aws.SNS.aws_sns_subscribe_topic import SubscribeTopic
-from source.aws.SNS.aws_sns_unsubscribe_topic import UnsubscribeTopic
+from aws_sns_create_topic import CreateTopic
+from aws_sns_delete_topic import DeleteTopic
+from aws_sns_list_subscriptions import ListSubscriptions
+from aws_sns_list_topics import ListTopics
+from aws_sns_publish_topic import PublishTopic
+from aws_sns_subscribe_topic import SubscribeTopic
+from aws_sns_unsubscribe_topic import UnsubscribeTopic
 
 
 class SNSManager:
@@ -31,19 +31,10 @@ class SNSManager:
 
         return action_class(**kwargs)
 
-
-
-
-
-
-
-
-
-
-     
     """ 
     The Below Methods are old and may be deprecated in future
-    """ 
+    """
+
 
 def aws_sns_publish(sns_client, topic_arn, message, subject=""):
     """
@@ -57,7 +48,7 @@ def aws_sns_publish(sns_client, topic_arn, message, subject=""):
         message_group_id (str, optional): The message group ID for FIFO topics. Defaults to None.
     """
     # Generate a unique message group ID using UUID
-    message_group_id = str(uuid.uuid4())   
+    message_group_id = str(uuid.uuid4())
 
     response = sns_client.publish(
         TopicArn=topic_arn,

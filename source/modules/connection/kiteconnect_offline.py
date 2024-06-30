@@ -2,10 +2,11 @@ import os
 import requests
 import dateutil.parser
 
-from source.constants import *  
-from source.enumerations.enums import *
-from source.enumerations.resource_string_enums import * 
- 
+from source.constants import *
+from ...enumerations.enums import *
+from ...enumerations.resource_string_enums import *
+
+
 class KiteConnectOffline:
     """
     The `KiteConnectOffline` class provides a Python interface for interacting with Zerodha's Kite Connect API in an offline mode.
@@ -14,19 +15,18 @@ class KiteConnectOffline:
 
     **Note:** This class simulates an offline mode by directly fetching data and does not involve real-time updates.
     """
-    
+
     def __init__(self, enctoken):
         """
         Initializes a KiteConnectOffline instance.
 
         Args:
             enctoken (str): The user's enctoken for authentication.
-        """        
+        """
         self.headers = {"Authorization": f"enctoken {enctoken}"}
         self.session = requests.session()
         self.root_url = "https://api.kite.trade"
         self.session.get(self.root_url, headers=self.headers)
-
 
     def instruments(self, exchange=None):
         """
@@ -40,8 +40,8 @@ class KiteConnectOffline:
                   tradingsymbol, name, last price, expiry (if applicable), strike (if applicable), tick size,
                   lot size, instrument type, segment, and exchange.
         """
-        
-        data = self.session.get(f"{self.root_url}/instruments",headers=self.headers).text.split("\n")
+
+        data = self.session.get(f"{self.root_url}/instruments", headers=self.headers).text.split("\n")
         Exchange = []
         for i in data[1:-1]:
             row = i.split(",")
@@ -66,7 +66,8 @@ class KiteConnectOffline:
                   dictionary may vary depending on the Zerodha API response format.
         """
 
-        data = self.session.get(f"{self.root_url}/quote", params={"i": instruments}, headers=self.headers).json()["data"]
+        data = self.session.get(f"{self.root_url}/quote", params={"i": instruments}, headers=self.headers).json()[
+            "data"]
         return data
 
     def ltp(self, instruments):
@@ -81,7 +82,8 @@ class KiteConnectOffline:
                   dictionary may vary depending on the Zerodha API response format.
         """
 
-        data = self.session.get(f"{self.root_url}/quote/ltp", params={"i": instruments}, headers=self.headers).json()["data"]
+        data = self.session.get(f"{self.root_url}/quote/ltp", params={"i": instruments}, headers=self.headers).json()[
+            "data"]
         return data
 
     def ohlc(self, instruments):
@@ -96,9 +98,9 @@ class KiteConnectOffline:
                   dictionaries may vary depending on the Zerodha API response format.
         """
 
-        data = self.session.get(f"{self.root_url}/quote/ohlc", params={"i": instruments}, headers=self.headers).json()["data"]
+        data = self.session.get(f"{self.root_url}/quote/ohlc", params={"i": instruments}, headers=self.headers).json()[
+            "data"]
         return data
-
 
     def historical_data(self, instrument_token, from_date, to_date, interval, continuous=False, oi=False):
         """
@@ -135,7 +137,7 @@ class KiteConnectOffline:
         records = []
         for i in lst:
             record = {"date": dateutil.parser.parse(i[0]), "open": i[1], "high": i[2], "low": i[3],
-                      "close": i[4], "volume": i[5],}
+                      "close": i[4], "volume": i[5], }
             if len(i) == 7:
                 record["oi"] = i[6]
             records.append(record)
@@ -148,7 +150,7 @@ class KiteConnectOffline:
         Returns:
             dict: A dictionary containing user margin details. The structure of the returned dictionary
                   may vary depending on the Zerodha API response format.
-        """        
+        """
 
         margins = self.session.get(f"{self.root_url}/user/margins", headers=self.headers).json()["data"]
         return margins
@@ -160,7 +162,7 @@ class KiteConnectOffline:
         Returns:
             list: A list of dictionaries containing details of open orders. The structure of the returned
                     dictionaries may vary depending on the Zerodha API response format.
-        """        
+        """
 
         orders = self.session.get(f"{self.root_url}/orders", headers=self.headers).json()["data"]
         return orders
@@ -202,7 +204,7 @@ class KiteConnectOffline:
 
         Returns:
             int: The order ID of the placed order.
-        """        
+        """
 
         params = locals()
         del params["self"]
@@ -232,7 +234,7 @@ class KiteConnectOffline:
         Returns:
             int: The order ID of the modified order (same as the original order ID).
         """
-        
+
         params = locals()
         del params["self"]
         for k in list(params.keys()):
@@ -260,4 +262,3 @@ class KiteConnectOffline:
                                        data={"parent_order_id": parent_order_id} if parent_order_id else {},
                                        headers=self.headers).json()["data"]["order_id"]
         return order_id
-

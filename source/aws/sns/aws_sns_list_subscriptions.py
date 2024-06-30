@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SNS.BaseSnsManager import BaseSnsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSnsManager import BaseSnsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class ListSubscriptions(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
@@ -18,7 +19,6 @@ class ListSubscriptions(BaseSnsManager):
         self.topic_arn = topic_arn
         self.next_token = next_token
 
-
     def execute(self):
         """
         Lists subscriptions for the current account, optionally limited to a
@@ -28,8 +28,8 @@ class ListSubscriptions(BaseSnsManager):
         :return: An iterator that yields the subscriptions.
         """
         try:
-            if self.topic_arn is None :
-                if  self.next_token is not None:
+            if self.topic_arn is None:
+                if self.next_token is not None:
                     response = self.sns_client.list_subscriptions(NextToken=self.next_token)
                 else:
                     response = self.sns_client.list_subscriptions()
