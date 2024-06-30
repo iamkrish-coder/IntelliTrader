@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.11.1...v3.12.0) (2024-06-30)
+
+
+### Features
+
+* major refactoring, clean up, improve import and formatting ([0d9a937](https://github.com/iamkrish-coder/IntelliTrader/commit/0d9a93722f935533b11438a7e6e5435e64d61f54))
+
 ## [3.11.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.11.0...v3.11.1) (2024-06-05)
 
 
