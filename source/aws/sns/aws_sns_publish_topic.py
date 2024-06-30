@@ -2,11 +2,12 @@ import boto3
 import uuid
 
 from botocore.exceptions import ClientError
-from source.aws.SNS.BaseSnsManager import BaseSnsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from BaseSnsManager import BaseSnsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class PublishTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
@@ -18,23 +19,21 @@ class PublishTopic(BaseSnsManager):
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
         self.topic = topic
-        self.message = message 
+        self.message = message
         self.subject = subject
         self.attributes = attributes
         self.group_id = group_id
-
 
     def execute(self):
         """
         Publishes a message either Standard or FIFO mode, with attributes, to a topic. Subscriptions can be filtered
         based on message attributes so that a subscription receives messages only
         when specified attributes are present.
-        """        
+        """
         if self.mode == STANDARD:
             return self.publish_standard_topic()
         elif self.mode == FIFO:
             return self.publish_fifo_topic()
-        
 
     def publish_standard_topic(self):
         try:
@@ -56,7 +55,6 @@ class PublishTopic(BaseSnsManager):
             raise error
         else:
             return message_id
-
 
     def publish_fifo_topic(self):
         try:

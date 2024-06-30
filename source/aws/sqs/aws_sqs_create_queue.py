@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SQS.BaseSqsManager import BaseSqsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from source.aws.sqs.BaseSqsManager import BaseSqsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class CreateQueue(BaseSqsManager):
     """Encapsulates Amazon SQS queue."""
@@ -18,7 +19,6 @@ class CreateQueue(BaseSqsManager):
         self.mode = mode
         self.name = name
 
-
     def execute(self):
         """
         Creates an Amazon SQS queue.
@@ -27,14 +27,13 @@ class CreateQueue(BaseSqsManager):
         :param attributes: The attributes of the queue, such as maximum message size or whether it's a FIFO queue.
         :return: A Queue object that contains metadata about the queue and that can be used
                 to perform queue operations like sending and receiving messages.
-        """ 
+        """
         if self.mode == STANDARD:
             return self.create_standard_queue()
         elif self.mode == FIFO:
             return self.create_fifo_queue()
 
-
-    def create_standard_queue(self):       
+    def create_standard_queue(self):
 
         try:
             response = self.sqs_client.create_queue(QueueName=self.name)
@@ -44,7 +43,6 @@ class CreateQueue(BaseSqsManager):
             raise error
         else:
             return response
-
 
     def create_fifo_queue(self):
         """

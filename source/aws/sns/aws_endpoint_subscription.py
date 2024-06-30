@@ -57,4 +57,3 @@ if __name__ == "__main__":
 
     if subscription_arn:
         print(f"You are now subscribed to the topic. Subscription ARN: {subscription_arn}")
-

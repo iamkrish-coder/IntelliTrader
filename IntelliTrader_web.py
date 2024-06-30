@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, request, redirect, session
 from source.constants.const import *
-from source.enumerations.enums import *
+from ..enumerations.enums import *
 import os
 
 

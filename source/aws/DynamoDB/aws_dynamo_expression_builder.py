@@ -1,8 +1,8 @@
-
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
 from boto3.dynamodb.conditions import Key, Attr
+
 
 class DynamoExpressionBuilder:
     def __init__(self):
@@ -15,18 +15,18 @@ class DynamoExpressionBuilder:
         self.expression_attribute_names = {}
         self.expression_attribute_values = {}
         self.comparison_operators = {
-            "eq": "=",  
-            "gt": ">",  
-            "lt": "<",  
-            "gte": ">=", 
-            "lte": "<=", 
+            "eq": "=",
+            "gt": ">",
+            "lt": "<",
+            "gte": ">=",
+            "lte": "<=",
             "le": "<=",
             "ge": ">=",
-            "begins_with": "BEGINS_WITH", 
+            "begins_with": "BEGINS_WITH",
             "between": "BETWEEN",
-            "contains": "CONTAINS",  
+            "contains": "CONTAINS",
             "exists": "EXISTS",
-            "in": "IN",  
+            "in": "IN",
         }
 
     def use_key_expression(self, partition_key, sort_key):
@@ -36,7 +36,7 @@ class DynamoExpressionBuilder:
 
         if sort_key:
             key[sort_key['key']] = sort_key['value']
-        
+
         self.key = key
         return self
 
@@ -47,7 +47,7 @@ class DynamoExpressionBuilder:
 
         for attribute_path, new_value in attribute_data.items():
             counter += 1
-            placeholder = f":v{counter}"  
+            placeholder = f":v{counter}"
             update_expression += f"{attribute_path}={placeholder}, "
             expression_attribute_values[placeholder] = new_value
 
@@ -55,22 +55,22 @@ class DynamoExpressionBuilder:
             update_expression = update_expression.rstrip(", ")
 
         self.update_expression = update_expression
-        self.expression_attribute_values.update(expression_attribute_values)        
+        self.expression_attribute_values.update(expression_attribute_values)
         return self
 
     def use_item(self, item):
         self.item = item
         return self
 
-    def use_key_condition_expression(self, partition_key, sort_key):      
-        
+    def use_key_condition_expression(self, partition_key, sort_key):
+
         partition_key_name = partition_key['key']
         partition_key_value = partition_key['value']
 
         # Build the KeyConditionExpression dynamically
         key_condition_expression = Key(partition_key_name).eq(partition_key_value)
 
-        if sort_key and sort_key is not None:          
+        if sort_key and sort_key is not None:
             for key, value in sort_key["condition"].items():
                 if isinstance(value, dict) and "between" in value:
                     operator, min_val, max_val = "between", value["between"]["min"], value["between"]["max"]
@@ -80,7 +80,7 @@ class DynamoExpressionBuilder:
                     condition = getattr(Key(key), operator)(val)
                 else:
                     condition = Key(key).eq(value)
-                
+
                 key_condition_expression &= condition
 
         self.key_condition_expression = key_condition_expression
@@ -96,7 +96,7 @@ class DynamoExpressionBuilder:
         filter_expression = ""
         expression_attribute_names = {}
         expression_attribute_values = {}
-        
+
         is_first_condition = True
         for key, value in filters.items():
 
@@ -104,14 +104,14 @@ class DynamoExpressionBuilder:
                 operator, min_val, max_val = "between", value["between"]["min"], value["between"]["max"]
                 cond = f"{key} {self.comparison_operators[operator]} :min_{key} AND :max_{key}"
                 expression_attribute_values[f":min_{key}"] = min_val
-                expression_attribute_values[f":max_{key}"] = max_val            
+                expression_attribute_values[f":max_{key}"] = max_val
             elif isinstance(value, dict):
                 operator, val = list(value.items())[0]
                 cond = f"{key} {self.comparison_operators[operator]} :{key}"
-                expression_attribute_values[f":{key}"] = val                
+                expression_attribute_values[f":{key}"] = val
             else:
                 cond = f"{key} = :{key}"
-                expression_attribute_values[f":{key}"] = value                
+                expression_attribute_values[f":{key}"] = value
 
             if not is_first_condition:
                 filter_expression += " AND "
@@ -134,8 +134,8 @@ class DynamoExpressionBuilder:
                 "KeyConditionExpression": self.key_condition_expression,
                 "UpdateExpression": self.update_expression,
                 "FilterExpression": self.filter_expression,
-                "ProjectionExpression": self.projection_expression,              
-                "ExpressionAttributeNames": self.expression_attribute_names if self.expression_attribute_names else None ,
+                "ProjectionExpression": self.projection_expression,
+                "ExpressionAttributeNames": self.expression_attribute_names if self.expression_attribute_names else None,
                 "ExpressionAttributeValues": self.expression_attribute_values if self.expression_attribute_values else None,
             }.items() if value is not None
         }

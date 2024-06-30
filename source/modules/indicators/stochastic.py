@@ -1,5 +1,3 @@
-import pandas as pd
-
 def stochastic(dataset, period=14, smoothing=3):
     # Check if dataset contains the required columns
     data = dataset if 'close' in dataset and 'high' in dataset and 'low' in dataset else None

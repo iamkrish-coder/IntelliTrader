@@ -1,11 +1,11 @@
 import boto3
 import json
 
-from source.utils.logging_utils import *
+from ...utils.logging_utils import *
 from botocore.exceptions import ClientError
 
-def get_secret(secret, region):
 
+def get_secret(secret, region):
     # Create a Secrets Manager client
     session = boto3.session.Session()
     client = session.client(

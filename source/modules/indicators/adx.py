@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def adx(dataset, period=14):
     # Check if dataset contains the required columns
     data = dataset if 'close' in dataset and 'high' in dataset and 'low' in dataset else None
@@ -11,9 +12,9 @@ def adx(dataset, period=14):
             return None
 
     # Calculate the True Range (TR)
-    data['tr'] = np.max([data['high'] - data['low'], 
-                           abs(data['high'] - data['close'].shift()), 
-                           abs(data['low'] - data['close'].shift())], axis=0)
+    data['tr'] = np.max([data['high'] - data['low'],
+                         abs(data['high'] - data['close'].shift()),
+                         abs(data['low'] - data['close'].shift())], axis=0)
 
     # Calculate the Directional Movement (DM)
     data['up_move'] = data['high'].diff()
@@ -48,7 +49,8 @@ def adx(dataset, period=14):
         down_move_period = down_move
 
     # Calculate the Average Directional Index (ADX)
-    dx_values = 100 * (abs(np.array(di_plus_values) - np.array(di_minus_values)) / (np.array(di_plus_values) + np.array(di_minus_values)))
+    dx_values = 100 * (abs(np.array(di_plus_values) - np.array(di_minus_values)) / (
+                np.array(di_plus_values) + np.array(di_minus_values)))
     adx_values = pd.Series(dx_values).rolling(window=period).mean()
 
     return adx_values

@@ -1,11 +1,12 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.SQS.BaseSqsManager import BaseSqsManager
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
+from source.aws.sqs.BaseSqsManager import BaseSqsManager
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+
 
 class ListQueues(BaseSqsManager):
     """Encapsulates Amazon SQS queue."""
@@ -16,7 +17,6 @@ class ListQueues(BaseSqsManager):
         """
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.prefix = prefix
-
 
     def execute(self):
         """
@@ -30,12 +30,11 @@ class ListQueues(BaseSqsManager):
             if self.prefix:
                 response = self.sqs_client.list_queues(
                     QueueNamePrefix=self.prefix
-                    )
+                )
             else:
                 response = self.sqs_client.list_queues()
         except ClientError as error:
             log_warn("Couldn't get queues.")
             raise error
         else:
-            return response   
-
+            return response

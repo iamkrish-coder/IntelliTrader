@@ -1,20 +1,23 @@
 # handlers/strategy
-import boto3
 import time
 
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
-from source.utils.caching_utils import *
-from source.aws.SQS.aws_sqs_manager import aws_sqs_publish
-from source.aws.SNS.aws_sns_manager import aws_sns_publish
-from source.aws.SNS.aws_sns_manager import SNSManager
-from source.models.topics_model import TopicsModel
-from source.modules.strategy.BaseStrategy import BaseStrategy
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
+from ...utils.caching_utils import *
+from ...aws.sqs.aws_sqs_manager import aws_sqs_publish
+from ...aws.sns.aws_sns_manager import aws_sns_publish
+from ...aws.sns.aws_sns_manager import SNSManager
+from ...models.topics_model import TopicsModel
+from BaseStrategy import BaseStrategy
 
 
 class StrategyPublisher(BaseStrategy):
-    def __init__(self, modules, parameters, database, alerts, aws_service):
+    def __init__(self, modules, parameters, database, alerts, aws_service, connection):
+        super().__init__(connection, modules)
+        self.strategy_queue = None
+        self.date_time_now = None
+        self.client = None
         self.modules = modules
         self.parameters = parameters
         self.database = database

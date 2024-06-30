@@ -1,10 +1,7 @@
-import pandas as pd
-import numpy as np
-
 def bollinger_bands(dataset, period=20, num_std=2):
     # Check if dataset contains the required columns
     data = dataset if 'close' in dataset else None
-    
+
     if data is not None and not data.empty:
         # Check if the data has sufficient length for Williams %R calculations
         if len(data) < period:

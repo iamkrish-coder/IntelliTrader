@@ -9,7 +9,7 @@ def atr(dataset, period=14):
     Returns:
     - list: A list of True Range values (float) calculated based on the dataset.
     """
-    
+
     # Check if dataset contains the required columns
     data = dataset if 'close' in dataset and 'high' in dataset and 'low' in dataset else None
     if data is not None and not data.empty:

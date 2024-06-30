@@ -6,25 +6,26 @@ import time
 import os
 
 from concurrent.futures import ThreadPoolExecutor
-from source.constants.constants import *
-from source.enumerations.enums import *
-from source.utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
 from diskcache import Cache
+
 
 class StrategyCandlesticks:
     def __init__(self, modules, parameters, watchlist):
-        self.modules                      = modules
-        self.parameters                   = parameters
-        self.trading_watchlist            = watchlist  
-        self.trading_exchange             = None
-        self.trading_symbol               = None
-        self.trading_token                = None
-        self.trading_timeframe            = None    
-        self.timeframe                    = parameters.get('strategy_params.timeframe')
+        self.modules = modules
+        self.parameters = parameters
+        self.trading_watchlist = watchlist
+        self.trading_exchange = None
+        self.trading_symbol = None
+        self.trading_token = None
+        self.trading_timeframe = None
+        self.timeframe = parameters.get('strategy_params.timeframe')
         self.historical_data_subscription = parameters.get('trade_params.historical_data_subscription')
-        self.cache_path                   = CACHE_PATH
-        self.market_start_time            = datetime.time(hour=9, minute=15)
-        
+        self.cache_path = CACHE_PATH
+        self.market_start_time = datetime.time(hour=9, minute=15)
+
     def initialize(self):
         return self.scan_watchlist_stocks()
 
@@ -32,8 +33,9 @@ class StrategyCandlesticks:
         """
         Fetches OHLC data asynchronously for the given timeframe.
         """
-        loop = asyncio.get_running_loop()  
-        candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, trading_exchange, trading_symbol, trading_token, trading_timeframe)
+        loop = asyncio.get_running_loop()
+        candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, trading_exchange, trading_symbol,
+                                             trading_token, trading_timeframe)
         return candles
 
     def generate_cache_key(self, exchange, symbol, timeframe):
@@ -49,19 +51,20 @@ class StrategyCandlesticks:
         candlestick_data = {}
 
         # Always fetch data for the user-specified timeframe
-        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, self.timeframe)
+        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token,
+                                              self.timeframe)
         candlestick_data[self.timeframe] = candles
 
         # Get current date
         now = datetime.datetime.now()
-        previous_day = now - datetime.timedelta(days=1)        
+        previous_day = now - datetime.timedelta(days=1)
         current_time = now.time()
 
         if current_time <= self.market_start_time:
             formatted_date = previous_day.strftime("%Y-%m-%d")
         else:
             formatted_date = now.strftime("%Y-%m-%d")
-            
+
         # Check if cache directory needs to be updated
         if not os.path.exists(self.cache_path) or self.cache_path.split("/")[-1] != formatted_date:
             # Cache path doesn't exist or date has changed, create new directory
@@ -75,9 +78,9 @@ class StrategyCandlesticks:
         timeframe_caches = {}
 
         # Timeframes to cache
-        timeframes_to_cache = [DAY, WEEK, MONTH, TODAY_5M] 
+        timeframes_to_cache = [DAY, WEEK, MONTH, TODAY_5M]
         """ TODAY_15M, TODAY_30M, TODAY_60M """
-      
+
         for timeframe in timeframes_to_cache:
             # Create separate cache object for each timeframe
             timeframe_cache_path = os.path.join(self.cache_path, CACHE_CANDLESTICKS_DIR, timeframe.lower())
@@ -91,8 +94,8 @@ class StrategyCandlesticks:
             if timeframe.startswith("today"):
 
                 minutes = int((timeframe.split("today")[1]).split("minute")[0])
-                target_time = datetime.datetime.combine(now.date(), self.market_start_time)  
-                target_time += datetime.timedelta(minutes=minutes)  
+                target_time = datetime.datetime.combine(now.date(), self.market_start_time)
+                target_time += datetime.timedelta(minutes=minutes)
 
                 # Check if current time is past the target time
                 if current_time >= target_time.time():
@@ -100,20 +103,23 @@ class StrategyCandlesticks:
                     if cached_data is not None:
                         candlestick_data[timeframe] = cached_data
                     else:
-                        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol,
+                                                              self.trading_token, timeframe)
                         candlestick_data[timeframe] = candles
-                        timeframe_caches[timeframe].set(cache_key, candles)  
+                        timeframe_caches[timeframe].set(cache_key, candles)
                 else:
                     cached_data = timeframe_caches[timeframe].get(cache_key)
                     if cached_data is not None:
                         candlestick_data[timeframe] = cached_data
                     elif current_time <= self.market_start_time:
-                        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol,
+                                                              self.trading_token, timeframe)
                         candlestick_data[timeframe] = candles
-                        timeframe_caches[timeframe].set(cache_key, candles)   
-                    else:    
-                        log_warn(f"Waiting for {timeframe} live data to be available after market opens, using previous day data...")
-                        
+                        timeframe_caches[timeframe].set(cache_key, candles)
+                    else:
+                        log_warn(
+                            f"Waiting for {timeframe} live data to be available after market opens, using previous day data...")
+
             else:
                 # DAILY, WEEKLY and MONTHLY timeframe, proceed with regular cache operations
                 cached_data = timeframe_caches[timeframe].get(cache_key)
@@ -121,7 +127,8 @@ class StrategyCandlesticks:
                     candlestick_data[timeframe] = cached_data
                 else:
                     # Fetch data if not cached
-                    candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                    candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol,
+                                                          self.trading_token, timeframe)
                     candlestick_data[timeframe] = candles
                     timeframe_caches[timeframe].set(cache_key, candles)
 
@@ -131,18 +138,19 @@ class StrategyCandlesticks:
         """
         Executes the Scanning on Watchlist Instruments.
         """
-        stock_data_list = []        
+        stock_data_list = []
         tasks = []
         candlestick_data_list = []
 
         try:
-            for i, stock in enumerate(self.trading_watchlist, start=1):        
-                
+            for i, stock in enumerate(self.trading_watchlist, start=1):
+
                 self.trading_exchange = stock.get('exchange')
                 self.trading_symbol = stock.get('tradingsymbol')
                 if self.trading_exchange is None or self.trading_symbol is None:
                     continue
-                self.trading_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules['fetch'].trading_token_lookup(self.trading_exchange, self.trading_symbol)
+                self.trading_token = stock.get('instrument_token') if stock.get('instrument_token') else self.modules[
+                    'fetch'].trading_token_lookup(self.trading_exchange, self.trading_symbol)
 
                 # Create stock data dictionary for this stock
                 stock_data = {
@@ -151,9 +159,11 @@ class StrategyCandlesticks:
                     'token': self.trading_token
                 }
 
-                print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
-                log_info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
-                
+                print(
+                    f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
+                log_info(
+                    f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
+
                 candlestick_data = await self.get_candlestick_information()
 
                 candlestick_data_list.append({

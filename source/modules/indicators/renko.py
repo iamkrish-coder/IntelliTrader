@@ -1,6 +1,7 @@
 import pandas as pd
 from stocktrends import Renko
 
+
 def renko(dataset, size=2):
     # Check if dataset contains the required columns
     data = dataset if 'open' in dataset and 'high' in dataset and 'low' in dataset and 'close' in dataset else None

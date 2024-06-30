@@ -1,5 +1,3 @@
-import pandas as pd
-
 def vwap(dataset):
     # Check if dataset contains the required columns
     data = dataset if 'volume' in dataset and 'close' in dataset else None

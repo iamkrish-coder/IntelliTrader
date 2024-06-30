@@ -27,4 +27,3 @@ class DynamoDBInterface:
 
     def delete_item(self, key):
         raise NotImplementedError("Method not implemented")
-
