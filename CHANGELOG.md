@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.0...v3.12.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* modified publisher code to be more consistent for both Queue and Topics ([55bf705](https://github.com/iamkrish-coder/IntelliTrader/commit/55bf705e03267ad5670e703a2a9e8b97065aece8))
+
 ## [3.12.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.11.1...v3.12.0) (2024-06-30)
 
 
