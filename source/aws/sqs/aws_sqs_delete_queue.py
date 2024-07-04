@@ -1,11 +1,11 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from source.aws.sqs.BaseSqsManager import BaseSqsManager
+from .BaseSqsManager import BaseSqsManager
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
-from source.utils.caching_utils import *
+from ...utils.caching_utils import *
 
 
 class DeleteQueue(BaseSqsManager):

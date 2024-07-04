@@ -1,34 +1,17 @@
 # handlers/strategy
 
-import os
-import time
-import datetime
-import json
 import asyncio
-import math
-import boto3
-import uuid
-import pandas as pd
 
-from functools import wraps
-from ast import arg
-from ctypes import alignment
-from numpy import histogram
-from turtle import st
-from msilib.schema import CustomAction
-
-from ..constants.const import *
-from ..enumerations.enums import *
-from ..utils.logging_utils import *
-from ..controllers.BaseController import BaseController
-from source.modules.strategy._strategy_configurations import StrategyConfigurations
-from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
-from source.modules.strategy._strategy_watchlist import StrategyWatchlist
-from source.modules.strategy._strategy_candlesticks import StrategyCandlesticks
-from source.modules.strategy._strategy_indicators import StrategyIndicators
-from source.modules.strategy._strategy_scanner import StrategyScanner
-from source.modules.strategy._strategy_publisher import StrategyPublisher
 from source.configurations.shared_parameters import SharedParameters
+from source.modules.strategy._strategy_candlesticks import StrategyCandlesticks
+from source.modules.strategy._strategy_configurations import StrategyConfigurations
+from source.modules.strategy._strategy_indicators import StrategyIndicators
+from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
+from source.modules.strategy._strategy_publisher import StrategyPublisher
+from source.modules.strategy._strategy_scanner import StrategyScanner
+from source.modules.strategy._strategy_watchlist import StrategyWatchlist
+from ..controllers.BaseController import BaseController
+from ..utils.logging_utils import *
 
 
 class StrategyController(BaseController):
@@ -91,12 +74,12 @@ class StrategyController(BaseController):
             indicators_data_list = object_indicators_handler.initialize()
 
             # 6. Scan for trading signals
-            object_scanner_handler = StrategyScanner(self.modules, self.parameters, candlestick_data_list,
+            object_scanner_handler = StrategyScanner(self.connection, self.modules, self.parameters, candlestick_data_list,
                                                      indicators_data_list)
             self.alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
-            object_publisher_handler = StrategyPublisher(self.modules, self.parameters, self.database, self.alerts, SNS)
+            object_publisher_handler = StrategyPublisher(self.connection, self.modules, self.parameters, self.database, self.alerts, SNS)
             object_publisher_handler.initialize()
 
             self.run_count += 1

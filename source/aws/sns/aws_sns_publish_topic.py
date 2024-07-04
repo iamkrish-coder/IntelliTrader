@@ -2,7 +2,7 @@ import boto3
 import uuid
 
 from botocore.exceptions import ClientError
-from BaseSnsManager import BaseSnsManager
+from .BaseSnsManager import BaseSnsManager
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
@@ -13,9 +13,6 @@ class PublishTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
     def __init__(self, mode, topic, message, subject=None, attributes=None, group_id=None):
-        """
-        :param sns_resource: A Boto3 Amazon SNS resource.
-        """
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
         self.topic = topic
@@ -43,8 +40,9 @@ class PublishTopic(BaseSnsManager):
                     att_dict[key] = {"DataType": "String", "StringValue": value}
                 elif isinstance(value, bytes):
                     att_dict[key] = {"DataType": "Binary", "BinaryValue": value}
-            response = self.topic.publish(Message=self.message, MessageAttributes=att_dict)
-            message_id = response["MessageId"]
+
+            publish_response = self.topic.publish(Message=self.message, MessageAttributes=att_dict)
+            response = publish_response["MessageId"]
             log_info(
                 "Published message with attributes %s to topic %s.",
                 self.attributes,
@@ -54,22 +52,33 @@ class PublishTopic(BaseSnsManager):
             log_error("Couldn't publish message to topic %s.", self.topic.arn)
             raise error
         else:
-            return message_id
+            return response
 
     def publish_fifo_topic(self):
         try:
-            att_dict = self.attributes
+            att_dict = {}
+            for key, value in self.attributes.items():
+                if isinstance(value, str):
+                    att_dict[key] = {"DataType": "String", "StringValue": value}
+                elif isinstance(value, bytes):
+                    att_dict[key] = {"DataType": "Binary", "BinaryValue": value}
             dedup_id = uuid.uuid4()
-            response = self.topic.publish(
+
+            publish_response = self.topic.publish(
                 Subject=self.subject,
                 Message=self.message,
                 MessageAttributes=att_dict,
                 MessageGroupId=self.group_id,
                 MessageDeduplicationId=str(dedup_id),
             )
-            message_id = response["MessageId"]
-            log_info("Published message to topic %s.", self.topic.arn)
+            response = publish_response["MessageId"]
+            log_info(
+                "Published message with attributes %s to topic %s.",
+                self.attributes,
+                self.topic.arn,
+            )
         except ClientError as error:
             log_error("Couldn't publish message to topic %s.", self.topic.arn)
             raise error
-        return message_id
+        else:
+            return response

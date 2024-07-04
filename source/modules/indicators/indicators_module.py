@@ -1,19 +1,19 @@
 import pandas as pd
 
-import ma as ma
-from adx import adx
-from atr import atr
-from average_truerange import average_truerange
-from bollinger_bands import bollinger_bands
-from macd import macd
-from renko import renko
-from rsi import rsi
-from stochastic import stochastic
-from supertrend import supertrend
-from truerange import truerange
-from vwap import vwap
-from williams_r import williams_r
-from ...utils.logging_utils import *
+from . import ma
+from . import adx
+from . import atr
+from . import average_truerange
+from . import bollinger_bands
+from . import macd
+from . import renko
+from . import rsi
+from . import stochastic
+from . import supertrend
+from . import truerange
+from . import vwap
+from . import williams_r
+from source.utils.logging_utils import *
 
 
 class Indicator:

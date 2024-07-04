@@ -3,13 +3,13 @@
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
-from BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 
 class StrategyScanner(BaseStrategy):
-    def __init__(self, modules, parameters, candlesticks_data_list, indicators_data_list, connection,
-                 candles_timeframe=None):
+    def __init__(self, connection, modules, parameters, candlesticks_data_list, indicators_data_list, candles_timeframe=None):
         super().__init__(connection, modules)
+        self.connection = connection
         self.modules = modules
         self.parameters = parameters
         self.candlesticks_data_list = candlesticks_data_list

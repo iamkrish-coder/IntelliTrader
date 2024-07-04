@@ -1,7 +1,7 @@
 import boto3
 
 from botocore.exceptions import ClientError
-from BaseSnsManager import BaseSnsManager
+from .BaseSnsManager import BaseSnsManager
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *

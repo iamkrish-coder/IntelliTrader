@@ -7,7 +7,7 @@ from sys import modules
 
 class BaseStrategy(ABC, SharedHandler):
     def __init__(self, connection, modules):
-        super().__init__()
+        super().__init__(connection, modules)
         self.connection = connection
         self.modules = modules
 
