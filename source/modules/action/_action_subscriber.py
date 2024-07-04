@@ -9,7 +9,7 @@ from ...utils.logging_utils import *
 from ...utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import aws_sqs_subscribe
 from ...aws.sns.aws_sns_manager import aws_sns_subscribe
-from BaseAction import BaseAction
+from .BaseAction import BaseAction
 
 
 class ActionSubscriber(BaseAction):

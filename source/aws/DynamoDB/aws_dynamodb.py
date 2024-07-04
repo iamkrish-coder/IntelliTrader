@@ -2,9 +2,9 @@
 
 import boto3
 
-from ..constants.const import *
-from ..enumerations.enums import *
-from ..utils.logging_utils import *
+from ...constants.const import *
+from ...enumerations.enums import *
+from ...utils.logging_utils import *
 from source.aws.DynamoDB.aws_dynamo_expression_builder import DynamoExpressionBuilder
 from boto3.resources.model import DefinitionWithParams
 from botocore.exceptions import ClientError

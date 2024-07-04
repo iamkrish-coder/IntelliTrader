@@ -14,7 +14,7 @@ from ...models.strategies_model import StrategiesModel
 from ...models.topics_model import TopicsModel
 from ...models.queues_model import QueuesModel
 from ..database.database_module import Database
-from BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 
 class Strategy(BaseStrategy):
