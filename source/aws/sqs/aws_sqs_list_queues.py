@@ -13,7 +13,7 @@ class ListQueues(BaseSqsManager):
 
     def __init__(self, prefix=None):
         """
-        :param sqs_client: A Boto3 Amazon SQS resource.
+        :param sqs_client_resource: A Boto3 Amazon SQS client resource.
         """
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.prefix = prefix

@@ -78,32 +78,33 @@ class Fetch:
             if exchange and symbol and instrument_token and timeframe and duration:
                 exchange = exchange.upper()
                 symbol = symbol.upper()
+                timeframe_label = None
+
                 if timeframe.__contains__('today'):
 
                     # Fetch Minutes Data
                     duration = duration['today']
-
                     if 'today1minute' in timeframe:
                         timeframe = 'minute'
-                        timeframe_text = 'Today 1 MINUTE'
+                        timeframe_label = 'Today_1minute'
                     elif 'today2minute' in timeframe:
                         timeframe = '2minute'
-                        timeframe_text = 'Today 2 MINUTE'
+                        timeframe_label = 'Today_2minute'
                     elif 'today3minute' in timeframe:
                         timeframe = '3minute'
-                        timeframe_text = 'Today 3 MINUTE'
+                        timeframe_label = 'Today_3minute'
                     elif 'today5minute' in timeframe:
                         timeframe = '5minute'
-                        timeframe_text = 'Today 5 MINUTE'
+                        timeframe_label = 'Today_5minute'
                     elif 'today15minute' in timeframe:
                         timeframe = '15minute'
-                        timeframe_text = 'Today 15 MINUTE'
+                        timeframe_label = 'Today_15minute'
                     elif 'today30minute' in timeframe:
                         timeframe = '30minute'
-                        timeframe_text = 'Today 30 MINUTE'
+                        timeframe_label = 'Today_30minute'
                     elif 'today60minute' in timeframe:
                         timeframe = '60minute'
-                        timeframe_text = 'Today 60 MINUTE'
+                        timeframe_label = 'Today_60minute'
                     else:
                         log_error(f"No valid timeframe for exchange:symbol {exchange}:{symbol}")
                         return None
@@ -127,7 +128,7 @@ class Fetch:
                                 today_date -= dt.timedelta(days=1)
 
                     log_info(
-                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_label.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('minute'):
                     # Fetch Minutes Data
@@ -135,9 +136,9 @@ class Fetch:
                     data = pd.DataFrame(
                         self.prop['kite'].historical_data(instrument_token, dt.date.today() - dt.timedelta(duration),
                                                           dt.date.today(), timeframe))
-                    timeframe_text = timeframe
+                    timeframe_label = timeframe
                     log_info(
-                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_label.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('hour'):
                     # Fetch Hours Data
@@ -145,9 +146,9 @@ class Fetch:
                     data = pd.DataFrame(
                         self.prop['kite'].historical_data(instrument_token, dt.date.today() - dt.timedelta(duration),
                                                           dt.date.today(), timeframe))
-                    timeframe_text = HOUR
+                    timeframe_label = HOUR
                     log_info(
-                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_label.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('day'):
                     # Fetch Daily Data
@@ -155,9 +156,9 @@ class Fetch:
                     data = pd.DataFrame(
                         self.prop['kite'].historical_data(instrument_token, dt.date.today() - dt.timedelta(duration),
                                                           dt.date.today(), timeframe))
-                    timeframe_text = DAY
+                    timeframe_label = DAY
                     log_info(
-                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_label.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('week'):
                     # Fetch Weekly Data
@@ -167,9 +168,9 @@ class Fetch:
                         self.prop['kite'].historical_data(instrument_token, dt.date.today() - dt.timedelta(duration),
                                                           dt.date.today(), timeframe))
                     data = self.aggregate_to_weekly(data)
-                    timeframe_text = WEEK
+                    timeframe_label = WEEK
                     log_info(
-                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_label.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 elif timeframe.__contains__('month'):
                     # Fetch Monthly Data
@@ -179,9 +180,9 @@ class Fetch:
                         self.prop['kite'].historical_data(instrument_token, dt.date.today() - dt.timedelta(duration),
                                                           dt.date.today(), timeframe))
                     data = self.aggregate_to_monthly(data)
-                    timeframe_text = MONTH
+                    timeframe_label = MONTH
                     log_info(
-                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_text.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
+                        f'::::::: OHLCV ::::::: Timeframe: {timeframe_label.upper()} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
 
                 else:
                     data = None
@@ -190,7 +191,8 @@ class Fetch:
                     log_warn(f"No data found for exchange:symbol {exchange}:{symbol}")
                     return None
                 else:
-                    Helper().write_csv_output(f'historical_{exchange}_{symbol}_{timeframe}.csv', data)
+                    period = timeframe_label.capitalize()
+                    Helper().write_csv_output(f'historical_{exchange}_{symbol}_{period}.csv', data)
                     return data
             else:
                 log_warn(
@@ -222,7 +224,7 @@ class Fetch:
             daily_data.index = pd.to_datetime(daily_data.index)
 
         # Resample the daily data to monthly OHLC data
-        monthly_data = daily_data.resample('M').agg(
+        monthly_data = daily_data.resample('ME').agg(
             {'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'})
         return monthly_data
 
@@ -375,7 +377,7 @@ class Fetch:
             case '1d':
                 directory = HISTORICAL_DATA_PATH_1D
             case _:
-                self.invalid_option(filter_data_interval.lower())
+                log_warn("The interval option provided is not valid")
 
         # Use read_csv_files_in_directory for parallel file reading
         stock_historical_data = self.read_csv_files_in_directory(directory, filter_stocks, filter_start_date,

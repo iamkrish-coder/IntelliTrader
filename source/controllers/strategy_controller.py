@@ -20,6 +20,7 @@ class StrategyController(BaseController):
         self.run_count = 0
         self.parameters = None
         self.alerts = None
+        self.publisher = None
 
     async def initialize(self):
         log_info(f"Running Strategy...{self.run_count} Times")
@@ -74,12 +75,12 @@ class StrategyController(BaseController):
             indicators_data_list = object_indicators_handler.initialize()
 
             # 6. Scan for trading signals
-            object_scanner_handler = StrategyScanner(self.connection, self.modules, self.parameters, candlestick_data_list,
-                                                     indicators_data_list)
+            object_scanner_handler = StrategyScanner(self.connection, self.modules, self.parameters, candlestick_data_list, indicators_data_list)
             self.alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
-            object_publisher_handler = StrategyPublisher(self.connection, self.modules, self.parameters, self.database, self.alerts, SNS)
+            self.publisher = SNS
+            object_publisher_handler = StrategyPublisher(self.connection, self.modules, self.parameters, self.database, self.alerts, self.publisher)
             object_publisher_handler.initialize()
 
             self.run_count += 1

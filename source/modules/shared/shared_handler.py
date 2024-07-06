@@ -377,3 +377,7 @@ class SharedHandler:
 
             strategy_id, name, description = parts[1], parts[2], parts[3]
             return strategy_id, name, description
+
+    def generate_group_id(self, strategy_id):
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
+        return f"{strategy_id}-{timestamp}"

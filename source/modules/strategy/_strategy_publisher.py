@@ -1,5 +1,6 @@
 # handlers/strategy
 import time
+import uuid
 
 from ...constants.const import *
 from ...enumerations.enums import *
@@ -12,21 +13,21 @@ from .BaseStrategy import BaseStrategy
 
 
 class StrategyPublisher(BaseStrategy):
-    def __init__(self, connection, modules, parameters, database, alerts, aws_service):
+    def __init__(self, connection, modules, parameters, database, alerts, publisher):
         super().__init__(connection, modules)
-        self.strategy_queue = None
-        self.date_time_now = None
-        self.client = None
         self.connection = connection
         self.modules = modules
         self.parameters = parameters
         self.database = database
         self.alerts = alerts
-        self.aws_service = aws_service
+        self.publisher = publisher
         self.object_sns_manager = SNSManager()
         self.object_sqs_manager = SQSManager()
         self.strategy_id = self.parameters.get('strategy_params.strategy_id')
         self.topic_mode = self.parameters.get('runtime_params.topic_type')   
+        self.strategy_queue = None
+        self.date_time_now = None
+        self.client = None
         
     def initialize(self):
         return self.publish()
@@ -52,52 +53,63 @@ class StrategyPublisher(BaseStrategy):
         return self.database.manage_table_records(request)
 
 
-    def set_topic_published_status(self):
-
-        log_info(f"Updating SNS Topic status...")                                
-        dataset = {
-            "topic_arn": topic_arn,
-            "topic_name": topic_name,
-            "is_active": True,
-            "is_published": True,
-        }
-        update_topic_params = self.prepare_request_parameters(
-            event=Events.UPDATE.value,
-            table=Tables.TABLE_TOPICS.value,
-            model=TopicsModel,
-            dataset=dataset,
-        )
-        self.database_request(update_topic_params)
-
-        cached_key = f"{TABLE_TOPICS}_{topic_name}_{IS_PUBLISHED}"
-        cached_value = [dataset]
-        set_cached_item(
-            Cache_Type.DISK.value,
-            CACHE_TOPICS_DIR,
-            cached_key,
-            cached_value,
-        ) 
+    # def set_topic_published_status(self):
+    #
+    #     log_info(f"Updating SNS Topic status...")
+    #     dataset = {
+    #         "topic_arn": topic_arn,
+    #         "topic_name": topic_name,
+    #         "is_active": True,
+    #         "is_published": True,
+    #     }
+    #     update_topic_params = self.prepare_request_parameters(
+    #         event=Events.UPDATE.value,
+    #         table=Tables.TABLE_TOPICS.value,
+    #         model=TopicsModel,
+    #         dataset=dataset,
+    #     )
+    #     self.database_request(update_topic_params)
+    #
+    #     cached_key = f"{TABLE_TOPICS}_{topic_name}_{IS_PUBLISHED}"
+    #     cached_value = [dataset]
+    #     set_cached_item(
+    #         Cache_Type.DISK.value,
+    #         CACHE_TOPICS_DIR,
+    #         cached_key,
+    #         cached_value,
+    #     )
 
     def publish(self):
         ###############
         # SNS PUBLISH #
         ###############
-        if self.aws_service == SNS:
+        if self.publisher == SNS:
             successfully_published = []
             if self.strategy_id is None:
                 log_error("Strategy ID is missing from parameters.")
                 return None    
 
+            """ Build Parameters """
             topic_arn, topic_name = self.generate_aws_sns_topic_details(self.strategy_id, self.topic_mode)
+            group_id = self.generate_group_id(self.strategy_id)
+            deduplication_id = uuid.uuid4()
 
             for alert in self.alerts:
                 exchange, symbol, token = alert.split(",")
                 message = f"{exchange.strip()}, {symbol.strip()}, {token.strip()}"
-                subject = "Stock Alert"
+                subject = "IntelliTrader - Stock Alert"
 
                 try:
-                    # Publish to SNS 
-                    arguments = {"mode": self.topic_mode, "topic": topic_name, "message": message, "subject": subject}
+                    # Publish to SNS
+                    arguments = {
+                        "mode": self.topic_mode,
+                        "topic_name": topic_name,
+                        "topic_arn": topic_arn,
+                        "message": message,
+                        "subject": subject,
+                        "deduplication_id": deduplication_id,
+                        "group_id": group_id
+                    }
                     publish_topic = self.object_sns_manager.get_action("publish_topic", **arguments)
                     response = publish_topic.execute()
 
@@ -116,7 +128,7 @@ class StrategyPublisher(BaseStrategy):
         ###############
         # SQS PUBLISH #
         ###############
-        if self.aws_service == SQS:
+        if self.publisher == SQS:
             successfully_published = []
             if self.strategy_id is None:
                 log_error("Strategy ID is missing from parameters.")
