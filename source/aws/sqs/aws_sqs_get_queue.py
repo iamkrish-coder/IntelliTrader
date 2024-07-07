@@ -13,7 +13,7 @@ class GetQueue(BaseSqsManager):
 
     def __init__(self, queue_name):
         """
-        :param sqs_resource: A Boto3 Amazon SQS resource.
+        :param sqs_client_resource: A Boto3 Amazon SQS client resource.
         """
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.queue_name = queue_name

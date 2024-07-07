@@ -1,18 +1,18 @@
 import pandas as pd
 
-from . import ma
-from . import adx
-from . import atr
-from . import average_truerange
-from . import bollinger_bands
-from . import macd
-from . import renko
-from . import rsi
-from . import stochastic
-from . import supertrend
-from . import truerange
-from . import vwap
-from . import williams_r
+from .ma import sma, ema, wma
+from .adx import adx
+from .atr import atr
+from .average_truerange import average_truerange
+from .bollinger_bands import bollinger_bands
+from .macd import macd
+from .renko import renko
+from .rsi import rsi
+from .stochastic import stochastic
+from .supertrend import supertrend
+from .truerange import truerange
+from .vwap import vwap
+from .williams_r import williams_r
 from source.utils.logging_utils import *
 
 
@@ -53,9 +53,9 @@ class Indicator:
             case 'average_truerange':
                 return self.option_average_truerange(dataset, period)
             case _:
-                self.invalid_option(dataset)
+                log_warn("The indicator option provided is not valid")
 
-    # RSI 
+    # RSI
     def option_rsi(self, dataset, period):
         try:
             rsi_values = {}
@@ -76,7 +76,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate WMA
                 pdf = pd.DataFrame(dataset)
-                wma_values = ma.wma(pdf, period)
+                wma_values = wma(pdf, period)
                 return wma_values
             else:
                 log_error("Failed to calculate WMA")
@@ -91,7 +91,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate SMA
                 pdf = pd.DataFrame(dataset)
-                sma_values = ma.sma(pdf, period)
+                sma_values = sma(pdf, period)
                 return sma_values
             else:
                 log_error("Failed to calculate SMA")
@@ -106,7 +106,7 @@ class Indicator:
             if dataset is not None:
                 # Calculate EMA
                 pdf = pd.DataFrame(dataset)
-                ema_values = ma.ema(pdf, period)
+                ema_values = ema(pdf, period)
                 return ema_values
             else:
                 log_error("Failed to calculate EMA")
@@ -292,7 +292,3 @@ class Indicator:
                 return False
         except Exception as error:
             log_error("An exception occurred: {}".format(error))
-
-    def invalid_option(self, dataset):
-        # Invalid indicator option provided
-        log_warn("The indicator option provided is not valid")

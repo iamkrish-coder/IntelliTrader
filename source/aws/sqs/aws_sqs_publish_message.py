@@ -13,6 +13,9 @@ class PublishQueueMessage(BaseSqsManager):
     """Encapsulates Amazon SQS queue."""
 
     def __init__(self, mode, queue_url, receipt_handle):
+        """
+        :param sqs_client_resource: A Boto3 Amazon SQS client resource.
+        """
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.mode = mode
         self.message = None

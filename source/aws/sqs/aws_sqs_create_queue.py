@@ -13,7 +13,7 @@ class CreateQueue(BaseSqsManager):
 
     def __init__(self, mode, name):
         """
-        :param sqs_resource: A Boto3 Amazon SQS resource.
+        :param sqs_client_resource: A Boto3 Amazon SQS client resource.
         """
         self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
         self.mode = mode

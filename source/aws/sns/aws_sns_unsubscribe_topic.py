@@ -13,7 +13,7 @@ class UnsubscribeTopic(BaseSnsManager):
 
     def __init__(self, subscription_arn=None):
         """
-        :param sns_resource: A Boto3 Amazon SNS resource.
+        :param sns_client_resource: A Boto3 Amazon SNS client resource.
         """
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.subscription_arn = subscription_arn

@@ -1,5 +1,4 @@
 import boto3
-import uuid
 
 from botocore.exceptions import ClientError
 from .BaseSnsManager import BaseSnsManager
@@ -12,14 +11,20 @@ from ...utils.caching_utils import *
 class PublishTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
-    def __init__(self, mode, topic, message, subject=None, attributes=None, group_id=None):
+    def __init__(self, mode, topic_name, topic_arn=None, target_arn=None, phone_number=None, message=None, subject=None, message_structure=None, message_attributes=None, deduplication_id=None, group_id=None):
+
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
-        self.topic = topic
-        self.message = message
-        self.subject = subject
-        self.attributes = attributes
-        self.group_id = group_id
+        self.topic_name = str(topic_name)
+        self.topic_arn = str(topic_arn)
+        self.target_arn = str(target_arn)
+        self.phone_number = str(phone_number)
+        self.message = str(message)
+        self.subject = str(subject)
+        self.message_structure = str(message_structure)
+        self.message_attributes = message_attributes
+        self.deduplication_id = str(deduplication_id)
+        self.group_id = str(group_id)
 
     def execute(self):
         """
@@ -34,51 +39,51 @@ class PublishTopic(BaseSnsManager):
 
     def publish_standard_topic(self):
         try:
-            att_dict = {}
-            for key, value in self.attributes.items():
-                if isinstance(value, str):
-                    att_dict[key] = {"DataType": "String", "StringValue": value}
-                elif isinstance(value, bytes):
-                    att_dict[key] = {"DataType": "Binary", "BinaryValue": value}
+            message_attributes_dict = {}
+            if self.message_attributes:
+                for key, value in self.message_attributes.items():
+                    if isinstance(value, str):
+                        message_attributes_dict[key] = {"DataType": "String", "StringValue": value}
+                    elif isinstance(value, bytes):
+                        message_attributes_dict[key] = {"DataType": "Binary", "BinaryValue": value}
 
-            publish_response = self.topic.publish(Message=self.message, MessageAttributes=att_dict)
-            response = publish_response["MessageId"]
-            log_info(
-                "Published message with attributes %s to topic %s.",
-                self.attributes,
-                self.topic.arn,
+            publish_response = self.sns_client.publish(
+                Message=self.message,
+                MessageAttributes=message_attributes_dict
             )
+            response = publish_response["MessageId"]
+            log_info("Published message to topic %s.", self.topic_arn)
         except ClientError as error:
-            log_error("Couldn't publish message to topic %s.", self.topic.arn)
+            log_error("Couldn't publish message to topic %s.", self.topic_arn)
             raise error
         else:
             return response
 
     def publish_fifo_topic(self):
         try:
-            att_dict = {}
-            for key, value in self.attributes.items():
-                if isinstance(value, str):
-                    att_dict[key] = {"DataType": "String", "StringValue": value}
-                elif isinstance(value, bytes):
-                    att_dict[key] = {"DataType": "Binary", "BinaryValue": value}
-            dedup_id = uuid.uuid4()
+            message_attributes_dict = {}
+            if self.message_attributes:
+                for key, value in self.message_attributes.items():
+                    if isinstance(value, str):
+                        message_attributes_dict[key] = {"DataType": "String", "StringValue": value}
+                    elif isinstance(value, bytes):
+                        message_attributes_dict[key] = {"DataType": "Binary", "BinaryValue": value}
 
-            publish_response = self.topic.publish(
-                Subject=self.subject,
+            publish_response = self.sns_client.publish(
+                TopicArn=self.topic_arn,
+                TargetArn=self.target_arn,
+                PhoneNumber=self.phone_number,
                 Message=self.message,
-                MessageAttributes=att_dict,
-                MessageGroupId=self.group_id,
-                MessageDeduplicationId=str(dedup_id),
+                Subject=self.subject,
+                MessageStructure=self.message_structure,
+                MessageAttributes=message_attributes_dict,
+                MessageDeduplicationId=self.deduplication_id,
+                MessageGroupId=self.group_id
             )
             response = publish_response["MessageId"]
-            log_info(
-                "Published message with attributes %s to topic %s.",
-                self.attributes,
-                self.topic.arn,
-            )
+            log_info( "Published message to topic %s.", self.topic_arn)
         except ClientError as error:
-            log_error("Couldn't publish message to topic %s.", self.topic.arn)
+            log_error("Couldn't publish message to topic %s.", self.topic_arn)
             raise error
         else:
             return response

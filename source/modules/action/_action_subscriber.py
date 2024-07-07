@@ -7,8 +7,8 @@ from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
 from ...utils.caching_utils import *
-from ...aws.sqs.aws_sqs_manager import aws_sqs_subscribe
-from ...aws.sns.aws_sns_manager import aws_sns_subscribe
+from ...aws.sqs.aws_sqs_manager import SQSManager
+from ...aws.sns.aws_sns_manager import SNSManager
 from .BaseAction import BaseAction
 
 
