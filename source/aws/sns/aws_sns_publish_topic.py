@@ -15,16 +15,16 @@ class PublishTopic(BaseSnsManager):
 
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.mode = mode
-        self.topic_name = str(topic_name)
-        self.topic_arn = str(topic_arn)
-        self.target_arn = str(target_arn)
-        self.phone_number = str(phone_number)
-        self.message = str(message)
-        self.subject = str(subject)
-        self.message_structure = str(message_structure)
+        self.topic_name = topic_name
+        self.topic_arn = topic_arn
+        self.target_arn = target_arn
+        self.phone_number = phone_number
+        self.message = message
+        self.subject = subject
+        self.message_structure = message_structure
         self.message_attributes = message_attributes
-        self.deduplication_id = str(deduplication_id)
-        self.group_id = str(group_id)
+        self.deduplication_id = deduplication_id
+        self.group_id = group_id
 
     def execute(self):
         """
@@ -47,11 +47,10 @@ class PublishTopic(BaseSnsManager):
                     elif isinstance(value, bytes):
                         message_attributes_dict[key] = {"DataType": "Binary", "BinaryValue": value}
 
-            publish_response = self.sns_client.publish(
+            response = self.sns_client.publish(
                 Message=self.message,
                 MessageAttributes=message_attributes_dict
             )
-            response = publish_response["MessageId"]
             log_info("Published message to topic %s.", self.topic_arn)
         except ClientError as error:
             log_error("Couldn't publish message to topic %s.", self.topic_arn)
@@ -69,19 +68,14 @@ class PublishTopic(BaseSnsManager):
                     elif isinstance(value, bytes):
                         message_attributes_dict[key] = {"DataType": "Binary", "BinaryValue": value}
 
-            publish_response = self.sns_client.publish(
+            response = self.sns_client.publish(
                 TopicArn=self.topic_arn,
-                TargetArn=self.target_arn,
-                PhoneNumber=self.phone_number,
                 Message=self.message,
                 Subject=self.subject,
-                MessageStructure=self.message_structure,
-                MessageAttributes=message_attributes_dict,
-                MessageDeduplicationId=self.deduplication_id,
-                MessageGroupId=self.group_id
+                MessageDeduplicationId=str(self.deduplication_id),
+                MessageGroupId=str(self.group_id)
             )
-            response = publish_response["MessageId"]
-            log_info( "Published message to topic %s.", self.topic_arn)
+            log_info("Published message to topic %s.", self.topic_arn)
         except ClientError as error:
             log_error("Couldn't publish message to topic %s.", self.topic_arn)
             raise error

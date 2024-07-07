@@ -8,6 +8,7 @@ import time
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
+from ...aws.AccessPolicy.access_policy import AccessPolicy
 from ...aws.sns.aws_sns_manager import SNSManager
 from ...aws.sqs.aws_sqs_manager import SQSManager
 from ...models.strategies_model import StrategiesModel
@@ -41,6 +42,7 @@ class Strategy(BaseStrategy):
     def initialize(self):
         self.restore_factory_defaults()
         self.manage_strategies()
+        self.manage_access_policies()
         self.manage_topics()
         self.manage_queues()
         self.manage_subscriptions()
@@ -91,15 +93,16 @@ class Strategy(BaseStrategy):
         Pre-Requisite Strategy Operations
         """
         saved_strategy_list = []
-        self.get_strategy_list()
 
+        # Get strategy list from database
+        self.get_strategy_list()
         if self.strategy_list is not None:
             for strategy in self.strategy_list:
                 saved_strategy_list.append(strategy.get("strategy_id"))
 
+        # Check if Strategy already exists in database if not add strategy to database
         for filename in os.listdir(ALGORITHM_PATH):
             strategy_id, name, description = self.generate_strategy_details(filename)
-
             if strategy_id in saved_strategy_list:
                 continue
 
@@ -118,32 +121,40 @@ class Strategy(BaseStrategy):
             )
             self.database.database_request(save_strategies)
 
+        # Select strategy for further use
         strategy = self.app_configuration.get("strategy")
         self.selected_strategy = self.app_configuration.get(f"strategy_{strategy}_params").get("strategy_id")
+
+    def manage_access_policies(self):
+        pass
 
     def manage_topics(self):
         """
         Pre-Requisite Topic Operations
         """
         # List Topics
-        arguments = {}
-        list_topics = self.object_sns_manager.get_action("list_topics", **arguments)
-        response = list_topics.execute()
-        topics_list = response.get("Topics")
+        try:
+            arguments = {}
+            list_topics = self.object_sns_manager.get_action("list_topics", **arguments)
+            response = list_topics.execute()
+            topics_list = response.get("Topics")
 
-        # Create Topic
-        if self.strategy_list is None:
-            self.get_strategy_list()
+            # Get strategies
+            if self.strategy_list is None:
+                self.get_strategy_list()
 
-        if self.strategy_list is None:
-            log_info(f"No Strategy Topics to manage.")
-            return
-        else:
+            # Check strategies
+            if self.strategy_list is None:
+                log_info(f"No Strategy Topics to manage.")
+                return
+
+            # Check Topics
             saved_topics_list = []
             if topics_list is not None and topics_list != []:
                 for topics in topics_list:
                     saved_topics_list.append(topics.get("TopicArn"))
 
+            # Create Topics
             for strategy in self.strategy_list:
                 strategy_id = strategy.get("strategy_id")
                 topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, self.topic_mode)
@@ -152,10 +163,26 @@ class Strategy(BaseStrategy):
                     log_info(f"Skipping topic creation for Strategy {strategy_id}")
                     continue
 
-                # Create Topic in AWS SNS 
-                arguments = {"mode": self.topic_mode, "name": topic_name}
-                create_topic = self.object_sns_manager.get_action("create_topic", **arguments)
-                create_topic.execute()
+                # Create Topic in AWS SNS
+                try:
+
+                    """ Access Policy """
+                    object_access_policy = AccessPolicy(SNS)
+                    object_access_policy.set_policy_statement(topic_arn)
+                    access_policy = object_access_policy.get_policy()
+
+                    arguments = {
+                        "mode": self.topic_mode,
+                        "topic_name": topic_name,
+                        "display_name": str("Topic-" + strategy_id),
+                        "fifo_topic": str(True),
+                        "content_based_deduplication": str(False),
+                        "access_policy": access_policy
+                    }
+                    create_topic = self.object_sns_manager.get_action("create_topic", **arguments)
+                    create_topic.execute()
+                except Exception as error:
+                    log_error(f"Error creating Topic: {str(error)}")
 
                 # Add entry to AWS DynamoDB
                 current_date = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -172,30 +199,36 @@ class Strategy(BaseStrategy):
                     dataset=dataset
                 )
                 self.database.database_request(save_topics)
+        except Exception as error:
+            log_error(f"Error listing Topics: {str(error)}")
 
     def manage_queues(self):
         """
         Pre-Requisite Queue Operations
         """
         # List Queues
-        arguments = {}
-        list_queues = self.object_sqs_manager.get_action("list_queues", **arguments)
-        response = list_queues.execute()
-        queues_list = response.get("QueueUrls")
+        try:
+            arguments = {}
+            list_queues = self.object_sqs_manager.get_action("list_queues", **arguments)
+            response = list_queues.execute()
+            queues_list = response.get("QueueUrls")
 
-        # Create Queue
-        if self.strategy_list is None:
-            self.get_strategy_list()
+            # Get strategies
+            if self.strategy_list is None:
+                self.get_strategy_list()
 
-        if self.strategy_list is None:
-            log_info(f"No Strategy Queues to manage.")
-            return
-        else:
+            # Check strategies
+            if self.strategy_list is None:
+                log_info(f"No Strategy Queues to manage.")
+                return
+
+            # Check Queues
             saved_queues_list = []
             if queues_list is not None and queues_list != []:
                 for queues in queues_list:
                     saved_queues_list.append(queues)
 
+            # Create Queues
             for strategy in self.strategy_list:
                 strategy_id = strategy.get("strategy_id")
                 queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_details(strategy_id, self.queue_mode)
@@ -204,10 +237,13 @@ class Strategy(BaseStrategy):
                     log_info(f"Skipping Queue creation for Strategy {strategy_id}")
                     continue
 
-                # Create Queue in AWS SQS 
-                arguments = {"mode": self.queue_mode, "name": queue_name}
-                create_queue = self.object_sqs_manager.get_action("create_queue", **arguments)
-                create_queue.execute()
+                # Create Queue in AWS SQS
+                try:
+                    arguments = {"mode": self.queue_mode, "name": queue_name}
+                    create_queue = self.object_sqs_manager.get_action("create_queue", **arguments)
+                    create_queue.execute()
+                except Exception as error:
+                    log_error(f"Error creating Queue: {str(error)}")
 
                 # Add entry to AWS DynamoDB
                 current_date = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -225,6 +261,8 @@ class Strategy(BaseStrategy):
                     dataset=dataset
                 )
                 self.database.database_request(save_queues)
+        except Exception as error:
+            log_error(f"Error listing Queues: {str(error)}")
 
     def manage_subscriptions(self):
         """
@@ -233,39 +271,48 @@ class Strategy(BaseStrategy):
         if self.strategy_list is None:
             log_info(f"No Strategy Subscriptions to manage.")
             return
+
         for strategy in self.strategy_list:
             strategy_id = strategy.get("strategy_id")
             topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, self.topic_mode)
             queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_details(strategy_id, self.queue_mode)
 
             # List Subscriptions
-            arguments = {"topic_arn": topic_arn}
-            list_subscriptions = self.object_sns_manager.get_action("list_subscriptions", **arguments)
-            subscriptions = list_subscriptions.execute()
-            subscription_list = subscriptions.get("Subscriptions")
+            try:
+                arguments = {"topic_arn": topic_arn}
+                list_subscriptions = self.object_sns_manager.get_action("list_subscriptions", **arguments)
+                subscriptions = list_subscriptions.execute()
+                subscription_list = subscriptions.get("Subscriptions")
 
-            if subscription_list is not None and subscription_list != []:
-                for subscription in subscription_list:
-                    if subscription.get("Endpoint") != queue_arn:
-                        self.create_save_subscriptions(topic_arn, queue_arn)
-                        log_info(f"Subscription created for {topic_name}!")
-                    else:
-                        log_info(f"Skipping Subscription creation for {topic_name}, Topic already Subscribed!")
-            else:
-                self.create_save_subscriptions(topic_arn, queue_arn)
-                log_info(f"Subscription created for {topic_name}!")
+                # Todo: This needs to define endpoint subscription type to create the multiple types of subscription
+                # Todo: Currently only handles SNS -> SQS
+                if subscription_list is not None and subscription_list != []:
+                    for subscription in subscription_list:
+                        if subscription.get("Endpoint") != queue_arn:
+                            self.create_save_subscriptions(topic_arn, queue_arn)
+                            log_info(f"Subscription created for {topic_name}!")
+                        else:
+                            log_info(f"Skipping Subscription creation for {topic_name}, Topic already Subscribed!")
+                else:
+                    self.create_save_subscriptions(topic_arn, queue_arn)
+                    log_info(f"Subscription created for {topic_name}!")
+            except Exception as error:
+                log_error(f"Error listing Subscriptions: {str(error)}")
 
     def create_save_subscriptions(self, topic_arn, queue_arn):
-        # Create Subscription in AWS SNS 
+        # Create Subscription in AWS SNS
         if topic_arn is not None and queue_arn is not None:
-            arguments = {
-                "topic_arn": topic_arn,
-                "protocol": SQS,
-                "endpoint": queue_arn,
-                "attributes": {},
-            }
-            subscribe_topic = self.object_sns_manager.get_action("subscribe_topic", **arguments)
-            subscribe_topic.execute()
+            try:
+                arguments = {
+                    "topic_arn": topic_arn,
+                    "protocol": SQS,
+                    "endpoint": queue_arn,
+                    "attributes": {},
+                }
+                subscribe_topic = self.object_sns_manager.get_action("subscribe_topic", **arguments)
+                subscribe_topic.execute()
+            except Exception as error:
+                log_error(f"Error creating Subscriptions: {str(error)}")
 
             # Add entry to AWS DynamoDB
             modified_date = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -284,35 +331,42 @@ class Strategy(BaseStrategy):
             self.database.database_request(update_topics)
 
     def delete_subscriptions(self):
-        list_subscriptions = self.object_sns_manager.get_action("list_subscriptions", **{})
-        subscriptions = list_subscriptions.execute()
-        subscription_list = subscriptions.get("Subscriptions")
-        if subscription_list is not None:
-            for subscription in subscription_list:
-                subscription_arn = subscription.get("SubscriptionArn")
-                arguments = {"subscription_arn": subscription_arn}
-                unsubscribe_topic = self.object_sns_manager.get_action("unsubscribe_topic", **arguments)
-                unsubscribe_topic.execute()
-                # TODO : Update DB is_subscribed = False and is_active = False
+        try:
+            list_subscriptions = self.object_sns_manager.get_action("list_subscriptions", **{})
+            subscriptions = list_subscriptions.execute()
+            subscription_list = subscriptions.get("Subscriptions")
+            if subscription_list is not None:
+                for subscription in subscription_list:
+                    subscription_arn = subscription.get("SubscriptionArn")
+                    arguments = {"subscription_arn": subscription_arn}
+                    unsubscribe_topic = self.object_sns_manager.get_action("unsubscribe_topic", **arguments)
+                    unsubscribe_topic.execute()
+                    # TODO : Update DB is_subscribed = False and is_active = False
+        except Exception as error:
+            log_error(f"Error deleting Subscriptions: {str(error)}")
 
     def delete_topics(self):
-        list_topics = self.object_sns_manager.get_action("list_topics", **{})
-        topics_list = (list_topics.execute()).get("Topics")
-
-        if topics_list is not None:
-            for topics in topics_list:
-                topic_arn = topics.get("TopicArn")
-                arguments = {"topic_arn": topic_arn}
-                delete_topic = self.object_sns_manager.get_action("delete_topic", **arguments)
-                delete_topic.execute()
+        try:
+            list_topics = self.object_sns_manager.get_action("list_topics", **{})
+            topics_list = (list_topics.execute()).get("Topics")
+            if topics_list is not None:
+                for topics in topics_list:
+                    topic_arn = topics.get("TopicArn")
+                    arguments = {"topic_arn": topic_arn}
+                    delete_topic = self.object_sns_manager.get_action("delete_topic", **arguments)
+                    delete_topic.execute()
+        except Exception as error:
+            log_error(f"Error deleting Topics: {str(error)}")
 
     def delete_queues(self):
-        list_queues = self.object_sqs_manager.get_action("list_queues", **{})
-        queues_list = (list_queues.execute()).get("QueueUrls")
-
-        if queues_list is not None:
-            for queues in queues_list:
-                queue_url = queues
-                arguments = {"queue_url": queue_url}
-                delete_queue = self.object_sqs_manager.get_action("delete_queue", **arguments)
-                delete_queue.execute()
+        try:
+            list_queues = self.object_sqs_manager.get_action("list_queues", **{})
+            queues_list = (list_queues.execute()).get("QueueUrls")
+            if queues_list is not None:
+                for queues in queues_list:
+                    queue_url = queues
+                    arguments = {"queue_url": queue_url}
+                    delete_queue = self.object_sqs_manager.get_action("delete_queue", **arguments)
+                    delete_queue.execute()
+        except Exception as error:
+            log_error(f"Error deleting Queues: {str(error)}")
