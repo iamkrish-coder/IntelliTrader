@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.1...v3.12.2) (2024-07-07)
+
+
+### Bug Fixes
+
+* nightly build 3.12.2 ([6be4a44](https://github.com/iamkrish-coder/IntelliTrader/commit/6be4a4412f34d2acb0aeef665ee5cb49f4d1c6b8))
+
 ## [3.12.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.0...v3.12.1) (2024-07-04)
 
 
