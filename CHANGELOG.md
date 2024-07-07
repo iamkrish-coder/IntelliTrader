@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.2...v3.12.3) (2024-07-07)
+
+
+### Bug Fixes
+
+* nightly build 3.12.3, Added access policies, SNS Topic registration improvements ([71a5e6c](https://github.com/iamkrish-coder/IntelliTrader/commit/71a5e6c9ee60a1e6bd6f8a6b69a9f48700aef07a))
+
 ## [3.12.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.1...v3.12.2) (2024-07-07)
 
 
