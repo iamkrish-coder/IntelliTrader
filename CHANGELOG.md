@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.3...v3.12.4) (2024-07-10)
+
+
+### Bug Fixes
+
+* SNS and SQS Fan out of stock alerts published, minor fixes and enhancements ([3678c11](https://github.com/iamkrish-coder/IntelliTrader/commit/3678c11f58694c4aafe735b4c8c8517190b549bf))
+
 ## [3.12.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.2...v3.12.3) (2024-07-07)
 
 
