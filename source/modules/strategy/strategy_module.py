@@ -22,6 +22,7 @@ class Strategy(BaseStrategy):
 
     def __init__(self, connection, modules, app_configuration, table_configuration):
         super().__init__(connection, modules)
+        self.is_valid = True
         self.selected_strategy = None
         self.connection = connection
         self.modules = modules
@@ -37,7 +38,7 @@ class Strategy(BaseStrategy):
 
     ###########################################
     # Initialize Strategy Module
-    ###########################################        
+    ###########################################
 
     def initialize(self):
         self.restore_factory_defaults()
@@ -46,6 +47,7 @@ class Strategy(BaseStrategy):
         self.manage_topics()
         self.manage_queues()
         self.manage_subscriptions()
+        return bool(self.is_valid)
 
     def prepare_request_parameters(self, event, table, model, dataset=None, projection=[], filters={}):
         attributes = None
@@ -92,9 +94,8 @@ class Strategy(BaseStrategy):
         """
         Pre-Requisite Strategy Operations
         """
-        saved_strategy_list = []
-
         # Get strategy list from database
+        saved_strategy_list = []
         self.get_strategy_list()
         if self.strategy_list is not None:
             for strategy in self.strategy_list:
@@ -165,16 +166,15 @@ class Strategy(BaseStrategy):
 
                 # Create Topic in AWS SNS
                 try:
-
                     """ Access Policy """
                     object_access_policy = AccessPolicy(SNS)
-                    object_access_policy.set_policy_statement(topic_arn)
+                    object_access_policy.set_policy_statement(aws_topic_resource=topic_arn)
                     access_policy = object_access_policy.get_policy()
 
                     arguments = {
                         "mode": self.topic_mode,
                         "topic_name": topic_name,
-                        "display_name": str("Topic-" + strategy_id),
+                        "display_name": str("Stock-Alerts-" + strategy_id),
                         "fifo_topic": str(True),
                         "content_based_deduplication": str(False),
                         "access_policy": access_policy
@@ -183,6 +183,8 @@ class Strategy(BaseStrategy):
                     create_topic.execute()
                 except Exception as error:
                     log_error(f"Error creating Topic: {str(error)}")
+                    self.is_valid = False
+                    return False
 
                 # Add entry to AWS DynamoDB
                 current_date = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -200,7 +202,8 @@ class Strategy(BaseStrategy):
                 )
                 self.database.database_request(save_topics)
         except Exception as error:
-            log_error(f"Error listing Topics: {str(error)}")
+            log_error(f"Error saving Topics: {str(error)}")
+            self.is_valid = False
 
     def manage_queues(self):
         """
@@ -232,6 +235,7 @@ class Strategy(BaseStrategy):
             for strategy in self.strategy_list:
                 strategy_id = strategy.get("strategy_id")
                 queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_details(strategy_id, self.queue_mode)
+                topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, self.topic_mode)
 
                 if queue_url in saved_queues_list:
                     log_info(f"Skipping Queue creation for Strategy {strategy_id}")
@@ -239,11 +243,29 @@ class Strategy(BaseStrategy):
 
                 # Create Queue in AWS SQS
                 try:
-                    arguments = {"mode": self.queue_mode, "name": queue_name}
+                    """ Access Policy """
+                    object_access_policy = AccessPolicy(SQS)
+                    object_access_policy.set_policy_statement(aws_queue_resource=queue_arn, aws_topic_resource=topic_arn)
+                    access_policy = object_access_policy.get_policy()
+
+                    arguments = {
+                        "mode": self.queue_mode,
+                        "queue_name": queue_name,
+                        "delay_seconds": str(0),
+                        "maximum_message_size": str(4096),
+                        "receive_message_wait_time_seconds": str(10),
+                        "message_retention_period": str(300),
+                        "visibility_timeout": str(300),
+                        "fifo_queue": str(True),
+                        "content_based_deduplication": str(True),
+                        "access_policy": access_policy
+                    }
                     create_queue = self.object_sqs_manager.get_action("create_queue", **arguments)
                     create_queue.execute()
                 except Exception as error:
                     log_error(f"Error creating Queue: {str(error)}")
+                    self.is_valid = False
+                    return
 
                 # Add entry to AWS DynamoDB
                 current_date = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -262,7 +284,8 @@ class Strategy(BaseStrategy):
                 )
                 self.database.database_request(save_queues)
         except Exception as error:
-            log_error(f"Error listing Queues: {str(error)}")
+            log_error(f"Error saving Queues: {str(error)}")
+            self.is_valid = False
 
     def manage_subscriptions(self):
         """
@@ -284,18 +307,26 @@ class Strategy(BaseStrategy):
                 subscriptions = list_subscriptions.execute()
                 subscription_list = subscriptions.get("Subscriptions")
 
-                # Todo: This needs to define endpoint subscription type to create the multiple types of subscription
-                # Todo: Currently only handles SNS -> SQS
-                if subscription_list is not None and subscription_list != []:
-                    for subscription in subscription_list:
-                        if subscription.get("Endpoint") != queue_arn:
-                            self.create_save_subscriptions(topic_arn, queue_arn)
-                            log_info(f"Subscription created for {topic_name}!")
-                        else:
-                            log_info(f"Skipping Subscription creation for {topic_name}, Topic already Subscribed!")
-                else:
-                    self.create_save_subscriptions(topic_arn, queue_arn)
-                    log_info(f"Subscription created for {topic_name}!")
+                arguments = {}
+                list_queues = self.object_sqs_manager.get_action("list_queues", **arguments)
+                response = list_queues.execute()
+                queues_list = response.get("QueueUrls")
+
+                if queues_list is not None and queues_list != []:
+
+                    # Todo: This needs to define endpoint subscription type to create the multiple types of subscription
+                    # Todo: Currently only handles SNS -> SQS
+
+                    if subscription_list is not None and subscription_list != []:
+                        for subscription in subscription_list:
+                            if subscription.get("Endpoint") != queue_arn:
+                                self.create_save_subscriptions(topic_arn, queue_arn)
+                                log_info(f"Subscription created for {topic_name}!")
+                            else:
+                                log_info(f"Skipping Subscription creation for {topic_name}, Topic already Subscribed!")
+                    else:
+                        self.create_save_subscriptions(topic_arn, queue_arn)
+                        log_info(f"Subscription created for {topic_name}!")
             except Exception as error:
                 log_error(f"Error listing Subscriptions: {str(error)}")
 
@@ -306,13 +337,14 @@ class Strategy(BaseStrategy):
                 arguments = {
                     "topic_arn": topic_arn,
                     "protocol": SQS,
-                    "endpoint": queue_arn,
-                    "attributes": {},
+                    "endpoint": queue_arn
                 }
                 subscribe_topic = self.object_sns_manager.get_action("subscribe_topic", **arguments)
                 subscribe_topic.execute()
             except Exception as error:
                 log_error(f"Error creating Subscriptions: {str(error)}")
+                self.is_valid = False
+                return
 
             # Add entry to AWS DynamoDB
             modified_date = time.strftime("%Y-%m-%d %H:%M:%S")
