@@ -18,7 +18,7 @@ class Helper:
 
     def write_text_output(self, filename, data):
         with open(os.path.join(OUTPUT_PATH, filename), 'w') as file:
-            if isinstance(data, dict):
+            if isinstance(data, dict) or isinstance(data, list):
                 json.dump(data, file, indent=4)
             else:
                 file.write(str(data))

@@ -20,7 +20,7 @@ class AccessPolicy:
         statement = self.get_policy_statement()
         policy = {
             "Version": "2012-10-17",
-            "Statement": [statement]
+            "Statement": statement
         }
         return policy
 
@@ -57,44 +57,73 @@ class AccessPolicy:
         log_info(f"Policy statement not found for service: {self.service}")
         return None
 
-    def set_policy_statement(self, aws_resource_id):
+    def set_policy_statement(self, aws_topic_resource, aws_queue_resource=None):
         statement = None
         match self.service:
             case "sns":
-                statement = self.sns_service_statement(aws_resource_id)
+                statement = self.sns_service_statement(aws_topic_resource)
             case "sqs":
-                statement = self.sqs_service_statement(aws_resource_id)
+                statement = self.sqs_service_statement(aws_queue_resource, aws_topic_resource)
             case _:
                 log_warn("The indicator option provided is not valid")
 
         Helper().write_text_output(f"{self.service}.json", statement)
         log_info(f"Policy statements generated for service: {self.service}")
 
-    def sns_service_statement(self, aws_resource_id):
-        statement = {
-            "Sid": "__default_statement_ID",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "*"
-            },
-            "Action": [
-                "SNS:GetTopicAttributes",
-                "SNS:SetTopicAttributes",
-                "SNS:AddPermission",
-                "SNS:RemovePermission",
-                "SNS:DeleteTopic",
-                "SNS:Subscribe",
-                "SNS:ListSubscriptionsByTopic",
-                "SNS:Publish"
-            ],
-            "Resource": aws_resource_id,
-            "Condition": {
-                "StringEquals": {
-                    "AWS:SourceOwner": self.account
+    def sns_service_statement(self, topic_arn):
+        statement = [
+            {
+                "Sid": "__default_statement_ID",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "*"
+                },
+                "Action": [
+                    "SNS:GetTopicAttributes",
+                    "SNS:SetTopicAttributes",
+                    "SNS:AddPermission",
+                    "SNS:RemovePermission",
+                    "SNS:DeleteTopic",
+                    "SNS:Subscribe",
+                    "SNS:ListSubscriptionsByTopic",
+                    "SNS:Publish"
+                ],
+                "Resource": topic_arn,
+                "Condition": {
+                    "StringEquals": {
+                        "aws:PrincipalAccount": self.account
+                    }
                 }
             }
-        }
+        ]
         return statement
 
-    def sqs_service_statement(self):
-        pass
+    def sqs_service_statement(self, queue_arn, topic_arn=None):
+        statement = [
+            {
+                "Sid": "__owner_statement",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "265153260161"
+                },
+                "Action": [
+                    "SQS:*"
+                ],
+                "Resource": queue_arn
+            },
+            {
+                "Sid": "topic-subscription-arn:aws:sns:ap-south-1:265153260161:T-STR-001.fifo",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "*"
+                },
+                "Action": "SQS:SendMessage",
+                "Resource": queue_arn,
+                "Condition": {
+                    "ArnLike": {
+                        "aws:SourceArn": topic_arn
+                    }
+                }
+            }
+        ]
+        return statement

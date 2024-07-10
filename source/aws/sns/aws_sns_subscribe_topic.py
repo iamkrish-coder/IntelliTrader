@@ -11,36 +11,42 @@ from ...utils.caching_utils import *
 class SubscribeTopic(BaseSnsManager):
     """Encapsulates Amazon SNS topic."""
 
-    def __init__(self, topic_arn, protocol, endpoint, attributes):
+    def __init__(self, topic_arn, protocol, endpoint, delivery_policy=None, filter_policy=None, redrive_policy=None):
         """
-        :param sns_client_resource: A Boto3 Amazon SNS client resource.
+            Initializes the SNS subscription object.
+
+            :param topic_arn (str): The ARN of the SNS topic to subscribe to.
+            :param protocol (str): The protocol to use for delivering messages (e.g., 'http', 'https', 'sqs').
+            :param endpoint (str): The endpoint to which messages are delivered.
+                                   - For 'http' or 'https' protocols, it's the URL of the endpoint.
+                                   - For 'sqs' protocol, it's the ARN of the SQS queue.
+            :param delivery_policy (dict, optional): The message delivery policy for the subscription. Defaults to None.
+            :param filter_policy (str, optional): The message filtering policy for the subscription. Defaults to None.
+            :param redrive_policy (dict, optional): The redrive policy for the subscription. Defaults to None.
         """
         self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
         self.topic_arn = topic_arn
         self.protocol = protocol
         self.endpoint = endpoint
-        self.attributes = attributes
+        self.delivery_policy = delivery_policy
+        self.filter_policy = filter_policy
+        self.redrive_policy = redrive_policy
 
     def execute(self):
-        """
-        Subscribes an endpoint to the topic. Some endpoint types, such as email,
-        must be confirmed before their subscriptions are active. When a subscription
-        is not confirmed, its Amazon Resource Number (ARN) is set to
-        'PendingConfirmation'.
-
-        :param topic: The topic to subscribe to.
-        :param protocol: The protocol of the endpoint, such as 'sms' or 'email'.
-        :param endpoint: The endpoint that receives messages, such as a phone number
-                         (in E.164 format) for SMS messages, or an email address for
-                         email messages.
-        :return: The newly added subscription.
-        """
         try:
+            # Define queue attributes dictionary
+            subscriber_attributes = {
+                'DeliveryPolicy': self.delivery_policy,
+                'FilterPolicy': self.filter_policy,
+                'RedrivePolicy': self.redrive_policy
+            }
+            subscriber_attributes = {key: value for key, value in subscriber_attributes.items() if value is not None}
+
             response = self.sns_client.subscribe(
                 TopicArn=self.topic_arn,
                 Protocol=self.protocol,
                 Endpoint=self.endpoint,
-                Attributes=self.attributes,
+                Attributes=subscriber_attributes,
                 ReturnSubscriptionArn=True
             )
             log_info("Subscribed %s %s to topic %s.", self.protocol, self.endpoint, self.topic_arn)

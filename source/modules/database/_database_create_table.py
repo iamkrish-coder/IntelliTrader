@@ -20,12 +20,10 @@ class DatabaseCreateTable:
         return self.create_tables()
 
     def create_tables(self):
-
         """ Check If Table Exists """
         table_exists = self.check_table_exists()
 
         if not table_exists:
-
             table_properties = {}
             table_properties = self.build_table_definition()
 
@@ -47,7 +45,6 @@ class DatabaseCreateTable:
                 log_error(
                     f"Error creating table {self.table_name}. Here's why: {error.response["Error"]["Code"]}: {error.response["Error"]["Message"]}")
                 raise error
-
         else:
             log_info(f"Table '{self.table_name}' already exists.")
 

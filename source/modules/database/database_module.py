@@ -14,7 +14,6 @@ from source.modules.database._database_create_table import DatabaseCreateTable
 from source.modules.database._database_delete_table import DatabaseDeleteTable
 from source.modules.database._database_insert_record import DatabaseInsertRecord
 from source.modules.database._database_update_record import DatabaseUpdateRecord
-
 # from source.modules.database._database_delete_record import DatabaseDeleteRecord
 from source.modules.database._database_fetch_record import DatabaseFetchRecord
 
@@ -23,6 +22,7 @@ class Database(BaseDatabase):
 
     def __init__(self, connection, modules, app_configuration, table_configuration):
         super().__init__(connection, modules)
+        self.is_valid = True
         self.connection = connection
         self.modules = modules
         self.app_configuration = app_configuration
@@ -37,6 +37,7 @@ class Database(BaseDatabase):
         log_info(f" ********* Setting up the application requirements... Hang tight, we're on it! ********* ")
         self.restore_factory_defaults()
         self.manage_tables()
+        return bool(self.is_valid)
 
     def restore_factory_defaults(self):
         # Reset Tables (if required)
@@ -53,8 +54,10 @@ class Database(BaseDatabase):
         """
         Pre-Requisite Table Operations
         """
+        # Check Table configurations
         if len(self.table_configuration) == 0:
             log_info(f"No tables to manage.")
+            self.is_valid = False
             return
 
         # Create Required Tables

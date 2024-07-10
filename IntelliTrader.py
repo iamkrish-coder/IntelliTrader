@@ -42,6 +42,7 @@ except ImportError:
 
 class IntelliTrader:
     def __init__(self):
+        self.is_valid = True
         self.connection = None
         self.modules = None
         self.configuration = None
@@ -105,9 +106,14 @@ class IntelliTrader:
     async def run_async_task(self):
 
         if self.controller is not None:
-            self.initialize_database_connection()
-            self.initialize_module_prerequisites()
+            # Initialize database connection and module prerequisites
+            self.is_valid = self.initialize_database_connection() and self.initialize_module_prerequisites()
 
+            if not self.is_valid:
+                log_error(f"Application failed to initialize modules. Please check the setup.")
+                return False
+
+            # Initialize controllers only if initialization succeeded
             self.strategy_controller_instance = StrategyController(self.controller)
             self.action_controller_instance = ActionController(self.controller)
             self.monitoring_controller_instance = None
@@ -128,7 +134,7 @@ class IntelliTrader:
     def initialize_database_connection(self):
         """Establishes Database Connection."""
         logger = logging.getLogger(DATABASE_LOGGER_NAME)
-        self.database.initialize()
+        return self.database.initialize()
 
     ###########################################
     ###########################################
@@ -139,7 +145,8 @@ class IntelliTrader:
     def initialize_module_prerequisites(self):
         """Establishes Module Prerequisites."""
         logger = logging.getLogger(STRATEGY_LOGGER_NAME)
-        self.strategy.initialize()
+        return self.strategy.initialize()
+
 
     ###########################################
     ###########################################
