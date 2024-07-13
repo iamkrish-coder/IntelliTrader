@@ -12,6 +12,7 @@ from ...utils.logging_utils import *
 from source.modules.database.BaseDatabase import BaseDatabase
 from source.modules.database._database_create_table import DatabaseCreateTable
 from source.modules.database._database_delete_table import DatabaseDeleteTable
+from source.modules.database._database_delete_table import DatabaseDeleteTable
 from source.modules.database._database_insert_record import DatabaseInsertRecord
 from source.modules.database._database_update_record import DatabaseUpdateRecord
 # from source.modules.database._database_delete_record import DatabaseDeleteRecord
@@ -22,49 +23,40 @@ class Database(BaseDatabase):
 
     def __init__(self, connection, modules, app_configuration, table_configuration):
         super().__init__(connection, modules)
-        self.is_valid = True
         self.connection = connection
         self.modules = modules
         self.app_configuration = app_configuration
         self.table_configuration = table_configuration
-        self.reset_app = self.app_configuration.get("reset_app")
 
     ###########################################
     # Initialize Database Module
     ###########################################
 
     def initialize(self):
-        log_info(f" ********* Setting up the application requirements... Hang tight, we're on it! ********* ")
-        self.restore_factory_defaults()
-        self.manage_tables()
-        return bool(self.is_valid)
+        log_info(f"********* Setting up the application requirements. Hang tight, we're on it! *********")
+        if not self.manage_tables():
+            return False
+        else:
+            return True
 
-    def restore_factory_defaults(self):
-        # Reset Tables (if required)
-        if self.reset_app is True:
-            log_info("Resetting the application to its factory defaults. Please wait...")
-
-            # Delete Tables | Delete Caches | Delete Configs
-            for config in self.table_configuration.values():
-                table = config["table_key"]
-                object_delete_table_handler = DatabaseDeleteTable(table, config)
-                object_delete_table_handler.initialize()
+    def database_request(self, request):
+        log_info(f"Requesting AWS DynamoDB...")
+        return self.manage_table_records(request)
 
     def manage_tables(self):
         """
         Pre-Requisite Table Operations
         """
-        # Check Table configurations
         if len(self.table_configuration) == 0:
             log_info(f"No tables to manage.")
-            self.is_valid = False
-            return
-
-        # Create Required Tables
-        for config in self.table_configuration.values():
-            table = config["table_key"]
-            object_create_table_handler = DatabaseCreateTable(table, config)
-            object_create_table_handler.initialize()
+            return False
+        else:
+            log_info("Creating tables...")
+            create_table_manager = DatabaseCreateTable(self.table_configuration)
+            tables_to_create = [config["table_key"] for config in self.table_configuration.values()]
+            create_table_manager.initialize(tables_to_create)
+            log_info(f"Created tables: {', '.join(tables_to_create)}")
+            return True
 
     def manage_table_records(self, dataset):
         event = dataset.get("event")
@@ -92,6 +84,11 @@ class Database(BaseDatabase):
             case _:  # Default case
                 log_warn(f"Unknown event type: {event}")
 
-    def database_request(self, request):
-        log_info(f"Requesting AWS DynamoDB...")
-        return self.manage_table_records(request)
+    def delete_tables(self):
+        delete_table_manager = DatabaseDeleteTable(self.table_configuration)
+        tables_to_delete = [config["table_key"] for config in self.table_configuration.values()]
+        if not delete_table_manager.initialize(tables_to_delete):
+            return False
+        else:
+            log_info(f"Deleted tables: {', '.join(tables_to_delete)}")
+            return True
