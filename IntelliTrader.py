@@ -19,9 +19,10 @@ from source.language.resources_EN_IN import ResourceStrings
 from source.configurations.configuration import Configuration
 
 from source.modules.BaseModules import BaseModules
+from source.modules.restore.factory_reset import FactoryReset
 from source.modules.connection.connection_module import Connection
-from source.modules.database.database_module import Database
-from source.modules.strategy.strategy_module import Strategy as StrategyModule
+from source.modules.database.database_module import Database as DatabaseManager
+from source.modules.strategy.strategy_module import Strategy as StrategyManager
 from source.modules.helper.helper_module import Helper
 
 from source.controllers.BaseController import BaseController
@@ -42,7 +43,6 @@ except ImportError:
 
 class IntelliTrader:
     def __init__(self):
-        self.is_valid = True
         self.connection = None
         self.modules = None
         self.configuration = None
@@ -85,10 +85,8 @@ class IntelliTrader:
         self.table_configuration = Configuration().read_table_configuration()
 
         if self.app_configuration is not None and self.table_configuration is not None:
-            self.database = Database(self.connection, self.modules, self.app_configuration, self.table_configuration)
-            self.strategy = StrategyModule(self.connection, self.modules, self.app_configuration,
-                                           self.table_configuration)
-
+            self.database = DatabaseManager(self.connection, self.modules, self.app_configuration, self.table_configuration)
+            self.strategy = StrategyManager(self.connection, self.modules, self.app_configuration, self.table_configuration)
             return BaseController(self.connection, self.modules, self.app_configuration, self.database)
         else:
             log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
@@ -106,35 +104,25 @@ class IntelliTrader:
     async def run_async_task(self):
 
         if self.controller is not None:
-            # Initialize database connection and module prerequisites
-            self.is_valid = self.initialize_database_connection() and self.initialize_module_prerequisites()
-
-            if not self.is_valid:
-                log_error(f"Application failed to initialize modules. Please check the setup.")
+            """ Initialize database connection and module prerequisites """
+            if not self.initialize_module_prerequisites():
+                log_error(f"Application failed to initialize required modules. Please check the setup.")
                 return False
+            else:
+                """ Initialize controllers only if all module initialization succeeded """
+                self.strategy_controller_instance = StrategyController(self.controller)
+                # self.action_controller_instance = ActionController(self.controller)
+                # self.monitoring_controller_instance = None
 
-            # Initialize controllers only if initialization succeeded
-            self.strategy_controller_instance = StrategyController(self.controller)
-            self.action_controller_instance = ActionController(self.controller)
-            self.monitoring_controller_instance = None
-
-            tasks = [
-                self.strategy_controller(),
-                # self.action_controller(),
-                # self.monitoring_controller()
-            ]
-            await asyncio.gather(*tasks)
-
-    ###########################################
-    ###########################################
-    #            DATABASE CONNECTION          #
-    ###########################################
-    ###########################################
-
-    def initialize_database_connection(self):
-        """Establishes Database Connection."""
-        logger = logging.getLogger(DATABASE_LOGGER_NAME)
-        return self.database.initialize()
+                tasks = [
+                    # self.strategy_controller(),
+                    # self.action_controller(),
+                    # self.monitoring_controller()
+                ]
+                await asyncio.gather(*tasks)
+        else:
+            log_error(f"Application failed to initialize controller. Please check the setup.")
+            return False
 
     ###########################################
     ###########################################
@@ -143,10 +131,23 @@ class IntelliTrader:
     ###########################################
 
     def initialize_module_prerequisites(self):
-        """Establishes Module Prerequisites."""
-        logger = logging.getLogger(STRATEGY_LOGGER_NAME)
-        return self.strategy.initialize()
+        # Restore Factory Settings if Reset App is requested
+        reset_application = self.app_configuration.get("reset_app")
+        if reset_application is True:
+            factory_reset_object = FactoryReset(self.connection, self.modules, self.app_configuration, self.table_configuration)
+            factory_reset_object.initialize()
 
+        # Establishes Database Connection
+        logger = logging.getLogger(DATABASE_LOGGER_NAME)
+        if not self.database.initialize():
+            return False
+
+        # Establishes Module Prerequisites
+        logger = logging.getLogger(STRATEGY_LOGGER_NAME)
+        if not self.strategy.initialize():
+            return False
+
+        return True
 
     ###########################################
     ###########################################

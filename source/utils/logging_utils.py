@@ -19,7 +19,7 @@ def configure_logging():
     console_handler = colorlog.StreamHandler()
     console_handler.setLevel(logging.INFO)
     formatter = colorlog.ColoredFormatter(
-        '%(log_color)s%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s',
+        '%(log_color)s%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     console_handler.setFormatter(formatter)
@@ -29,35 +29,35 @@ def configure_logging():
     database_logger = logging.getLogger(DATABASE_LOGGER_NAME)
     database_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'database.log'))
     database_handler.setLevel(logging.DEBUG)
-    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s')
     database_handler.setFormatter(plain_formatter)
     database_logger.addHandler(database_handler)
 
     strategy_logger = logging.getLogger(STRATEGY_LOGGER_NAME)
     strategy_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'strategy.log'))
     strategy_handler.setLevel(logging.DEBUG)
-    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s')
     strategy_handler.setFormatter(plain_formatter)
     strategy_logger.addHandler(strategy_handler)
 
     action_logger = logging.getLogger(ACTION_LOGGER_NAME)
     action_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'actions.log'))
     action_handler.setLevel(logging.DEBUG)
-    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s')
     action_handler.setFormatter(plain_formatter)
     action_logger.addHandler(action_handler)
 
     monitoring_logger = logging.getLogger(MONITORING_LOGGER_NAME)
     monitoring_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'monitoring.log'))
     monitoring_handler.setLevel(logging.DEBUG)
-    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s')
     monitoring_handler.setFormatter(plain_formatter)
     monitoring_logger.addHandler(monitoring_handler)
 
     # General IntelliTrader log handler
     intelliTrader_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'intelliTrader.log'))
     intelliTrader_handler.setLevel(logging.INFO)
-    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(lineno)d]: %(message)s')
+    plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s')
     intelliTrader_handler.setFormatter(plain_formatter)
     root_logger.addHandler(intelliTrader_handler)
 

@@ -6,29 +6,39 @@ from ...utils.logging_utils import *
 from boto3.exceptions import botocore
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
+
 import boto3
 
 
 class DatabaseCreateTable:
-    def __init__(self, table_name, table_configuration):
-        self.table_name = table_name
-        self.table_configuration = table_configuration
+    def __init__(self, table_configuration):
         self.dynamodb_resource = boto3.resource('dynamodb', region_name=REGION_NAME)
-        self.dynamodb_table = self.dynamodb_resource.Table(self.table_name)
+        self.table_configuration = table_configuration
+        self.table_name = None
 
-    def initialize(self):
-        return self.create_tables()
+    def initialize(self, table_names):
+        for self.table_name in table_names:
+            self.create_tables()
+
+    def check_table_exists(self):
+        try:
+            self.dynamodb_resource.Table(self.table_name).load()
+            exists = True
+        except ClientError as error:
+            if error.response['Error']['Code'] == 'ResourceNotFoundException':
+                exists = False
+            else:
+                log_error("Couldn't check for existence of %s. Here's why: %s: %s", self.table_name, error.response["Error"]["Code"], error.response["Error"]["Message"])
+                raise error
+        return exists
 
     def create_tables(self):
         """ Check If Table Exists """
         table_exists = self.check_table_exists()
-
         if not table_exists:
             table_properties = {}
             table_properties = self.build_table_definition()
-
             try:
-                log_info(f"Creating '{self.table_name}'...")
                 response = self.dynamodb_resource.create_table(
                     TableName=self.table_name,
                     KeySchema=table_properties['table_schema'],
@@ -50,7 +60,7 @@ class DatabaseCreateTable:
 
     def build_table_definition(self):
 
-        table_config = self.table_configuration
+        table_config = self.table_configuration[self.table_name]
         table_key_name = table_config['table_key']
         partition_key_name = table_config['partition_key']
         sort_key_name = table_config['sort_key']
@@ -86,20 +96,3 @@ class DatabaseCreateTable:
         }
 
         return table_definition
-
-    def check_table_exists(self):
-        try:
-            self.dynamodb_table.load()
-            exists = True
-        except ClientError as error:
-            if error.response['Error']['Code'] == 'ResourceNotFoundException':
-                exists = False
-            else:
-                log_error(
-                    "Couldn't check for existence of %s. Here's why: %s: %s",
-                    self.table_name,
-                    error.response["Error"]["Code"],
-                    error.response["Error"]["Message"],
-                )
-                raise error
-        return exists
