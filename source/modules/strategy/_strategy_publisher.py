@@ -23,20 +23,22 @@ class StrategyPublisher(BaseStrategy):
         self.publisher = publisher
         self.object_sns_manager = SNSManager()
         self.object_sqs_manager = SQSManager()
-        self.strategy_id = self.parameters.get('strategy_params.strategy_id')
-        self.topic_mode = self.parameters.get('runtime_params.topic_type')   
+        self.strategy_id = self.parameters.get("strategy_params.strategy_id")
+        self.topic_mode = self.parameters.get("runtime_params.topic_type")
         self.strategy_queue = None
         self.date_time_now = None
         self.client = None
-        
+
     def initialize(self):
         return self.publish()
 
-    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
+    def prepare_request_parameters(
+        self, event, table, model, dataset, projection=[], filters={}
+    ):
         attributes = None
         config = self.database.table_configuration[table]
         if model:
-            attributes = model(**dataset).convert_table_rows_to_dict(config)        
+            attributes = model(**dataset).convert_table_rows_to_dict(config)
         return {
             "event": event,
             "table": table,
@@ -45,13 +47,12 @@ class StrategyPublisher(BaseStrategy):
                 "attributes": attributes,
                 "projection": projection,
                 "filters": filters,
-            }
+            },
         }
 
     def database_request(self, request):
         log_info(f"Requesting AWS DynamoDB...")
         return self.database.manage_table_records(request)
-
 
     # def set_topic_published_status(self):
     #
@@ -87,17 +88,19 @@ class StrategyPublisher(BaseStrategy):
             successfully_published = []
             if self.strategy_id is None:
                 log_error("Strategy ID is missing from parameters.")
-                return None    
+                return None
 
             """ Build Parameters """
-            topic_arn, topic_name = self.generate_aws_sns_topic_details(self.strategy_id, self.topic_mode)
+            topic_arn, topic_name = self.generate_aws_sns_topic_details(
+                self.strategy_id, self.topic_mode
+            )
             group_id = self.generate_group_id(self.strategy_id)
-            deduplication_id = uuid.uuid4()
 
             for alert in self.alerts:
                 exchange, symbol, token = alert.split(",")
                 message = f"{exchange.strip()}, {symbol.strip()}, {token.strip()}"
                 subject = "IntelliTrader - Stock Alert"
+                deduplication_id = uuid.uuid4()
 
                 try:
                     # Publish to SNS
@@ -108,9 +111,11 @@ class StrategyPublisher(BaseStrategy):
                         "message": message,
                         "subject": subject,
                         "deduplication_id": deduplication_id,
-                        "group_id": group_id
+                        "group_id": group_id,
                     }
-                    publish_topic = self.object_sns_manager.get_action("publish_topic", **arguments)
+                    publish_topic = self.object_sns_manager.get_action(
+                        "publish_topic", **arguments
+                    )
                     response = publish_topic.execute()
 
                     if "MessageId" in response:
@@ -149,8 +154,15 @@ class StrategyPublisher(BaseStrategy):
 
                 try:
                     # Publish to SQS
-                    arguments = {"mode": self.topic_mode, "topic": topic_name, "message": message, "subject": subject}
-                    publish_queue_message = self.object_sqs_manager.get_action("publish_queue_message", **arguments)
+                    arguments = {
+                        "mode": self.topic_mode,
+                        "topic": topic_name,
+                        "message": message,
+                        "subject": subject,
+                    }
+                    publish_queue_message = self.object_sqs_manager.get_action(
+                        "publish_queue_message", **arguments
+                    )
                     response = publish_queue_message.execute()
 
                     if "MessageId" in response:
