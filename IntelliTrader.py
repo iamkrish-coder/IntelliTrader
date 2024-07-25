@@ -28,6 +28,7 @@ from source.modules.helper.helper_module import Helper
 from source.controllers.BaseController import BaseController
 from source.controllers.strategy_controller import StrategyController
 from source.controllers.action_controller import ActionController
+
 # from source.controllers.monitoring_controller import MonitoringController
 
 # utils Import
@@ -85,11 +86,25 @@ class IntelliTrader:
         self.table_configuration = Configuration().read_table_configuration()
 
         if self.app_configuration is not None and self.table_configuration is not None:
-            self.database = DatabaseManager(self.connection, self.modules, self.app_configuration, self.table_configuration)
-            self.strategy = StrategyManager(self.connection, self.modules, self.app_configuration, self.table_configuration)
-            return BaseController(self.connection, self.modules, self.app_configuration, self.database)
+            self.database = DatabaseManager(
+                self.connection,
+                self.modules,
+                self.app_configuration,
+                self.table_configuration,
+            )
+            self.strategy = StrategyManager(
+                self.connection,
+                self.modules,
+                self.app_configuration,
+                self.table_configuration,
+            )
+            return BaseController(
+                self.connection, self.modules, self.app_configuration, self.database
+            )
         else:
-            log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
+            log_error(
+                "Incomplete configuration: App or Table configuration is missing. Please verify the setup..."
+            )
             return None
 
     def get_configuration(self):
@@ -104,24 +119,28 @@ class IntelliTrader:
     async def run_async_task(self):
 
         if self.controller is not None:
-            """ Initialize database connection and module prerequisites """
+            """Initialize database connection and module prerequisites"""
             if not self.initialize_module_prerequisites():
-                log_error(f"Application failed to initialize required modules. Please check the setup.")
+                log_error(
+                    f"Application failed to initialize required modules. Please check the setup."
+                )
                 return False
             else:
-                """ Initialize controllers only if all module initialization succeeded """
+                """Initialize controllers only if all module initialization succeeded"""
                 self.strategy_controller_instance = StrategyController(self.controller)
-                # self.action_controller_instance = ActionController(self.controller)
+                self.action_controller_instance = ActionController(self.controller)
                 # self.monitoring_controller_instance = None
 
                 tasks = [
                     self.strategy_controller(),
-                    # self.action_controller(),
+                    self.action_controller(),
                     # self.monitoring_controller()
                 ]
                 await asyncio.gather(*tasks)
         else:
-            log_error(f"Application failed to initialize controller. Please check the setup.")
+            log_error(
+                f"Application failed to initialize controller. Please check the setup."
+            )
             return False
 
     ###########################################
@@ -134,7 +153,12 @@ class IntelliTrader:
         # Restore Factory Settings if Reset App is requested
         reset_application = self.app_configuration.get("reset_app")
         if reset_application is True:
-            factory_reset_object = FactoryReset(self.connection, self.modules, self.app_configuration, self.table_configuration)
+            factory_reset_object = FactoryReset(
+                self.connection,
+                self.modules,
+                self.app_configuration,
+                self.table_configuration,
+            )
             factory_reset_object.initialize()
 
         # Establishes Database Connection

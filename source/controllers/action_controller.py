@@ -1,4 +1,4 @@
-# strategies/actions_handler.py
+# strategies/actions
 
 import os
 import time
@@ -16,14 +16,15 @@ from pandas import qcut
 
 from ..constants.const import *
 from ..enumerations.enums import *
-from ..utils.logging_utils import *
-from ..controllers.BaseController import BaseController
+
+from ..configurations.shared_parameters import SharedParameters
 from ..modules.action._action_configurations import ActionConfigurations
 from ..modules.action._action_subscriber import ActionSubscriber
 from ..modules.action._action_process_alerts import ActionProcessAlerts
 from ..modules.action._action_candlesticks import ActionCandlesticks
 from ..modules.action._action_evaluate_secondary_conditions import ActionEvaluateSecondaryConditions
-from ..configurations.shared_parameters import SharedParameters
+from ..controllers.BaseController import BaseController
+from ..utils.logging_utils import *
 
 
 class ActionController(BaseController):
@@ -33,6 +34,7 @@ class ActionController(BaseController):
         self.run_count = 0
         self.parameters = None
         self.watchlist = None
+        self.subscriber = None
 
     async def initialize(self):
         log_info(f"Running actions...{self.run_count} Times")
@@ -61,7 +63,9 @@ class ActionController(BaseController):
         object_parameters_handler.initialize()
         self.parameters = object_parameters_handler.get_parameters()
 
-        object_subscriber_handler = ActionSubscriber(self.modules, self.parameters, self.database, SNS)
+        # 2. Take actions on published alerts
+        self.subscriber = SNS
+        object_subscriber_handler = ActionSubscriber(self.connection, self.modules, self.parameters, self.database, self.subscriber)
         messages = object_subscriber_handler.initialize()
         print(messages)
 
@@ -71,7 +75,7 @@ class ActionController(BaseController):
         # candlesticks_handler = ActionCandlesticks(self.modules, watchlist, self.parameters)
         # candlestick_data_list = candlesticks_handler.initialize()
 
-        # evaluate_conditions_handler = ActionEvaluateSecondaryConditions(self.modules, candlestick_data_list, self.parameters) 
+        # evaluate_conditions_handler = ActionEvaluateSecondaryConditions(self.modules, candlestick_data_list, self.parameters)
         # alerts = evaluate_conditions_handler.initialize()
 
         # conditions_met = self.evaluate_secondary_conditions(candlestick_data_list)
@@ -88,8 +92,8 @@ class ActionController(BaseController):
     #             print(f"Current Watchlist: {self.watchlist}")
     #             self.monitor_watchlist()
 
-    #         # Sleep for 10 seconds before checking again                
-    #         time.sleep(10) 
+    #         # Sleep for 10 seconds before checking again
+    #         time.sleep(10)
 
     # def get_current_watchlist(self):
 
@@ -104,7 +108,7 @@ class ActionController(BaseController):
     # def monitor_watchlist(self):
 
     #     current_time = datetime.datetime.now()
-    #     if current_time.minute % 2 == 0:      
+    #     if current_time.minute % 2 == 0:
 
     #         if self.candlesticks_handler_object is None:
     #            self.candlesticks_handler = ActionCandlesticks(self.modules, self.watchlist, self.parameters)
@@ -119,7 +123,7 @@ class ActionController(BaseController):
     #             # if self.conditions_met():
     #             #     self.store_trade_details()
     #     # else:
-    #     #     log_info(f"Sleeping for {60 - current_time.second} seconds before checking again")            
+    #     #     log_info(f"Sleeping for {60 - current_time.second} seconds before checking again")
     #     #     time.sleep(60 - current_time.second)
 
     # def call_evaluate_conditions_handler(self):
