@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.4...v3.12.5) (2024-07-28)
+
+
+### Bug Fixes
+
+* AWS Subscriber can now receive messages and other minor enhancements ([d7df6ff](https://github.com/iamkrish-coder/IntelliTrader/commit/d7df6ff01e4b619718225c641448d12a1c9265ff))
+
 ## [3.12.4](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.3...v3.12.4) (2024-07-10)
 
 
