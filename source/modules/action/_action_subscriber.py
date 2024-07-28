@@ -13,16 +13,20 @@ from .BaseAction import BaseAction
 
 
 class ActionSubscriber(BaseAction):
-    def __init__(self, modules, parameters, database, aws_service, connection):
+    def __init__(self, connection, modules, parameters, database, subscriber):
         super().__init__(connection, modules)
         self.strategy_queue = None
+        self.connection = connection
         self.modules = modules
         self.parameters = parameters
         self.database = database
-        self.aws_service = aws_service
+        self.subscriber = subscriber
+        self.object_sns_manager = SNSManager()
+        self.object_sqs_manager = SQSManager()
         self.alerts = None
-        self.sns_client = boto3.client(SNS, region_name=REGION_NAME)
-        self.sqs_client = boto3.client(SQS, region_name=REGION_NAME)
+        self.queue_type = self.parameters.get('runtime_params.queue_type')
+        self.topic_type = self.parameters.get('runtime_params.topic_type')
+        self.strategy_id = self.parameters.get('strategy_params.strategy_id')
 
     def initialize(self):
         return self.subscribe()
@@ -58,15 +62,8 @@ class ActionSubscriber(BaseAction):
             dataset=dataset,
             projection=["topic_arn"],
             filters={
-                "is_subscribed": {
-                    "eq": False
-                },
-                "is_active": {
-                    "eq": True
-                },
-                "is_published": {
-                    "eq": True
-                }
+                "is_subscribed": { "eq": False },
+                "is_active": {'eq': True}
             }
         )
         return self.database_request(active_topic_params)
@@ -75,62 +72,43 @@ class ActionSubscriber(BaseAction):
         ###################
         # SNS SUBSCRIBE #
         ###################
-        if self.aws_service == SNS:
-
+        if self.subscriber == SNS:
             successfully_subscribed = []
-            queue_type = self.parameters.get('runtime_params.queue_type')
-            topic_type = self.parameters.get('runtime_params.topic_type')
-            strategy_id = self.parameters.get('strategy_params.strategy_id')
-
-            if strategy_id is None:
+            if self.strategy_id is None:
                 log_error("Strategy ID is missing from parameters.")
                 return None
 
-            queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_arn(strategy_id, queue_type)
-
-            topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, topic_type)
-
-            topic_arns = self.get_topics_for_subscription()
+            queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_details(self.strategy_id, self.queue_type)
+            topic_arn, topic_name = self.generate_aws_sns_topic_details(self.strategy_id, self.topic_type)
 
             # Subscribe the SQS queue to the SNS topic
-            if topic_arns is not None:
-                for subscription in topic_arns:
-                    topic_arn = subscription['topic_arn']
-                    protocol = 'sqs'
-                    endpoint = queue_arn
-                    response = aws_sns_subscribe(self.sns_client, topic_arn, protocol, endpoint)
+            try:
+                arguments = {
+                    "queue_url": queue_url,
+                    "attribute_names": ['All'],
+                    "max_number_of_messages": 5,
+                    "message_attribute_names": ['All'],
+                    "message_system_attribute_names": ['All'],
+                    "visibility_timeout": 60,
+                    "wait_time_seconds": 10
+                }
+                subscribe_topic = self.object_sqs_manager.get_action("subscribe_queue", **arguments)
+                response = subscribe_topic.execute()
+            except Exception as error:
+                log_error(f"Error receiving Messages: {str(error)}")
+                return False
+            log_info(f"Received: {queue_name}: {response.get('ResponseMetadata', {}).get('RequestId')}")
 
-            log_info(f"Subscribed: {queue_name}: {response.get('ResponseMetadata', {}).get('RequestId')}")
-
-            response = aws_sqs_subscribe(self.sqs_client, queue_url)
             if response is None:
                 log_info("No messages available in the subscribed queue.")
                 return None
             else:
                 return response
 
-                #################
+        #################
         # SQS SUBSCRIBE #
         #################
-        if self.aws_service == SQS:
-            strategy_id = self.parameters.get('strategy_id')
-            if strategy_id is None:
-                log_error("Strategy ID is missing from parameters.")
-                return None
+        if self.subscriber == SQS:
+            # Todo: Need queue sub subscription and receiving messages source code (Not Implemented yet)
+            log_warn(f"SQS Subscriber {self.subscriber} is NOT implemented yet.")
 
-            self.strategy_queue = self.get_aws_sqs_queue_name(strategy_id)
-            if self.strategy_queue is None:
-                log_error(f"Queue name not found for Strategy {strategy_id}.")
-                return None
-
-            url = self.get_aws_sqs_queue_url(self.strategy_queue)
-
-            response = aws_sqs_subscribe(self.sqs_client, url)
-            log_info(
-                f"Message Subscribed: {self.strategy_queue}: {response.get('ResponseMetadata', {}).get('RequestId')}")
-
-            if response.get('Messages'):
-                return response
-            else:
-                log_info("No messages available in the subscribed queue.")
-                return None

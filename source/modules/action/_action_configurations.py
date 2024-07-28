@@ -14,7 +14,7 @@ class ActionConfigurations:
 
     def manage_configurations(self):
         try:
-            strategy_id = int(self.configuration.get("strategy"))
+            strategy_id = self.configuration.get("strategy")
 
             # Initialize Settings
             config = self.configuration

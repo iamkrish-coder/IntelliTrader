@@ -132,7 +132,7 @@ class IntelliTrader:
                 # self.monitoring_controller_instance = None
 
                 tasks = [
-                    self.strategy_controller(),
+                    # self.strategy_controller(),
                     self.action_controller(),
                     # self.monitoring_controller()
                 ]

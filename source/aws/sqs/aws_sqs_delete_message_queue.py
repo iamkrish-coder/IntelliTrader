@@ -8,7 +8,7 @@ from ...utils.logging_utils import *
 from ...utils.caching_utils import *
 
 
-class DeleteQueueMessage(BaseSqsManager):
+class DeleteMessageQueue(BaseSqsManager):
     """Encapsulates Amazon SQS queue."""
 
     def __init__(self, queue_url, receipt_handle):

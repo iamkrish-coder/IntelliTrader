@@ -25,6 +25,7 @@ class StrategyPublisher(BaseStrategy):
         self.object_sqs_manager = SQSManager()
         self.strategy_id = self.parameters.get("strategy_params.strategy_id")
         self.topic_mode = self.parameters.get("runtime_params.topic_type")
+        self.queue_mode = self.parameters.get("runtime_params.queue_type")
         self.strategy_queue = None
         self.date_time_now = None
         self.client = None
@@ -134,45 +135,5 @@ class StrategyPublisher(BaseStrategy):
         # SQS PUBLISH #
         ###############
         if self.publisher == SQS:
-            successfully_published = []
-            if self.strategy_id is None:
-                log_error("Strategy ID is missing from parameters.")
-                return None
-
-            self.strategy_queue = self.get_aws_sqs_queue_name(self.strategy_id)
-            if self.strategy_queue is None:
-                log_error(f"Queue name not found for Strategy {self.strategy_id}.")
-                return None
-
-            url = (
-                f"{AWS_SQS.URL.value}/{AWS_SQS.ACCOUNT_ID.value}/{self.strategy_queue}"
-            )
-
-            for alert in self.alerts:
-                exchange, symbol, token = alert.split(", ")
-                message = f"{exchange.strip()}, {symbol.strip()}, {token.strip()}"
-
-                try:
-                    # Publish to SQS
-                    arguments = {
-                        "mode": self.topic_mode,
-                        "topic": topic_name,
-                        "message": message,
-                        "subject": subject,
-                    }
-                    publish_queue_message = self.object_sqs_manager.get_action(
-                        "publish_queue_message", **arguments
-                    )
-                    response = publish_queue_message.execute()
-
-                    if "MessageId" in response:
-                        successfully_published.append(message)
-                    else:
-                        log_error("Failed to get Message ID in response.")
-                except Exception as error:
-                    log_error(f"Error publishing message to SQS: {str(error)}")
-
-                time.sleep(1)
-                if len(successfully_published) == len(self.alerts):
-                    log_info("Alerts Published ...COMPLETE!")
-                    break
+            # Todo: Need queue publishing and sending messages source code (Not Implemented yet)
+            log_warn(f"SQS Publisher {self.publisher} is NOT implemented yet.")
