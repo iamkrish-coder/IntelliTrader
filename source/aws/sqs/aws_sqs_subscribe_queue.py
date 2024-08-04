@@ -42,10 +42,13 @@ class SubscribeQueue(BaseSqsManager):
                 VisibilityTimeout=self.visibility_timeout,
                 WaitTimeSeconds=self.wait_time_seconds
             )
-            if response is not None:
+            if response and 'Messages' in response:
                 messages = response.get('Messages')
                 for message in messages:
                     log_info("Received message: %s: %s", message.get('MessageId'), message.get('Body'))
+            else:
+                log_info("Received no messages")
+                return None
         except ClientError as error:
             log_error("Couldn't receive message from queue: %s", response.get("QueueName"))
             raise error
