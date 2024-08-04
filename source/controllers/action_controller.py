@@ -35,6 +35,7 @@ class ActionController(BaseController):
         self.parameters = None
         self.watchlist = None
         self.subscriber = None
+        self.messages = None
 
     async def initialize(self):
         log_info(f"Running actions...{self.run_count} Times")
@@ -66,22 +67,25 @@ class ActionController(BaseController):
         # 2. Take actions on published alerts
         self.subscriber = SNS
         object_subscriber_handler = ActionSubscriber(self.connection, self.modules, self.parameters, self.database, self.subscriber)
-        messages = object_subscriber_handler.initialize()
-        print(messages)
+        self.messages = object_subscriber_handler.initialize()
 
-        # alert_handlers = ActionProcessAlerts(self.modules, messages, self.parameters)
-        # watchlist = alert_handlers.initialize()
+        if self.messages is not None:
+            alert_handlers = ActionProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages)
+            watchlist = alert_handlers.initialize()
+            print(watchlist)
 
-        # candlesticks_handler = ActionCandlesticks(self.modules, watchlist, self.parameters)
-        # candlestick_data_list = candlesticks_handler.initialize()
+            # candlesticks_handler = ActionCandlesticks(self.modules, watchlist, self.parameters)
+            # candlestick_data_list = candlesticks_handler.initialize()
 
-        # evaluate_conditions_handler = ActionEvaluateSecondaryConditions(self.modules, candlestick_data_list, self.parameters)
-        # alerts = evaluate_conditions_handler.initialize()
+            # evaluate_conditions_handler = ActionEvaluateSecondaryConditions(self.modules, candlestick_data_list, self.parameters)
+            # alerts = evaluate_conditions_handler.initialize()
 
-        # conditions_met = self.evaluate_secondary_conditions(candlestick_data_list)
-        # if conditions_met:
-        #     self.is_stock_monitored = False
-        #     return candlestick_data_list
+            # conditions_met = self.evaluate_secondary_conditions(candlestick_data_list)
+            # if conditions_met:
+            #     self.is_stock_monitored = False
+            #     return candlestick_data_list
+        else:
+            log_info("No messages available in the subscribed queue.")
 
     # def start_monitoring_subscriptions(self):
     #     # This method constantly checks for watchlist alerts

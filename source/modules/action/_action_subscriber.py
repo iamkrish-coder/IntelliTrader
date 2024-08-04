@@ -90,20 +90,19 @@ class ActionSubscriber(BaseAction):
                     "message_attribute_names": ['All'],
                     "message_system_attribute_names": ['All'],
                     "visibility_timeout": 60,
-                    "wait_time_seconds": 10
+                    "wait_time_seconds": 3
                 }
                 subscribe_topic = self.object_sqs_manager.get_action("subscribe_queue", **arguments)
                 response = subscribe_topic.execute()
+                if response is None:
+                    log_info("No messages available in the subscribed queue.")
+                    return None
+                else:
+                    return response
             except Exception as error:
                 log_error(f"Error receiving Messages: {str(error)}")
                 return False
-            log_info(f"Received: {queue_name}: {response.get('ResponseMetadata', {}).get('RequestId')}")
 
-            if response is None:
-                log_info("No messages available in the subscribed queue.")
-                return None
-            else:
-                return response
 
         #################
         # SQS SUBSCRIBE #

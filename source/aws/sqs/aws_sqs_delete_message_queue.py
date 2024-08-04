@@ -20,14 +20,6 @@ class DeleteMessageQueue(BaseSqsManager):
         self.receipt_handle = receipt_handle
 
     def execute(self):
-        """
-        Delete a message from a queue. Clients must delete messages after they
-        are received and processed to remove them from the queue.
-
-        :param message: The message to delete. The message's queue URL is contained in
-                        the message's metadata.
-        :return: None
-        """
         try:
             response = self.sqs_client.delete_message(
                 QueueUrl=self.queue_url,
