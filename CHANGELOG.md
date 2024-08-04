@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.5...v3.12.6) (2024-08-04)
+
+
+### Bug Fixes
+
+* Action alerts Processing and saving the watchlist of alerts ([41d0bbe](https://github.com/iamkrish-coder/IntelliTrader/commit/41d0bbe723ccbb7450d994db1aa1a01c4c147684))
+
 ## [3.12.5](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.4...v3.12.5) (2024-07-28)
 
 
