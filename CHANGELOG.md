@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.7](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.6...v3.12.7) (2024-08-13)
+
+
+### Features
+
+* Load and Parse Dynamic strategy using configuration files ([bd019a1](https://github.com/iamkrish-coder/IntelliTrader/commit/bd019a162c83bb58a3c395b78ffea36edc5f496d))
+
 ## [3.12.6](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.5...v3.12.6) (2024-08-04)
 
 
