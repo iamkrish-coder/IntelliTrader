@@ -51,8 +51,7 @@ class StrategyCandlesticks:
         candlestick_data = {}
 
         # Always fetch data for the user-specified timeframe
-        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token,
-                                              self.timeframe)
+        candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, self.timeframe)
         candlestick_data[self.timeframe] = candles
 
         # Get current date
@@ -138,8 +137,6 @@ class StrategyCandlesticks:
         """
         Executes the Scanning on Watchlist Instruments.
         """
-        stock_data_list = []
-        tasks = []
         candlestick_data_list = []
 
         try:
@@ -159,10 +156,8 @@ class StrategyCandlesticks:
                     'token': self.trading_token
                 }
 
-                print(
-                    f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
-                log_info(
-                    f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
+                print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
+                log_info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
 
                 candlestick_data = await self.get_candlestick_information()
 

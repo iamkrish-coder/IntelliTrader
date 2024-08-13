@@ -103,15 +103,16 @@ class Strategy(BaseStrategy):
 
             # Check if Strategy already exists in database if not add strategy to database
             for filename in os.listdir(ALGORITHM_PATH):
-                strategy_id, name, description = self.generate_strategy_details(filename)
+                strategy_id, strategy_name, strategy_type, strategy_description = self.generate_strategy_details(filename)
                 if strategy_id in saved_strategy_list:
                     continue
 
                 current_date = time.strftime("%Y-%m-%d %H:%M:%S")
                 dataset = {
                     "strategy_id": strategy_id,
-                    "strategy_name": name,
-                    "strategy_description": description,
+                    "strategy_name": strategy_name,
+                    "strategy_type": strategy_type,
+                    "strategy_description": strategy_description,
                     "created_date": current_date
                 }
                 save_strategies = self.prepare_request_parameters(

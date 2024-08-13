@@ -22,7 +22,7 @@ from ..modules.action._action_configurations import ActionConfigurations
 from ..modules.action._action_subscriber import ActionSubscriber
 from ..modules.action._action_process_alerts import ActionProcessAlerts
 from ..modules.action._action_candlesticks import ActionCandlesticks
-from ..modules.action._action_evaluate_secondary_conditions import ActionEvaluateSecondaryConditions
+from ..modules.action._action_scanner import ActionScanner
 from ..controllers.BaseController import BaseController
 from ..utils.logging_utils import *
 
@@ -31,6 +31,7 @@ class ActionController(BaseController):
 
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
+        self.alerts = None
         self.run_count = 0
         self.parameters = None
         self.watchlist = None
@@ -64,26 +65,38 @@ class ActionController(BaseController):
         object_parameters_handler.initialize()
         self.parameters = object_parameters_handler.get_parameters()
 
-        # 2. Take actions on published alerts
+        # 2. Poll for messages in Queue
         self.subscriber = SNS
         object_subscriber_handler = ActionSubscriber(self.connection, self.modules, self.parameters, self.database, self.subscriber)
         self.messages = object_subscriber_handler.initialize()
 
         if self.messages is not None:
+            # 3. Add Stock Alerts to Watchlist
             alert_handlers = ActionProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages)
-            watchlist = alert_handlers.initialize()
-            print(watchlist)
+            self.watchlist = alert_handlers.initialize()
 
-            # candlesticks_handler = ActionCandlesticks(self.modules, watchlist, self.parameters)
-            # candlestick_data_list = candlesticks_handler.initialize()
+            # 4. Get Micro Candlesticks Data for Secondary Checks
+            object_candlesticks_handler = ActionCandlesticks(self.connection, self.modules, self.parameters, self.watchlist)
+            try:
+                candlestick_data_fetch_task = asyncio.create_task(
+                    object_candlesticks_handler.initialize()
+                )
+                candlestick_data_list = await candlestick_data_fetch_task
+                if not candlestick_data_list:
+                    log_info("No candlestick data found for secondary checks.")
 
-            # evaluate_conditions_handler = ActionEvaluateSecondaryConditions(self.modules, candlestick_data_list, self.parameters)
-            # alerts = evaluate_conditions_handler.initialize()
+            except Exception as error:
+                print(f"Error fetching candlestick data: {error}. Skipping indicator calculation.")
 
-            # conditions_met = self.evaluate_secondary_conditions(candlestick_data_list)
-            # if conditions_met:
-            #     self.is_stock_monitored = False
-            #     return candlestick_data_list
+            else:
+                # 5. Get Micro Candlesticks Data for Secondary Checks
+                object_scanner_handler = ActionScanner(self.connection, self.modules, self.parameters, candlestick_data_list)
+                self.alerts = object_scanner_handler.initialize()
+
+                # conditions_met = self.evaluate_secondary_conditions(candlestick_data_list)
+                # if conditions_met:
+                #     self.is_stock_monitored = False
+                #     return candlestick_data_list
         else:
             log_info("No messages available in the subscribed queue.")
 

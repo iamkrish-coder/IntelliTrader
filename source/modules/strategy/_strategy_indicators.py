@@ -38,16 +38,15 @@ class StrategyIndicators:
             candlestick_data_all_timeframes = result['candlestick_data']
             candles = candlestick_data_all_timeframes[self.candles_timeframe]
 
-            indicator_data = {'rsi': self.get_indicator_values('rsi', candles, RSI.RSI_8.value),
-                              'wma5': self.get_indicator_values('wma', candles, WMA.WMA_5.value),
-                              'wma20': self.get_indicator_values('wma', candles, WMA.WMA_21.value),
-                              'supertrend': self.get_indicator_values('supertrend', candles,
-                                                                      Supertrend.SUPERTREND_4_2.value),
-                              'truerange': self.get_indicator_values('truerange', candles,
-                                                                     TrueRange.TRUERANGE_14.value),
-                              'average_truerange': self.get_indicator_values('average_truerange', candles,
-                                                                             AverageTrueRange.AVERAGETRUERANGE_14.value),
-                              'macd': self.get_indicator_values('macd', candles, MACD.MACD_12_26_9.value)}
+            indicator_data = {
+                                'rsi': self.get_indicator_values('rsi', candles, RSI.RSI_8.value),
+                                'wma5': self.get_indicator_values('wma', candles, WMA.WMA_5.value),
+                                'wma20': self.get_indicator_values('wma', candles, WMA.WMA_21.value),
+                                'supertrend': self.get_indicator_values('supertrend', candles, Supertrend.SUPERTREND_4_2.value),
+                                'truerange': self.get_indicator_values('truerange', candles, TrueRange.TRUERANGE_14.value),
+                                'average_truerange': self.get_indicator_values('average_truerange', candles, AverageTrueRange.AVERAGETRUERANGE_14.value),
+                                'macd': self.get_indicator_values('macd', candles, MACD.MACD_12_26_9.value)
+                              }
 
             # Check if any indicator data is None, if so, skip adding it to the list
             if all(value is not None for value in indicator_data.values()):

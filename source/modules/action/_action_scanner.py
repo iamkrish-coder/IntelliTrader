@@ -3,22 +3,40 @@
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
+from .BaseAction import BaseAction
 
 
-class ActionEvaluateSecondaryConditions:
-    def __init__(self, modules, candlesticks_data_list, parameters):
+class ActionScanner(BaseAction):
+    def __init__(self, connection, modules, parameters, candlesticks_data_list, candles_timeframe=None):
+        super().__init__(connection, modules)
         self.modules = modules
-        self.candlesticks_data_list = candlesticks_data_list
         self.parameters = parameters
+        self.candlesticks_data_list = candlesticks_data_list
+        self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']
+        self.strategy_type = self.parameters['strategy_params.strategy_type']
 
     def initialize(self):
-        return self.evaluate_secondary_conditions()
+        return self.scan_secondary_conditions()
 
-    def evaluate_secondary_conditions(self):
+    def scan_secondary_conditions(self):
+        """
+        Evaluates the trading strategy conditions based on provided data.
+
+        Parameters:
+        - candlestick_data (DataFrame): OHLCV data for all timeframes.
+        - indicator_data (DataFrame): Additional indicator data used for evaluation.
+
+        Returns:
+        - conditions_met (bool): True if strategy conditions are met, False otherwise.
+        """
 
         results = []
 
         for stock_index, (candlestick_data) in enumerate(zip(self.candlesticks_data_list)):
+
+            candles_today_1m = None
+            candles_today_2m = None
+            candles_today_3m = None
 
             try:
                 # Extracting stock details from candlestick_data
@@ -27,9 +45,9 @@ class ActionEvaluateSecondaryConditions:
                 token = candlestick_data['token']
 
                 # Extracting candlestick data
-                candles_today_1m = candlestick_data['candlestick_data'][0]  # First dataframe
-                candles_today_2m = candlestick_data['candlestick_data'][1]  # Second dataframe
-                candles_today_3m = candlestick_data['candlestick_data'][2]  # Third dataframe
+                candles_today_1m = candlestick_data['candlestick_data'][MINUTE_1M]  # First dataframe
+                candles_today_2m = candlestick_data['candlestick_data'][MINUTE_2M]  # Second dataframe
+                candles_today_3m = candlestick_data['candlestick_data'][MINUTE_3M]  # Third dataframe
 
                 # 1 Minute
                 last_open_today_1m, last_high_today_1m, last_low_today_1m, last_close_today_1m, last_volume_today_1m = self.get_nth_last_prices(
@@ -96,7 +114,6 @@ class ActionEvaluateSecondaryConditions:
                         log_error(
                             f"An error occurred while evaluating secondary conditions for Long Trade: {str(error)}")
                         return False
-
 
                 elif self.strategy_type.upper() == Strategy_Type.SHORT.value:
 
