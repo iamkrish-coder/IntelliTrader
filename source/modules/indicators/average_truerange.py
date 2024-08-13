@@ -34,6 +34,6 @@ def average_truerange(dataset, period=14):
         for i in range(period, len(true_ranges)):
             average_truerange_values.append((average_truerange_values[-1] * (period - 1) + true_ranges[i]) / period)
 
-        average_truerange = [round(value, 2) for value in average_truerange_values]
+        average_truerange = [round(float(value), 2) for value in average_truerange_values]
 
     return average_truerange

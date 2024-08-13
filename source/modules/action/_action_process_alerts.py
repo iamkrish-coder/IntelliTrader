@@ -90,8 +90,9 @@ class ActionProcessAlerts(BaseAction):
                 self.trading_exchange, self.trading_symbol, self.trading_token = message_content.split(', ')
                 self.monitored_stocks.append((self.trading_exchange.strip(), self.trading_symbol.strip(), self.trading_token.strip()))
                 receipt_handle = message['ReceiptHandle']
-                self.delete_message_from_queue(receipt_handle)
-                log_info(f"\nStock Alerts Received from Queue: {self.monitored_stocks}\n")
+                # self.delete_message_from_queue(receipt_handle)
+
+            log_info(f"\nStock Alerts Received from Queue: {self.monitored_stocks}\n")
         else:
             log_warn("\nNo Alerts available to process in Queue.\n")
 

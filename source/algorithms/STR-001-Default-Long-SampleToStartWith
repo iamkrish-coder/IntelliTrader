@@ -1,0 +1,15 @@
+Buy When:
+    indicator RSI(8) > 40
+
+
+Sell When:
+    indicator SMA 50 < SMA 200
+
+Exit When:
+
+
+SL When:
+
+
+TSL When:
+

@@ -8,7 +8,7 @@ from ...utils.logging_utils import *
 from _action_subscriber import ActionSubscriber
 from _action_process_alerts import ActionProcessAlerts
 from _action_candlesticks import ActionCandlesticks
-from _action_evaluate_secondary_conditions import ActionEvaluateSecondaryConditions
+from _action_scanner import ActionEvaluateSecondaryConditions
 
 
 class ActionMonitorWatchlist:

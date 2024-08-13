@@ -230,3 +230,11 @@ class AverageTrueRange(Enum):
     AVERAGETRUERANGE_50 = 50
     AVERAGETRUERANGE_100 = 100
     AVERAGETRUERANGE_200 = 200
+
+
+class StrategyDefinition(Enum):
+    BUY = 'Buy'
+    SELL = 'Sell'
+    EXIT = 'Exit'
+    SL = 'SL'
+    TSL = 'TSL'

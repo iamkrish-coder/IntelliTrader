@@ -8,10 +8,11 @@ from ...utils.logging_utils import *
 
 
 class ActionCandlesticks:
-    def __init__(self, modules, watchlist, parameters):
+    def __init__(self, connection, modules, parameters, watchlist):
+        self.connection = connection
         self.modules = modules
-        self.trading_watchlist = watchlist
         self.parameters = parameters
+        self.trading_watchlist = watchlist
         self.trading_exchange = None
         self.trading_symbol = None
         self.trading_token = None
@@ -22,36 +23,38 @@ class ActionCandlesticks:
     def initialize(self):
         return self.scan_watchlist_stocks()
 
-    async def get_candlestick_information(self):
-        """
-        Asynchronously fetches OHLC data for different timeframes.
-        """
-        if self.historical_data_subscription:
-            if self.trading_exchange and self.trading_symbol and self.trading_token:
-                tasks = [
-                    # TODAY_1M, TODAY_2M, TODAY_3M
-                    self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token,
-                                          self.trading_timeframe)
-                    for self.trading_timeframe in [TODAY_1M, TODAY_2M, TODAY_3M]
-                ]
-                candles = await asyncio.gather(*tasks)
-                return candles
-            else:
-                log_error("Required parameters exchange, symbol, token, or timeframe is missing.")
-                return None
-        else:
-            return None
-
     async def fetch_ohlc_async(self, trading_exchange, trading_symbol, trading_token, trading_timeframe):
         """
         Fetches OHLC data asynchronously for the given timeframe.
         """
         loop = asyncio.get_running_loop()
-        candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, trading_exchange, trading_symbol,
-                                             trading_token, trading_timeframe)
+        candles = await loop.run_in_executor(None, self.modules['fetch'].fetch_ohlc, trading_exchange, trading_symbol, trading_token, trading_timeframe)
         return candles
 
-    def scan_watchlist_stocks(self):
+    def generate_cache_key(self, exchange, symbol, timeframe):
+        """
+        Generates a unique cache key based on exchange, symbol, and timeframe.
+        """
+        return f"{exchange}:{symbol}:{timeframe}"
+
+    async def get_candlestick_information(self):
+        """
+        Asynchronously fetches OHLC data for different timeframes.
+        """
+        candlestick_data = {}
+
+        if self.trading_exchange and self.trading_symbol and self.trading_token:
+            timeframes = [TODAY_1M, TODAY_2M, TODAY_3M]
+            for timeframe in timeframes:
+                candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
+                candlestick_data[timeframe] = candles
+
+            return candlestick_data
+        else:
+            log_error("Required parameters exchange, symbol, token, or timeframe is missing.")
+            return None
+
+    async def scan_watchlist_stocks(self):
         """
         Executes the Scanning on Watchlist Instruments.
         """
@@ -62,9 +65,9 @@ class ActionCandlesticks:
                 self.trading_exchange, self.trading_symbol, self.trading_token = trading_data
 
                 print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
-
                 log_info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
-                candlestick_data = asyncio.run(self.get_candlestick_information())
+
+                candlestick_data = await self.get_candlestick_information()
 
                 candlestick_data_list.append({
                     'exchange': self.trading_exchange,

@@ -81,6 +81,6 @@ class StrategyController(BaseController):
             # 7. Publish alerts
             self.publisher = SNS
             object_publisher_handler = StrategyPublisher(self.connection, self.modules, self.parameters, self.database, self.alerts, self.publisher)
-            object_publisher_handler.initialize()
+            # object_publisher_handler.initialize()
 
             self.run_count += 1

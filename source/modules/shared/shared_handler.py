@@ -156,6 +156,18 @@ class SharedHandler:
         else:
             return None
 
+    def get_first_candle_data(self, candles, period):
+        try:
+            return [value.item() for value in self.get_nth_first_prices(candles, period)]
+        except (AttributeError, ValueError, TypeError):
+            return None, None, None, None, None
+
+    def get_last_candle_data(self, candles, period):
+        try:
+            return [value.item() for value in self.get_nth_last_prices(candles, period)]
+        except (AttributeError, ValueError, TypeError):
+            return None, None, None, None, None
+
     def process_current_candles(self, candles_current):
         ohlcv_current_data = {}
         # Current Interval Candles
@@ -371,12 +383,12 @@ class SharedHandler:
             parts = strategy_name.split('-')
 
             # Check if the split length matches the expected format (4 parts)
-            if len(parts) != 4:
+            if len(parts) != 5:
                 log_error(f"Warning: Unexpected format for strategy name: {strategy_name}")
                 return
 
-            strategy_id, name, description = parts[1], parts[2], parts[3]
-            return strategy_id, name, description
+            strategy_id, strategy_name, strategy_type, strategy_description = parts[1], parts[2], parts[3], parts[4]
+            return strategy_id, strategy_name, strategy_type, strategy_description
 
     def generate_group_id(self, strategy_id):
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")

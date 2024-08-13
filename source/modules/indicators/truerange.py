@@ -37,6 +37,6 @@ def truerange(dataset, period=14):
 
             truerange_values.append(tr)
 
-        truerange = [round(value, 2) for value in truerange_values]
+        truerange = [round(float(value), 2) for value in truerange_values]
 
         return truerange
