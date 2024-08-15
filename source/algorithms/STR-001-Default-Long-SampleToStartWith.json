@@ -1,0 +1,39 @@
+{
+  "strategy": {
+    "buy": {
+      "conditions": [
+        {
+          "type": "OR",
+          "rules": [
+            {
+              "indicator": "RSI",
+              "period": 8,
+              "shift": -1,
+              "operator": ">",
+              "value": 40
+            },
+            {
+              "type": "AND",
+              "rules": [
+                {
+                  "candle": "3Minute",
+                  "shift": -2,
+                  "color": "red"
+                },
+                {
+                  "candle": "3Minute",
+                  "shift": -1,
+                  "color": "green"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "sell": "",
+    "exit": "",
+    "stop_loss": "",
+    "take_profit": ""
+  }
+}
