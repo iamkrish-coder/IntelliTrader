@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.8](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.7...v3.12.8) (2024-08-15)
+
+
+### Bug Fixes
+
+* Updated Strategy Parsing techniques to be more structured and robust ([6b4e588](https://github.com/iamkrish-coder/IntelliTrader/commit/6b4e58821d497ae1ac89176782628f8a6bf901f1))
+* Updated Strategy Parsing techniques to be more structured and robust ([f1f9d2c](https://github.com/iamkrish-coder/IntelliTrader/commit/f1f9d2c1a50e0041588e8ce1e9ac6fa2cb655381))
+
 ## [3.12.7](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.6...v3.12.7) (2024-08-13)
 
 
