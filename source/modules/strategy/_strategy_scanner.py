@@ -1,4 +1,5 @@
 # handlers/strategy
+import json
 
 from ...constants.const import *
 from ...enumerations.enums import *
@@ -24,6 +25,16 @@ class StrategyScanner(BaseStrategy):
     def initialize(self):
         return self.scan_primary_conditions()
 
+    def get_strategy_definition(self):
+        strategy_contents = None
+        selected_strategy = self.strategy_id.zfill(3)
+        for filename in os.listdir(ALGORITHM_PATH):
+            if filename.startswith(f"STR-{selected_strategy}"):
+                strategy_file = os.path.join(ALGORITHM_PATH, filename)
+                with open(strategy_file, 'r') as f:
+                    strategy_contents = json.load(f)
+        return strategy_contents
+
     def scan_primary_conditions(self):
         results = []
         for stock_index, (candlestick_data, indicator_data) in enumerate(
@@ -33,11 +44,11 @@ class StrategyScanner(BaseStrategy):
             symbol = candlestick_data['symbol']
             token = candlestick_data['token']
 
-            parsed_strategy = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY)
+            conditions = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY)
             candlesticks = self.parse_candlesticks(candlestick_data)
             indicators = self.parse_indicators(indicator_data)
 
-            for condition in parsed_strategy:
+            for condition in conditions:
                 condition_result = self.evaluate_condition(condition, candlesticks, indicators)
                 if not condition_result:
                     break  # If any condition fails, break the loop
@@ -47,57 +58,8 @@ class StrategyScanner(BaseStrategy):
 
         return results
 
-    def evaluate_condition(self, condition, candlestick_data, indicator_data):
-        # Dispatch the condition to the appropriate module based on its type
-        # e.g., if condition is "RSI > 70":
-        #     return calculate_rsi(candlestick_data) > 70
-        pass
-
-    def get_strategy_definition(self):
-        selected_strategy = self.strategy_id.zfill(3)
-        for filename in os.listdir(ALGORITHM_PATH):
-            if filename.startswith(f"STR-{selected_strategy}"):
-                filepath = os.path.join(ALGORITHM_PATH, filename)
-                with open(filepath, 'r') as f:
-                    return f.read()
-        return None
-
     def parse_strategy(self, strategy_definition, section):
-        conditions = []
-        section_header_pattern = r"^(Buy|Sell|Exit|SL|TSL) When:$"
-        section_pattern = r"^" + section.value + r" When:$"
-        current_section = None
-
-        for line in strategy_definition.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-
-            # Check if line matches the section pattern
-            match = re.match(section_header_pattern, line)
-            if match:
-                if re.match(section_pattern, line):
-                    current_section = section.value + " When:"
-                    continue
-                else:
-                    current_section = None
-
-            # Process conditions within the desired section
-            if current_section == section.value + " When:":
-                # match = re.match(r"indicator (\w+)(?: \((\d+)\))? (>|<|>=|<=|=|\!=) (\d+)", line)
-                # Indicator condition
-                match = re.match(r"indicator (\w+)\s*\((\d+)\)\s*(>|<=|<|>=|=|\!=)\s*(\d+)", line, re.IGNORECASE)
-                if match:
-                    indicator, period, operator, value = match.groups()
-                    print("Match groups:", match.groups())  # Add debugging line
-                    conditions.append((indicator, int(period) if period else None, operator, int(value)))
-
-                # Candle condition
-                match = re.match(r"candle \((\d+)\) (=|\!=) (red|green)", line, re.IGNORECASE)
-                if match:
-                    offset, operator, color = match.groups()
-                    conditions.append(("candle", int(offset), operator, color))
-
+        conditions = strategy_definition['strategy'][section]['conditions']
         return conditions
 
     def parse_candlesticks(self, candlesticks_data_list):
@@ -245,9 +207,76 @@ class StrategyScanner(BaseStrategy):
             # except (AttributeError, ValueError, TypeError):
             #     first_open_today_60m = first_high_today_60m = first_low_today_60m = first_close_today_60m = first_volume_today_60m = None
 
-
     def parse_indicators(self, indicators_data_list):
-        # Example: Check RSI condition
-        rsi = indicators_data_list['indicators_data'].get('rsi', [])
-        rsi_condition_met = rsi[-1] > 40 if rsi else False
+        return indicators_data_list['indicators_data']
+
+    def evaluate_condition(self, condition, candlestick_data, indicator_data):
+            """Evaluates a single condition.
+            Args:
+              condition: The condition to evaluate.
+              candlestick_data: The candlestick data to evaluate.
+              indicator_data: The indicators data to evaluate.
+
+            Returns:
+              True if the condition is met, False otherwise.
+            """
+
+            if condition['type'] == 'AND':
+                return all(self.evaluate_condition(cond, candlestick_data, indicator_data) for cond in condition['rules'])
+            elif condition['type'] == 'OR':
+                return any(self.evaluate_condition(cond, candlestick_data, indicator_data) for cond in condition['rules'])
+            else:
+                # Base condition
+                indicator_value = self.get_indicator_value(indicator_data, condition['indicator'], condition['period'], condition['shift'])
+                return eval(f"{indicator_value} {condition['operator']} {condition['value']}")
+
+    def get_indicator_value(self, data, indicator, period, shift):
+        """Fetches the indicator value from data source.
+        Args:
+          data: The Datasource
+          indicator: The indicator name.
+          period: The indicator period.
+          shift: The indicator shift.
+
+        Returns:
+          The calculated indicator value.
+        """
+        value = data[indicator][shift]
+        return value
+
+    def parse_strategy_deprecated(self, strategy_definition, section):
+        conditions = []
+        section_header_pattern = r"^(Buy|Sell|Exit|SL|TSL) When:$"
+        section_pattern = r"^" + section.value + r" When:$"
+        current_section = None
+
+        for line in strategy_definition.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+
+            # Check if line matches the section pattern
+            match = re.match(section_header_pattern, line)
+            if match:
+                if re.match(section_pattern, line):
+                    current_section = section.value + " When:"
+                    continue
+                else:
+                    current_section = None
+
+            # Process conditions within the desired section
+            if current_section == section.value + " When:":
+                # match = re.match(r"indicator (\w+)(?: \((\d+)\))? (>|<|>=|<=|=|\!=) (\d+)", line)
+                # Indicator condition
+                match = re.match(r"indicator (\w+)\s*\((\d+)\)\s*(>|<=|<|>=|=|\!=)\s*(\d+)", line, re.IGNORECASE)
+                if match:
+                    indicator, period, operator, value = match.groups()
+                    conditions.append((indicator, int(period) if period else None, operator, int(value)))
+
+                # Candle condition
+                match = re.match(r"candle \((\d+)\) (=|\!=) (red|green)", line, re.IGNORECASE)
+                if match:
+                    offset, operator, color = match.groups()
+                    conditions.append(("candle", int(offset), operator, color))
+
 
