@@ -1,4 +1,4 @@
-# strategies/shared_handler.py
+# strategies/shared_functions.py
 
 import pandas as pd
 import numpy as np
@@ -14,7 +14,7 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 
-class SharedHandler:
+class SharedFunctions:
     def __init__(self, connection, modules):
         self.connection = connection
         self.modules = modules
@@ -24,16 +24,6 @@ class SharedHandler:
 
     def is_green(self, candle):
         return candle['close'] > candle['open']
-
-    def calculate_candle_range(self, candle):
-        return candle['high'] - candle['low']
-
-    def calculate_candle_body_size(self, candle):
-        return abs(candle['close'] - candle['open'])
-
-    def calculate_candle_wick_size(self, candle):
-        return max(candle['high'] - max(candle['open'], candle['close']),
-                   max(candle['open'], candle['close']) - candle['low'])
 
     def is_doji(self, candle, threshold=0.01):
         return abs(candle['close'] - candle['open']) < threshold * self.calculate_candle_range(candle)
@@ -62,21 +52,31 @@ class SharedHandler:
     def is_inside_bar(self, candle, previous_candle):
         return candle['high'] < previous_candle['high'] and candle['low'] > previous_candle['low']
 
-    def is_bearish_engulfing(candle, previous_candle):
+    def is_bearish_engulfing(self, candle, previous_candle):
         return candle['close'] < candle['open'] and previous_candle['close'] < previous_candle['open'] and \
             candle['open'] >= previous_candle['close'] and candle['close'] <= previous_candle['open']
 
-    def is_bearish_engulfing(candle, previous_candle):
+    def is_bearish_engulfing(self, candle, previous_candle):
         return candle['close'] < candle['open'] and previous_candle['close'] < previous_candle['open'] and \
             candle['open'] >= previous_candle['close'] and candle['close'] <= previous_candle['open']
 
-    def is_bullish_harami(candle, previous_candle):
+    def is_bullish_harami(self, candle, previous_candle):
         return previous_candle['close'] > previous_candle['open'] and candle['close'] > candle['open'] and \
             candle['open'] < previous_candle['close'] and candle['close'] > previous_candle['open']
 
-    def is_bearish_harami(candle, previous_candle):
+    def is_bearish_harami(self, candle, previous_candle):
         return previous_candle['close'] < previous_candle['open'] and candle['close'] < candle['open'] and \
             candle['open'] > previous_candle['close'] and candle['close'] < previous_candle['open']
+
+    def calculate_candle_range(self, candle):
+        return candle['high'] - candle['low']
+
+    def calculate_candle_body_size(self, candle):
+        return abs(candle['close'] - candle['open'])
+
+    def calculate_candle_wick_size(self, candle):
+        return max(candle['high'] - max(candle['open'], candle['close']),
+                   max(candle['open'], candle['close']) - candle['low'])
 
     def get_last_n_candles(self, candles, n):
         """
@@ -158,15 +158,29 @@ class SharedHandler:
 
     def get_first_candle_data(self, candles, period):
         try:
-            return [value.item() for value in self.get_nth_first_prices(candles, period)]
+            # return [value.item() for value in self.get_nth_first_prices(candles, period)]
+            return {
+                "open": self.get_nth_first_prices(candles, period)[0].item(),
+                "high": self.get_nth_first_prices(candles, period)[1].item(),
+                "low": self.get_nth_first_prices(candles, period)[2].item(),
+                "close": self.get_nth_first_prices(candles, period)[3].item(),
+                "volume": self.get_nth_first_prices(candles, period)[4].item()
+            }
         except (AttributeError, ValueError, TypeError):
-            return None, None, None, None, None
+            return None
 
     def get_last_candle_data(self, candles, period):
         try:
-            return [value.item() for value in self.get_nth_last_prices(candles, period)]
+            # return [value.item() for value in self.get_nth_last_prices(candles, period)]
+            return {
+                "open": self.get_nth_last_prices(candles, period)[0].item(),
+                "high": self.get_nth_last_prices(candles, period)[1].item(),
+                "low": self.get_nth_last_prices(candles, period)[2].item(),
+                "close": self.get_nth_last_prices(candles, period)[3].item(),
+                "volume": self.get_nth_last_prices(candles, period)[4].item()
+            }
         except (AttributeError, ValueError, TypeError):
-            return None, None, None, None, None
+            return None
 
     def process_current_candles(self, candles_current):
         ohlcv_current_data = {}
@@ -331,17 +345,17 @@ class SharedHandler:
         topic_name = self.generate_aws_sns_topic_name(strategy_id)
 
         enum_arn = AWS_SNS.ARN.value
-        emum_aws = AWS_SNS.AWS.value
-        emum_sns = AWS_SNS.SNS.value
-        emum_region = AWS_SNS.REGION.value
-        emum_account_id = AWS_SNS.ACCOUNT_ID.value
-        emum_topic_name = topic_name
+        enum_aws = AWS_SNS.AWS.value
+        enum_sns = AWS_SNS.SNS.value
+        enum_region = AWS_SNS.REGION.value
+        enum_account_id = AWS_SNS.ACCOUNT_ID.value
+        enum_topic_name = topic_name
 
         if topic_type == FIFO:
             topic_name = topic_name + ".fifo"
-            arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}" + ".fifo"
+            arn_formatted = f"{enum_arn}:{enum_aws}:{enum_sns}:{enum_region}:{enum_account_id}:{enum_topic_name}" + ".fifo"
         else:
-            arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sns}:{emum_region}:{emum_account_id}:{emum_topic_name}"
+            arn_formatted = f"{enum_arn}:{enum_aws}:{enum_sns}:{enum_region}:{enum_account_id}:{enum_topic_name}"
 
         return arn_formatted, topic_name
 
@@ -357,18 +371,18 @@ class SharedHandler:
         queue_url = self.get_aws_sqs_queue_url(queue_name)
 
         enum_arn = AWS_SQS.ARN.value
-        emum_aws = AWS_SQS.AWS.value
-        emum_sqs = AWS_SQS.SQS.value
-        emum_region = AWS_SQS.REGION.value
-        emum_account_id = AWS_SQS.ACCOUNT_ID.value
-        emum_queue_name = queue_name
+        enum_aws = AWS_SQS.AWS.value
+        enum_sqs = AWS_SQS.SQS.value
+        enum_region = AWS_SQS.REGION.value
+        enum_account_id = AWS_SQS.ACCOUNT_ID.value
+        enum_queue_name = queue_name
 
         if queue_type == FIFO:
             queue_name = queue_name + ".fifo"
-            queue_arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sqs}:{emum_region}:{emum_account_id}:{emum_queue_name}" + ".fifo"
+            queue_arn_formatted = f"{enum_arn}:{enum_aws}:{enum_sqs}:{enum_region}:{enum_account_id}:{enum_queue_name}" + ".fifo"
             queue_url = queue_url + ".fifo"
         else:
-            queue_arn_formatted = f"{enum_arn}:{emum_aws}:{emum_sqs}:{emum_region}:{emum_account_id}:{emum_queue_name}"
+            queue_arn_formatted = f"{enum_arn}:{enum_aws}:{enum_sqs}:{enum_region}:{enum_account_id}:{enum_queue_name}"
 
         return queue_arn_formatted, queue_name, queue_url
 

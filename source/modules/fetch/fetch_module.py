@@ -214,6 +214,10 @@ class Fetch:
         # Resample the daily data to weekly OHLC data
         weekly_data = daily_data.resample('W').agg(
             {'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'})
+
+        # Reset the index and create a 'date' column
+        weekly_data.reset_index(inplace=True)
+        weekly_data.rename(columns={'index': 'date'}, inplace=True)
         return weekly_data
 
     def aggregate_to_monthly(self, daily_data):
@@ -226,6 +230,10 @@ class Fetch:
         # Resample the daily data to monthly OHLC data
         monthly_data = daily_data.resample('ME').agg(
             {'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last', 'volume': 'sum'})
+
+        # Reset the index and create a 'date' column
+        monthly_data.reset_index(inplace=True)
+        monthly_data.rename(columns={'index': 'date'}, inplace=True)
         return monthly_data
 
     # Fetch extended historical data for an exchange and symbol with limits

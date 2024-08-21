@@ -16,14 +16,14 @@
               "type": "AND",
               "rules": [
                 {
-                  "candle": "3Minute",
+                  "candle": "default",
                   "shift": -2,
-                  "color": "red"
+                  "value": "is red"
                 },
                 {
-                  "candle": "3Minute",
+                  "candle": "default",
                   "shift": -1,
-                  "color": "green"
+                  "value": "is green"
                 }
               ]
             }

@@ -62,7 +62,7 @@
     "strategy_id": "001",
     "exchange": "NSE",
     "symbol": "default",
-    "timeframe": "5minute",
+    "timeframe": "3minute",
     "strategy_type": "LONG",
     "ticker": true,
     "ticker_mode": "LTP",

@@ -1,11 +1,11 @@
 # IntelliTrader\source\modules\strategy\BaseStrategy.py
 
 from abc import ABC, abstractmethod
-from ..shared.shared_handler import SharedHandler
+from ..shared.shared_functions import SharedFunctions
 from sys import modules
 
 
-class BaseStrategy(ABC, SharedHandler):
+class BaseStrategy(ABC, SharedFunctions):
     def __init__(self, connection, modules):
         super().__init__(connection, modules)
         self.connection = connection

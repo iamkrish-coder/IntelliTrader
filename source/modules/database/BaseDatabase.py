@@ -1,11 +1,11 @@
 # IntelliTrader\source\modules\database\BaseDatabase.py
 
 from abc import ABC, abstractmethod
-from source.modules.shared.shared_handler import SharedHandler
+from source.modules.shared.shared_functions import SharedFunctions
 from sys import modules
 
 
-class BaseDatabase(ABC, SharedHandler):
+class BaseDatabase(ABC, SharedFunctions):
     def __init__(self, connection, modules):
         super().__init__(connection, modules)
         self.connection = connection
