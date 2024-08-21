@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.9](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.8...v3.12.9) (2024-08-21)
+
+
+### Bug Fixes
+
+* Fix parsing issues with candle data not showing index correctly ([6df6a82](https://github.com/iamkrish-coder/IntelliTrader/commit/6df6a828a55e925fc772f070df1df4cc7e2f54c4))
+
 ## [3.12.8](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.7...v3.12.8) (2024-08-15)
 
 
