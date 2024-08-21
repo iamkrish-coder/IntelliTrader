@@ -233,8 +233,8 @@ class AverageTrueRange(Enum):
 
 
 class StrategyDefinition(Enum):
-    BUY = 'Buy'
-    SELL = 'Sell'
-    EXIT = 'Exit'
-    SL = 'SL'
-    TSL = 'TSL'
+    BUY = 'buy'
+    SELL = 'sell'
+    EXIT = 'exit'
+    SL = 'stop_loss'
+    TP = 'take_profit'

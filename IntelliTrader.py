@@ -128,12 +128,12 @@ class IntelliTrader:
             else:
                 """Initialize controllers only if all module initialization succeeded"""
                 self.strategy_controller_instance = StrategyController(self.controller)
-                # self.action_controller_instance = ActionController(self.controller)
+                self.action_controller_instance = ActionController(self.controller)
                 # self.monitoring_controller_instance = None
 
                 tasks = [
                     self.strategy_controller(),
-                    # self.action_controller(),
+                    self.action_controller(),
                     # self.monitoring_controller()
                 ]
                 await asyncio.gather(*tasks)

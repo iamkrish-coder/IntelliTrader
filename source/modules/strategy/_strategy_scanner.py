@@ -44,7 +44,7 @@ class StrategyScanner(BaseStrategy):
             symbol = candlestick_data['symbol']
             token = candlestick_data['token']
 
-            conditions = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY)
+            conditions = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY.value)
             candlesticks = self.parse_candlesticks(candlestick_data)
             indicators = self.parse_indicators(indicator_data)
 
@@ -54,8 +54,7 @@ class StrategyScanner(BaseStrategy):
                     break  # If any condition fails, break the loop
                 else:
                     message = f"{exchange}, {symbol}, {token}"
-                results.append(message)
-
+                    results.append(message)
         return results
 
     def parse_strategy(self, strategy_definition, section):
@@ -78,13 +77,13 @@ class StrategyScanner(BaseStrategy):
             candles_today_60m = None
 
             candles = candlesticks_data_list['candlestick_data'][self.candles_timeframe]  # First dataframe
-            candles_daily = candlesticks_data_list['candlestick_data'][DAY]  # Second dataframe
-            candles_weekly = candlesticks_data_list['candlestick_data'][WEEK]  # Third dataframe
-            candles_monthly = candlesticks_data_list['candlestick_data'][MONTH]  # Fourth dataframe
-            candles_today_5m = candlesticks_data_list['candlestick_data'][TODAY_5M]  # Fifth dataframe
-            # candles_today_15m = candlesticks_data_list['candlestick_data'][TODAY_15M]  # Sixth dataframe
-            # candles_today_30m = candlesticks_data_list['candlestick_data'][TODAY_30M]  # Seventh dataframe
-            # candles_today_60m = candlesticks_data_list['candlestick_data'][TODAY_60M]  # Eighth dataframe
+            candles_daily = candlesticks_data_list['candlestick_data'][DAY]               # Second dataframe
+            candles_weekly = candlesticks_data_list['candlestick_data'][WEEK]             # Third dataframe
+            candles_monthly = candlesticks_data_list['candlestick_data'][MONTH]           # Fourth dataframe
+            candles_today_5m = candlesticks_data_list['candlestick_data'][TODAY_5M]       # Fifth dataframe
+            # candles_today_15m = candlesticks_data_list['candlestick_data'][TODAY_15M]   # Sixth dataframe
+            # candles_today_30m = candlesticks_data_list['candlestick_data'][TODAY_30M]   # Seventh dataframe
+            # candles_today_60m = candlesticks_data_list['candlestick_data'][TODAY_60M]   # Eighth dataframe
 
             candle_data['5minute(1)'] = self.get_first_candle_data(candles_today_5m, 1)
             # candle_data['15minute(1)'] = self.get_first_candle_data(candles_today_15m, 1)
@@ -111,124 +110,82 @@ class StrategyScanner(BaseStrategy):
         except Exception as error:
             log_error(f"An error occurred while evaluating primary conditions: {str(error)}")
 
-            # #####################################
-            # ########## Default Candles ##########
-            # #####################################
-            # try:
-            #     last_open, last_high, last_low, last_close, last_volume = self.get_nth_last_prices(candles, 1)
-            # except (AttributeError, ValueError, TypeError):
-            #     last_open, last_high, last_low, last_close, last_volume = None
-            #
-            # try:
-            #     second_last_open, second_last_high, second_last_low, second_last_close, second_last_volume = self.get_nth_last_prices(candles, 2)
-            # except (AttributeError, ValueError, TypeError):
-            #     second_last_open, second_last_high, second_last_low, second_last_close, second_last_volume = None
-            #
-            # try:
-            #     third_last_open, third_last_high, third_last_low, third_last_close, third_last_volume = self.get_nth_last_prices(candles, 3)
-            # except (AttributeError, ValueError, TypeError):
-            #     third_last_open, third_last_high, third_last_low, third_last_close, third_last_volume = None
-            #
-            # #####################################
-            # ############ Daily Candles ##########
-            # #####################################
-            # try:
-            #     last_open_daily, last_high_daily, last_low_daily, last_close_daily, last_volume_daily = self.get_nth_last_prices(candles_daily, 1)
-            # except (AttributeError, ValueError, TypeError):
-            #     last_open_daily, last_high_daily, last_low_daily, last_close_daily, last_volume_daily = None
-            #
-            # try:
-            #     second_last_open_daily, second_last_high_daily, second_last_low_daily, second_last_close_daily, second_last_volume_daily = self.get_nth_last_prices(candles_daily, 2)
-            # except (AttributeError, ValueError, TypeError):
-            #     second_last_open_daily, second_last_high_daily, second_last_low_daily, second_last_close_daily, second_last_volume_daily = None
-            #
-            # try:
-            #     third_last_open_daily, third_last_high_daily, third_last_low_daily, third_last_close_daily, third_last_volume_daily = self.get_nth_last_prices(candles_daily, 3)
-            # except (AttributeError, ValueError, TypeError):
-            #     third_last_open_daily, third_last_high_daily, third_last_low_daily, third_last_close_daily, third_last_volume_daily = None
-            #
-            #
-            # #####################################
-            # ########### Weekly Candles ##########
-            # #####################################
-            # try:
-            #     last_open_weekly, last_high_weekly, last_low_weekly, last_close_weekly, last_volume_weekly = self.get_nth_last_prices(candles_weekly, 1)
-            # except (AttributeError, ValueError, TypeError):
-            #     last_open_weekly, last_high_weekly, last_low_weekly, last_close_weekly, last_volume_weekly = None
-            #
-            # try:
-            #     second_last_open_weekly, second_last_high_weekly, second_last_low_weekly, second_last_close_weekly, second_last_volume_weekly = self.get_nth_last_prices(candles_weekly, 2)
-            # except (AttributeError, ValueError, TypeError):
-            #     second_last_open_weekly, second_last_high_weekly, second_last_low_weekly, second_last_close_weekly, second_last_volume_weekly = None
-            #
-            # try:
-            #     third_last_open_weekly, third_last_high_weekly, third_last_low_weekly, third_last_close_weekly, third_last_volume_weekly = self.get_nth_last_prices(candles_weekly, 3)
-            # except (AttributeError, ValueError, TypeError):
-            #     third_last_open_weekly, third_last_high_weekly, third_last_low_weekly, third_last_close_weekly, third_last_volume_weekly = None
-            #
-            # #####################################
-            # ########### Monthly Candles #########
-            # #####################################
-            # try:
-            #     last_open_monthly, last_high_monthly, last_low_monthly, last_close_monthly, last_volume_monthly = self.get_nth_last_prices(candles_monthly, 1)
-            # except (AttributeError, ValueError, TypeError):
-            #     last_open_monthly, last_high_monthly, last_low_monthly, last_close_monthly, last_volume_monthly = None
-            #
-            # try:
-            #     second_last_open_monthly, second_last_high_monthly, second_last_low_monthly, second_last_close_monthly, second_last_volume_monthly = self.get_nth_last_prices(candles_monthly, 2)
-            # except (AttributeError, ValueError, TypeError):
-            #     second_last_open_monthly, second_last_high_monthly, second_last_low_monthly, second_last_close_monthly, second_last_volume_monthly = None
-            #
-            # try:
-            #     third_last_open_monthly, third_last_high_monthly, third_last_low_monthly, third_last_close_monthly, third_last_volume_monthly = self.get_nth_last_prices(candles_monthly, 3)
-            # except (AttributeError, ValueError, TypeError):
-            #     third_last_open_monthly, third_last_high_monthly, third_last_low_monthly, third_last_close_monthly, third_last_volume_monthly = None
-            #
-            # #####################################
-            # ########### Today Candles ###########
-            # #####################################
-            # try:
-            #     first_open_today_5m, first_high_today_5m, first_low_today_5m, first_close_today_5m, first_volume_today_5m = self.get_nth_first_prices(candles_today_5m, n=1)
-            # except (AttributeError, ValueError, TypeError):
-            #     first_open_today_5m = first_high_today_5m = first_low_today_5m = first_close_today_5m = first_volume_today_5m = None
-            #
-            # try:
-            #     first_open_today_15m, first_high_today_15m, first_low_today_15m, first_close_today_15m, first_volume_today_15m = self.get_nth_first_prices(candles_today_15m, n=1)
-            # except (AttributeError, ValueError, TypeError):
-            #     first_open_today_15m = first_high_today_15m = first_low_today_15m = first_close_today_15m = first_volume_today_15m = None
-            #
-            # try:
-            #     first_open_today_30m, first_high_today_30m, first_low_today_30m, first_close_today_30m, first_volume_today_30m = self.get_nth_first_prices(candles_today_30m, n=1)
-            # except (AttributeError, ValueError, TypeError):
-            #     first_open_today_30m = first_high_today_30m = first_low_today_30m = first_close_today_30m = first_volume_today_30m = None
-            #
-            # try:
-            #     first_open_today_60m, first_high_today_60m, first_low_today_60m, first_close_today_60m, first_volume_today_60m = self.get_nth_first_prices(candles_today_60m, n=1)
-            # except (AttributeError, ValueError, TypeError):
-            #     first_open_today_60m = first_high_today_60m = first_low_today_60m = first_close_today_60m = first_volume_today_60m = None
-
     def parse_indicators(self, indicators_data_list):
         return indicators_data_list['indicators_data']
 
     def evaluate_condition(self, condition, candlestick_data, indicator_data):
-            """Evaluates a single condition.
-            Args:
-              condition: The condition to evaluate.
-              candlestick_data: The candlestick data to evaluate.
-              indicator_data: The indicators data to evaluate.
+        """Evaluates a single condition.
+        Args:
+          condition: The condition to evaluate.
+          candlestick_data: The candlestick data to evaluate.
+          indicator_data: The indicators data to evaluate.
 
-            Returns:
-              True if the condition is met, False otherwise.
-            """
-
+        Returns:
+          True if the condition is met, False otherwise.
+        """
+        if 'type' in condition:
             if condition['type'] == 'AND':
                 return all(self.evaluate_condition(cond, candlestick_data, indicator_data) for cond in condition['rules'])
             elif condition['type'] == 'OR':
                 return any(self.evaluate_condition(cond, candlestick_data, indicator_data) for cond in condition['rules'])
-            else:
-                # Base condition
-                indicator_value = self.get_indicator_value(indicator_data, condition['indicator'], condition['period'], condition['shift'])
+        else:
+            # Base condition
+            if 'indicator' in condition:
+                indicator_value = self.get_indicator_value(indicator_data, condition['indicator'].lower(), condition['period'], condition['shift'])
+                sub_indicator_value = self.get_indicator_value(indicator_data, condition['indicator'].lower(), condition['period'], condition['shift'])
                 return eval(f"{indicator_value} {condition['operator']} {condition['value']}")
+            elif 'candle' in condition:
+                timeframe = condition['candle']
+                shift = condition['shift']
+                candle = self.get_candle_value(candlestick_data, timeframe, shift)
+                prev_candle = self.get_candle_value(candlestick_data, timeframe, shift - 1)
+
+                if 'is red' in condition['value']:
+                    result = self.is_red(candle)
+                elif 'is green' in condition['value']:
+                    result = self.is_green(candle)
+                elif 'is bearish harami' in condition['value']:
+                    result = self.is_bearish_harami(candle, prev_candle)
+                elif 'is bullish harami' in condition['value']:
+                    result = self.is_bullish_harami(candle, prev_candle)
+                elif 'is bearish engulfing' in condition['value']:
+                    result = self.is_bearish_engulfing(candle, prev_candle)
+                elif 'is inside bar' in condition['value']:
+                    result = self.is_inside_bar(candle, prev_candle)
+                elif 'is shooting star' in condition['value']:
+                    result = self.is_shooting_star(candle)
+                elif 'is hammer' in condition['value']:
+                    result = self.is_hammer(candle)
+                elif 'is engulfing pattern' in condition['value']:
+                    result = self.is_engulfing_pattern(candle, prev_candle)
+                elif 'is lower low' in condition['value']:
+                    result = self.is_lower_low(candle, prev_candle)
+                elif 'is higher high' in condition['value']:
+                    result = self.is_higher_high(candle, prev_candle)
+                elif 'is doji' in condition['value']:
+                    result = self.is_doji(candle)
+                else:
+                    log_info(f"Unsupported candle condition: {condition}")
+                    result = False
+                return result
+            else:
+                print(condition)
+
+    def get_candle_value(self, candlestick_data, timeframe, shift):
+        """Extracts candle data based on timeframe and shift.
+            Args:
+                candlestick_data: The candlestick data dictionary.
+                timeframe: The timeframe string (e.g., "default").
+                shift: The shift value (e.g., -1).
+
+            Returns:
+                The extracted candle data or None if not found.
+            """
+        key = f"{timeframe}({shift})"
+        if key in candlestick_data:
+            return candlestick_data[key]
+        else:
+            return None
 
     def get_indicator_value(self, data, indicator, period, shift):
         """Fetches the indicator value from data source.
