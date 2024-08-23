@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.10](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.9...v3.12.10) (2024-08-23)
+
+
+### Features
+
+* Implement Secondary Checks before processing alerts for Buy Sell signal ([aa4b9e8](https://github.com/iamkrish-coder/IntelliTrader/commit/aa4b9e8af8a038e2ebd0dcbbcc3fa6db80ab9621))
+
 ## [3.12.9](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.8...v3.12.9) (2024-08-21)
 
 
