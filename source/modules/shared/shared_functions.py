@@ -397,7 +397,7 @@ class SharedFunctions:
             parts = strategy_name.split('-')
 
             # Check if the split length matches the expected format (4 parts)
-            if len(parts) != 5:
+            if len(parts) < 4:
                 log_error(f"Warning: Unexpected format for strategy name: {strategy_name}")
                 return
 

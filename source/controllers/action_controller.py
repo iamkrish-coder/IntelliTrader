@@ -92,6 +92,7 @@ class ActionController(BaseController):
                 # 5. Get Micro Candlesticks Data for Secondary Checks
                 object_scanner_handler = ActionScanner(self.connection, self.modules, self.parameters, candlestick_data_list)
                 self.alerts = object_scanner_handler.initialize()
+                print(self.alerts)
 
                 # conditions_met = self.evaluate_secondary_conditions(candlestick_data_list)
                 # if conditions_met:

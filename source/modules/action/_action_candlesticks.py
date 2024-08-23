@@ -44,7 +44,7 @@ class ActionCandlesticks:
         candlestick_data = {}
 
         if self.trading_exchange and self.trading_symbol and self.trading_token:
-            timeframes = [TODAY_1M, TODAY_2M, TODAY_3M]
+            timeframes = [TODAY_1M, TODAY_2M] # , TODAY_3M
             for timeframe in timeframes:
                 candles = await self.fetch_ohlc_async(self.trading_exchange, self.trading_symbol, self.trading_token, timeframe)
                 candlestick_data[timeframe] = candles

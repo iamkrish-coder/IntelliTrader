@@ -37,8 +37,7 @@ class StrategyScanner(BaseStrategy):
 
     def scan_primary_conditions(self):
         results = []
-        for stock_index, (candlestick_data, indicator_data) in enumerate(
-                zip(self.candlesticks_data_list, self.indicators_data_list)):
+        for stock_index, (candlestick_data, indicator_data) in enumerate(zip(self.candlesticks_data_list, self.indicators_data_list)):
 
             exchange = candlestick_data['exchange']
             symbol = candlestick_data['symbol']
@@ -62,9 +61,7 @@ class StrategyScanner(BaseStrategy):
         return conditions
 
     def parse_candlesticks(self, candlesticks_data_list):
-
         candle_data = {}
-
         try:
             # Extracting candlestick data
             candles = None
@@ -140,34 +137,35 @@ class StrategyScanner(BaseStrategy):
                 candle = self.get_candle_value(candlestick_data, timeframe, shift)
                 prev_candle = self.get_candle_value(candlestick_data, timeframe, shift - 1)
 
-                if 'is red' in condition['value']:
-                    result = self.is_red(candle)
-                elif 'is green' in condition['value']:
-                    result = self.is_green(candle)
-                elif 'is bearish harami' in condition['value']:
-                    result = self.is_bearish_harami(candle, prev_candle)
-                elif 'is bullish harami' in condition['value']:
-                    result = self.is_bullish_harami(candle, prev_candle)
-                elif 'is bearish engulfing' in condition['value']:
-                    result = self.is_bearish_engulfing(candle, prev_candle)
-                elif 'is inside bar' in condition['value']:
-                    result = self.is_inside_bar(candle, prev_candle)
-                elif 'is shooting star' in condition['value']:
-                    result = self.is_shooting_star(candle)
-                elif 'is hammer' in condition['value']:
-                    result = self.is_hammer(candle)
-                elif 'is engulfing pattern' in condition['value']:
-                    result = self.is_engulfing_pattern(candle, prev_candle)
-                elif 'is lower low' in condition['value']:
-                    result = self.is_lower_low(candle, prev_candle)
-                elif 'is higher high' in condition['value']:
-                    result = self.is_higher_high(candle, prev_candle)
-                elif 'is doji' in condition['value']:
-                    result = self.is_doji(candle)
-                else:
-                    log_info(f"Unsupported candle condition: {condition}")
-                    result = False
-                return result
+                if candle is not None:
+                    if 'is red' in condition['value']:
+                        result = self.is_red(candle)
+                    elif 'is green' in condition['value']:
+                        result = self.is_green(candle)
+                    elif 'is bearish harami' in condition['value']:
+                        result = self.is_bearish_harami(candle, prev_candle)
+                    elif 'is bullish harami' in condition['value']:
+                        result = self.is_bullish_harami(candle, prev_candle)
+                    elif 'is bearish engulfing' in condition['value']:
+                        result = self.is_bearish_engulfing(candle, prev_candle)
+                    elif 'is inside bar' in condition['value']:
+                        result = self.is_inside_bar(candle, prev_candle)
+                    elif 'is shooting star' in condition['value']:
+                        result = self.is_shooting_star(candle)
+                    elif 'is hammer' in condition['value']:
+                        result = self.is_hammer(candle)
+                    elif 'is engulfing pattern' in condition['value']:
+                        result = self.is_engulfing_pattern(candle, prev_candle)
+                    elif 'is lower low' in condition['value']:
+                        result = self.is_lower_low(candle, prev_candle)
+                    elif 'is higher high' in condition['value']:
+                        result = self.is_higher_high(candle, prev_candle)
+                    elif 'is doji' in condition['value']:
+                        result = self.is_doji(candle)
+                    else:
+                        log_info(f"Unsupported candle condition: {condition}")
+                        result = False
+                    return result
             else:
                 print(condition)
 
@@ -235,5 +233,3 @@ class StrategyScanner(BaseStrategy):
                 if match:
                     offset, operator, color = match.groups()
                     conditions.append(("candle", int(offset), operator, color))
-
-
