@@ -1,4 +1,5 @@
 # handlers/actions
+import json
 
 from ...constants.const import *
 from ...enumerations.enums import *
@@ -14,139 +15,135 @@ class ActionScanner(BaseAction):
         self.candlesticks_data_list = candlesticks_data_list
         self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']
         self.strategy_type = self.parameters['strategy_params.strategy_type']
+        self.strategy_definition = self.get_strategy_definition()
 
     def initialize(self):
         return self.scan_secondary_conditions()
 
+    def get_strategy_definition(self):
+        strategy_contents = None
+        for filename in os.listdir(ALGORITHM_PATH):
+            if filename.startswith(f"STR-000-Secondary-{self.strategy_type.capitalize()}"):
+                strategy_file = os.path.join(ALGORITHM_PATH, filename)
+                with open(strategy_file, 'r') as f:
+                    strategy_contents = json.load(f)
+        return strategy_contents
+
     def scan_secondary_conditions(self):
-        """
-        Evaluates the trading strategy conditions based on provided data.
-
-        Parameters:
-        - candlestick_data (DataFrame): OHLCV data for all timeframes.
-        - indicator_data (DataFrame): Additional indicator data used for evaluation.
-
-        Returns:
-        - conditions_met (bool): True if strategy conditions are met, False otherwise.
-        """
-
         results = []
+        for stock_index, (candlestick_data) in enumerate(self.candlesticks_data_list):
 
-        for stock_index, (candlestick_data) in enumerate(zip(self.candlesticks_data_list)):
+            exchange = candlestick_data['exchange']
+            symbol = candlestick_data['symbol']
+            token = candlestick_data['token']
 
+            conditions = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY.value)
+            candlesticks = self.parse_candlesticks(candlestick_data)
+
+            for condition in conditions:
+                condition_result = self.evaluate_condition(condition, candlesticks)
+                if not condition_result:
+                    break  # If any condition fails, break the loop
+                else:
+                    message = f"{exchange}, {symbol}, {token}"
+                    results.append(message)
+        return results
+
+    def parse_strategy(self, strategy_definition, section):
+        conditions = strategy_definition['strategy'][section]['conditions']
+        return conditions
+
+    def parse_candlesticks(self, candlesticks_data_list):
+        candle_data = {}
+        try:
+            # Extracting candlestick data
             candles_today_1m = None
             candles_today_2m = None
             candles_today_3m = None
 
-            try:
-                # Extracting stock details from candlestick_data
-                exchange = candlestick_data['exchange']
-                symbol = candlestick_data['symbol']
-                token = candlestick_data['token']
+            candles_today_1m = candlesticks_data_list['candlestick_data'][TODAY_1M]  # First dataframe
+            candles_today_2m = candlesticks_data_list['candlestick_data'][TODAY_2M]  # Second dataframe
+            # candles_today_3m = candlesticks_data_list['candlestick_data'][TODAY_3M]  # Third dataframe
 
-                # Extracting candlestick data
-                candles_today_1m = candlestick_data['candlestick_data'][MINUTE_1M]  # First dataframe
-                candles_today_2m = candlestick_data['candlestick_data'][MINUTE_2M]  # Second dataframe
-                candles_today_3m = candlestick_data['candlestick_data'][MINUTE_3M]  # Third dataframe
+            candle_data['1minute(-1)'] = self.get_last_candle_data(candles_today_1m, 1)
+            candle_data['2minute(-1)'] = self.get_last_candle_data(candles_today_2m, 1)
+            # candle_data['3minute(-1)'] = self.get_last_candle_data(candles_today_3m, 1)
 
-                # 1 Minute
-                last_open_today_1m, last_high_today_1m, last_low_today_1m, last_close_today_1m, last_volume_today_1m = self.get_nth_last_prices(
-                    candles_today_1m, 1)
-                second_last_open_today_1m, second_last_high_today_1m, second_last_low_today_1m, second_last_close_today_1m, second_last_volume_today_1m = self.get_nth_last_prices(
-                    candles_today_1m, 2)
-                third_last_open_today_1m, third_last_high_today_1m, third_last_low_today_1m, third_last_close_today_1m, third_last_volume_today_1m = self.get_nth_last_prices(
-                    candles_today_1m, 3)
+            candle_data['1minute(-2)'] = self.get_last_candle_data(candles_today_1m, 2)
+            candle_data['2minute(-2)'] = self.get_last_candle_data(candles_today_2m, 2)
+            # candle_data['3minute(-2)'] = self.get_last_candle_data(candles_today_3m, 2)
 
-                # 2 Minute
-                last_open_today_2m, last_high_today_2m, last_low_today_2m, last_close_today_2m, last_volume_today_2m = self.get_nth_last_prices(
-                    candles_today_2m, 1)
-                second_last_open_today_2m, second_last_high_today_2m, second_last_low_today_2m, second_last_close_today_2m, second_last_volume_today_2m = self.get_nth_last_prices(
-                    candles_today_2m, 2)
-                third_last_open_today_2m, third_last_high_today_2m, third_last_low_today_2m, third_last_close_today_2m, third_last_volume_today_2m = self.get_nth_last_prices(
-                    candles_today_2m, 3)
+            return candle_data
 
-                # 3 Minute
-                last_open_today_3m, last_high_today_3m, last_low_today_3m, last_close_today_3m, last_volume_today_3m = self.get_nth_last_prices(
-                    candles_today_3m, 1)
-                second_last_open_today_3m, second_last_high_today_3m, second_last_low_today_3m, second_last_close_today_3m, second_last_volume_today_3m = self.get_nth_last_prices(
-                    candles_today_3m, 2)
-                third_last_open_today_3m, third_last_high_today_3m, third_last_low_today_3m, third_last_close_today_3m, third_last_volume_today_3m = self.get_nth_last_prices(
-                    candles_today_3m, 3)
+        except Exception as error:
+            log_error(f"An error occurred while evaluating secondary conditions: {str(error)}")
 
-                # Last candle
-                last_candle_today_1m = self.get_last_n_candles(candles_today_1m, 1)
-                last_candle_today_2m = self.get_last_n_candles(candles_today_2m, 1)
-                last_candle_today_3m = self.get_last_n_candles(candles_today_3m, 1)
+    def evaluate_condition(self, condition, candlestick_data):
+        """Evaluates a single condition.
+        Args:
+          condition: The condition to evaluate.
+          candlestick_data: The candlestick data to evaluate.
 
-                # Second last candle
-                second_last_candle_today_1m = self.get_last_n_candles(candles_today_1m, 2)
-                second_last_candle_today_2m = self.get_last_n_candles(candles_today_2m, 2)
-                second_last_candle_today_3m = self.get_last_n_candles(candles_today_3m, 2)
+        Returns:
+          True if the condition is met, False otherwise.
+        """
+        if 'type' in condition:
+            if condition['type'] == 'AND':
+                return all(self.evaluate_condition(cond, candlestick_data) for cond in condition['rules'])
+            elif condition['type'] == 'OR':
+                return any(self.evaluate_condition(cond, candlestick_data) for cond in condition['rules'])
+        else:
+            # Base condition
+            if 'candle' in condition:
+                timeframe = condition['candle']
+                shift = condition['shift']
+                candle = self.get_candle_value(candlestick_data, timeframe, shift)
+                prev_candle = self.get_candle_value(candlestick_data, timeframe, shift - 1)
 
-                if self.strategy_type.upper() == Strategy_Type.LONG.value:
+                if candle is not None:
+                    if 'is red' in condition['value']:
+                        result = self.is_red(candle)
+                    elif 'is green' in condition['value']:
+                        result = self.is_green(candle)
+                    elif 'is bearish harami' in condition['value']:
+                        result = self.is_bearish_harami(candle, prev_candle)
+                    elif 'is bullish harami' in condition['value']:
+                        result = self.is_bullish_harami(candle, prev_candle)
+                    elif 'is bearish engulfing' in condition['value']:
+                        result = self.is_bearish_engulfing(candle, prev_candle)
+                    elif 'is inside bar' in condition['value']:
+                        result = self.is_inside_bar(candle, prev_candle)
+                    elif 'is shooting star' in condition['value']:
+                        result = self.is_shooting_star(candle)
+                    elif 'is hammer' in condition['value']:
+                        result = self.is_hammer(candle)
+                    elif 'is engulfing pattern' in condition['value']:
+                        result = self.is_engulfing_pattern(candle, prev_candle)
+                    elif 'is lower low' in condition['value']:
+                        result = self.is_lower_low(candle, prev_candle)
+                    elif 'is higher high' in condition['value']:
+                        result = self.is_higher_high(candle, prev_candle)
+                    elif 'is doji' in condition['value']:
+                        result = self.is_doji(candle)
+                    else:
+                        log_info(f"Unsupported candle condition: {condition}")
+                        result = False
+                    return result
+            else:
+                print(condition)
 
-                    # Check if the last obtained candles are green
-                    is_last_1m_green = self.is_green(last_candle_today_1m)
-                    is_last_2m_green = self.is_green(last_candle_today_2m)
-                    is_last_3m_green = self.is_green(last_candle_today_3m)
+    def get_candle_value(self, candlestick_data, timeframe, shift):
+        """Extracts candle data based on timeframe and shift.
+            Args:
+                candlestick_data: The candlestick data dictionary.
+                timeframe: The timeframe string (e.g., "default").
+                shift: The shift value (e.g., -1).
 
-                    is_higher_high_1m = self.is_higher_high(last_candle_today_1m, second_last_candle_today_1m)
-                    is_higher_high_2m = self.is_higher_high(last_candle_today_2m, second_last_candle_today_2m)
-                    is_higher_high_3m = self.is_higher_high(last_candle_today_3m, second_last_candle_today_3m)
-
-                    # Generate a buy signal if all last obtained candles are green
-                    try:
-                        # if is_last_1m_green.item() and is_last_2m_green.item():
-                        #     # buy signal 
-                        #     return True    
-                        # elif is_last_2m_green.item() and is_last_3m_green.item():
-                        #     # buy signal 
-                        #     return True    
-                        # elif is_last_3m_green.item(): 
-                        #     # buy signal             
-                        #     return True    
-                        # else: 
-                        #     return False
-
-                        return True
-
-                    except Exception as error:
-                        log_error(
-                            f"An error occurred while evaluating secondary conditions for Long Trade: {str(error)}")
-                        return False
-
-                elif self.strategy_type.upper() == Strategy_Type.SHORT.value:
-
-                    # Check if the last obtained candles are red
-                    is_last_1m_red = self.is_red(last_candle_today_1m)
-                    is_last_2m_red = self.is_red(last_candle_today_2m)
-                    is_last_3m_red = self.is_red(last_candle_today_3m)
-
-                    is_lower_low_1m = self.is_lower_low(last_candle_today_1m, second_last_candle_today_1m)
-                    is_lower_low_2m = self.is_lower_low(last_candle_today_2m, second_last_candle_today_2m)
-                    is_lower_low_3m = self.is_lower_low(last_candle_today_3m, second_last_candle_today_3m)
-
-                    # Generate a sell signal if all last obtained candles are red
-                    try:
-                        # if is_last_1m_red.item() and is_last_2m_red.item():
-                        #     # sell signal 
-                        #     return True    
-                        # elif is_last_2m_red.item() and is_last_3m_red.item():
-                        #     # sell signal 
-                        #     return True    
-                        # elif is_last_3m_red.item(): 
-                        #     # sell signal 
-                        #     return True    
-                        # else: 
-                        #     return False
-
-                        return True
-                    except Exception as error:
-                        log_error(
-                            f"An error occurred while evaluating secondary conditions for Short Trade: {str(error)}")
-                        return False
-
-            except Exception as error:
-                log_error(f"An error occurred while evaluating secondary conditions for {symbol}: {str(error)}")
-
-        return results
+            Returns:
+                The extracted candle data or None if not found.
+            """
+        key = f"{timeframe}({shift})"
+        if key in candlestick_data:
+            return candlestick_data[key]
+        else:
+            return None

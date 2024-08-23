@@ -100,7 +100,6 @@ class Strategy(BaseStrategy):
             if self.strategy_list is not None:
                 for strategy in self.strategy_list:
                     saved_strategy_list.append(strategy.get("strategy_id"))
-
             # Check if Strategy already exists in database if not add strategy to database
             for filename in os.listdir(ALGORITHM_PATH):
                 strategy_id, strategy_name, strategy_type, strategy_description = self.generate_strategy_details(filename)
