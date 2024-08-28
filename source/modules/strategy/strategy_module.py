@@ -162,6 +162,9 @@ class Strategy(BaseStrategy):
             # Create Topics
             for strategy in self.strategy_list:
                 strategy_id = strategy.get("strategy_id")
+                if strategy_id == '000':
+                    continue
+
                 topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, self.topic_mode)
 
                 if topic_arn in saved_topics_list:
@@ -238,6 +241,9 @@ class Strategy(BaseStrategy):
             # Create Queues
             for strategy in self.strategy_list:
                 strategy_id = strategy.get("strategy_id")
+                if strategy_id == '000':
+                    continue
+
                 queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_details(strategy_id, self.queue_mode)
                 topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, self.topic_mode)
 
@@ -302,6 +308,9 @@ class Strategy(BaseStrategy):
 
         for strategy in self.strategy_list:
             strategy_id = strategy.get("strategy_id")
+            if strategy_id == '000':
+                continue
+
             topic_arn, topic_name = self.generate_aws_sns_topic_details(strategy_id, self.topic_mode)
             queue_arn, queue_name, queue_url = self.generate_aws_sqs_queue_details(strategy_id, self.queue_mode)
 

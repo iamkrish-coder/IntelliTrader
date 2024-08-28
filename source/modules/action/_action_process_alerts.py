@@ -68,7 +68,7 @@ class ActionProcessAlerts(BaseAction):
             delete_message = self.object_sqs_manager.get_action("delete_message_queue", **arguments)
             response = delete_message.execute()
             if response is None:
-                log_info("No messages available in the subscribed queue.")
+                log_info("No messages available in queue.")
                 return None
             else:
                 return response

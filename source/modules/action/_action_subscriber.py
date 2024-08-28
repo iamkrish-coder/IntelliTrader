@@ -95,7 +95,7 @@ class ActionSubscriber(BaseAction):
                 subscribe_topic = self.object_sqs_manager.get_action("subscribe_queue", **arguments)
                 response = subscribe_topic.execute()
                 if response is None:
-                    log_info("No messages available in the subscribed queue.")
+                    log_info("No messages available.")
                     return None
                 else:
                     return response
