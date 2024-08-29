@@ -64,7 +64,7 @@ class ActionCandlesticks:
             for i, trading_data in enumerate(self.trading_watchlist, start=1):
                 self.trading_exchange, self.trading_symbol, self.trading_token = trading_data
 
-                print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
+                print(f"\nSecondary Scanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
                 log_info(f"Fetching OHLCV data for Secondary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
 
                 candlestick_data = await self.get_candlestick_information()

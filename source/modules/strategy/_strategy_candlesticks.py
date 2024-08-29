@@ -156,7 +156,7 @@ class StrategyCandlesticks:
                     'token': self.trading_token
                 }
 
-                print(f"\nScanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
+                print(f"\nPrimary Scanning Stock {i}/{len(self.trading_watchlist)}: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}\n")
                 log_info(f"Fetching OHLCV data for Primary Conditions: {self.trading_exchange}, {self.trading_symbol}, {self.trading_token}")
 
                 candlestick_data = await self.get_candlestick_information()
