@@ -106,13 +106,12 @@ class Strategy(BaseStrategy):
                 if strategy_id in saved_strategy_list:
                     continue
 
-                current_date = time.strftime("%Y-%m-%d %H:%M:%S")
                 dataset = {
                     "strategy_id": strategy_id,
                     "strategy_name": strategy_name,
                     "strategy_type": strategy_type,
                     "strategy_description": strategy_description,
-                    "created_date": current_date
+                    "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
                 save_strategies = self.prepare_request_parameters(
                     event=Events.PUT.value,
@@ -193,12 +192,11 @@ class Strategy(BaseStrategy):
                         return False
 
                     # Add entry to AWS DynamoDB
-                    current_date = time.strftime("%Y-%m-%d %H:%M:%S")
                     dataset = {
                         "topic_arn": topic_arn,
                         "topic_name": topic_name,
                         "strategy_id": strategy_id,
-                        "created_date": current_date
+                        "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
                     }
                     save_topics = self.prepare_request_parameters(
                         event=Events.PUT.value,
@@ -278,13 +276,12 @@ class Strategy(BaseStrategy):
                     return False
 
                 # Add entry to AWS DynamoDB
-                current_date = time.strftime("%Y-%m-%d %H:%M:%S")
                 dataset = {
                     "queue_arn": queue_arn,
                     "queue_name": queue_name,
                     "queue_url": queue_url,
                     "strategy_id": strategy_id,
-                    "created_date": current_date
+                    "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
                 save_queues = self.prepare_request_parameters(
                     event=Events.PUT.value,
@@ -362,10 +359,9 @@ class Strategy(BaseStrategy):
                 return False
 
             # Add entry to AWS DynamoDB
-            modified_date = time.strftime("%Y-%m-%d %H:%M:%S")
             dataset = {
                 "topic_arn": topic_arn,
-                "modified_date": modified_date,
+                "modified_date": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "is_subscribed": True,
                 "is_active": True
             }

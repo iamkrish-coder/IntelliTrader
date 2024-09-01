@@ -63,7 +63,8 @@ class Cache_Type(Enum):
 class Tables(Enum):
     TABLE_TOPICS = 'topics'
     TABLE_QUEUES = 'queues'
-    TABLE_ALERTS = 'alerts'
+    TABLE_SIGNALS = 'signals'
+    TABLE_TRADES = 'trades'
     TABLE_STRATEGIES = 'strategies'
 
 
@@ -235,6 +236,16 @@ class AverageTrueRange(Enum):
 class StrategyDefinition(Enum):
     BUY = 'buy'
     SELL = 'sell'
-    EXIT = 'exit'
     SL = 'stop_loss'
-    TP = 'take_profit'
+    TP = 'trail_profit'
+    TSL = "trail_stop_loss"
+    EXIT = 'exit'
+
+
+class SignalType(Enum):
+    BUY = 'Buy'
+    SELL = 'Sell'
+    SL = 'Stop Loss'
+    TP = 'Trailing Profit'
+    TSL = "Trailing Stop Loss"
+    EXIT = 'Exit'

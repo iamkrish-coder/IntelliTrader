@@ -33,9 +33,8 @@ class StrategyPublisher(BaseStrategy):
     def initialize(self):
         return self.publish()
 
-    def prepare_request_parameters(
-        self, event, table, model, dataset, projection=[], filters={}
-    ):
+    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
+
         attributes = None
         config = self.database.table_configuration[table]
         if model:
