@@ -13,5 +13,15 @@
         "table_key": "queues",
         "partition_key": "queue_arn",
         "sort_key": ""
+    },
+    "signals": {
+        "table_key": "signals",
+        "partition_key": "signal_id",
+        "sort_key": ""
+    },
+    "trades": {
+        "table_key": "trades",
+        "partition_key": "trade_id",
+        "sort_key": ""
     }
 }

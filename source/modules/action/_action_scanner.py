@@ -14,8 +14,10 @@ class ActionScanner(BaseAction):
         self.parameters = parameters
         self.candlesticks_data_list = candlesticks_data_list
         self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']
+        self.strategy_id = self.parameters['strategy_params.strategy_id']
         self.strategy_type = self.parameters['strategy_params.strategy_type']
         self.strategy_definition = self.get_strategy_definition()
+        self.signal_type = None
 
     def initialize(self):
         return self.scan_secondary_conditions()
@@ -31,6 +33,7 @@ class ActionScanner(BaseAction):
 
     def scan_secondary_conditions(self):
         results = []
+        alert_signals = {}
         for stock_index, (candlestick_data) in enumerate(self.candlesticks_data_list):
 
             exchange = candlestick_data['exchange']
@@ -39,6 +42,7 @@ class ActionScanner(BaseAction):
 
             conditions = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY.value)
             candlesticks = self.parse_candlesticks(candlestick_data)
+            self.signal_type = SignalType.BUY.value
 
             for condition in conditions:
                 condition_result = self.evaluate_condition(condition, candlesticks)
@@ -47,7 +51,11 @@ class ActionScanner(BaseAction):
                 else:
                     message = f"{exchange}, {symbol}, {token}"
                     results.append(message)
-        return results
+        return {
+            "strategy_id": self.strategy_id,
+            "signal_type": self.signal_type,
+            "results": results
+        }
 
     def parse_strategy(self, strategy_definition, section):
         conditions = strategy_definition['strategy'][section]['conditions']

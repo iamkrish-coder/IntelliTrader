@@ -32,8 +32,9 @@
       ]
     },
     "sell": "",
-    "exit": "",
     "stop_loss": "",
-    "take_profit": ""
+    "trail_profit": "",
+    "trail_stop_loss": "",
+    "exit": ""
   }
 }
