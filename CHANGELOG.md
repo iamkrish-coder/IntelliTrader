@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.11](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.10...v3.12.11) (2024-09-01)
+
+
+### Features
+
+* Added the ability to store signals into a table for further order processing ([3cb6e91](https://github.com/iamkrish-coder/IntelliTrader/commit/3cb6e9129c47112c8724265aef82d738c54ce35c))
+* Added the ability to store signals into a table for further order processing ([7d5eaa7](https://github.com/iamkrish-coder/IntelliTrader/commit/7d5eaa7a7de909a43e92198cefa9f765c9977d1a))
+
 ## [3.12.10](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.9...v3.12.10) (2024-08-23)
 
 
