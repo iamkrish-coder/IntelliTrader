@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.11...v4.0.0) (2024-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Refactored action controller to more meaningful signal processor
+
+### Code Refactoring
+
+* Refactored action controller to more meaningful signal processor ([bc78651](https://github.com/iamkrish-coder/IntelliTrader/commit/bc78651206a1dea1560a980da04851155e3436f9))
+
 ## [3.12.11](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.10...v3.12.11) (2024-09-01)
 
 
