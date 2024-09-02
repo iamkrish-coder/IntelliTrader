@@ -6,7 +6,7 @@ from ..constants.const import ARN
 class Logger(Enum):
     DATABASE_LOGGER = "database_logger"
     STRATEGY_LOGGER = "strategy_logger"
-    ACTION_LOGGER = "action_logger"
+    SIGNAL_PROCESSOR_LOGGER = "signal_processor_logger"
     MONITORING_LOGGER = "monitoring_logger"
     TRADE_LOGGER = "trade_logger"
 
@@ -21,21 +21,21 @@ class AWS_SQS(Enum):
 
 
 class Queues(Enum):
-    QUEUE_1 = 'IntelliTrader_Q1'
-    QUEUE_2 = 'IntelliTrader_Q2'
-    QUEUE_3 = 'IntelliTrader_Q3'
-    QUEUE_4 = 'IntelliTrader_Q4'
-    QUEUE_5 = 'IntelliTrader_Q5'
-    QUEUE_6 = 'IntelliTrader_Q6'
+    QUEUE_1 = 1
+    QUEUE_2 = 2
+    QUEUE_3 = 3
+    QUEUE_4 = 4
+    QUEUE_5 = 5
+    QUEUE_6 = 6
 
 
 class Topics(Enum):
-    TOPIC_1 = 'IntelliTrader_T1'
-    TOPIC_2 = 'IntelliTrader_T2'
-    TOPIC_3 = 'IntelliTrader_T3'
-    TOPIC_4 = 'IntelliTrader_T4'
-    TOPIC_5 = 'IntelliTrader_T5'
-    TOPIC_6 = 'IntelliTrader_T6'
+    TOPIC_1 = 1
+    TOPIC_2 = 2
+    TOPIC_3 = 3
+    TOPIC_4 = 4
+    TOPIC_5 = 5
+    TOPIC_6 = 6
 
 
 class Strategy(Enum):

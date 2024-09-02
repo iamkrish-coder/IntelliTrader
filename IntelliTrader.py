@@ -27,7 +27,7 @@ from source.modules.helper.helper_module import Helper
 
 from source.controllers.BaseController import BaseController
 from source.controllers.strategy_controller import StrategyController
-from source.controllers.action_controller import ActionController
+from source.controllers.signal_processor_controller import SignalProcessorController
 
 # from source.controllers.monitoring_controller import MonitoringController
 
@@ -50,7 +50,7 @@ class IntelliTrader:
         self.database = None
         self.strategy = None
         self.strategy_controller_instance = None
-        self.action_controller_instance = None
+        self.signal_processor_controller_instance = None
         self.monitoring_controller_instance = None
         self.scheduler_instance = None
         self.cancelled = False
@@ -65,7 +65,7 @@ class IntelliTrader:
         """Establishes Logging capabilities"""
         database_log_path = os.path.join(OUTPUT_PATH, "database.log")
         strategy_log_path = os.path.join(OUTPUT_PATH, "strategy.log")
-        action_log_path = os.path.join(OUTPUT_PATH, "actions.log")
+        signal_processor_log_path = os.path.join(OUTPUT_PATH, "signal_processor.log")
         monitoring_log_path = os.path.join(OUTPUT_PATH, "monitoring.log")
 
         # Create named loggers with desired levels (optional)
@@ -73,8 +73,8 @@ class IntelliTrader:
         database_logger.setLevel(logging.DEBUG)
         strategy_logger = logging.getLogger(Logger.STRATEGY_LOGGER.value)
         strategy_logger.setLevel(logging.DEBUG)
-        action_logger = logging.getLogger(Logger.ACTION_LOGGER.value)
-        action_logger.setLevel(logging.DEBUG)
+        signal_processor_logger = logging.getLogger(Logger.signal_processor_logger.value)
+        signal_processor_logger.setLevel(logging.DEBUG)
         monitoring_logger = logging.getLogger(Logger.MONITORING_LOGGER.value)
         monitoring_logger.setLevel(logging.DEBUG)
 
@@ -128,13 +128,13 @@ class IntelliTrader:
             else:
                 """Initialize controllers only if all module initialization succeeded"""
                 self.strategy_controller_instance = StrategyController(self.controller)
-                self.action_controller_instance = ActionController(self.controller)
+                self.signal_processor_controller_instance = SignalProcessorController(self.controller)
                 # self.monitoring_controller_instance = None
 
                 tasks = [
                     #self.strategy_controller(),
-                    self.action_controller(),
-                    # self.monitoring_controller()
+                    self.signal_processor_controller(),
+                    #self.monitoring_controller()
                 ]
                 await asyncio.gather(*tasks)
         else:
@@ -193,17 +193,17 @@ class IntelliTrader:
 
     ###########################################
     ###########################################
-    #            ACTION CONTROLLER            #
+    #       SIGNAL PROCESSOR CONTROLLER       #
     ###########################################
     ###########################################
 
-    async def action_controller(self):
+    async def signal_processor_controller(self):
         """Processes any generated alerts from the scanner."""
-        logger = logging.getLogger(ACTION_LOGGER_NAME)
-        await self.action_controller_instance.initialize()
+        logger = logging.getLogger(SIGNAL_PROCESSOR_LOGGER_NAME)
+        await self.signal_processor_controller_instance.initialize()
 
         # Instantiate the Scheduler Instance
-        # scheduler_instance = Scheduler(self.configuration, action_controller_instance, None, ASYNCIO)
+        # scheduler_instance = Scheduler(self.configuration, signal_processor_controller_instance, None, ASYNCIO)
 
         # # Start Scheduler
         # scheduler_instance.start_scheduler()
@@ -253,8 +253,8 @@ if __name__ == "__main__":
     strategy_thread = threading.Thread(target=trader.initialize_strategy_controller)
     strategy_thread.start()
 
-    # Start action in a separate thread
-    strategy_thread = threading.Thread(target=trader.initialize_action_controller)
+    # Start signal_processor in a separate thread
+    strategy_thread = threading.Thread(target=trader.initialize_signal_processor_controller)
     strategy_thread.start()
     
     # Start monitoring in a separate thread
@@ -270,7 +270,7 @@ if __name__ == "__main__":
     process1 = Process(target=trader.initialize_strategy_controller)
     process1.start()
 
-    process2 = Process(target=trader.initialize_action_controller)
+    process2 = Process(target=trader.initialize_signal_processor_controller)
     process2.start()
 
     process3 = Process(target=trader.initialize_monitoring_controller)

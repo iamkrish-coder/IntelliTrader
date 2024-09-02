@@ -1,4 +1,4 @@
-# handlers/actions
+# handlers/signal_processor
 import time
 
 from ...constants.const import *
@@ -8,7 +8,7 @@ from ...utils.caching_utils import *
 from ...models.signals_model import SignalsModel
 
 
-class ActionTriggers:
+class SignalProcessorTriggers:
     def __init__(self, connection, modules, parameters, database, alerts):
         self.connection = connection
         self.modules = modules

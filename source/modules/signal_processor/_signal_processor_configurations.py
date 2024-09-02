@@ -1,11 +1,11 @@
-# handlers/actions
+# handlers/signal_processor
 
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 
-class ActionConfigurations:
+class SignalProcessorConfigurations:
     def __init__(self, configuration):
         self.configuration = configuration
 
