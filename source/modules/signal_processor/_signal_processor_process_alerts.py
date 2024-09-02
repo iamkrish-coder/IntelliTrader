@@ -1,4 +1,4 @@
-# handlers/actions
+# handlers/signal_processor
 
 import asyncio
 import datetime
@@ -12,9 +12,9 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 from ...utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import SQSManager
-from .BaseAction import BaseAction
+from .BaseSignalProcessor import BaseSignalProcessor
 
-class ActionProcessAlerts(BaseAction):
+class SignalProcessorProcessAlerts(BaseSignalProcessor):
     def __init__(self, connection, modules, parameters, database, alerts):
         super().__init__(connection, modules)
         self.modules = modules

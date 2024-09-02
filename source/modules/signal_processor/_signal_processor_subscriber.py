@@ -1,4 +1,4 @@
-# handlers/actions
+# handlers/signal_processor
 
 import time
 import boto3
@@ -9,10 +9,10 @@ from ...utils.logging_utils import *
 from ...utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import SQSManager
 from ...aws.sns.aws_sns_manager import SNSManager
-from .BaseAction import BaseAction
+from .BaseSignalProcessor import BaseSignalProcessor
 
 
-class ActionSubscriber(BaseAction):
+class SignalProcessorSubscriber(BaseSignalProcessor):
     def __init__(self, connection, modules, parameters, database, subscriber):
         super().__init__(connection, modules)
         self.strategy_queue = None

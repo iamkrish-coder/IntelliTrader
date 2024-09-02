@@ -40,12 +40,12 @@ def configure_logging():
     strategy_handler.setFormatter(plain_formatter)
     strategy_logger.addHandler(strategy_handler)
 
-    action_logger = logging.getLogger(ACTION_LOGGER_NAME)
-    action_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'actions.log'))
-    action_handler.setLevel(logging.DEBUG)
+    signal_processor_logger = logging.getLogger(SIGNAL_PROCESSOR_LOGGER_NAME)
+    signal_processor_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'signal_processor.log'))
+    signal_processor_handler.setLevel(logging.DEBUG)
     plain_formatter = logging.Formatter('%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d]: %(message)s')
-    action_handler.setFormatter(plain_formatter)
-    action_logger.addHandler(action_handler)
+    signal_processor_handler.setFormatter(plain_formatter)
+    signal_processor_logger.addHandler(signal_processor_handler)
 
     monitoring_logger = logging.getLogger(MONITORING_LOGGER_NAME)
     monitoring_handler = logging.FileHandler(os.path.join(OUTPUT_PATH, 'monitoring.log'))

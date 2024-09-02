@@ -1,11 +1,11 @@
-# IntelliTrader\source\modules\action\BaseAction.py
+# IntelliTrader\source\modules\signal_processor\BaseSignalProcessor.py
 
 from abc import ABC, abstractmethod
 from ..shared.shared_functions import SharedFunctions
 from sys import modules
 
 
-class BaseAction(ABC, SharedFunctions):
+class BaseSignalProcessor(ABC, SharedFunctions):
     def __init__(self, connection, modules):
         super().__init__(connection, modules)
         self.connection = connection

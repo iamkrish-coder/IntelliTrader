@@ -1,13 +1,13 @@
-# handlers/actions
+# handlers/signal_processor
 import json
 
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
-from .BaseAction import BaseAction
+from .BaseSignalProcessor import BaseSignalProcessor
 
 
-class ActionScanner(BaseAction):
+class SignalProcessorScanner(BaseSignalProcessor):
     def __init__(self, connection, modules, parameters, candlesticks_data_list, candles_timeframe=None):
         super().__init__(connection, modules)
         self.modules = modules
