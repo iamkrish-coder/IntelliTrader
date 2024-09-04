@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v4.0.0...v4.1.0) (2024-09-04)
+
+
+### Features
+
+* Added Trade Controller - retrieves the signals from database and updates them on processing, refactored file and controller names ([88a1ac0](https://github.com/iamkrish-coder/IntelliTrader/commit/88a1ac0b479e792a0bfef756a6140e05821d6161))
+
 ## [4.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v3.12.11...v4.0.0) (2024-09-02)
 
 
