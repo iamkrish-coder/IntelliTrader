@@ -1,4 +1,4 @@
-# IntelliTrader\source\modules\strategy\BaseStrategy.py
+# IntelliTrader\source\modules\signal\BaseSignal.py
 
 from abc import ABC, abstractmethod
 from ..shared.shared_functions import SharedFunctions
@@ -8,7 +8,7 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 
-class BaseStrategy(ABC, SharedFunctions):
+class BaseSignal(ABC, SharedFunctions):
     def __init__(self, connection, modules):
         super().__init__(connection, modules)
         self.connection = connection
@@ -31,9 +31,10 @@ class BaseStrategy(ABC, SharedFunctions):
                 "attributes": attributes,
                 "projection": projection,
                 "filters": filters,
-            },
+            }
         }
 
     def database_request(self, request):
         log_info(f"Requesting AWS DynamoDB...")
-        return self.database.manage_table_records(request)
+        self.database.manage_table_records(request)
+        return True

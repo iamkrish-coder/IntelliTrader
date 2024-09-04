@@ -1,4 +1,4 @@
-# handlers/signal_processor
+# handlers/signal
 
 import time
 import boto3
@@ -9,10 +9,10 @@ from ...utils.logging_utils import *
 from ...utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import SQSManager
 from ...aws.sns.aws_sns_manager import SNSManager
-from .BaseSignalProcessor import BaseSignalProcessor
+from .BaseSignal import BaseSignal
 
 
-class SignalProcessorSubscriber(BaseSignalProcessor):
+class SignalSubscriber(BaseSignal):
     def __init__(self, connection, modules, parameters, database, subscriber):
         super().__init__(connection, modules)
         self.strategy_queue = None
@@ -30,27 +30,6 @@ class SignalProcessorSubscriber(BaseSignalProcessor):
 
     def initialize(self):
         return self.subscribe()
-
-    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
-
-        attributes = None
-        config = self.database.table_configuration[table]
-        if model:
-            attributes = model(**dataset).convert_table_rows_to_dict(config)
-        return {
-            "event": event,
-            "table": table,
-            "config": config,
-            "data": {
-                "attributes": attributes,
-                "projection": projection,
-                "filters": filters,
-            }
-        }
-
-    def database_request(self, request):
-        log_info(f"Requesting AWS DynamoDB...")
-        return self.database.manage_table_records(request)
 
     def get_topics_for_subscription(self):
 

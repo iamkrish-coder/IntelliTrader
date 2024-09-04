@@ -1,4 +1,4 @@
-# handlers/signal_processor
+# handlers/signal
 
 import asyncio
 import datetime
@@ -12,9 +12,9 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 from ...utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import SQSManager
-from .BaseSignalProcessor import BaseSignalProcessor
+from .BaseSignal import BaseSignal
 
-class SignalProcessorProcessAlerts(BaseSignalProcessor):
+class SignalProcessAlerts(BaseSignal):
     def __init__(self, connection, modules, parameters, database, alerts):
         super().__init__(connection, modules)
         self.modules = modules
@@ -32,27 +32,6 @@ class SignalProcessorProcessAlerts(BaseSignalProcessor):
 
     def initialize(self):
         return self.process_alerts()
-
-    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
-
-        attributes = None
-        config = self.database.table_configuration[table]
-        if model:
-            attributes = model(**dataset).convert_table_rows_to_dict(config)
-        return {
-            "event": event,
-            "table": table,
-            "config": config,
-            "data": {
-                "attributes": attributes,
-                "projection": projection,
-                "filters": filters,
-            }
-        }
-
-    def database_request(self, request):
-        log_info(f"Requesting AWS DynamoDB...")
-        return self.database.manage_table_records(request)
 
     def delete_message_from_queue(self, receipt_handle):
         if self.strategy_id is None:

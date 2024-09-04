@@ -1,6 +1,7 @@
-# handlers/signal_processor
+# handlers/signal
 import time
 
+from .BaseSignal import BaseSignal
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
@@ -8,7 +9,7 @@ from ...utils.caching_utils import *
 from ...models.signals_model import SignalsModel
 
 
-class SignalProcessorTriggers:
+class SignalTriggers(BaseSignal):
     def __init__(self, connection, modules, parameters, database, alerts):
         self.connection = connection
         self.modules = modules
@@ -18,28 +19,6 @@ class SignalProcessorTriggers:
 
     def initialize(self):
         return self.triggers()
-
-    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
-
-        attributes = None
-        config = self.database.table_configuration[table]
-        if model:
-            attributes = model(**dataset).convert_table_rows_to_dict(config)
-        return {
-            "event": event,
-            "table": table,
-            "config": config,
-            "data": {
-                "attributes": attributes,
-                "projection": projection,
-                "filters": filters,
-            }
-        }
-
-    def database_request(self, request):
-        log_info(f"Requesting AWS DynamoDB...")
-        self.database.manage_table_records(request)
-        return True
 
     def triggers(self):
         for alert in self.alerts['results']:
