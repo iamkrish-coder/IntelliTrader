@@ -62,28 +62,12 @@ class Strategy(BaseStrategy):
         # All successful, return True
         return True
 
-    def prepare_request_parameters(self, event, table, model, dataset=None, projection=[], filters={}):
-        attributes = None
-        config = self.table_configuration[table]
-        if model and dataset is not None:
-            attributes = model(**dataset).convert_table_rows_to_dict(config)
-        return {
-            "event": event,
-            "table": table,
-            "config": config,
-            "data": {
-                "attributes": attributes,
-                "projection": projection,
-                "filters": filters,
-            },
-        }
-
     def get_strategy_list(self):
         dataset = None
         list_strategies = self.prepare_request_parameters(
             event=Events.SCAN.value,
             table=Tables.TABLE_STRATEGIES.value,
-            model=StrategiesModel,
+            model=None,
             dataset=dataset,
             projection=["strategy_id", "strategy_name"],
         )
@@ -253,8 +237,7 @@ class Strategy(BaseStrategy):
                 try:
                     """ Access Policy """
                     object_access_policy = AccessPolicy(SQS)
-                    object_access_policy.set_policy_statement(aws_queue_resource=queue_arn,
-                                                              aws_topic_resource=topic_arn)
+                    object_access_policy.set_policy_statement(aws_queue_resource=queue_arn,                      aws_topic_resource=topic_arn)
                     access_policy = object_access_policy.get_policy()
 
                     arguments = {

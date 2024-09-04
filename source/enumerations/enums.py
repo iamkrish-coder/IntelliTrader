@@ -6,9 +6,9 @@ from ..constants.const import ARN
 class Logger(Enum):
     DATABASE_LOGGER = "database_logger"
     STRATEGY_LOGGER = "strategy_logger"
-    SIGNAL_PROCESSOR_LOGGER = "signal_processor_logger"
-    MONITORING_LOGGER = "monitoring_logger"
+    SIGNAL_LOGGER = "signal_logger"
     TRADE_LOGGER = "trade_logger"
+    MONITORING_LOGGER = "monitoring_logger"
 
 
 class AWS_SQS(Enum):

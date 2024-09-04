@@ -1,4 +1,4 @@
-# handlers/signal_processor
+# handlers/signal
 
 import math
 import asyncio
@@ -7,7 +7,7 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 
-class SignalProcessorCandlesticks:
+class SignalCandlesticks:
     def __init__(self, connection, modules, parameters, watchlist):
         self.connection = connection
         self.modules = modules

@@ -33,27 +33,6 @@ class StrategyPublisher(BaseStrategy):
     def initialize(self):
         return self.publish()
 
-    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
-
-        attributes = None
-        config = self.database.table_configuration[table]
-        if model:
-            attributes = model(**dataset).convert_table_rows_to_dict(config)
-        return {
-            "event": event,
-            "table": table,
-            "config": config,
-            "data": {
-                "attributes": attributes,
-                "projection": projection,
-                "filters": filters,
-            },
-        }
-
-    def database_request(self, request):
-        log_info(f"Requesting AWS DynamoDB...")
-        return self.database.manage_table_records(request)
-
     # def set_topic_published_status(self):
     #
     #     log_info(f"Updating SNS Topic status...")

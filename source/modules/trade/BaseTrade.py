@@ -1,13 +1,38 @@
+# IntelliTrader\source\modules\trade\BaseTrade.py
+
+from abc import ABC, abstractmethod
+from ..shared.shared_functions import SharedFunctions
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 
-class BaseTrade:
+class BaseTrade(ABC, SharedFunctions):
     def __init__(self, modules, transaction_type, order_type):
         self.modules = modules
         self.transaction_type = transaction_type
         self.order_type = order_type
+
+    def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
+        attributes = None
+        config = self.database.table_configuration[table]
+        if model:
+            attributes = model(**dataset).convert_table_rows_to_dict(config)
+        return {
+            "event": event,
+            "table": table,
+            "config": config,
+            "data": {
+                "attributes": attributes,
+                "projection": projection,
+                "filters": filters,
+            }
+        }
+
+    def database_request(self, request):
+        log_info(f"Requesting AWS DynamoDB...")
+        self.database.manage_table_records(request)
+        return True
 
     def execute_trade(self):
         if self.transaction_type == Transaction_Type.BUY.value:

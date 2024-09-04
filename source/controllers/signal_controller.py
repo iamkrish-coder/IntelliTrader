@@ -1,4 +1,4 @@
-# controller/signal_processor
+# controller/signal
 
 import os
 import time
@@ -18,17 +18,17 @@ from ..constants.const import *
 from ..enumerations.enums import *
 
 from ..configurations.shared_parameters import SharedParameters
-from ..modules.signal_processor._signal_processor_configurations import SignalProcessorConfigurations
-from ..modules.signal_processor._signal_processor_subscriber import SignalProcessorSubscriber
-from ..modules.signal_processor._signal_processor_process_alerts import SignalProcessorProcessAlerts
-from ..modules.signal_processor._signal_processor_candlesticks import SignalProcessorCandlesticks
-from ..modules.signal_processor._signal_processor_scanner import SignalProcessorScanner
-from ..modules.signal_processor._signal_processor_triggers import  SignalProcessorTriggers
+from ..modules.signal._signal_configurations import SignalConfigurations
+from ..modules.signal._signal_subscriber import SignalSubscriber
+from ..modules.signal._signal_process_alerts import SignalProcessAlerts
+from ..modules.signal._signal_candlesticks import SignalCandlesticks
+from ..modules.signal._signal_scanner import SignalScanner
+from ..modules.signal._signal_triggers import  SignalTriggers
 from ..controllers.BaseController import BaseController
 from ..utils.logging_utils import *
 
 
-class SignalProcessorController(BaseController):
+class SignalController(BaseController):
 
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
@@ -40,15 +40,15 @@ class SignalProcessorController(BaseController):
         self.alert_signals = None
 
     async def initialize(self):
-        log_info(f"Running signal processor...{self.run_count} Times")
-        return await self.signal_processor_handler()
+        log_info(f"Running signal ...{self.run_count} Times")
+        return await self.signal_handler()
 
-    async def signal_processor_handler(self):
+    async def signal_handler(self):
         """
         Orchestrates the execution of a trading strategy, coordinating multiple handlers for various tasks.
 
         Steps:
-        1. Loads signal_processor configurations and parameters.
+        1. Loads signal configurations and parameters.
         2. Polls for new messages from Queue
         3. Adds stock alerts to watchlist
         4. Fetches candlestick data for short timeframes for the assets in the watchlist.
@@ -57,7 +57,7 @@ class SignalProcessorController(BaseController):
         """
 
         # 1. Load configurations and parameters
-        object_configuration_handler = SignalProcessorConfigurations(self.configuration)
+        object_configuration_handler = SignalConfigurations(self.configuration)
         settings = object_configuration_handler.initialize()
 
         object_parameters_handler = SharedParameters(settings)
@@ -66,16 +66,16 @@ class SignalProcessorController(BaseController):
 
         # 2. Poll for messages in Queue
         self.subscriber = SNS
-        object_subscriber_handler = SignalProcessorSubscriber(self.connection, self.modules, self.parameters, self.database, self.subscriber)
+        object_subscriber_handler = SignalSubscriber(self.connection, self.modules, self.parameters, self.database, self.subscriber)
         self.messages = object_subscriber_handler.initialize()
 
         if self.messages is not None:
             # 3. Add Stock Alerts to Watchlist
-            alert_handlers = SignalProcessorProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages)
+            alert_handlers = SignalProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages)
             self.watchlist = alert_handlers.initialize()
 
             # 4. Get Micro Candlesticks Data for Secondary Checks
-            object_candlesticks_handler = SignalProcessorCandlesticks(self.connection, self.modules, self.parameters, self.watchlist)
+            object_candlesticks_handler = SignalCandlesticks(self.connection, self.modules, self.parameters, self.watchlist)
             try:
                 candlestick_data_fetch_task = asyncio.create_task(
                     object_candlesticks_handler.initialize()
@@ -89,12 +89,12 @@ class SignalProcessorController(BaseController):
 
             else:
                 # 5. Get Final Trade signals
-                object_scanner_handler = SignalProcessorScanner(self.connection, self.modules, self.parameters, candlestick_data_list)
+                object_scanner_handler = SignalScanner(self.connection, self.modules, self.parameters, candlestick_data_list)
                 self.alert_signals = object_scanner_handler.initialize()
 
                 # 6. Store Trade signals
                 if self.alert_signals is not None and len(self.alert_signals) > 0:
-                    object_trigger_handler = SignalProcessorTriggers(self.connection, self.modules, self.parameters, self.database, self.alert_signals)
+                    object_trigger_handler = SignalTriggers(self.connection, self.modules, self.parameters, self.database, self.alert_signals)
                     object_trigger_handler.initialize()
         else:
             log_info("No messages available in the subscribed queue.")

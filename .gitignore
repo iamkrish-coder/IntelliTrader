@@ -9,7 +9,7 @@
 /source/data/historical
 /source/enumerations/__pycache__
 /source/language/__pycache__
-/source/modules/signal_processor/__pycache__
+/source/modules/signal/__pycache__
 /source/modules/configurations/__pycache__
 /source/modules/connection/__pycache__
 /source/modules/fetch/__pycache__

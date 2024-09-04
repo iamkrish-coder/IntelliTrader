@@ -1,4 +1,5 @@
 # database_fetch_record.py
+from turtledemo.sorting_animate import partition
 
 from ...constants.const import *
 from ...enumerations.enums import *
@@ -54,12 +55,14 @@ class DatabaseFetchRecord:
         table = self.table
         data = self.data
         attribute_data = data.get("attributes")
-        attributes = attribute_data.get("row_data")
-        partition = attribute_data.get("partition_object")
-        sort = attribute_data.get("sort_object")
+        if attribute_data:
+            attributes = attribute_data.get("row_data")
+            partition = attribute_data.get("partition_object")
+            sort = attribute_data.get("sort_object")
+        else:
+            attributes = partition = sort = None
         projection = data.get("projection")
         filters = data.get("filters")
 
-        object_dynamodb = DynamoDB(table=table, attribute_data=attributes, partition_key=partition, sort_key=sort,
-                                   projection=projection, filters=filters)
+        object_dynamodb = DynamoDB(table=table, attribute_data=attributes, partition_key=partition, sort_key=sort, projection=projection, filters=filters)
         return object_dynamodb.query()
