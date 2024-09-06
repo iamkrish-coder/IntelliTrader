@@ -29,4 +29,5 @@
 __pycache__/
 /env_python_3.12
 /source/cache
+/.vscode
 *.idea/*
