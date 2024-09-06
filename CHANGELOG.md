@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v4.1.0...v5.0.0) (2024-09-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Breaking changes, introducing Market and Limit Order placement, revamped configurations, updated enum usage
+
+### Features
+
+* Breaking changes, introducing Market and Limit Order placement, revamped configurations, updated enum usage ([84cea47](https://github.com/iamkrish-coder/IntelliTrader/commit/84cea47cbfac7c66bea262e099c92d8061c20754))
+
 ## [4.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v4.0.0...v4.1.0) (2024-09-04)
 
 
