@@ -1,5 +1,6 @@
 # TradeExecutionSignals
 import time
+from datetime import datetime, timedelta
 
 from .BaseTrade import BaseTrade
 from ...constants.const import *
@@ -30,15 +31,24 @@ class TradeSignals(BaseTrade):
     def get_signals(self):
         try:
             dataset = None
+            threshold_time = (datetime.datetime.now() - datetime.timedelta(hours=300)).strftime('%Y-%m-%d %H:%M:%S')
             list_signals = self.prepare_request_parameters(
                 event=Events.SCAN.value,
                 table=Tables.TABLE_SIGNALS.value,
                 model=None,
                 dataset=dataset,
-                projection=["strategy_id", "signal_id", "trade_type", "signal_type","signal_exchange","signal_symbol","signal_token"],
+                projection=[
+                    "signal_id",
+                    "signal_strategy",
+                    "signal_type",
+                    "signal_exchange",
+                    "signal_symbol",
+                    "signal_token",
+                    "created_date"],
                 filters={
                     "is_active": True,
-                    "is_complete": False
+                    "is_complete": False,
+                    "created_date": {'gte': threshold_time}
                 }
             )
             signals = self.database.database_request(list_signals)
@@ -49,6 +59,7 @@ class TradeSignals(BaseTrade):
 
     def update_signals(self):
         try:
+            # Update the valid signals only
             for signal in self.signals:
                 # Add entry to AWS DynamoDB
                 dataset = {

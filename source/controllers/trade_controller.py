@@ -51,13 +51,15 @@ class TradeController(BaseController):
 
         if self.signals is not None:
             # 3. Trade placement - Place Order and store trade in database
-            # object_trade_handler = TradeOrders(self.modules, self.parameters, self.signals)
-            # object_trade_handler.initialize()
+            object_trade_handler = TradeOrders(self.modules, self.parameters, self.database, self.signals)
+            self.orders = object_trade_handler.initialize()
 
             # 4. Update Signals - Update completed signals in database
             self.signal_event = SIGNAL_EVENT_POST
             self.signals = [item['signal_id'] for item in self.signals]
             object_signal_handler = TradeSignals(self.modules, self.parameters, self.database, self.signal_event, self.signals)
-            object_signal_handler.initialize()
+            # object_signal_handler.initialize()
+        else:
+            log_info("No trade signals available at this moment")
 
         self.run_count += 1

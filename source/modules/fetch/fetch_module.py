@@ -302,7 +302,16 @@ class Fetch:
     # Fetch ltp 
     def fetch_ltp(self, exchange, symbol):
         if exchange and symbol:
-            exchange = exchange.upper()
+            if isinstance(exchange, int):
+                # Convert integer to enum description
+                try:
+                    exchange = Exchange(exchange).name
+                except ValueError:
+                    # Handle invalid integer value
+                    raise ValueError(f"Invalid exchange value: {exchange}")
+            else:
+                exchange = exchange.upper()
+
             symbol = symbol.upper()
             last_traded_price = self.prop['kite'].ltp(f'{exchange}:{symbol}')
             log_info(f'::::::: LTP ::::::: Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')

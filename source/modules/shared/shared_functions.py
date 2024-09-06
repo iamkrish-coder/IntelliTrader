@@ -126,36 +126,6 @@ class SharedFunctions:
     def get_global_market_sentiment(self):
         pass
 
-    def calculate_quantity_per_capita(self, max_allocation, stock_last_traded_price, lot_size=1):
-        try:
-            max_allocation = float(max_allocation)
-            stock_last_traded_price = float(stock_last_traded_price)
-
-            # Calculate the quantity of stocks based on maximum allocation
-            quantity = max_allocation / (stock_last_traded_price * lot_size)
-            return quantity
-        except ValueError:
-            # Handle the case where the inputs are not valid numbers
-            return None
-
-    def compute_quantity(self):
-        if self.max_allocation is not None:
-            if self.quantity == "per capita":
-                self.symbol_ltp = self.modules['fetch'].fetch_ltp(self.exchange, self.symbol)
-                quantity_per_capita = math.floor(
-                    self.calculate_quantity_per_capita(self.max_allocation, self.symbol_ltp))
-                log_info(f"Quantity per capital {self.max_allocation}: {quantity_per_capita}")
-                return quantity_per_capita
-            else:
-                quantity = int(self.quantity)
-                if quantity <= 0:
-                    # Handle the case where quantity is not positive
-                    log_error("Error: Quantity cannot be less than or equal to 0")
-                    return None
-                return quantity
-        else:
-            return None
-
     def get_first_candle_data(self, candles, period):
         try:
             # return [value.item() for value in self.get_nth_first_prices(candles, period)]
@@ -407,3 +377,90 @@ class SharedFunctions:
     def generate_group_id(self, strategy_id):
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
         return f"{strategy_id}-{timestamp}"
+
+    def calculate_quantity_per_allocation(self, max_allocation, stock_last_traded_price, lot_size=1):
+        try:
+            max_allocation = float(max_allocation)
+            stock_last_traded_price = float(stock_last_traded_price)
+
+            # Calculate the quantity of stocks based on maximum allocation
+            quantity = max_allocation / (stock_last_traded_price * lot_size)
+            return quantity
+        except ValueError:
+            # Handle the case where the inputs are not valid numbers
+            return None
+
+    def calculate_quantity_per_risk(self, max_risk, stock_last_traded_price, stop_loss_percentage=0.05, lot_size=1):
+        try:
+            max_risk = float(max_risk)
+            stock_last_traded_price = float(stock_last_traded_price)
+            stop_loss_percentage = float(stop_loss_percentage)
+
+            # Calculate the stop-loss price based on the percentage
+            stop_loss_price = stock_last_traded_price * (1 - stop_loss_percentage)
+
+            # Calculate the risk per share
+            risk_per_share = stock_last_traded_price - stop_loss_price
+
+            # Calculate the quantity of stocks based on maximum risk
+            quantity = max_risk / (risk_per_share * lot_size)
+
+            return quantity
+        except ValueError:
+            # Handle the case where the inputs are not valid numbers
+            return None
+
+    def set_quantity(self, exchange, symbol, max_quantity, position_size_type, max_allocation, max_risk):
+        if exchange is None or symbol is None:
+            log_error("Error: Exchange and Symbol cannot be None")
+            return None
+
+        if position_size_type == Position_Size.CAPITAL_BASED.value:
+            ltp = self.modules['fetch'].fetch_ltp(exchange, symbol)
+            quantity = math.floor(self.calculate_quantity_per_allocation(max_allocation, ltp))
+        elif position_size_type == Position_Size.RISK_BASED.value:
+            ltp = self.modules['fetch'].fetch_ltp(exchange, symbol)
+            quantity = math.floor(self.calculate_quantity_per_risk(max_risk, ltp))
+        elif position_size_type == Position_Size.MANUAL.value:
+            quantity = int(1)
+        else:
+            log_error("Error: Invalid position_size_type")
+            return None
+
+        if max_quantity < quantity:
+            quantity = max_quantity
+
+        return quantity
+
+    def set_limit_price(self, exchange, symbol, default_price_enum, limit_buffer):
+        """Sets the limit price for a trade.
+
+        Args:
+            exchange (str): The exchange where the trade will be executed.
+            symbol (str): The symbol of the instrument being traded.
+            default_price (float): The default price to be used.
+            limit_buffer (float): The buffer to be added to or subtracted from the default price.
+
+        Returns:
+            float: The calculated limit price.
+        """
+        # Fetch the stock value based on the enum value
+        if default_price_enum == Default_Price_Limit.LTP.value:
+            stock_value = self.modules['fetch'].fetch_ltp(exchange, symbol)
+        else:
+            # Handle invalid default_price_enum
+            raise ValueError("Invalid default_price_enum")
+
+        if limit_buffer > 0:
+            limit_price = stock_value + limit_buffer
+        elif limit_buffer < 0:
+            limit_price = stock_value - abs(limit_buffer)
+        else:
+            limit_price = stock_value
+
+        return limit_price
+
+    def set_trigger_price(self, exchange, symbol):
+        pass
+
+

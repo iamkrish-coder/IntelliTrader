@@ -14,31 +14,20 @@ class SignalConfigurations:
 
     def manage_configurations(self):
         try:
-            strategy_id = self.configuration.get("strategy")
-
             # Initialize Settings
             config = self.configuration
             settings = {}
 
             # Store non-dict top-level items in main_params
-            main_params = {key: value for key, value in config.items() if not isinstance(value, dict)}
-            settings['runtime_params'] = main_params
+            settings['runtime_params'] = {key: value for key, value in config.items() if not isinstance(value, dict)}
 
-            # Handle trade and market params based on trade flags
-            if config['live_trade']:
-                settings['trade_params'] = config['live_trade_params']
-            elif config['virtual_trade'] and not config['live_trade']:
-                settings['trade_params'] = config['virtual_trade_params']
-
-            if config['market_trade']:
-                settings['market_params'] = config['market_trade_params']
+            if config['global_trade']:
+                settings['global_params'] = config['global_trade_params']
 
             # Retrieve strategy params dynamically (assuming strategy_id exists)
+            strategy_id = self.configuration.get("strategy")
             strategy_param_key = f"strategy_{strategy_id}_params"
             settings['strategy_params'] = config.get(strategy_param_key)
-
-            # Common params (assuming it's always a dict)
-            settings['common_params'] = config.get("common_trade_params", {})
 
             return settings
 

@@ -19,13 +19,13 @@ class StrategyWatchlist:
 
     def get_stock_basket(self, exchange, symbol):
         stock_basket = []
-        if exchange.upper() == Exchange.NSE.value:
+        if exchange.upper() == EXCHANGE_NSE:
             if symbol.upper() == "DEFAULT":
                 symbols_list = pd.read_csv(DEFAULT_BASKET)
                 stock_basket = symbols_list['Symbol'].tolist()
             else:
                 stock_basket.append(symbol.upper())
-        elif exchange.upper() == Exchange.BSE.value:
+        elif exchange.upper() == EXCHANGE_BSE:
             if symbol.upper() == "DEFAULT":
                 stock_basket = pd.read_csv(DEFAULT_BASKET)
             else:

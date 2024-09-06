@@ -81,7 +81,7 @@ class DynamoDB:
             if response['ResponseMetadata']['HTTPStatusCode'] == 200:
 
                 if 'Items' not in response or not response['Items']:
-                    log_info(f"Record not found in table {self.table}. Table might be empty.")
+                    log_info(f"No records found in the table {self.table}. Table might be empty.")
                     return None
                 else:
                     log_info(f"Record fetched successfully: {response}")

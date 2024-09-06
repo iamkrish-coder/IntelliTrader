@@ -38,6 +38,7 @@ class SignalController(BaseController):
         self.subscriber = None
         self.messages = None
         self.alert_signals = None
+        self.dnd = True
 
     async def initialize(self):
         log_info(f"Running signal ...{self.run_count} Times")
@@ -71,7 +72,7 @@ class SignalController(BaseController):
 
         if self.messages is not None:
             # 3. Add Stock Alerts to Watchlist
-            alert_handlers = SignalProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages)
+            alert_handlers = SignalProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages, self.dnd)
             self.watchlist = alert_handlers.initialize()
 
             # 4. Get Micro Candlesticks Data for Secondary Checks

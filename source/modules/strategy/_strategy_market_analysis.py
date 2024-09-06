@@ -12,8 +12,8 @@ class StrategyMarketAnalysis:
         self.local_market_sentiment = None
         self.modules = modules
         self.parameters = parameters
-        self.market_params = self.parameters.get('runtime_params.market_trade')
-        self.market_indices = self.parameters.get('market_params.market_indices')
+        self.global_params = self.parameters.get('runtime_params.global_trade')
+        self.market_indices = self.parameters.get('global_params.market_indices')
         self.market_sentiment = None
 
     def initialize(self):
@@ -29,7 +29,7 @@ class StrategyMarketAnalysis:
 
     # Analyze market sentiment and determine strategy recommendations:
     def analyze_market_sentiments(self):
-        if self.market_params:
+        if self.global_params:
             self.local_market_sentiment = self.get_local_market_sentiment()
             self.global_market_sentiment = self.get_global_market_sentiment()
 

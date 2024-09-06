@@ -4,11 +4,7 @@ from ..constants.const import ARN
 
 
 class Logger(Enum):
-    DATABASE_LOGGER = "database_logger"
-    STRATEGY_LOGGER = "strategy_logger"
-    SIGNAL_LOGGER = "signal_logger"
-    TRADE_LOGGER = "trade_logger"
-    MONITORING_LOGGER = "monitoring_logger"
+    INTELLITRADER_LOGGER = "intellitrader_logger"
 
 
 class AWS_SQS(Enum):
@@ -20,31 +16,13 @@ class AWS_SQS(Enum):
     URL = 'https://sqs.ap-south-1.amazonaws.com'
 
 
-class Queues(Enum):
-    QUEUE_1 = 1
-    QUEUE_2 = 2
-    QUEUE_3 = 3
-    QUEUE_4 = 4
-    QUEUE_5 = 5
-    QUEUE_6 = 6
-
-
-class Topics(Enum):
-    TOPIC_1 = 1
-    TOPIC_2 = 2
-    TOPIC_3 = 3
-    TOPIC_4 = 4
-    TOPIC_5 = 5
-    TOPIC_6 = 6
-
-
-class Strategy(Enum):
-    ALGORITHM_1 = 1
-    ALGORITHM_2 = 2
-    ALGORITHM_3 = 3
-    ALGORITHM_4 = 4
-    ALGORITHM_5 = 5
-    ALGORITHM_6 = 6
+class StrategyDefinition(Enum):
+    BUY = "buy"
+    SELL = "sell"
+    STOP_LOSS = "stop_loss"
+    TRAIL_PROFIT = "trail_profit"
+    TRAIL_STOP_LOSS = "trail_stop_loss"
+    EXIT = "exit"
 
 
 class AWS_SNS(Enum):
@@ -82,47 +60,70 @@ class Market_Sentiment(Enum):
     NEGATIVE = 'NEGATIVE'
 
 
+class Position_Size(Enum):
+    CAPITAL_BASED = 1
+    RISK_BASED = 2
+    MANUAL = 3
+
+
+class Instrument_Type(Enum):
+    EQUITY = 1
+    OPTIONS = 2
+    FUTURES = 3
+
+
 class Variety(Enum):
-    REGULAR = 'REGULAR'
-    AMO = 'AMO'
-    CO = 'CO'
-    ICEBERG = 'ICEBERG'
-    AUCTION = 'AUCTION'
+    REGULAR = 1
+    AMO = 2
+    CO = 3
+    ICEBERG = 4
+    AUCTION = 5
 
 
 class Exchange(Enum):
-    NSE = 'NSE'
-    BSE = 'BSE'
+    NSE = 1
+    BSE = 2
 
 
 class Transaction_Type(Enum):
-    BUY = 'BUY'
-    SELL = 'SELL'
-
+    BUY = 1
+    SELL = 2
+    SL = 3
+    TP = 4
+    TSL = 5
+    EXIT = 6
 
 class Product(Enum):
-    MIS = 'MIS'
-    CNC = 'CNC'
-    NRML = 'NRML'
+    CNC = 1
+    NRML = 2
+    MIS = 3
 
 
 class Order_Type(Enum):
-    MARKET = 'MARKET'
-    LIMIT = 'LIMIT'
-    SL = 'SL'
-    SL_M = 'SL-M'
-    GTT = 'GTT'
+    MARKET = 1
+    LIMIT = 2
+    SL = 3
+    SL_M = 4
+    GTT = 5
 
 
 class Validity(Enum):
-    DAY = 'DAY'
-    IOC = 'IOC'
-    TTL = 'TTL'
+    DAY = 1
+    IOC = 2
+    TTL = 3
 
 
 class Strategy_Type(Enum):
-    LONG = 'LONG'
-    SHORT = 'SHORT'
+    LONG = 1
+    SHORT = 2
+
+
+class Default_Price_Limit(Enum):
+    LTP = 1
+    OPEN = 2
+    HIGH = 3
+    LOW = 4
+    CLOSE = 5
 
 
 class RSI(Enum):
@@ -232,20 +233,3 @@ class AverageTrueRange(Enum):
     AVERAGETRUERANGE_100 = 100
     AVERAGETRUERANGE_200 = 200
 
-
-class StrategyDefinition(Enum):
-    BUY = 'buy'
-    SELL = 'sell'
-    SL = 'stop_loss'
-    TP = 'trail_profit'
-    TSL = "trail_stop_loss"
-    EXIT = 'exit'
-
-
-class SignalType(Enum):
-    BUY = 'Buy'
-    SELL = 'Sell'
-    SL = 'Stop Loss'
-    TP = 'Trailing Profit'
-    TSL = "Trailing Stop Loss"
-    EXIT = 'Exit'

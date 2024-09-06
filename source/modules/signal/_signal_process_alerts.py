@@ -15,7 +15,7 @@ from ...aws.sqs.aws_sqs_manager import SQSManager
 from .BaseSignal import BaseSignal
 
 class SignalProcessAlerts(BaseSignal):
-    def __init__(self, connection, modules, parameters, database, alerts):
+    def __init__(self, connection, modules, parameters, database, alerts, dnd=False):
         super().__init__(connection, modules)
         self.modules = modules
         self.parameters = parameters
@@ -29,6 +29,7 @@ class SignalProcessAlerts(BaseSignal):
         self.trading_exchange = None
         self.monitored_stocks = []
         self.is_stock_monitored = False
+        self.do_not_delete = dnd
 
     def initialize(self):
         return self.process_alerts()
@@ -69,7 +70,9 @@ class SignalProcessAlerts(BaseSignal):
                 self.trading_exchange, self.trading_symbol, self.trading_token = message_content.split(', ')
                 self.monitored_stocks.append((self.trading_exchange.strip(), self.trading_symbol.strip(), self.trading_token.strip()))
                 receipt_handle = message['ReceiptHandle']
-                # self.delete_message_from_queue(receipt_handle)
+
+                if not self.do_not_delete:
+                    self.delete_message_from_queue(receipt_handle)
 
             log_info(f"\nStock Alerts Received from Queue: {self.monitored_stocks}\n")
         else:

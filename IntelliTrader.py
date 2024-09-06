@@ -61,25 +61,6 @@ class IntelliTrader:
         Helper().create_output_directory()
         configure_logging()
 
-        """Establishes Logging capabilities"""
-        database_log_path = os.path.join(OUTPUT_PATH, "database.log")
-        strategy_log_path = os.path.join(OUTPUT_PATH, "strategy.log")
-        signal_log_path = os.path.join(OUTPUT_PATH, "signal.log")
-        trade_log_path = os.path.join(OUTPUT_PATH, "trade.log")
-        monitoring_log_path = os.path.join(OUTPUT_PATH, "monitoring.log")
-
-        # Create named loggers with desired levels (optional)
-        database_logger = logging.getLogger(Logger.DATABASE_LOGGER.value)
-        database_logger.setLevel(logging.DEBUG)
-        strategy_logger = logging.getLogger(Logger.STRATEGY_LOGGER.value)
-        strategy_logger.setLevel(logging.DEBUG)
-        signal_logger = logging.getLogger(Logger.SIGNAL_LOGGER.value)
-        signal_logger.setLevel(logging.DEBUG)
-        trade_logger = logging.getLogger(Logger.TRADE_LOGGER.value)
-        trade_logger.setLevel(logging.DEBUG)
-        monitoring_logger = logging.getLogger(Logger.MONITORING_LOGGER.value)
-        monitoring_logger.setLevel(logging.DEBUG)
-
     def initialize_components(self):
         """Establishes connection, initializes modules and configuration."""
         self.connection = Connection().connect_to_broker()
@@ -104,9 +85,7 @@ class IntelliTrader:
                 self.connection, self.modules, self.app_configuration, self.database
             )
         else:
-            log_error(
-                "Incomplete configuration: App or Table configuration is missing. Please verify the setup..."
-            )
+            log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
             return None
 
     def get_configuration(self):
@@ -123,9 +102,7 @@ class IntelliTrader:
         if self.controller is not None:
             """Initialize database connection and module prerequisites"""
             if not self.initialize_module_prerequisites():
-                log_error(
-                    f"Application failed to initialize required modules. Please check the setup."
-                )
+                log_error(f"Application failed to initialize required modules. Please check the setup.")
                 return False
             else:
                 """Initialize controllers only if all module initialization succeeded"""
@@ -134,15 +111,13 @@ class IntelliTrader:
                 self.trade_controller_instance = TradeController(self.controller)
 
                 tasks = [
-                    self.strategy_controller(),
-                    self.signal_controller(),
+                    #self.strategy_controller(),
+                    #self.signal_controller(),
                     self.trade_controller()
                 ]
                 await asyncio.gather(*tasks)
         else:
-            log_error(
-                f"Application failed to initialize controller. Please check the setup."
-            )
+            log_error(f"Application failed to initialize controller. Please check the setup.")
             return False
 
     ###########################################
@@ -164,12 +139,10 @@ class IntelliTrader:
             factory_reset_object.initialize()
 
         # Establishes Database Connection
-        logger = logging.getLogger(DATABASE_LOGGER_NAME)
         if not self.database.initialize():
             return False
 
         # Establishes Module Prerequisites
-        logger = logging.getLogger(STRATEGY_LOGGER_NAME)
         if not self.strategy.initialize():
             return False
 
@@ -183,7 +156,6 @@ class IntelliTrader:
 
     async def strategy_controller(self):
         """Starts the scanning process for watchlist stocks."""
-        logger = logging.getLogger(STRATEGY_LOGGER_NAME)
         await self.strategy_controller_instance.initialize()  # FOR TESTING
 
         # Instantiate the Scheduler Instance
@@ -201,7 +173,6 @@ class IntelliTrader:
 
     async def signal_controller(self):
         """Processes any generated alerts from the scanner."""
-        logger = logging.getLogger(SIGNAL_LOGGER_NAME)
         await self.signal_controller_instance.initialize()
 
         # Instantiate the Scheduler Instance
@@ -219,7 +190,6 @@ class IntelliTrader:
 
     async def trade_controller(self):
         """Monitors existing trade and performs necessary actions."""
-        logger = logging.getLogger(MONITORING_LOGGER_NAME)
         await self.trade_controller_instance.initialize()
 
         # Instantiate the Scheduler Instance

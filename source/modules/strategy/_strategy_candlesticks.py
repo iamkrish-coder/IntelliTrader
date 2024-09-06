@@ -22,7 +22,7 @@ class StrategyCandlesticks:
         self.trading_token = None
         self.trading_timeframe = None
         self.timeframe = parameters.get('strategy_params.timeframe')
-        self.historical_data_subscription = parameters.get('trade_params.historical_data_subscription')
+        self.historical_data_subscription = parameters.get('runtime_params.historical_data_subscription')
         self.cache_path = CACHE_PATH
         self.market_start_time = datetime.time(hour=9, minute=15)
 

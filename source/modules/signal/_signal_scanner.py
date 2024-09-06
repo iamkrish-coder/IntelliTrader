@@ -15,7 +15,7 @@ class SignalScanner(BaseSignal):
         self.candlesticks_data_list = candlesticks_data_list
         self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']
         self.strategy_id = self.parameters['strategy_params.strategy_id']
-        self.strategy_type = self.parameters['strategy_params.strategy_type']
+        self.strategy_type = int(self.parameters['strategy_params.strategy_type'])
         self.strategy_definition = self.get_strategy_definition()
         self.signal_type = None
 
@@ -24,8 +24,11 @@ class SignalScanner(BaseSignal):
 
     def get_strategy_definition(self):
         strategy_contents = None
+        strategy_type_enum = Strategy_Type(self.strategy_type)
+        strategy_type_description = strategy_type_enum.name
+
         for filename in os.listdir(ALGORITHM_PATH):
-            if filename.startswith(f"STR-000-Secondary-{self.strategy_type.capitalize()}"):
+            if filename.startswith(f"STR-000-Secondary-{strategy_type_description.capitalize()}"):
                 strategy_file = os.path.join(ALGORITHM_PATH, filename)
                 with open(strategy_file, 'r') as f:
                     strategy_contents = json.load(f)
@@ -42,7 +45,7 @@ class SignalScanner(BaseSignal):
 
             conditions = self.parse_strategy(self.strategy_definition, StrategyDefinition.BUY.value)
             candlesticks = self.parse_candlesticks(candlestick_data)
-            self.signal_type = SignalType.BUY.value
+            self.signal_type = Transaction_Type.BUY.value
 
             for condition in conditions:
                 condition_result = self.evaluate_condition(condition, candlesticks)

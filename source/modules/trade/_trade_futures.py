@@ -1,4 +1,4 @@
-import BaseTrade
+from .BaseTrade import BaseTrade
 
 
 class FuturesTrade(BaseTrade):

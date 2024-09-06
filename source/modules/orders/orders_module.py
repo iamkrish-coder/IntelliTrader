@@ -26,7 +26,7 @@ class Orders:
     # Place a market order for a stock with given quantity
     def create_market_order(self, order_parameters):
 
-        trade_variety, trade_exchange, trade_symbol, trade_transaction, trade_quantity, trade_product, trade_ordertype, trade_validity = order_parameters
+        trade_variety, trade_exchange, trade_symbol, trade_transaction_type, trade_quantity, trade_disclosed_quantity, trade_ordertype, trade_product, trade_price, trade_trigger_price,  trade_validity, trade_validity_ttl, trade_iceberg_legs, trade_iceberg_quantity, trade_tag = order_parameters
 
         # Define mapping dictionaries for each parameter
         variety_mapping = {
@@ -48,9 +48,9 @@ class Orders:
         }
 
         product_mapping = {
-            Product.MIS.value: self.prop['kite'].PRODUCT_MIS,
             Product.CNC.value: self.prop['kite'].PRODUCT_CNC,
-            Product.NRML.value: self.prop['kite'].PRODUCT_NRML
+            Product.NRML.value: self.prop['kite'].PRODUCT_NRML,
+            Product.MIS.value: self.prop['kite'].PRODUCT_MIS
         }
 
         order_type_mapping = {
@@ -67,12 +67,12 @@ class Orders:
         }
 
         # Convert strings to constants using the mapping dictionaries
-        trade_variety = variety_mapping.get(trade_variety.upper())
-        trade_exchange = exchange_mapping.get(trade_exchange.upper())
-        trade_transaction = transaction_mapping.get(trade_transaction.upper())
-        trade_product = product_mapping.get(trade_product.upper())
-        trade_ordertype = order_type_mapping.get(trade_ordertype.upper())
-        trade_validity = validity_mapping.get(trade_validity.upper())
+        trade_variety = variety_mapping.get(trade_variety)
+        trade_exchange = exchange_mapping.get(trade_exchange)
+        trade_transaction_type = transaction_mapping.get(trade_transaction_type)
+        trade_product = product_mapping.get(trade_product)
+        trade_ordertype = order_type_mapping.get(trade_ordertype)
+        trade_validity = validity_mapping.get(trade_validity)
 
         if trade_variety is None:
             log_error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
@@ -82,7 +82,7 @@ class Orders:
             log_error("The order placement does not have a specified exchange to NSE or BSE.")
             return False
 
-        if trade_transaction is None:
+        if trade_transaction_type is None:
             log_error("The order placement does not have a specified action to buy or sell.")
             return False
 
@@ -95,51 +95,127 @@ class Orders:
             return False
 
         try:
-            order_id = self.prop['kite'].place_order(tradingsymbol=trade_symbol,
-                                                     exchange=trade_exchange,
-                                                     transaction_type=trade_transaction,
-                                                     quantity=trade_quantity,
-                                                     variety=trade_variety,
-                                                     order_type=trade_ordertype,
-                                                     product=trade_product,
-                                                     validity=trade_validity)
+            order_id = self.prop['kite'].place_order(
+                variety=trade_variety,
+                exchange=trade_exchange,
+                tradingsymbol=trade_symbol,
+                transaction_type=trade_transaction_type,
+                quantity=trade_quantity,
+                disclosed_quantity=trade_disclosed_quantity,
+                product=trade_product,
+                order_type=trade_ordertype,
+                price=trade_price,
+                trigger_price=trade_trigger_price,
+                validity=trade_validity,
+                validity_ttl=trade_validity_ttl,
+                iceberg_legs=trade_iceberg_legs,
+                iceberg_quantity=trade_iceberg_quantity,
+                tag=trade_tag
+            )
 
             log_info(f"Market order placed. Order ID: {order_id}")
+            return order_id
+
         except Exception as error:
             log_info("Order placement failed: {}".format(error))
 
-        return
 
-        # Place a limit order for a stock with given quantity
+    # Place a limit order for a stock with given quantity
+    def create_limit_order(self, order_parameters):
 
-    def create_limit_order(self, variety, symbol, transaction, quantity, product, limit_price):
-        if transaction == 'buy':
-            transaction_type = self.prop['kite'].TRANSACTION_TYPE_BUY
-        elif transaction == 'sell':
-            transaction_type = self.prop['kite'].TRANSACTION_TYPE_SELL
-        else:
+        trade_variety, trade_exchange, trade_symbol, trade_transaction_type, trade_quantity, trade_disclosed_quantity, trade_ordertype, trade_product, trade_price, trade_trigger_price,  trade_validity, trade_validity_ttl, trade_iceberg_legs, trade_iceberg_quantity, trade_tag = order_parameters
+
+        # Define mapping dictionaries for each parameter
+        variety_mapping = {
+            Variety.REGULAR.value: self.prop['kite'].VARIETY_REGULAR,
+            Variety.AMO.value: self.prop['kite'].VARIETY_AMO,
+            Variety.CO.value: self.prop['kite'].VARIETY_CO,
+            Variety.ICEBERG.value: self.prop['kite'].VARIETY_ICEBERG,
+            Variety.AUCTION.value: self.prop['kite'].VARIETY_AUCTION
+        }
+
+        exchange_mapping = {
+            Exchange.NSE.value: self.prop['kite'].EXCHANGE_NSE,
+            Exchange.BSE.value: self.prop['kite'].EXCHANGE_BSE
+        }
+
+        transaction_mapping = {
+            Transaction_Type.BUY.value: self.prop['kite'].TRANSACTION_TYPE_BUY,
+            Transaction_Type.SELL.value: self.prop['kite'].TRANSACTION_TYPE_SELL
+        }
+
+        product_mapping = {
+            Product.CNC.value: self.prop['kite'].PRODUCT_CNC,
+            Product.NRML.value: self.prop['kite'].PRODUCT_NRML,
+            Product.MIS.value: self.prop['kite'].PRODUCT_MIS
+        }
+
+        order_type_mapping = {
+            Order_Type.MARKET.value: self.prop['kite'].ORDER_TYPE_MARKET,
+            Order_Type.LIMIT.value: self.prop['kite'].ORDER_TYPE_LIMIT,
+            Order_Type.SL.value: self.prop['kite'].ORDER_TYPE_SL,
+            Order_Type.SL_M.value: self.prop['kite'].ORDER_TYPE_SLM
+        }
+
+        validity_mapping = {
+            Validity.DAY.value: self.prop['kite'].VALIDITY_DAY,
+            Validity.IOC.value: self.prop['kite'].VALIDITY_IOC,
+            Validity.TTL.value: self.prop['kite'].VALIDITY_TTL,
+        }
+
+        # Convert strings to constants using the mapping dictionaries
+        trade_variety = variety_mapping.get(trade_variety)
+        trade_exchange = exchange_mapping.get(trade_exchange)
+        trade_transaction_type = transaction_mapping.get(trade_transaction_type)
+        trade_product = product_mapping.get(trade_product)
+        trade_ordertype = order_type_mapping.get(trade_ordertype)
+        trade_validity = validity_mapping.get(trade_validity)
+
+        if trade_variety is None:
+            log_error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
+            return False
+
+        if trade_exchange is None:
+            log_error("The order placement does not have a specified exchange to NSE or BSE.")
+            return False
+
+        if trade_transaction_type is None:
             log_error("The order placement does not have a specified action to buy or sell.")
-            exit()
+            return False
+
+        if trade_product is None:
+            log_error("The order placement does not have a specified product to MIS, CNC, or NRML.")
+            return False
+
+        if trade_ordertype is None:
+            log_error("The order type does not match the required format.")
+            return False
 
         try:
             response = self.prop['kite'].place_order(
-                variety=variety,
-                exchange=self.prop['kite'].EXCHANGE_NSE,
-                tradingsymbol=symbol,
-                transaction_type=transaction,
-                quantity=quantity,
-                product=product,
-                order_type=self.prop['kite'].ORDER_TYPE_LIMIT,
-                price=limit_price
+                variety=trade_variety,
+                exchange=trade_exchange,
+                tradingsymbol=trade_symbol,
+                transaction_type=trade_transaction_type,
+                quantity=trade_quantity,
+                disclosed_quantity=trade_disclosed_quantity,
+                product=trade_product,
+                order_type=trade_ordertype,
+                price=trade_price,
+                trigger_price=trade_trigger_price,
+                validity=trade_validity,
+                validity_ttl=trade_validity_ttl,
+                iceberg_legs=trade_iceberg_legs,
+                iceberg_quantity=trade_iceberg_quantity,
+                tag=trade_tag
             )
-            if "order_id" in response:
-                order_id = response["order_id"]
-                log_info(f"Limit order placed successfully. Order ID: {order_id}")
+            if response:
+                log_info(f"Limit order placed successfully. Request ID: {response}")
+                return response
             else:
-                error_message = response["error_type"] + ": " + response["message"]
-                log_error(f"Limit order placement failed. Error: {error_message}")
+                log_error(f"Limit order placement failed. Error: {response}")
         except Exception as error:
-            log_info(f"Order placement failed: {error}")
+            log_error(f"Order placement failed: {error}")
 
     # Place a stop loss order for a stock with given quantity
     def create_sl_order(self):
@@ -155,9 +231,13 @@ class Orders:
         if gtt_type == 'single':
             gtt_trigger_type = 'GTT_TYPE_SINGLE'
             try:
-                single_gtt = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol,
-                                                         exchange=exchange, trigger_values=trigger_values,
-                                                         last_price=last_price, orders=order_list)
+                single_gtt = self.prop['kite'].place_gtt(
+                    trigger_type=gtt_trigger_type,
+                    tradingsymbol=symbol,
+                    exchange=exchange,
+                    trigger_values=trigger_values,
+                    last_price=last_price,
+                    orders=order_list)
                 log_info(f"Single leg gtt order trigger_id: {single_gtt['trigger_id']}")
             except Exception as error:
                 log_error(f"Error placing single leg gtt order: {error}")
@@ -166,9 +246,13 @@ class Orders:
         elif gtt_type == 'oco':
             gtt_trigger_type = 'GTT_TYPE_OCO'
             try:
-                gtt_oco = self.prop['kite'].place_gtt(trigger_type=gtt_trigger_type, tradingsymbol=symbol,
-                                                      exchange=exchange, trigger_values=trigger_values,
-                                                      last_price=last_price, orders=order_list)
+                gtt_oco = self.prop['kite'].place_gtt(
+                    trigger_type=gtt_trigger_type,
+                    tradingsymbol=symbol,
+                    exchange=exchange,
+                    trigger_values=trigger_values,
+                    last_price=last_price,
+                    orders=order_list)
                 log_info(f"GTT OCO trigger_id: {gtt_oco['trigger_id']}")
             except Exception as error:
                 log_info(f"Error placing gtt oco order: {error}")

@@ -26,13 +26,14 @@ class SignalTriggers(BaseSignal):
             current_time = datetime.datetime.now()
             formatted_datetime = current_time.strftime("%y%m%d%H%M")
             signal_id = f"{symbol[:3]}{formatted_datetime}"
+            exchange_enum = Exchange[exchange]
 
             dataset = {
                 "signal_id": signal_id,
+                "signal_strategy": self.alerts['strategy_id'],
                 "signal_type": self.alerts['signal_type'],
-                "strategy_id": self.alerts['strategy_id'],
+                "signal_exchange": exchange_enum.value,
                 "signal_symbol": symbol,
-                "signal_exchange": exchange,
                 "signal_token": token,
                 "is_active": True,
                 "is_complete": False,
