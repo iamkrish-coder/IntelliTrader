@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.0.0...v5.0.1) (2024-09-07)
+
+
+### Bug Fixes
+
+* Renamed files for consistent naming conventions ([343681f](https://github.com/iamkrish-coder/IntelliTrader/commit/343681fb5744ba1fd0612ae24d960fbe79e32ecf))
+
 ## [5.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v4.1.0...v5.0.0) (2024-09-06)
 
 
