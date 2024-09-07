@@ -5,9 +5,9 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 from .BaseTrade import BaseTrade
-from ._trade_equity import EquityTrade
-from ._trade_option import OptionTrade
-from ._trade_futures import FuturesTrade
+from .trade_equity import EquityTrade
+from .trade_option import OptionTrade
+from .trade_futures import FuturesTrade
 from ..orders.orders_module import Orders
 
 

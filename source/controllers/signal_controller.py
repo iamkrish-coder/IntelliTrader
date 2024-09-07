@@ -18,12 +18,12 @@ from ..constants.const import *
 from ..enumerations.enums import *
 
 from ..configurations.shared_parameters import SharedParameters
-from ..modules.signal._signal_configurations import SignalConfigurations
-from ..modules.signal._signal_subscriber import SignalSubscriber
-from ..modules.signal._signal_process_alerts import SignalProcessAlerts
-from ..modules.signal._signal_candlesticks import SignalCandlesticks
-from ..modules.signal._signal_scanner import SignalScanner
-from ..modules.signal._signal_triggers import  SignalTriggers
+from ..modules.signal.signal_configurations import SignalConfigurations
+from ..modules.signal.signal_subscriber import SignalSubscriber
+from ..modules.signal.signal_process_alerts import SignalProcessAlerts
+from ..modules.signal.signal_candlesticks import SignalCandlesticks
+from ..modules.signal.signal_scanner import SignalScanner
+from ..modules.signal.signal_triggers import  SignalTriggers
 from ..controllers.BaseController import BaseController
 from ..utils.logging_utils import *
 

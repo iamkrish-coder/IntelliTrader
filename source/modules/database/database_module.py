@@ -10,13 +10,13 @@ from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
 from source.modules.database.BaseDatabase import BaseDatabase
-from source.modules.database._database_create_table import DatabaseCreateTable
-from source.modules.database._database_delete_table import DatabaseDeleteTable
-from source.modules.database._database_delete_table import DatabaseDeleteTable
-from source.modules.database._database_insert_record import DatabaseInsertRecord
-from source.modules.database._database_update_record import DatabaseUpdateRecord
+from source.modules.database.database_create_table import DatabaseCreateTable
+from source.modules.database.database_delete_table import DatabaseDeleteTable
+from source.modules.database.database_delete_table import DatabaseDeleteTable
+from source.modules.database.database_insert_record import DatabaseInsertRecord
+from source.modules.database.database_update_record import DatabaseUpdateRecord
 # from source.modules.database._database_delete_record import DatabaseDeleteRecord
-from source.modules.database._database_fetch_record import DatabaseFetchRecord
+from source.modules.database.database_fetch_record import DatabaseFetchRecord
 
 
 class Database(BaseDatabase):

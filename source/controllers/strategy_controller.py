@@ -3,13 +3,13 @@
 import asyncio
 
 from source.configurations.shared_parameters import SharedParameters
-from source.modules.strategy._strategy_configurations import StrategyConfigurations
-from source.modules.strategy._strategy_candlesticks import StrategyCandlesticks
-from source.modules.strategy._strategy_indicators import StrategyIndicators
-from source.modules.strategy._strategy_market_analysis import StrategyMarketAnalysis
-from source.modules.strategy._strategy_publisher import StrategyPublisher
-from source.modules.strategy._strategy_scanner import StrategyScanner
-from source.modules.strategy._strategy_watchlist import StrategyWatchlist
+from source.modules.strategy.strategy_configurations import StrategyConfigurations
+from source.modules.strategy.strategy_candlesticks import StrategyCandlesticks
+from source.modules.strategy.strategy_indicators import StrategyIndicators
+from source.modules.strategy.strategy_market_analysis import StrategyMarketAnalysis
+from source.modules.strategy.strategy_publisher import StrategyPublisher
+from source.modules.strategy.strategy_scanner import StrategyScanner
+from source.modules.strategy.strategy_watchlist import StrategyWatchlist
 from ..controllers.BaseController import BaseController
 from ..utils.logging_utils import *
 

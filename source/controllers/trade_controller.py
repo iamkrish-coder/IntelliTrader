@@ -3,9 +3,9 @@
 import asyncio
 
 from source.configurations.shared_parameters import SharedParameters
-from source.modules.trade._trade_configurations import TradeConfigurations
-from source.modules.trade._trade_signals import TradeSignals
-from source.modules.trade._trade_orders import TradeOrders
+from source.modules.trade.trade_configurations import TradeConfigurations
+from source.modules.trade.trade_signals import TradeSignals
+from source.modules.trade.trade_orders import TradeOrders
 from ..controllers.BaseController import BaseController
 from ..utils.logging_utils import *
 
