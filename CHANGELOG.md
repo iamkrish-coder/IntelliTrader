@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.0.1...v5.0.2) (2024-09-08)
+
+
+### Bug Fixes
+
+* refactored controllers ([cd8606f](https://github.com/iamkrish-coder/IntelliTrader/commit/cd8606f65ccb396b15778767fc0a9792771e0b31))
+
 ## [5.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.0.0...v5.0.1) (2024-09-07)
 
 
