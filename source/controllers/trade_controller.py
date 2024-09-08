@@ -6,6 +6,7 @@ from source.configurations.shared_parameters import SharedParameters
 from source.modules.trade.trade_configurations import TradeConfigurations
 from source.modules.trade.trade_signals import TradeSignals
 from source.modules.trade.trade_orders import TradeOrders
+from source.modules.trade.trade_cancellations import TradeCancellations
 from ..controllers.BaseController import BaseController
 from ..utils.logging_utils import *
 
@@ -51,15 +52,19 @@ class TradeController(BaseController):
 
         if self.signals is not None:
             # 3. Trade placement - Place Order and store trade in database
-            object_trade_handler = TradeOrders(self.modules, self.parameters, self.database, self.signals)
-            self.orders = object_trade_handler.initialize()
+            object_order_handler = TradeOrders(self.modules, self.parameters, self.database, self.signals)
+            self.orders = object_order_handler.initialize()
 
             # 4. Update Signals - Update completed signals in database
             self.signal_event = SIGNAL_EVENT_POST
-            self.signals = [item['signal_id'] for item in self.signals]
             object_signal_handler = TradeSignals(self.modules, self.parameters, self.database, self.signal_event, self.signals)
             # object_signal_handler.initialize()
+
         else:
             log_info("No trade signals available at this moment")
+
+        # 5. Cancel Aging Orders
+        object_cancel_handler = TradeCancellations(self.modules, self.parameters, self.database)
+        self.signals = object_cancel_handler.initialize()
 
         self.run_count += 1

@@ -50,7 +50,7 @@
       "buffer": -100,
       "product": 1,
       "validity": 1,
-      "validity_ttl": 5,
+      "validity_ttl": 3,
       "iceberg_legs": 0,
       "iceberg_quantity": 0,
       "disclosed_quantity": 0,

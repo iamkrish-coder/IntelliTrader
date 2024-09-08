@@ -1,32 +1,17 @@
 # Standard library imports
 import asyncio
-import datetime
-import importlib
-import os
-import time
-import threading
-import webbrowser
 
 # Third-party library imports
-from flask import Flask, render_template, request, redirect, session
-from pytz import utc
 
 # Custom application modules
-from source.constants import *
-from source.enumerations.enums import *
-from source.enumerations.resource_string_enums import *
-from source.language.resources_EN_IN import ResourceStrings
 from source.configurations.configuration import Configuration
 
 from source.modules.BaseModules import BaseModules
 from source.modules.helper.helper_module import Helper
 from source.modules.restore.factory_reset import FactoryReset
 from source.modules.connection.connection_module import Connection
-from source.modules.database.database_module import Database as DatabaseManager
-from source.modules.strategy.strategy_module import Strategy as StrategyManager
-# from source.modules.signal.signal_module import Signal as  SignalManager
-# from source.modules.trade.trade_module import Trade as TradeManager
-
+from source.controllers.database_controller import DatabaseController
+from source.controllers.cloud_controller import CloudController
 from source.controllers.BaseController import BaseController
 from source.controllers.strategy_controller import StrategyController
 from source.controllers.signal_controller import SignalController
@@ -34,7 +19,6 @@ from source.controllers.trade_controller import TradeController
 
 # utils Import
 from source.utils.logging_utils import *
-from source.utils.scheduler_utils import Scheduler
 
 # IntelliTrader web application (if applicable)
 try:
@@ -49,7 +33,7 @@ class IntelliTrader:
         self.modules = None
         self.configuration = None
         self.database = None
-        self.strategy = None
+        self.cloud = None
         self.strategy_controller_instance = None
         self.signal_controller_instance = None
         self.trade_controller_instance = None
@@ -71,13 +55,13 @@ class IntelliTrader:
         self.table_configuration = Configuration().read_table_configuration()
 
         if self.app_configuration is not None and self.table_configuration is not None:
-            self.database = DatabaseManager(
+            self.database = DatabaseController(
                 self.connection,
                 self.modules,
                 self.app_configuration,
                 self.table_configuration,
             )
-            self.strategy = StrategyManager(
+            self.cloud = CloudController(
                 self.connection,
                 self.modules,
                 self.app_configuration,
@@ -93,11 +77,11 @@ class IntelliTrader:
     def get_configuration(self):
         return self.app_configuration
 
-    ###########################################
-    ###########################################
-    #                RUN ALL                  #
-    ###########################################
-    ###########################################
+    #################################################
+    #################################################
+    #                RUN ALWAYS ON                  #
+    #################################################
+    #################################################
 
     async def run_async_task(self):
 
@@ -145,7 +129,7 @@ class IntelliTrader:
             return False
 
         # Establishes Module Prerequisites
-        if not self.strategy.initialize():
+        if not self.cloud.initialize():
             return False
 
         return True

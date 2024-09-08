@@ -1,33 +1,29 @@
-# source/modules/strategy/strategy_module.py
 """
-Strategy
+Cloud - AWS Controller
 """
-import json
 import time
 
-from ...constants.const import *
-from ...enumerations.enums import *
-from ...utils.logging_utils import *
-from ...aws.AccessPolicy.access_policy import AccessPolicy
-from ...aws.sns.aws_sns_manager import SNSManager
-from ...aws.sqs.aws_sqs_manager import SQSManager
-from ...models.strategies_model import StrategiesModel
-from ...models.topics_model import TopicsModel
-from ...models.queues_model import QueuesModel
-from ..database.database_module import Database
-from .BaseStrategy import BaseStrategy
+from source.utils.logging_utils import *
+from source.aws.AccessPolicy.access_policy import AccessPolicy
+from source.aws.sns.aws_sns_manager import SNSManager
+from source.aws.sqs.aws_sqs_manager import SQSManager
+from source.models.strategies_model import StrategiesModel
+from source.models.topics_model import TopicsModel
+from source.models.queues_model import QueuesModel
+from source.controllers.database_controller import DatabaseController
+from source.controllers.BaseController import BaseController
 
 
-class Strategy(BaseStrategy):
+class CloudController(BaseController):
 
     def __init__(self, connection, modules, app_configuration, table_configuration):
-        super().__init__(connection, modules)
+        super().__init__(connection, modules, app_configuration, table_configuration)
         self.selected_strategy = None
         self.connection = connection
         self.modules = modules
         self.app_configuration = app_configuration
         self.table_configuration = table_configuration
-        self.database = Database(connection, modules, app_configuration, table_configuration)
+        self.database = DatabaseController(connection, modules, app_configuration, table_configuration)
         self.object_sns_manager = SNSManager()
         self.object_sqs_manager = SQSManager()
         self.topic_mode = self.app_configuration.get("topic_type")

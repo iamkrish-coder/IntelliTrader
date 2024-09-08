@@ -9,7 +9,7 @@ from .create_limit_order import CreateLimitOrder
 # from .create_slm_order import CreateSLMOrder
 # from .create_gtt_order import CreateGTTOrder
 # from .modify_order import ModifyOrder
-# from .cancel_order import CancelOrder
+from .cancel_order import CancelOrder
 
 class Orders:
     def __init__(self, params):

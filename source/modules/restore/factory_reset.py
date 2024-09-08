@@ -1,11 +1,7 @@
-import time
-
-from ...constants.const import *
-from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
-from ..database.database_module import Database as DatabaseManager
-from ..strategy.strategy_module import Strategy as StrategyManager
+from source.controllers.database_controller import DatabaseController
+from source.controllers.cloud_controller import CloudController
 
 
 class FactoryReset:
@@ -25,9 +21,9 @@ class FactoryReset:
         self.restore_factory_defaults()
 
     def restore_factory_defaults(self):
-        database_object = DatabaseManager(self.connection, self.modules, self.app_configuration,
+        database_object = DatabaseController(self.connection, self.modules, self.app_configuration,
                                           self.table_configuration)
-        strategy_object = StrategyManager(self.connection, self.modules, self.app_configuration,
+        strategy_object = CloudController(self.connection, self.modules, self.app_configuration,
                                           self.table_configuration)
 
         # Delete Tables | Delete Caches | Delete Configs | Delete Subscriptions | Delete Topics | Delete Queues

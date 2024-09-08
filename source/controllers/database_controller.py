@@ -1,15 +1,14 @@
-# source/controllers/database_module.py
+# source/controllers/database_controller.py
 """
 Database
 """
 import json
 import time
 
-from ...constants.const import *
-from ...enumerations.enums import *
-from ...utils.logging_utils import *
+from source.constants.const import *
+from source.enumerations.enums import *
+from source.utils.logging_utils import *
 
-from source.modules.database.BaseDatabase import BaseDatabase
 from source.modules.database.database_create_table import DatabaseCreateTable
 from source.modules.database.database_delete_table import DatabaseDeleteTable
 from source.modules.database.database_delete_table import DatabaseDeleteTable
@@ -19,10 +18,9 @@ from source.modules.database.database_update_record import DatabaseUpdateRecord
 from source.modules.database.database_fetch_record import DatabaseFetchRecord
 
 
-class Database(BaseDatabase):
+class DatabaseController:
 
     def __init__(self, connection, modules, app_configuration, table_configuration):
-        super().__init__(connection, modules)
         self.connection = connection
         self.modules = modules
         self.app_configuration = app_configuration
