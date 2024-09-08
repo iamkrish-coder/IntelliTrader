@@ -162,9 +162,10 @@ class TradeOrders(BaseTrade):
 
                     order_id = object_equity_trade.execute_trade()
                     if order_id:
-                        log_info("Order placed successfully.")
+                        log_info(f"Order placed for {order['tradingsymbol']} - {order_id}")
                     else:
-                        log_warn("Order placement failed.")
+                        log_error(f"Failed to place order for {order['tradingsymbol']}. Please try again later...")
+                        return
 
                 case Instrument_Type.OPTIONS.value:
                     pass

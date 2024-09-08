@@ -43,7 +43,7 @@
       "position_size_type": 1,
       "max_allocation": 10000,
       "max_risk": 400,
-      "max_quantity": 1,
+      "max_quantity": 2,
       "variety": 2,
       "order_type": 1,
       "default_price": 1,
