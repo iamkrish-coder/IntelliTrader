@@ -19,11 +19,13 @@ from source.language.resources_EN_IN import ResourceStrings
 from source.configurations.configuration import Configuration
 
 from source.modules.BaseModules import BaseModules
+from source.modules.helper.helper_module import Helper
 from source.modules.restore.factory_reset import FactoryReset
 from source.modules.connection.connection_module import Connection
 from source.modules.database.database_module import Database as DatabaseManager
 from source.modules.strategy.strategy_module import Strategy as StrategyManager
-from source.modules.helper.helper_module import Helper
+# from source.modules.signal.signal_module import Signal as  SignalManager
+# from source.modules.trade.trade_module import Trade as TradeManager
 
 from source.controllers.BaseController import BaseController
 from source.controllers.strategy_controller import StrategyController

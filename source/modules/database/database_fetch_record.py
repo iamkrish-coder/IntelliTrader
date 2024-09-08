@@ -1,5 +1,4 @@
 # database_fetch_record.py
-from turtledemo.sorting_animate import partition
 
 from ...constants.const import *
 from ...enumerations.enums import *

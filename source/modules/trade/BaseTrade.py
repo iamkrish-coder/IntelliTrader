@@ -39,7 +39,7 @@ class BaseTrade(ABC, SharedFunctions):
             if self.order_type in [Order_Type.MARKET.value, Order_Type.LIMIT.value, Order_Type.SL.value,
                                    Order_Type.SL_M.value, Order_Type.GTT.value]:
                 # Handle various order types
-                order_id = self.modules['orders'].initialize_order(self.order_type, order_params)
+                order_id = self.modules['orders'].initialize(self.order_type, order_params)
                 return order_id
             else:
                 # Handle invalid order type

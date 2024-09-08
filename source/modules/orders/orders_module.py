@@ -1,221 +1,40 @@
-from source.modules.helper.helper_module import Helper
+from ..helper.helper_module import Helper
 from ...constants.const import *
 from ...enumerations.enums import *
 from ...utils.logging_utils import *
 
+from .create_market_order import CreateMarketOrder
+from .create_limit_order import CreateLimitOrder
+# from .create_sl_order import CreateSLOrder
+# from .create_slm_order import CreateSLMOrder
+# from .create_gtt_order import CreateGTTOrder
+# from .modify_order import ModifyOrder
+# from .cancel_order import CancelOrder
 
 class Orders:
     def __init__(self, params):
         self.prop = params
 
-    def initialize_order(self, type_of_order, order_parameters):
+    def initialize(self, type_of_order, order_parameters):
+        return self.manage_orders(type_of_order, order_parameters, self.prop)
+
+    def manage_orders(self, type_of_order, order_parameters, kite_object):
         if type_of_order == Order_Type.MARKET.value:
-            return self.create_market_order(order_parameters)
+            order_object =  CreateMarketOrder(order_parameters, kite_object)
         elif type_of_order == Order_Type.LIMIT.value:
-            return self.create_limit_order(order_parameters)
-        elif type_of_order == Order_Type.SL.value:
-            return self.create_sl_order(order_parameters)
-        elif type_of_order == Order_Type.SL_M.value:
-            return self.create_slm_order(order_parameters)
-        elif type_of_order == Order_Type.GTT.value:
-            return self.create_gtt_order(order_parameters)
+            order_object =  CreateLimitOrder(order_parameters, kite_object)
+        # elif type_of_order == Order_Type.SL.value:
+        #     return self.create_sl_order(order_parameters)
+        # elif type_of_order == Order_Type.SL_M.value:
+        #     return self.create_slm_order(order_parameters)
+        # elif type_of_order == Order_Type.GTT.value:
+        #     return self.create_gtt_order(order_parameters)
         else:
             log_error("Invalid order type")
             return None
 
-    # Place a market order for a stock with given quantity
-    def create_market_order(self, order_parameters):
-
-        trade_variety, trade_exchange, trade_symbol, trade_transaction_type, trade_quantity, trade_disclosed_quantity, trade_ordertype, trade_product, trade_price, trade_trigger_price,  trade_validity, trade_validity_ttl, trade_iceberg_legs, trade_iceberg_quantity, trade_tag = order_parameters
-
-        # Define mapping dictionaries for each parameter
-        variety_mapping = {
-            Variety.REGULAR.value: self.prop['kite'].VARIETY_REGULAR,
-            Variety.AMO.value: self.prop['kite'].VARIETY_AMO,
-            Variety.CO.value: self.prop['kite'].VARIETY_CO,
-            Variety.ICEBERG.value: self.prop['kite'].VARIETY_ICEBERG,
-            Variety.AUCTION.value: self.prop['kite'].VARIETY_AUCTION
-        }
-
-        exchange_mapping = {
-            Exchange.NSE.value: self.prop['kite'].EXCHANGE_NSE,
-            Exchange.BSE.value: self.prop['kite'].EXCHANGE_BSE
-        }
-
-        transaction_mapping = {
-            Transaction_Type.BUY.value: self.prop['kite'].TRANSACTION_TYPE_BUY,
-            Transaction_Type.SELL.value: self.prop['kite'].TRANSACTION_TYPE_SELL
-        }
-
-        product_mapping = {
-            Product.CNC.value: self.prop['kite'].PRODUCT_CNC,
-            Product.NRML.value: self.prop['kite'].PRODUCT_NRML,
-            Product.MIS.value: self.prop['kite'].PRODUCT_MIS
-        }
-
-        order_type_mapping = {
-            Order_Type.MARKET.value: self.prop['kite'].ORDER_TYPE_MARKET,
-            Order_Type.LIMIT.value: self.prop['kite'].ORDER_TYPE_LIMIT,
-            Order_Type.SL.value: self.prop['kite'].ORDER_TYPE_SL,
-            Order_Type.SL_M.value: self.prop['kite'].ORDER_TYPE_SLM
-        }
-
-        validity_mapping = {
-            Validity.DAY.value: self.prop['kite'].VALIDITY_DAY,
-            Validity.IOC.value: self.prop['kite'].VALIDITY_IOC,
-            Validity.TTL.value: self.prop['kite'].VALIDITY_TTL,
-        }
-
-        # Convert strings to constants using the mapping dictionaries
-        trade_variety = variety_mapping.get(trade_variety)
-        trade_exchange = exchange_mapping.get(trade_exchange)
-        trade_transaction_type = transaction_mapping.get(trade_transaction_type)
-        trade_product = product_mapping.get(trade_product)
-        trade_ordertype = order_type_mapping.get(trade_ordertype)
-        trade_validity = validity_mapping.get(trade_validity)
-
-        if trade_variety is None:
-            log_error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
-            return False
-
-        if trade_exchange is None:
-            log_error("The order placement does not have a specified exchange to NSE or BSE.")
-            return False
-
-        if trade_transaction_type is None:
-            log_error("The order placement does not have a specified action to buy or sell.")
-            return False
-
-        if trade_product is None:
-            log_error("The order placement does not have a specified product to MIS, CNC, or NRML.")
-            return False
-
-        if trade_ordertype is None:
-            log_error("The order type does not match the required format.")
-            return False
-
-        try:
-            order_id = self.prop['kite'].place_order(
-                variety=trade_variety,
-                exchange=trade_exchange,
-                tradingsymbol=trade_symbol,
-                transaction_type=trade_transaction_type,
-                quantity=trade_quantity,
-                disclosed_quantity=trade_disclosed_quantity,
-                product=trade_product,
-                order_type=trade_ordertype,
-                price=trade_price,
-                trigger_price=trade_trigger_price,
-                validity=trade_validity,
-                validity_ttl=trade_validity_ttl,
-                iceberg_legs=trade_iceberg_legs,
-                iceberg_quantity=trade_iceberg_quantity,
-                tag=trade_tag
-            )
-
-            log_info(f"Market order placed. Order ID: {order_id}")
-            return order_id
-
-        except Exception as error:
-            log_info("Order placement failed: {}".format(error))
-
-
-    # Place a limit order for a stock with given quantity
-    def create_limit_order(self, order_parameters):
-
-        trade_variety, trade_exchange, trade_symbol, trade_transaction_type, trade_quantity, trade_disclosed_quantity, trade_ordertype, trade_product, trade_price, trade_trigger_price,  trade_validity, trade_validity_ttl, trade_iceberg_legs, trade_iceberg_quantity, trade_tag = order_parameters
-
-        # Define mapping dictionaries for each parameter
-        variety_mapping = {
-            Variety.REGULAR.value: self.prop['kite'].VARIETY_REGULAR,
-            Variety.AMO.value: self.prop['kite'].VARIETY_AMO,
-            Variety.CO.value: self.prop['kite'].VARIETY_CO,
-            Variety.ICEBERG.value: self.prop['kite'].VARIETY_ICEBERG,
-            Variety.AUCTION.value: self.prop['kite'].VARIETY_AUCTION
-        }
-
-        exchange_mapping = {
-            Exchange.NSE.value: self.prop['kite'].EXCHANGE_NSE,
-            Exchange.BSE.value: self.prop['kite'].EXCHANGE_BSE
-        }
-
-        transaction_mapping = {
-            Transaction_Type.BUY.value: self.prop['kite'].TRANSACTION_TYPE_BUY,
-            Transaction_Type.SELL.value: self.prop['kite'].TRANSACTION_TYPE_SELL
-        }
-
-        product_mapping = {
-            Product.CNC.value: self.prop['kite'].PRODUCT_CNC,
-            Product.NRML.value: self.prop['kite'].PRODUCT_NRML,
-            Product.MIS.value: self.prop['kite'].PRODUCT_MIS
-        }
-
-        order_type_mapping = {
-            Order_Type.MARKET.value: self.prop['kite'].ORDER_TYPE_MARKET,
-            Order_Type.LIMIT.value: self.prop['kite'].ORDER_TYPE_LIMIT,
-            Order_Type.SL.value: self.prop['kite'].ORDER_TYPE_SL,
-            Order_Type.SL_M.value: self.prop['kite'].ORDER_TYPE_SLM
-        }
-
-        validity_mapping = {
-            Validity.DAY.value: self.prop['kite'].VALIDITY_DAY,
-            Validity.IOC.value: self.prop['kite'].VALIDITY_IOC,
-            Validity.TTL.value: self.prop['kite'].VALIDITY_TTL,
-        }
-
-        # Convert strings to constants using the mapping dictionaries
-        trade_variety = variety_mapping.get(trade_variety)
-        trade_exchange = exchange_mapping.get(trade_exchange)
-        trade_transaction_type = transaction_mapping.get(trade_transaction_type)
-        trade_product = product_mapping.get(trade_product)
-        trade_ordertype = order_type_mapping.get(trade_ordertype)
-        trade_validity = validity_mapping.get(trade_validity)
-
-        if trade_variety is None:
-            log_error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
-            return False
-
-        if trade_exchange is None:
-            log_error("The order placement does not have a specified exchange to NSE or BSE.")
-            return False
-
-        if trade_transaction_type is None:
-            log_error("The order placement does not have a specified action to buy or sell.")
-            return False
-
-        if trade_product is None:
-            log_error("The order placement does not have a specified product to MIS, CNC, or NRML.")
-            return False
-
-        if trade_ordertype is None:
-            log_error("The order type does not match the required format.")
-            return False
-
-        try:
-            response = self.prop['kite'].place_order(
-                variety=trade_variety,
-                exchange=trade_exchange,
-                tradingsymbol=trade_symbol,
-                transaction_type=trade_transaction_type,
-                quantity=trade_quantity,
-                disclosed_quantity=trade_disclosed_quantity,
-                product=trade_product,
-                order_type=trade_ordertype,
-                price=trade_price,
-                trigger_price=trade_trigger_price,
-                validity=trade_validity,
-                validity_ttl=trade_validity_ttl,
-                iceberg_legs=trade_iceberg_legs,
-                iceberg_quantity=trade_iceberg_quantity,
-                tag=trade_tag
-            )
-            if response:
-                log_info(f"Limit order placed successfully. Request ID: {response}")
-                return response
-            else:
-                log_error(f"Limit order placement failed. Error: {response}")
-        except Exception as error:
-            log_error(f"Order placement failed: {error}")
+        if order_object:
+            return order_object.initialize()
 
     # Place a stop loss order for a stock with given quantity
     def create_sl_order(self):
