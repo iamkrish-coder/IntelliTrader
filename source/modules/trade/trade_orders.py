@@ -19,7 +19,55 @@ class TradeOrders(BaseTrade):
         self.signals = signals # Only Signal ID is Received
 
     def initialize(self):
-        return self.execute_trade_order()
+        self.execute_trade_order()
+
+    def execute_trade_order(self):
+        """ Execute Order """
+        placed_orders = []
+        orders = self.prepare_order_placement()
+        if not orders:
+            log_error("Error: Could not generate orders.")
+            return
+
+        for order in orders:
+            instrument = self.parameters.get('strategy_params.instrument')
+            match int(instrument):
+                case Instrument_Type.EQUITY.value:
+                    object_equity_trade = EquityTrade(self.modules,
+                                               order['variety'],
+                                               order['exchange'],
+                                               order['tradingsymbol'],
+                                               order['transaction_type'],
+                                               order['quantity'],
+                                               order['disclosed_quantity'],
+                                               order['order_type'],
+                                               order['product'],
+                                               order['price'],
+                                               order['trigger_price'],
+                                               order['validity'],
+                                               order['validity_ttl'],
+                                               order['iceberg_legs'],
+                                               order['iceberg_quantity'],
+                                               order['tag'])
+
+                    response = object_equity_trade.execute_trade()
+                    if response:
+                        log_info(f"Order placed for {order['tradingsymbol']} - {response}")
+                        placed_orders.append(response)
+                    else:
+                        log_error(f"Failed to place order for {order['tradingsymbol']} - {response}")
+                        return
+
+                case Instrument_Type.OPTIONS.value:
+                    pass
+
+                case Instrument_Type.FUTURES.value:
+                    pass
+
+                case _:
+                    log_error("No valid instrument type found in the configuration.")
+
+        return placed_orders
 
     def prepare_order_placement(self):
         """ Prepare Order Pre-requisites and parameters """
@@ -46,7 +94,6 @@ class TradeOrders(BaseTrade):
         """
 
         trade_order_parameters = []
-
         for signal in self.signals:
 
             order_params = {}
@@ -130,51 +177,6 @@ class TradeOrders(BaseTrade):
             }
             trade_order_parameters.append(order_params)
         return trade_order_parameters
-
-
-    def execute_trade_order(self):
-        """ Execute Order """
-        orders = self.prepare_order_placement()
-        if not orders:
-            log_error("Error: Could not generate orders.")
-            return
-
-        for order in orders:
-            instrument = self.parameters.get('strategy_params.instrument')
-            match int(instrument):
-                case Instrument_Type.EQUITY.value:
-                    object_equity_trade = EquityTrade(self.modules,
-                                               order['variety'],
-                                               order['exchange'],
-                                               order['tradingsymbol'],
-                                               order['transaction_type'],
-                                               order['quantity'],
-                                               order['disclosed_quantity'],
-                                               order['order_type'],
-                                               order['product'],
-                                               order['price'],
-                                               order['trigger_price'],
-                                               order['validity'],
-                                               order['validity_ttl'],
-                                               order['iceberg_legs'],
-                                               order['iceberg_quantity'],
-                                               order['tag'])
-
-                    order_id = object_equity_trade.execute_trade()
-                    if order_id:
-                        log_info(f"Order placed for {order['tradingsymbol']} - {order_id}")
-                    else:
-                        log_error(f"Failed to place order for {order['tradingsymbol']}. Please try again later...")
-                        return
-
-                case Instrument_Type.OPTIONS.value:
-                    pass
-
-                case Instrument_Type.FUTURES.value:
-                    pass
-
-                case _:
-                    log_error("No valid instrument type found in the configuration.")
 
     def validate_product(self, instrument, product):
         allowed_products = {

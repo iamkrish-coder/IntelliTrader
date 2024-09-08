@@ -59,6 +59,7 @@ class TradeSignals(BaseTrade):
 
     def update_signals(self):
         try:
+            self.signals = [item['signal_id'] for item in self.signals]
             # Update the valid signals only
             for signal in self.signals:
                 # Add entry to AWS DynamoDB
