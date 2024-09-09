@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.0.2...v5.1.0) (2024-09-09)
+
+
+### Features
+
+* Implemented auto cancelling of pending and open orders after a ageing period of 5minutes ([cc53fe2](https://github.com/iamkrish-coder/IntelliTrader/commit/cc53fe21751ee47049c01b29339e9729fa207d63))
+
 ## [5.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.0.1...v5.0.2) (2024-09-08)
 
 
