@@ -19,9 +19,9 @@ class EquityTrade(BaseTrade):
         self.tag = tag
 
     def buy(self):
-        order_params = [self.variety, self.exchange, self.tradingsymbol, self.transaction_type, self.quantity, self.disclosed_quantity, self.order_type, self.product, self.price, self.trigger_price, self.validity, self.validity_ttl, self.iceberg_legs, self.iceberg_quantity, self.tag]
-        return self.create_trade_order(order_params)
+        order_parameters = [self.variety, self.exchange, self.tradingsymbol, self.transaction_type, self.quantity, self.disclosed_quantity, self.order_type, self.product, self.price, self.trigger_price, self.validity, self.validity_ttl, self.iceberg_legs, self.iceberg_quantity, self.tag]
+        return self.create_trade_order(order_parameters)
 
     def sell(self):
-        order_params = [self.variety, self.exchange, self.tradingsymbol, self.transaction_type, self.quantity, self.disclosed_quantity, self.order_type, self.product, self.price, self.trigger_price, self.validity, self.validity_ttl, self.iceberg_legs, self.iceberg_quantity, self.tag]
-        return self.create_trade_order(order_params)
+        order_parameters = [self.variety, self.exchange, self.tradingsymbol, self.transaction_type, self.quantity, self.disclosed_quantity, self.order_type, self.product, self.price, self.trigger_price, self.validity, self.validity_ttl, self.iceberg_legs, self.iceberg_quantity, self.tag]
+        return self.create_trade_order(order_parameters)

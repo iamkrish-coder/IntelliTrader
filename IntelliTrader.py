@@ -175,7 +175,7 @@ class IntelliTrader:
     ###########################################
 
     async def trade_controller(self):
-        """Monitors existing trade and performs necessary actions."""
+        """Processes trade signals and executes trade"""
         await self.trade_controller_instance.initialize()
 
         # Instantiate the Scheduler Instance

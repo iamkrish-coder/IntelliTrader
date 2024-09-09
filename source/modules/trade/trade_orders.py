@@ -56,7 +56,6 @@ class TradeOrders(BaseTrade):
                         placed_orders.append(response)
                     else:
                         log_error(f"Failed to place order for {order['tradingsymbol']} - {response}")
-                        return
 
                 case Instrument_Type.OPTIONS.value:
                     pass

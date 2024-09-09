@@ -53,7 +53,7 @@ class TradeController(BaseController):
         if self.signals is not None:
             # 3. Trade placement - Place Order and store trade in database
             object_order_handler = TradeOrders(self.modules, self.parameters, self.database, self.signals)
-            self.orders = object_order_handler.initialize()
+            # self.orders = object_order_handler.initialize()
 
             # 4. Update Signals - Update completed signals in database
             self.signal_event = SIGNAL_EVENT_POST
