@@ -34,12 +34,12 @@ class BaseTrade(ABC, SharedFunctions):
         self.database.manage_table_records(request)
         return True
 
-    def create_trade_order(self, order_params):
-        if all(param is not None for param in order_params):
+    def create_trade_order(self, order_parameters):
+        if all(parameter is not None for parameter in order_parameters):
             if self.order_type in [Order_Type.MARKET.value, Order_Type.LIMIT.value, Order_Type.SL.value,
                                    Order_Type.SL_M.value, Order_Type.GTT.value]:
                 # Handle various order types
-                order_id = self.modules['orders'].initialize(self.order_type, order_params)
+                order_id = self.modules['orders'].initialize(self.order_type, order_parameters)
                 return order_id
             else:
                 # Handle invalid order type

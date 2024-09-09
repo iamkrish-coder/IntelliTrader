@@ -105,6 +105,9 @@ class Order_Type(Enum):
     SL = 3
     SL_M = 4
     GTT = 5
+    CANCEL = 6
+    MODIFY = 7
+    LIST = 8
 
 
 class Validity(Enum):
