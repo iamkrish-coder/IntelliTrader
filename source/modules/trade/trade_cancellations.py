@@ -37,7 +37,6 @@ class TradeCancellations(BaseTrade):
             self.order_id = order["order_id"]
 
             order_parameters = [self.order_variety, self.order_id]
-
             response = self.modules["orders"].initialize(order_type=Order_Type.CANCEL.value, order_parameters=order_parameters)
 
         # Update Trades Table with CANCEL status

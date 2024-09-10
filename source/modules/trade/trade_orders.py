@@ -1,7 +1,10 @@
 # TradeOrders
+import time
+import uuid
 
 from ...constants.const import *
 from ...enumerations.enums import *
+from ...models.trades_model import TradesModel
 from ...utils.logging_utils import *
 
 from .BaseTrade import BaseTrade
@@ -16,7 +19,7 @@ class TradeOrders(BaseTrade):
         self.modules = modules
         self.parameters = parameters
         self.database = database
-        self.signals = signals # Only Signal ID is Received
+        self.signals = signals
 
     def initialize(self):
         self.execute_trade_order()
@@ -50,12 +53,14 @@ class TradeOrders(BaseTrade):
                                                order['iceberg_quantity'],
                                                order['tag'])
 
-                    response = object_equity_trade.execute_trade()
-                    if response:
-                        log_info(f"Order placed for {order['tradingsymbol']} - {response}")
-                        placed_orders.append(response)
+                    order['order_id'] = trade_order_response = object_equity_trade.execute_trade()
+                    if trade_order_response:
+                        log_info(f"Order placed for {order['tradingsymbol']}: {trade_order_response}")
+
+                        """" Save order summary to Trade History Table """
+                        self.save_trade_history(order['tradingsymbol'], order['signal'], order['strategy'], order['order_id'])
                     else:
-                        log_error(f"Failed to place order for {order['tradingsymbol']} - {response}")
+                        log_error(f"Failed to place order for {order['tradingsymbol']}")
 
                 case Instrument_Type.OPTIONS.value:
                     pass
@@ -73,7 +78,7 @@ class TradeOrders(BaseTrade):
         """"
         variety 	
             regular Regular order
-            amo 	After Market Order
+            amo 	After Market OrUUIDder
             co 	    Cover Order 
             iceberg Iceberg Order 
             auction Auction Order 
@@ -96,9 +101,9 @@ class TradeOrders(BaseTrade):
         for signal in self.signals:
 
             order_params = {}
-            id = signal['signal_id']
-            strategy = signal['signal_strategy']
-            token = signal['signal_token']
+            signal_id = signal['signal_id']
+            signal_strategy = signal['signal_strategy']
+            signal_token = signal['signal_token']
             strategy_type = int(self.parameters.get('strategy_params.strategy_type'))
 
             instrument = self.parameters.get('strategy_params.instrument')
@@ -114,16 +119,16 @@ class TradeOrders(BaseTrade):
                 return False
 
             # Signal information
-            exchange = int(signal['signal_exchange'])
-            symbol = signal['signal_symbol']
-            transaction_type = int(signal['signal_type'])
+            signal_exchange = int(signal['signal_exchange'])
+            signal_symbol = signal['signal_symbol']
+            signal_transaction_type = int(signal['signal_type'])
 
             # Caclulate Quantity
             max_quantity = int(trade_parameters.get('max_quantity'))
             position_size_type = int(trade_parameters.get('position_size_type'))
             max_allocation = float(trade_parameters.get('max_allocation'))
             max_risk = float(trade_parameters.get('max_risk'))
-            quantity = self.set_quantity(exchange, symbol, max_quantity, position_size_type, max_allocation, max_risk)
+            quantity = self.set_quantity(signal_exchange, signal_symbol, max_quantity, position_size_type, max_allocation, max_risk)
 
             # Calculate Price for Limit/SL/SL-M/GTT
             price = 0
@@ -133,7 +138,7 @@ class TradeOrders(BaseTrade):
             limit_buffer = float(trade_parameters.get('buffer'))
 
             if order_type == Order_Type.LIMIT.value:
-                price = self.set_limit_price(exchange, symbol, default_price, limit_buffer)
+                price = self.set_limit_price(signal_exchange, signal_symbol, default_price, limit_buffer)
 
             if order_type == Order_Type.SL.value or order_type == Order_Type.SL_M.value:
                 # TODO: Awaits Implementation
@@ -157,11 +162,13 @@ class TradeOrders(BaseTrade):
             tag = trade_parameters.get('tag')
 
             """ BUILD ORDER PARAMETERS DICTIONARY """
-            order_params = {
+            order_parameters = {
+                "signal": signal_id,
+                "strategy":  signal_strategy,
                 "variety": variety,
-                "exchange": exchange,
-                "tradingsymbol": symbol,
-                "transaction_type": transaction_type,
+                "exchange": signal_exchange,
+                "tradingsymbol": signal_symbol,
+                "transaction_type": signal_transaction_type,
                 "quantity": quantity,
                 "disclosed_quantity": disclosed_quantity,
                 "order_type": order_type,
@@ -174,7 +181,7 @@ class TradeOrders(BaseTrade):
                 "iceberg_quantity": iceberg_quantity,
                 "tag": tag
             }
-            trade_order_parameters.append(order_params)
+            trade_order_parameters.append(order_parameters)
         return trade_order_parameters
 
     def validate_product(self, instrument, product):
@@ -190,3 +197,22 @@ class TradeOrders(BaseTrade):
             return False
         else:
             return True
+
+    def save_trade_history(self, symbol, signal, strategy, order_id):
+
+        trade_id = self.generate_table_uid(TABLE_TRADES)
+        dataset = {
+            "trade_id": trade_id,
+            "trade_signal_id": signal,
+            "trade_strategy": strategy,
+            "trade_order_id": order_id,
+            "trade_symbol": symbol,
+            "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        save_trade_order_history = self.prepare_request_parameters(
+            event=Events.PUT.value,
+            table=Tables.TABLE_TRADES.value,
+            model=TradesModel,
+            dataset=dataset
+        )
+        self.database_request(save_trade_order_history)

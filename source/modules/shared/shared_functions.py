@@ -19,6 +19,14 @@ class SharedFunctions:
         self.connection = connection
         self.modules = modules
 
+    def generate_table_uid(self, table_name):
+        if table_name:
+            table_prefix = table_name[:3].upper()
+            return table_prefix + datetime.datetime.now().strftime("%y%m%d%H%M%S")
+        else:
+            log_error("Invalid table")
+            return None
+
     def is_red(self, candle):
         return candle['close'] < candle['open']
 
