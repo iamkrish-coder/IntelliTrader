@@ -31,7 +31,7 @@ class TradeSignals(BaseTrade):
     def get_signals(self):
         try:
             dataset = None
-            threshold_time = (datetime.datetime.now() - datetime.timedelta(hours=300)).strftime('%Y-%m-%d %H:%M:%S')
+            threshold_time = (datetime.datetime.now() - datetime.timedelta(minutes=300)).strftime('%Y-%m-%d %H:%M:%S') # 5 Minutes
             list_signals = self.prepare_request_parameters(
                 event=Events.SCAN.value,
                 table=Tables.TABLE_SIGNALS.value,
@@ -59,12 +59,12 @@ class TradeSignals(BaseTrade):
 
     def update_signals(self):
         try:
-            self.signals = [item['signal_id'] for item in self.signals]
+            self.signal_ids = [item['signal_id'] for item in self.signals]
             # Update the valid signals only
-            for signal in self.signals:
+            for signal_id in self.signal_ids:
                 # Add entry to AWS DynamoDB
                 dataset = {
-                    "signal_id": signal,
+                    "signal_id": signal_id,
                     "is_complete": True,
                     "is_active": False
                 }

@@ -21,20 +21,22 @@ class SignalTriggers(BaseSignal):
         return self.triggers()
 
     def triggers(self):
+        signal_strategy = self.alerts['strategy_id']
+        signal_type = self.alerts['signal_type']
+
         for alert in self.alerts['results']:
-            exchange, symbol, token = alert.split(", ")
-            current_time = datetime.datetime.now()
-            formatted_datetime = current_time.strftime("%y%m%d%H%M")
-            signal_id = f"{symbol[:3]}{formatted_datetime}"
-            exchange_enum = Exchange[exchange]
+            signal_exchange, signal_symbol, signal_token = alert.split(", ")
+            signal_id = self.generate_table_uid(TABLE_SIGNAL)
+            exchange_enum = Exchange[signal_exchange]
+            signal_exchange = exchange_enum.value
 
             dataset = {
                 "signal_id": signal_id,
-                "signal_strategy": self.alerts['strategy_id'],
-                "signal_type": self.alerts['signal_type'],
-                "signal_exchange": exchange_enum.value,
-                "signal_symbol": symbol,
-                "signal_token": token,
+                "signal_strategy": signal_strategy,
+                "signal_type": signal_type,
+                "signal_exchange": signal_exchange,
+                "signal_symbol": signal_symbol,
+                "signal_token": signal_token,
                 "is_active": True,
                 "is_complete": False,
                 "created_date": time.strftime("%Y-%m-%d %H:%M:%S")

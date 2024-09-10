@@ -44,7 +44,7 @@
       "max_allocation": 10000,
       "max_risk": 400,
       "max_quantity": 2,
-      "variety": 1,
+      "variety": 2,
       "order_type": 2,
       "default_price": 1,
       "buffer": -100,

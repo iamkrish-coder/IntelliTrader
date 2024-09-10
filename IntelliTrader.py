@@ -97,8 +97,8 @@ class IntelliTrader:
                 self.trade_controller_instance = TradeController(self.controller)
 
                 tasks = [
-                    #self.strategy_controller(),
-                    #self.signal_controller(),
+                    self.strategy_controller(),
+                    self.signal_controller(),
                     self.trade_controller()
                 ]
                 await asyncio.gather(*tasks)

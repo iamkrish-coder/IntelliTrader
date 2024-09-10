@@ -80,12 +80,14 @@ class CloudController(BaseController):
             if self.strategy_list is not None:
                 for strategy in self.strategy_list:
                     saved_strategy_list.append(strategy.get("strategy_id"))
+
             # Check if Strategy already exists in database if not add strategy to database
             for filename in os.listdir(ALGORITHM_PATH):
                 strategy_id, strategy_name, strategy_type, strategy_description = self.generate_strategy_details(filename)
                 if strategy_id in saved_strategy_list:
                     continue
 
+                # strategy_id = self.generate_table_uid(TABLE_STRATEGIES)
                 dataset = {
                     "strategy_id": strategy_id,
                     "strategy_name": strategy_name,
@@ -172,7 +174,9 @@ class CloudController(BaseController):
                         return False
 
                     # Add entry to AWS DynamoDB
+                    topic_id = self.generate_table_uid(TABLE_TOPICS)
                     dataset = {
+                        "topic_id": topic_id,
                         "topic_arn": topic_arn,
                         "topic_name": topic_name,
                         "strategy_id": strategy_id,
@@ -255,7 +259,9 @@ class CloudController(BaseController):
                     return False
 
                 # Add entry to AWS DynamoDB
+                queue_id = self.generate_table_uid(TABLE_QUEUES)
                 dataset = {
+                    "queue_id": queue_id,
                     "queue_arn": queue_arn,
                     "queue_name": queue_name,
                     "queue_url": queue_url,
@@ -338,7 +344,9 @@ class CloudController(BaseController):
                 return False
 
             # Add entry to AWS DynamoDB
+            topic_id = self.generate_table_uid(TABLE_TOPICS)
             dataset = {
+                "topic_id": topic_id,
                 "topic_arn": topic_arn,
                 "modified_date": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "is_subscribed": True,
