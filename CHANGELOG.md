@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.1.0...v5.2.0) (2024-09-10)
+
+
+### Features
+
+* save trades to database ([78654dc](https://github.com/iamkrish-coder/IntelliTrader/commit/78654dccf05368c91faf967e76b67f316bce0665))
+
 ## [5.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.0.2...v5.1.0) (2024-09-09)
 
 
