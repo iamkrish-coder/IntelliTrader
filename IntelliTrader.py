@@ -1,11 +1,12 @@
 # Standard library imports
 import asyncio
+import webbrowser
 
 # Third-party library imports
 
 # Custom application modules
+import IntelliTrader_web
 from source.configurations.configuration import Configuration
-
 from source.modules.BaseModules import BaseModules
 from source.modules.helper.helper_module import Helper
 from source.modules.restore.factory_reset import FactoryReset
@@ -97,9 +98,9 @@ class IntelliTrader:
                 self.trade_controller_instance = TradeController(self.controller)
 
                 tasks = [
-                    self.strategy_controller(),
-                    self.signal_controller(),
-                    self.trade_controller()
+                    # self.strategy_controller(),
+                    # self.signal_controller(),
+                    # self.trade_controller()
                 ]
                 await asyncio.gather(*tasks)
         else:
@@ -201,11 +202,33 @@ if __name__ == "__main__":
         print("\nCaught keyboard interrupt. Canceling tasks...\n")
 
     # Start website
-    # configuration = trader.get_configuration()
-    # app = create_web_app(configuration)
-    # url = f'http://{HOST}:{PORT}/'
-    # webbrowser.open(url)
-    # app.run(host=HOST, port=PORT)
+    configuration = trader.get_configuration()
+    app = create_web_app(configuration)
+    url = f'http://{HOST}:{PORT}/'
+    webbrowser.open(url)
+    app.run(host=HOST, port=PORT)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     """ DEPRECATED METHODS """
 
