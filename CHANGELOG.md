@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.2.0...v5.3.0) (2024-09-11)
+
+
+### Features
+
+* Added react to the project for Frontend development ([25c236f](https://github.com/iamkrish-coder/IntelliTrader/commit/25c236fa768f733f78642f3759732171b4c2a13d))
+
 ## [5.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.1.0...v5.2.0) (2024-09-10)
 
 
