@@ -6,6 +6,7 @@ from source.models.BaseModel import BaseModel
 class QueuesModel(BaseModel):
     def __init__(
         self,
+        queue_id=None,
         queue_arn=None,
         queue_name=None,
         queue_url=None,
@@ -15,7 +16,7 @@ class QueuesModel(BaseModel):
         is_deleted=None,
     ):
         super().__init__()
-
+        self.queue_id = queue_id
         self.strategy_id = strategy_id
         self.queue_arn = queue_arn
         self.queue_name = queue_name

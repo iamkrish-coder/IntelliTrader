@@ -6,6 +6,7 @@ from source.models.BaseModel import BaseModel
 class TopicsModel(BaseModel):
     def __init__(
         self,
+        topic_id=None,
         topic_arn=None,
         topic_name=None,
         strategy_id=None,
@@ -17,7 +18,7 @@ class TopicsModel(BaseModel):
         is_deleted=None,
     ):
         super().__init__()
-
+        self.topic_id = topic_id
         self.topic_arn = topic_arn
         self.topic_name = topic_name
         self.strategy_id = strategy_id
