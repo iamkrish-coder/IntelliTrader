@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.3.0...v6.0.0) (2024-09-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* feat! add ability to add stock and index options to basket for Options Trading
+
+### Features
+
+* feat! add ability to add stock and index options to basket for Options Trading ([9b01287](https://github.com/iamkrish-coder/IntelliTrader/commit/9b01287a1d833377a7c35104090bf60c11339d22))
+
 ## [5.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.2.0...v5.3.0) (2024-09-11)
 
 
