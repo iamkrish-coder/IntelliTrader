@@ -60,6 +60,12 @@ class Market_Sentiment(Enum):
     NEGATIVE = 'NEGATIVE'
 
 
+class Option_Type(Enum):
+    CE = 1
+    PE = 2
+    ALL = 3
+
+
 class Position_Size(Enum):
     CAPITAL_BASED = 1
     RISK_BASED = 2

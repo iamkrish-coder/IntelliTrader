@@ -41,7 +41,11 @@ def rsi(dataset, period=14):
             up_periods.append((up_periods[-1] * (period - 1)) / period)
             down_periods.append((down_periods[-1] * (period - 1) - delta) / period)
 
-    rs = np.array(up_periods) / np.array(down_periods)
-    rsi = np.round(100 - (100 / (1 + rs)), 2).tolist()
+    try:
+        down_periods = [0.001 if x == 0.0 else x for x in down_periods]
+        rs = np.array(up_periods) / np.array(down_periods)
+        rsi = np.round(100 - (100 / (1 + rs)), 2).tolist()
+    except RuntimeWarning:
+        rsi = None
 
     return rsi
