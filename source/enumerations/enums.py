@@ -89,6 +89,7 @@ class Variety(Enum):
 class Exchange(Enum):
     NSE = 1
     BSE = 2
+    NFO = 3
 
 
 class Transaction_Type(Enum):

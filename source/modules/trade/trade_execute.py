@@ -1,7 +1,7 @@
 from .BaseTrade import BaseTrade
 
 
-class EquityTrade(BaseTrade):
+class ExecuteTrade(BaseTrade):
     def __init__(self, modules, variety, exchange, tradingsymbol, transaction_type, quantity, disclosed_quantity, order_type, product,  price, trigger_price, validity, validity_ttl, iceberg_legs, iceberg_quantity, tag):
         super().__init__(modules, transaction_type, order_type)
         self.variety = variety
