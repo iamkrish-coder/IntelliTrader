@@ -27,7 +27,8 @@ class CreateLimitOrder:
 
         exchange_mapping = {
             Exchange.NSE.value: EXCHANGE_NSE,
-            Exchange.BSE.value: EXCHANGE_BSE
+            Exchange.BSE.value: EXCHANGE_BSE,
+            Exchange.NFO.value: EXCHANGE_NFO
         }
 
         transaction_mapping = {
@@ -63,8 +64,7 @@ class CreateLimitOrder:
         trade_validity = validity_mapping.get(trade_validity)
 
         if trade_variety is None:
-            log_error(
-                "The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
+            log_error("The order placement does not have a specified variety to Regular, AMO, CO, Iceberg, or Auction.")
             return False
 
         if trade_exchange is None:

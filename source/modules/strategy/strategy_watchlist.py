@@ -75,7 +75,7 @@ class StrategyWatchlist(BaseStrategy):
             option_type = [NFO_CE, NFO_PE]
 
         for instrument in instruments_list:
-            if (instrument['name'] in stock_basket or instrument['tradingsymbol'] in stock_basket )and instrument['instrument_type'] in option_type:
+            if (instrument['name'] in stock_basket or instrument['tradingsymbol'] in stock_basket) and instrument['instrument_type'] in option_type:
                 contracts.append(instrument)
 
         option_contracts = pd.DataFrame(contracts)
@@ -88,7 +88,7 @@ class StrategyWatchlist(BaseStrategy):
             underlying_price = self.get_underlying_price(instrument_type, stock)
             ce_contracts, pe_contracts = self.get_ce_pe_with_expiry(option_contracts, expiry_span, option_instrument_type, stock)
 
-            if not ce_contracts.empty and not pe_contracts.empty:
+            if not ce_contracts.empty and not pe_contracts.empty and underlying_price is not None:
                 option_chain_data = pd.concat([
                     self.get_call_option_chain(ce_contracts, underlying_price, strike_span),
                     self.get_put_option_chain(pe_contracts, underlying_price, strike_span)
@@ -99,6 +99,8 @@ class StrategyWatchlist(BaseStrategy):
                 option_chain_data = self.get_put_option_chain(pe_contracts, underlying_price, strike_span)
             else:
                 option_chain_data = pd.DataFrame()
+                log_error(f"No option chain contracts found for {stock}")
+                continue
 
             option_chain_data_list.append(option_chain_data)
 
@@ -107,29 +109,38 @@ class StrategyWatchlist(BaseStrategy):
 
 
     def get_underlying_price(self, instrument_basket_type, instrument):
+        symbol = None
+        exchange = EXCHANGE_NFO
 
         if instrument_basket_type.upper() == "INDEX-OPTIONS":
             if instrument == "NIFTY":
                 symbol = "NIFTY 50"
+                exchange = EXCHANGE_NSE  # override NFO to NSE as these are Indices
             elif instrument == "BANKNIFTY":
                 symbol = "NIFTY BANK"
+                exchange = EXCHANGE_NSE  # override NFO to NSE as these are Indices
             elif instrument == "FINNIFTY":
                 symbol = "NIFTY FIN SERVICE"
+                exchange = EXCHANGE_NSE  # override NFO to NSE as these are Indices
             else:
                 log_error(f"Instrument {instrument} is not available for an Index Option Trading")
                 return
         elif instrument_basket_type.upper() == "STOCK-OPTIONS":
             symbol = instrument
+            exchange = EXCHANGE_NSE
         else:
             log_error(f"Instrument {instrument} is not valid for an Index or Stock derivative Trading")
 
-        if symbol is not None:
-            instrument_quote = self.modules['fetch'].fetch_quote(EXCHANGE_NSE, symbol)
+        if symbol is not None and exchange is not None:
+            instrument_quote = self.modules['fetch'].fetch_quote(exchange, symbol)
 
-            for key in instrument_quote.keys():
-                symbol_key = key
-                last_price = instrument_quote[symbol_key]['last_price']
-                return last_price
+            if instrument_quote is not None and instrument_quote != {}:
+                for key in instrument_quote.keys():
+                    symbol_key = key
+                    last_price = instrument_quote[symbol_key]['last_price']
+                    return last_price
+            else:
+                log_error(f"Instrument Quote not available for {exchange}:{symbol}")
         else:
             log_error(f"Instrument does not contain a valid underlying")
 
@@ -139,20 +150,25 @@ class StrategyWatchlist(BaseStrategy):
         contracts['time_to_expiry'] = (pd.to_datetime(contracts['expiry']) + datetime.timedelta(0,24*3600) - datetime.datetime.now()).dt.days
         contracts_filtered = contracts[contracts['name'] == stock]
 
-        next_expiry_in_days = np.sort(contracts_filtered['time_to_expiry'].unique())
+        if not contracts_filtered.empty:
+            next_expiry_in_days = np.sort(contracts_filtered['time_to_expiry'].unique())
 
-        if expiry_span <= len(next_expiry_in_days):
-            expiry_eta = next_expiry_in_days[expiry_span]
+            if next_expiry_in_days is not []:
+                if expiry_span <= len(next_expiry_in_days):
+                    expiry_eta = next_expiry_in_days[expiry_span]
 
-            if option_type == Option_Type.CE.value:
-                ce_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.CE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
-                pe_contracts = pd.DataFrame()
-            elif option_type == Option_Type.PE.value:
-                ce_contracts = pd.DataFrame()
-                pe_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.PE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
-            else:
-                ce_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.CE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
-                pe_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.PE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
+                    if option_type == Option_Type.CE.value:
+                        ce_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.CE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
+                        pe_contracts = pd.DataFrame()
+                    elif option_type == Option_Type.PE.value:
+                        ce_contracts = pd.DataFrame()
+                        pe_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.PE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
+                    else:
+                        ce_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.CE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
+                        pe_contracts = contracts_filtered[(contracts_filtered['instrument_type'] == Option_Type.PE.name) & (contracts_filtered['time_to_expiry'] == expiry_eta)]
+                else:
+                    ce_contracts = pd.DataFrame()
+                    pe_contracts = pd.DataFrame()
         else:
             ce_contracts = pd.DataFrame()
             pe_contracts = pd.DataFrame()

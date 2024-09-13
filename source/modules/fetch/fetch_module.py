@@ -1,28 +1,47 @@
 import datetime as dt
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
-
 import pandas as pd
 
+from .BaseFetch import BaseFetch
 from ..helper.helper_module import Helper
 from ..shared.market_durations_api import MarketDurations
 from ..shared.nse_data_api import NSEDataApi
+
+from ...enumerations.enums import *
 from ...constants.const import *
 from ...utils.logging_utils import *
+from diskcache import Cache
 
 
-class Fetch:
+class Fetch(BaseFetch):
     def __init__(self, params):
         self.prop = params
+        self.cache_path = CACHE_PATH
 
     # Fetch instruments list
     def fetch_instruments(self, exchange=None):
         exchange = exchange.upper()
-        instruments_dump = self.prop['kite'].instruments(exchange)
-        if exchange is not None:
-            Helper().write_csv_output(f'instruments_{exchange}.csv', instruments_dump)
-        else:
-            Helper().write_csv_output('instruments.csv', instruments_dump)
+        self.check_cache_path_exists()
+
+        instruments_cache_path = os.path.join(self.cache_path, CACHE_INSTRUMENTS_DIR, exchange)
+        os.makedirs(instruments_cache_path, exist_ok=True)
+        instruments_cache = Cache(instruments_cache_path)
+        instruments_cache_key = f"{exchange}_instruments"
+
+        try:
+            instruments_dump = instruments_cache[instruments_cache_key]
+            log_info(f"Fetched instruments from cache for exchange {exchange}")
+        except KeyError:
+            instruments_dump = self.prop['kite'].instruments(exchange)
+            if exchange is not None:
+                Helper().write_csv_output(f'instruments_{exchange}.csv', instruments_dump)
+            else:
+                Helper().write_csv_output('instruments.csv', instruments_dump)
+
+            instruments_cache[instruments_cache_key] = instruments_dump
+            log_info(f"Fetched instruments from Kite API for exchange {exchange}")
+
         return instruments_dump
 
     # Lookup instrument token 
@@ -30,7 +49,7 @@ class Fetch:
         if exchange and symbol:
             exchange = exchange.upper()
             symbol = symbol.upper()
-            nse_instruments_dump = self.prop['kite'].instruments(exchange)
+            nse_instruments_dump = self.fetch_instruments(exchange)
             instrument_df = pd.DataFrame(nse_instruments_dump)
             try:
                 instrument_token = instrument_df[instrument_df.tradingsymbol == symbol].instrument_token.values[0]
@@ -39,10 +58,28 @@ class Fetch:
                 return instrument_token
             except Exception as error:
                 log_warn(f"An exception occurred: {error}")
-                exit()
         else:
             log_warn(f'Please verify that the exchange {exchange} and symbol {symbol} are present.')
-            exit()
+
+    def instrument_lot_size_lookup(self, exchange, symbol):
+        if exchange and symbol:
+            if isinstance(exchange, int):
+                exchange = Exchange(exchange).name
+
+            exchange = exchange.upper()
+            symbol = symbol.upper()
+            nse_instruments_dump = self.fetch_instruments(exchange)
+            instrument_df = pd.DataFrame(nse_instruments_dump)
+            try:
+                lot_size = instrument_df[instrument_df.tradingsymbol == symbol].lot_size.values[0]
+                log_info(
+                    f'::::::: Instrument ::::::: Exchange: {exchange} Symbol: {symbol} Lot Size: {lot_size} ...COMPLETE!')
+                return lot_size
+            except Exception as error:
+                log_warn(f"An exception occurred: {error}")
+        else:
+            log_warn(f'Please verify that the exchange {exchange} and symbol {symbol} are present.')
+
 
     # Lookup instrument token list (web streaming)
     def stream_instrument_token_lookup(self, exchange, symbol_list):
@@ -59,10 +96,8 @@ class Fetch:
                 return token_list
             except Exception as error:
                 log_warn(f"An exception occurred: {error}")
-                exit()
         else:
             log_warn(f'Please verify that the exchange [{exchange}] and symbol_list [{symbol_list}] are present.')
-            exit()
 
     # Fetch historical data for an exchange and symbol    
     def fetch_ohlc(self, exchange, symbol, token, timeframe='5minute', depth=2):
@@ -283,15 +318,12 @@ class Fetch:
             log_info(f'::::::: OHLCV ::::::: Timeframe: {timeframe} Exchange: {exchange} Symbol: {symbol} ...COMPLETE!')
             return data
         else:
-            log_warn(
-                f'Please verify that the exchange [{exchange}], symbol [{symbol}] and timeframe[{timeframe}] are present.')
-            exit()
+            log_warn(f'Please verify that the exchange [{exchange}], symbol [{symbol}] and timeframe[{timeframe}] are present.')
 
     # Fetch quote
     def fetch_quote(self, exchange, symbol):
         if not exchange or not symbol:
             log_warn(f'Please verify that the exchange [{exchange}] and symbol [{symbol}] are present.')
-            exit()
         else:
             exchange = exchange.upper()
             symbol = symbol.upper()
@@ -321,7 +353,6 @@ class Fetch:
             return last_price
         else:
             log_warn(f'Please verify that the exchange [{exchange}] and symbol [{symbol}] are present.')
-            exit()
 
     # Fetch orders 
     def fetch_orders(self):

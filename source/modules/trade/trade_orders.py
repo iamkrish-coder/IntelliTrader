@@ -6,11 +6,8 @@ from ...constants.const import *
 from ...enumerations.enums import *
 from ...models.trades_model import TradesModel
 from ...utils.logging_utils import *
-
 from .BaseTrade import BaseTrade
-from .trade_equity import EquityTrade
-from .trade_option import OptionTrade
-from .trade_futures import FuturesTrade
+from .trade_execute import ExecuteTrade
 from ..orders.orders_module import Orders
 
 
@@ -33,52 +30,64 @@ class TradeOrders(BaseTrade):
             return
 
         for order in orders:
-            instrument = self.parameters.get('strategy_params.instrument')
-            match int(instrument):
-                case Instrument_Type.EQUITY.value:
-                    object_equity_trade = EquityTrade(self.modules,
-                                               order['variety'],
-                                               order['exchange'],
-                                               order['tradingsymbol'],
-                                               order['transaction_type'],
-                                               order['quantity'],
-                                               order['disclosed_quantity'],
-                                               order['order_type'],
-                                               order['product'],
-                                               order['price'],
-                                               order['trigger_price'],
-                                               order['validity'],
-                                               order['validity_ttl'],
-                                               order['iceberg_legs'],
-                                               order['iceberg_quantity'],
-                                               order['tag'])
+            try:
+                object_execute_trade = ExecuteTrade(self.modules,
+                                           order['variety'],
+                                           order['exchange'],
+                                           order['tradingsymbol'],
+                                           order['transaction_type'],
+                                           order['quantity'],
+                                           order['disclosed_quantity'],
+                                           order['order_type'],
+                                           order['product'],
+                                           order['price'],
+                                           order['trigger_price'],
+                                           order['validity'],
+                                           order['validity_ttl'],
+                                           order['iceberg_legs'],
+                                           order['iceberg_quantity'],
+                                           order['tag'])
 
-                    order['order_id'] = trade_order_response = object_equity_trade.execute_trade()
-                    if trade_order_response:
-                        log_info(f"Order placed for {order['tradingsymbol']}: {trade_order_response}")
+                order['order_id'] = trade_order_response = object_execute_trade.execute_trade()
+                if trade_order_response:
+                    log_info(f"Order placed for {order['tradingsymbol']}: {trade_order_response}")
 
-                        """" Save order summary to Trade History Table """
-                        self.save_trade_history(order['tradingsymbol'], order['signal'], order['strategy'], order['order_id'])
-                    else:
-                        log_error(f"Failed to place order for {order['tradingsymbol']}")
+                    """" Save order summary to Trade History Table """
+                    self.save_trade_history(order['tradingsymbol'], order['signal'], order['strategy'], order['order_id'])
+                    time.sleep(1)
+                else:
+                    log_error(f"Failed to place order for {order['tradingsymbol']}")
 
-                case Instrument_Type.OPTIONS.value:
-                    pass
-
-                case Instrument_Type.FUTURES.value:
-                    pass
-
-                case _:
-                    log_error("No valid instrument type found in the configuration.")
+            except Exception as error:
+                log_error(f"Error placing order for {order['tradingsymbol']}: {error}")
 
         return placed_orders
+
+    def save_trade_history(self, symbol, signal, strategy, order_id):
+
+        trade_id = self.generate_table_uid(TABLE_TRADES)
+        dataset = {
+            "trade_id": trade_id,
+            "trade_signal_id": signal,
+            "trade_strategy": strategy,
+            "trade_order_id": order_id,
+            "trade_symbol": symbol,
+            "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        save_trade_order_history = self.prepare_request_parameters(
+            event=Events.PUT.value,
+            table=Tables.TABLE_TRADES.value,
+            model=TradesModel,
+            dataset=dataset
+        )
+        self.database_request(save_trade_order_history)
 
     def prepare_order_placement(self):
         """ Prepare Order Pre-requisites and parameters """
         """"
         variety 	
             regular Regular order
-            amo 	After Market OrUUIDder
+            amo 	After Market Order
             co 	    Cover Order 
             iceberg Iceberg Order 
             auction Auction Order 
@@ -101,13 +110,17 @@ class TradeOrders(BaseTrade):
         for signal in self.signals:
 
             order_params = {}
+
+            # Signal information
             signal_id = signal['signal_id']
             signal_strategy = signal['signal_strategy']
             signal_token = signal['signal_token']
             strategy_type = int(self.parameters.get('strategy_params.strategy_type'))
+            signal_exchange = int(signal['signal_exchange'])
+            signal_symbol = signal['signal_symbol']
+            signal_transaction_type = int(signal['signal_type'])
 
             instrument = self.parameters.get('strategy_params.instrument')
-
             if instrument == Instrument_Type.EQUITY.value:
                 trade_parameters = self.parameters.get('strategy_params.equity_trade_params')
             elif instrument == Instrument_Type.OPTIONS.value:
@@ -118,17 +131,17 @@ class TradeOrders(BaseTrade):
                 log_error("No instrument trade type defined in the configuration.")
                 return False
 
-            # Signal information
-            signal_exchange = int(signal['signal_exchange'])
-            signal_symbol = signal['signal_symbol']
-            signal_transaction_type = int(signal['signal_type'])
-
             # Caclulate Quantity
+            lot_size = self.modules['fetch'].instrument_lot_size_lookup(signal_exchange, signal_symbol)
             max_quantity = int(trade_parameters.get('max_quantity'))
             position_size_type = int(trade_parameters.get('position_size_type'))
             max_allocation = float(trade_parameters.get('max_allocation'))
             max_risk = float(trade_parameters.get('max_risk'))
-            quantity = self.set_quantity(signal_exchange, signal_symbol, max_quantity, position_size_type, max_allocation, max_risk)
+            quantity = self.set_quantity(signal_exchange, signal_symbol, max_quantity, position_size_type, max_allocation, max_risk, lot_size)
+
+            if quantity == 0:
+                log_warn(f"Insufficient margin. Please add funds to proceed.")
+                return None
 
             # Calculate Price for Limit/SL/SL-M/GTT
             price = 0
@@ -139,6 +152,9 @@ class TradeOrders(BaseTrade):
 
             if order_type == Order_Type.LIMIT.value:
                 price = self.set_limit_price(signal_exchange, signal_symbol, default_price, limit_buffer)
+                if price < 0:
+                    log_error(f"Limit buffer must not exceed stock trading price.")
+                    return None
 
             if order_type == Order_Type.SL.value or order_type == Order_Type.SL_M.value:
                 # TODO: Awaits Implementation
@@ -197,22 +213,3 @@ class TradeOrders(BaseTrade):
             return False
         else:
             return True
-
-    def save_trade_history(self, symbol, signal, strategy, order_id):
-
-        trade_id = self.generate_table_uid(TABLE_TRADES)
-        dataset = {
-            "trade_id": trade_id,
-            "trade_signal_id": signal,
-            "trade_strategy": strategy,
-            "trade_order_id": order_id,
-            "trade_symbol": symbol,
-            "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
-        }
-        save_trade_order_history = self.prepare_request_parameters(
-            event=Events.PUT.value,
-            table=Tables.TABLE_TRADES.value,
-            model=TradesModel,
-            dataset=dataset
-        )
-        self.database_request(save_trade_order_history)

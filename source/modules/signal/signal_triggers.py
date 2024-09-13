@@ -1,5 +1,6 @@
 # handlers/signal
 import time
+from time import sleep
 
 from .BaseSignal import BaseSignal
 from ...constants.const import *
@@ -48,3 +49,4 @@ class SignalTriggers(BaseSignal):
                 dataset=dataset
             )
             self.database_request(save_alert_signals)
+            sleep(1)

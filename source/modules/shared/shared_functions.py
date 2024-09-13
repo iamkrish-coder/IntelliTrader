@@ -16,6 +16,7 @@ from ...utils.logging_utils import *
 
 class SharedFunctions:
     def __init__(self, connection, modules):
+        self.cache_path = CACHE_PATH
         self.connection = connection
         self.modules = modules
 
@@ -361,7 +362,7 @@ class SharedFunctions:
         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M")
         return f"{strategy_id}-{timestamp}"
 
-    def calculate_quantity_per_allocation(self, max_allocation, stock_last_traded_price, lot_size=1):
+    def calculate_quantity_per_allocation(self, max_allocation, stock_last_traded_price, lot_size):
         try:
             max_allocation = float(max_allocation)
             stock_last_traded_price = float(stock_last_traded_price)
@@ -373,7 +374,7 @@ class SharedFunctions:
             # Handle the case where the inputs are not valid numbers
             return None
 
-    def calculate_quantity_per_risk(self, max_risk, stock_last_traded_price, stop_loss_percentage=0.05, lot_size=1):
+    def calculate_quantity_per_risk(self, max_risk, stock_last_traded_price, lot_size, stop_loss_percentage=0.5):
         try:
             max_risk = float(max_risk)
             stock_last_traded_price = float(stock_last_traded_price)
@@ -393,17 +394,17 @@ class SharedFunctions:
             # Handle the case where the inputs are not valid numbers
             return None
 
-    def set_quantity(self, exchange, symbol, max_quantity, position_size_type, max_allocation, max_risk):
+    def set_quantity(self, exchange, symbol, max_quantity, position_size_type, max_allocation, max_risk, lot_size=1):
         if exchange is None or symbol is None:
             log_error("Error: Exchange and Symbol cannot be None")
             return None
 
         if position_size_type == Position_Size.CAPITAL_BASED.value:
             ltp = self.modules['fetch'].fetch_ltp(exchange, symbol)
-            quantity = math.floor(self.calculate_quantity_per_allocation(max_allocation, ltp))
+            quantity = math.floor(self.calculate_quantity_per_allocation(max_allocation, ltp, lot_size))
         elif position_size_type == Position_Size.RISK_BASED.value:
             ltp = self.modules['fetch'].fetch_ltp(exchange, symbol)
-            quantity = math.floor(self.calculate_quantity_per_risk(max_risk, ltp))
+            quantity = math.floor(self.calculate_quantity_per_risk(max_risk, ltp, lot_size))
         elif position_size_type == Position_Size.MANUAL.value:
             quantity = int(1)
         else:
@@ -412,6 +413,9 @@ class SharedFunctions:
 
         if max_quantity < quantity:
             quantity = max_quantity
+
+        if lot_size:
+            quantity = quantity * lot_size
 
         return quantity
 
@@ -446,4 +450,23 @@ class SharedFunctions:
     def set_trigger_price(self, exchange, symbol):
         pass
 
+    def check_cache_path_exists(self):
+        # Get current date
+        market_start_time = datetime.time(hour=9, minute=15)
+        now = datetime.datetime.now()
+        previous_day = now - datetime.timedelta(days=1)
+        current_time = now.time()
 
+        if current_time <= market_start_time:
+            formatted_date = previous_day.strftime("%Y-%m-%d")
+        else:
+            formatted_date = now.strftime("%Y-%m-%d")
+
+        # Check if cache directory needs to be updated
+        if not os.path.exists(self.cache_path) or self.cache_path.split("/")[-1] != formatted_date:
+            # Cache path doesn't exist or date has changed, create new directory
+            self.cache_path = os.path.join(CACHE_PATH, formatted_date)
+            try:
+                os.makedirs(self.cache_path, exist_ok=True)
+            except OSError as error:
+                print(f"Error creating directory: {error}")

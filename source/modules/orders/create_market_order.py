@@ -27,7 +27,8 @@ class CreateMarketOrder:
 
         exchange_mapping = {
             Exchange.NSE.value: EXCHANGE_NSE,
-            Exchange.BSE.value: EXCHANGE_BSE
+            Exchange.BSE.value: EXCHANGE_BSE,
+            Exchange.NFO.value: EXCHANGE_NFO
         }
 
         transaction_mapping = {
