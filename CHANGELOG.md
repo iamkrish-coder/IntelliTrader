@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v6.0.0...v6.1.0) (2024-09-13)
+
+
+### Features
+
+* add option trading order placement and saving order to table ([9e61a78](https://github.com/iamkrish-coder/IntelliTrader/commit/9e61a78abd21640e26e897edd69b7d9cc304f88b))
+
 ## [6.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v5.3.0...v6.0.0) (2024-09-12)
 
 
