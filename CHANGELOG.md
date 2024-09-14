@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.1.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v6.1.0...v6.1.1) (2024-09-14)
+
+
+### Bug Fixes
+
+* landing page added using react and vendor assets ([96cd5d6](https://github.com/iamkrish-coder/IntelliTrader/commit/96cd5d6479aca7b97c793637eb5a0c0a2a68192d))
+
 ## [6.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v6.0.0...v6.1.0) (2024-09-13)
 
 
