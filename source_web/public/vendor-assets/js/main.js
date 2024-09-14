@@ -74,14 +74,14 @@ $(document).ready(function() {
 	marketClose.setMinutes(30);
 	marketClose.setSeconds(0);
 
-	
 	// Market Countdown on Landing Page
-	if (now.getHours() < 9 || (now.getHours() === 15 && now.getMinutes() > 30) || now.getHours() > 15) {
+	if (now.getHours() < 9) {
 		// Post Market Hours
 		marketOpen.setDate(marketOpen.getDate());
 		targetDate = marketOpen
+
 	}
-	else if ((now.getHours() === 9 && now.getMinutes() < 15)) {
+	else if ((now.getHours() === 9 && now.getMinutes() < 15 )) {
 		// Pre Market Hours
 		marketOpen.setDate(marketOpen.getDate())
 		targetDate = marketOpen
@@ -90,6 +90,11 @@ $(document).ready(function() {
 		// During Market Hours
 		marketClose.setDate(marketClose.getDate());
 		targetDate = marketClose
+	}
+	else if ((now.getHours() === 15 && now.getMinutes() > 30) || now.getHours() > 15) {
+		// Post Market Hours
+		marketOpen.setDate(marketOpen.getDate() + 1)
+		targetDate = marketOpen
 	}
 	else {
 		// Year To Date

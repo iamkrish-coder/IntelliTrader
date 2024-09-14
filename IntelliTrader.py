@@ -105,16 +105,6 @@ class IntelliTrader:
                 ]
                 await asyncio.gather(*tasks)
 
-                # Delayed Run -- For Development
-                # tasks = [
-                #     asyncio.create_task(self.strategy_controller()),
-                #     asyncio.create_task(self.signal_controller()),
-                #     asyncio.create_task(self.trade_controller())
-                # ]
-                #
-                # for task in tasks:
-                #     await asyncio.sleep(60)
-                #     await task
         else:
             log_error(f"Application failed to initialize controller. Please check the setup.")
             return False
