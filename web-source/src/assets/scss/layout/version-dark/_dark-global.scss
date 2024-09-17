@@ -1,0 +1,129 @@
+[data-theme-version="dark"]{
+    .brand-logo.invoice-logo .logo-abbr{
+        filter: brightness(10.5);
+    }
+    .morris_chart_height text tspan {
+		fill: $white;
+	}
+	.apexcharts-gridlines-horizontal line {
+		stroke:$d-border;
+	}
+	.stacked-2:after{
+		background-color: $dark-card;
+	}
+	.picker .picker__frame .picker__box .picker__footer .picker__button--clear, .picker .picker__frame .picker__box .picker__footer .picker__button--close, .picker .picker__frame .picker__box .picker__footer .picker__button--today{
+		color:$white;
+	}
+    .apexcharts-xaxis line {
+        stroke: $d-border;
+    }	
+    .ct-grid {
+        stroke: rgba(255, 255, 255, 0.1);
+    }
+	.custom-react-select{
+		& > div:nth-child(4){
+			& > div{				
+				border: 2px solid var(--border)!important;
+			}
+		}
+	}
+	
+	// select element css
+	.css-b62m3t-container{
+		& > div{
+			border-color: var(--border);
+			background: var(--card);
+		}
+		[class*="-singleValue"],
+		[class*="-placeholder"]{
+			color:var(--text);
+		}
+		[class*="-multiValue"]{
+			background:var(--card);
+			div{
+				color:var(--text);
+			}
+		}
+		[class*="-IndicatorsContainer"]{
+			div{color:var(--text); }
+		}
+		[class*="-menu"]{
+			background:var(--card);
+			& > div > *{
+				&:hover{
+					background:var(--card) ;
+				}
+			}
+		}
+		
+	}
+	// select element css end
+	// Swicher dark css
+	.sidebar-right {
+		.sidebar-right-inner {
+			h4{
+				background-color: var(--card);
+				color: $white !important;
+			}
+		}
+		.tab-content{
+			background:var(--card);
+			.tab-pane .admin-settings{
+				p{
+					color:var(--text);
+				}
+			}
+		}
+		.sidebar-right-inner .admin-title{
+			color:var(--text) !important;
+		}
+		.card-tabs .nav-tabs {
+			background:var(--card);
+			.nav-item .nav-link{
+				background:var(--card);
+				color:var(--text);
+				&.active{
+					background:var(--card);
+				}
+			}
+		}
+	}
+	// Swicher dark css end
+
+	// .reportrange
+	.daterangepicker{
+		background-color: var(--card);
+		border-color: var(--border);
+		color: var(--text);
+	} 
+	
+	.table.dataTable.display > tbody > tr > td {
+		border-color: rgba(225, 225, 225, 0.15) !important;
+	} 	
+	.fc .fc-daygrid-day.fc-day-today {
+		background-color: var(--card);
+	}
+	.fc-timegrid-slot fc-timegrid-slot-lane {
+		background-color: var(--card);		
+	}
+	
+	.react-datepicker{
+		background-color: var(--card);
+		color: $white;
+		border-color: var(--border);
+		.react-datepicker__current-month {
+			color: $white;
+		}
+		.react-datepicker__header  {
+			background-color: var(--card);	
+			border-color: var(--border);
+		}
+		.react-datepicker__day-name,
+		.react-datepicker__day{
+			color: $white;
+		}
+		.react-datepicker__navigation-icon {
+			top: 6px;
+		}
+	}
+}

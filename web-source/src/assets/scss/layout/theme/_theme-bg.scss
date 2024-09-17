@@ -1,0 +1,299 @@
+:root{
+	--nav-headbg: #FFFFFF;
+	--sidebar-bg: #FFFFFF;
+	--headerbg: #3736af;
+}
+
+//background for nav header
+@each $name, $color in $theme_backgrounds {
+	[data-nav-headerbg="#{$name}"][data-theme-version="dark"],
+    [data-nav-headerbg="#{$name}"] {
+        @if $name != "color_1"  {
+			--nav-headbg: #{$color};
+			.nav-header{
+				border-color:rgba($white,0.5);
+				.brand-logo{
+					.brand-title{
+						svg{
+							path{
+								fill:$white;
+							}
+						}
+					}
+					.logo-abbr{
+						path{
+							fill:$white;
+							stroke:$white;
+						}
+					}
+					
+				}
+				.hamburger .line{
+					background:$white;
+				}
+			}
+			.header-left .input-group.search-area{
+				.form-control{
+					background-color:rgba($white,0.12);
+					border-color:rgba($white,0.12);
+					color:$white;
+					&::placeholder{
+						color:$white;
+					}
+				}
+				.input-group-text{
+					background-color:rgba($white,0.12);
+					border-color:rgba($white,0.12);
+					    border-#{$dlab-pos-left}: 0;
+  						  margin-#{$dlab-pos-left}: 0px!important;
+	
+					.svg-main-icon{
+						path{
+							fill:$white;
+						}
+					}
+				}
+
+			}
+			.header-right .notification_dropdown .nav-link{
+				background-color:rgba($white,0.12);
+				@include respond ('phone'){
+					background-color: transparent;
+				}
+			}
+			
+			.nav-control{
+				background:rgba(255, 255, 255, 0.12);
+				@include respond ('phone'){
+					background-color: transparent;
+				}
+			}
+			.breadcrumb .breadcrumb-item svg{
+				path{
+					fill:$white;
+				}
+			}
+		}
+	}
+}
+//background for nav header
+@each $name, $color in $theme_backgrounds {
+	[data-sidebarbg="#{$name}"][data-theme-version="dark"],
+    [data-sidebarbg="#{$name}"] {
+        @if $name != "color_1"  {
+			--sidebar-bg: #{$color};
+			.dlabnav .main-menu{
+				color:$white;
+			}
+			.feature-box{
+				.wallet-box{
+					background-color:lighten($color: $color, $amount: 10%);
+				}
+				.item-1{
+					&:hover{
+						background:lighten($color: $color, $amount: 10%);
+					}
+				}
+				.small,
+				small{
+					color:$white;
+				}		
+				
+			}
+			
+			.menu-toggle .dlabnav .metismenu li > ul{
+				background:$color!important;
+			}
+			.dlabnav .metismenu ul a:before{
+				background:rgba($white,0.5);
+			}
+			.dlabnav .header-info2{
+				border-color:rgba($white,0.2)!important;		
+			}
+			.menu-scroll{
+				.copyright{
+					strong{
+						color:$white;
+					}
+				}
+			}
+			
+			&[data-sidebar-style="full"][data-layout="vertical"]{
+				.dlabnav {
+					.metismenu{
+						&>li{
+							&.mm-active{
+								&>a{
+									i{
+										color:$white;
+									}
+								}
+							}
+						}				
+					} 
+				}
+			}
+			&[data-sidebar-style="mini"],
+			&[data-sidebar-style="modern"],
+			&[data-sidebar-style="compact"],
+			&[data-sidebar-style="icon-hover"][data-layout="horizontal"],
+			&[data-sidebar-style="full"][data-layout="horizontal"]
+			{
+				.dlabnav{
+					.metismenu li ul{
+						background-color: lighten($color: $color, $amount: 10%);
+					}
+				} 
+				.dlabnav .metismenu > li.mm-active > a,
+				.dlabnav .metismenu > li:hover > a{
+						background:rgba($white,0.15)!important;
+				}
+			}
+			&[data-sidebar-style="compact"][data-layout="vertical"]{
+				.dlabnav {
+					.metismenu {
+						&>li {
+							a{
+								&:hover{
+									color:$white;
+								}
+							}
+							&>a{
+								&>i{
+									background: lighten($color: $color, $amount: 3%)!important;
+									color:rgba($white,0.7);
+								}
+							}
+							&.mm-active,&:hover{
+								&>a {
+									box-shadow:none;
+									background:transparent!important;
+									color:$white!important;
+									i{
+										background: lighten($color: $color, $amount: 10%)!important;
+										color:$white!important;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			.dlabnav {
+				.metismenu{
+					a{
+						color:rgba($white,0.8)!important;
+					}
+					li{
+						ul{
+							a{
+								&:hover,
+								&:focus,
+								&.mm-active {
+									color:$white;
+								}
+							}
+						}
+					}
+					&>li{
+						&>a{
+							color:rgba($white,0.85)!important;
+							i{
+								color:rgba($white,0.85)!important;
+							}
+						}
+						&.mm-active{
+							&>a{
+								background:rgba($white,0.15)!important;
+								color:$white!important;
+								i{
+									color:$white!important;
+								}
+								&:before{
+									background:$white!important;
+									}
+							}
+						}
+					}
+					.has-arrow:after{
+						border-color: rgba($white,0.85) transparent transparent rgba($white,0.85)!important;
+					}					
+				} 
+				.header-info2 span{
+					color: $white;
+				}
+				.sidebar-info{
+					color: $white; 
+					i{
+						color: $white; 		
+					}
+				}
+			}
+			.plus-box{
+				background-color: lighten($color: $color, $amount: 10%);
+			}
+			.copyright{
+				color:$white;
+			}
+		}
+	}
+}
+
+//background for nav header
+@each $name, $color in $theme_backgrounds {
+	[data-headerbg="#{$name}"][data-theme-version="dark"],
+    [data-headerbg="#{$name}"] {
+        @if $name != "color_1"  {
+			--headerbg: #{$color};
+				.search-area .input-group-append .input-group-text i{
+					color:$white;
+				}
+				.dashboard_bar{
+					color:$white;	
+				}
+			.header-profile2 span{
+				color:$white;
+			}	
+			.header-right{
+				.search-area .form-control,
+				.search-area .input-group-text{
+					background-color: lighten($color: $color, $amount: 10%);
+					border-color: lighten($color: $color, $amount: 10%);
+					i{
+						color:$white;
+					}
+				}
+				.plus-icon a{
+					background-color: lighten($color: $color, $amount: 10%);	
+				}
+				.notification_dropdown .nav-link .badge{
+					border-color:lighten($color: $color, $amount: 10%);		
+				}
+					
+			}
+			.sidebar-info{
+				h4{
+					color:$white;
+				}
+			}
+			.header-right{
+				svg{
+					path{
+						fill:$white;
+					}
+				}
+				.logout{
+					path{
+						fill:$danger;
+					}
+				}
+			}
+			.header-profile > a.nav-link .header-info small, .header-profile > a.nav-link .header-info span{
+				color:$white;	
+			}
+			.hamburger .line{
+				background:$white!important;
+			}
+		}
+	}
+}

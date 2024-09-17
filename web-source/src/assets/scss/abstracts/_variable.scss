@@ -1,0 +1,173 @@
+//customize bootstrap
+@import './bs-custom';
+
+$strong:#646c9a;
+$border: #EEEEEE;
+$shadow: 0rem 0rem 2.5rem 0rem rgba(82,63,105,0.1);
+
+
+///////////////
+// Solid Color
+///////////////
+$white: #fff;
+$black: #000;
+$charade: #23252F;
+
+/////////////////////////
+// Dark Version Color
+/////////////////////////
+$d-ctd: #ddd;
+$d-ctl: #7e8dbf;
+$d-text-dark : #fff;
+$d-text-gray : #b3b3b3;
+$d-text : #8896b9;
+$d-border: #2a3969;
+$d-bg: #09153f;
+$dark-card: #18254f;
+$dark_bg_lighter: #1E2A4A;
+
+/////////////////////////
+// Primary Light
+/////////////////////////
+$primary-light: lighten($primary, 60%);
+$secondary-light: lighten($secondary, 30%);
+$success-light: lighten($success, 45%);
+$warning-light: lighten($warning, 35%);
+$danger-light: lighten($danger, 30%);
+$info-light: lighten($info, 45%);
+$dark-light: lighten($dark, 50%);
+
+/////////////////////////
+// Opacity 
+/////////////////////////
+$primary-opacity: rgba($primary, 0.1);
+$secondary-opacity: rgba($secondary, 0.5);
+$success-opacity: rgba($success, 0.1);
+$warning-opacity: rgba($warning, 0.1);
+$danger-opacity: rgba($danger, 0.15);
+$info-opacity: rgba($info, 0.1);
+$dark-opacity: rgba($dark, 0.35);
+
+////////////////////////
+// Light Version Color
+////////////////////////
+$l-ctd: #464a53;
+$l-ctl: #828690;
+$l-border: #eaeaea;
+$l-bg: #f5f5f5;
+$heading: #333;
+
+///////////////////
+// Material Colors
+///////////////////
+$dusty-gray: #999999;
+$gallery: #EEEEEE;
+$gray: #898989;
+$input-border-color: $border;
+
+
+///////////////////
+// Social Colors
+///////////////////
+$facebook: #3b5998;
+$twitter: #1da1f2;
+$youtube: #FF0000;
+$google-plus: #db4439;
+$linkedin: #007bb6;
+$instagram: #c32aa3;
+$pinterest: #bd081c;
+$google: #4285f4;
+$snapchat: #fffc00;
+$whatsapp: #25d366;
+$tumblr: #35465d;
+$reddit: #ff4500;
+$spotify: #1ed760;
+$yahoo: #430297;
+$dribbble: #ea4c89;
+$skype: #00aff0;
+$quora: #aa2200;
+$riverBed: #4C585C;
+$vimeo: #1ab7ea;
+
+
+///////////////////
+// Misc Colors
+///////////////////
+$iron: #DDDFE1;
+$grey: #D2D6DE;
+$pale-sky: #6a707e;
+$athensGray: #F0F0F2;
+$sky: #2290FF;
+
+
+
+
+
+$color_pallate_1: $white;
+$color_pallate_2: #6610f2;
+$color_pallate_3: $primary;
+$color_pallate_4: #4d06a5;
+$color_pallate_5: #3250ff;
+$color_pallate_6:  #3f8cff;
+$color_pallate_7: #40a7e2;
+$color_pallate_8: #B65FBD;
+$color_pallate_9:  #88a67e;
+$color_pallate_10: #1C2E9E;
+$color_pallate_11: #c6164f;
+$color_pallate_12:#343a40 ;
+$color_pallate_13: #056468;
+$color_pallate_14: #4885ed;
+$color_pallate_15: #4cb32b;
+
+//utility variables
+$radius-sm: 0.325rem;
+$radius: 0.5rem;
+$radius-lg: 0.75rem;
+
+
+$loader--width: 15.625rem;
+$loader-dot--size: 1.25rem;
+
+$text-dark: #312a2a;
+$text-gray: #737B8B;
+$text: #717579;
+$border: #e6e6e6;
+$body-bg: #e7e7e7;
+$card: #fff;
+$card-light:#f3f3f3;
+
+
+$dlab-pos-right: right;
+$dlab-pos-left: left;
+$dlab-row : row wrap;
+
+:root {
+   
+    --card : #{$card};
+    --text-dark : #{$text-dark};
+    --text-gray : #{$text-gray};
+    --text : #{$text};
+    --body-bg : #{$body-bg};
+    --light : #{$card-light};
+    --border : #{$border};
+    --card-element-color:#{$card-light};
+    --bs-border-color:#{$border};
+    --bs-tertiary-bg :#{$card-light};
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

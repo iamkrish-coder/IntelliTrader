@@ -1,0 +1,404 @@
+/////////////////
+// Header
+/////////////////
+.header {
+    z-index: 1;
+    position: relative;
+    padding: 0rem;
+    z-index: 3;
+    padding-#{$dlab-pos-left}: 17rem;
+    padding-top: 1px;
+	background-position: center;
+    background-size: cover;
+	
+    .header-content {
+		height: 82px;
+		padding-#{$dlab-pos-left}: 6rem;
+		padding-#{$dlab-pos-right}: 1.875rem;
+		align-items: center;
+		display: flex;
+		#{$dlab-pos-left}: 16.2rem;
+		position: fixed;
+		top: 0;
+		width: calc(100% - 16.2rem);
+
+		@include custommq($max:100rem){
+			height: 70.5px;
+		}
+		
+        @include respond ('laptop') {
+			padding-#{$dlab-pos-left}: 8rem;
+			#{$dlab-pos-left}: 16rem;
+			
+			
+		}
+		@include custommq ($max:64rem){
+			#{$dlab-pos-left}: 6.3rem;
+			width: calc(100% - 6.3rem);
+			height: 5.5rem;
+		}
+        @include custommq($max: 47.9375rem) {
+            padding-#{$dlab-pos-left}: 3.75rem;
+			padding-#{$dlab-pos-right}: 0.938rem;
+        }
+		 @include respond ('phone-land') {
+			#{$dlab-pos-left}: 0rem;
+			width: calc(100% - 0rem);
+		 }
+		 @include respond ('phone'){
+			height:4.5rem;
+		 }
+		
+    }
+    .navbar {
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        .navbar-collapse {
+            height: 100%;
+            width: 100%;
+        }
+    }
+	&.is-fixed{
+		.header-content{
+			background-color:var(--headerbg);
+			//animation:0.95s ease 0s normal forwards 1 running headerSlideDown;	
+			//transition: all 0.5s;
+			
+			
+		}	
+	}
+	
+}
+
+////////////////////////
+// CSS Pulse Effect
+////////////////////////
+@mixin circle($circleSize) {
+    width: $circleSize;
+    height: $circleSize;
+    border-radius: $circleSize/2;
+}
+@for $i from 2 through 15{
+	[data-headerbg="color_#{$i}"] .header:not(.home){
+		background-color:var(--headerbg);
+		&:after{
+			background-image: url(../images/bg-1.png);
+			content:"";
+			position:absolute;
+			mix-blend-mode: luminosity;
+			z-index:-2;	
+			height:100%;
+			width:100%;
+			top:0;
+			#{$dlab-pos-left}:0;
+			background-size: cover;
+			background-position: 70px -50px;
+		}
+	}
+}
+@for $i from 2 through 15{
+	[data-headerbg="color_#{$i}"] .header.is-fixed{
+		background:var(--headerbg);
+		z-index: 4;
+		
+		
+	}
+}
+@for $i from 2 through 15{
+	[data-nav-headbg="color_#{$i}"] .nav-header{
+		background:var(--nav-headbg);
+
+	}
+}
+[data-headerbg="color_1"]{
+	.header{
+		&:not(.home){
+		
+			background-color:var(--headerbg);
+			&:after{
+				background-image: url(../images/bg-1.png);
+				content:"";
+				position:absolute;
+				mix-blend-mode: luminosity;
+				z-index:-2;	
+				height:100%;
+				width:100%;
+				top:0;
+				#{$dlab-pos-left}:0;
+				background-size: cover;
+				background-position: 70px -50px;
+			}
+		}
+		
+		
+	}
+	
+}
+
+
+/* pulse in SVG */
+
+svg.pulse-svg {
+    overflow: visible;
+    .first-circle {
+        -webkit-transform: scale(0.3);
+        transform: scale(0.3);
+        -webkit-transform-origin: center center;
+        transform-origin: center center;
+        -webkit-animation: pulse-me 3s linear infinite;
+        animation: pulse-me 3s linear infinite;
+        fill: var(--primary);
+    }
+    .second-circle {
+        @extend .first-circle;
+        -webkit-animation-delay: 1s;
+        animation-delay: 1s;
+    }
+    .third-circle {
+        @extend .first-circle;
+        -webkit-animation-delay: 2s;
+        animation-delay: 2s;
+    }
+}
+
+
+/* pulse in CSS */
+
+.pulse-css {
+    @include circle(1rem);
+    border-radius: 3.5rem;
+    height: 1.25rem;
+    position: absolute;
+    background: #fe8630;
+    #{$dlab-pos-right}: 0.375rem;
+    top: 0.3125rem;
+	border:0.25rem solid $white;
+    width: 1.25rem;
+    &:after,
+    &:before {
+        content: '';
+        @include circle(1rem);
+        position: absolute;
+        top: 0;
+        #{$dlab-pos-right}: 0;
+        bottom: 0;
+        #{$dlab-pos-left}: -.2rem;
+        background-color: #D8B9C3;
+        margin: auto;
+        -webkit-transform: scale(0.3);
+        transform: scale(0.3);
+        -webkit-transform-origin: center center;
+        transform-origin: center center;
+        -webkit-animation: pulse-me 3s linear infinite;
+        animation: pulse-me 3s linear infinite;
+       
+    }
+	@include respond ('laptop'){
+		height:1rem;
+		width:1rem;
+	}
+}
+
+@-webkit-keyframes pulse-me {
+    0% {
+        -webkit-transform: scale(0.3);
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    70% {
+        opacity: 0.09;
+    }
+    100% {
+        -webkit-transform: scale(3);
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-me {
+    0% {
+        -webkit-transform: scale(0.3);
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    70% {
+        opacity: 0.09;
+    }
+    100% {
+        -webkit-transform: scale(3);
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+[data-sidebar-style="full"],
+[data-sidebar-style="overlay"] {
+
+    .header {
+        width: 100%;
+		padding-#{$dlab-pos-left}:0;
+        @include respond ('laptop') {
+            width: 100%;
+            padding-#{$dlab-pos-left}: 17rem;
+        }
+        @include custommq($max: 63.9375rem) {
+            width: 100%;
+            padding-#{$dlab-pos-left}: 0rem;
+        }
+    }
+}
+
+[data-sidebar-style="mini"] {
+    .header {
+        width: 100%;
+		padding-#{$dlab-pos-left}: 6.32rem;
+		@include custommq($max: 63.9375rem){
+			padding-#{$dlab-pos-left}: 6.5rem;
+		}
+    }
+}
+
+[data-sidebar-style="compact"] {
+    .header {
+        width: 100%;
+        padding-#{$dlab-pos-left}: 11.2rem;
+		.header-content{
+			padding-#{$dlab-pos-left}: 2.1rem;
+			#{$dlab-pos-left}: 11.1rem;
+			width: calc(100% - 11.1rem);
+		}
+    }
+	.dlabnav{
+		height:calc(100% - 5.1rem);
+	}
+}
+
+[data-header-position="fixed"] {
+    .header {
+        top: 0;
+        width: 100%;
+    }
+    .content-body {
+		@include respond ('phone'){
+			padding-top: 0;
+		}
+    }
+    .dlabnav {
+        margin-top: 0;
+    }
+}
+[data-sidebar-style="compact"][data-header-position="fixed"][data-container="boxed"][data-layout="vertical"] {
+    .header {
+        width: 74.9375rem;
+    }
+}
+[data-sidebar-style="modern"] {
+    .header {
+		width: 100%;
+		padding-#{$dlab-pos-left}: 9.9rem;
+    
+
+    }
+	&[data-layout="horizontal"] {
+		.nav-header .brand-logo{
+		    justify-content: start;
+		}
+		.header .header-content{
+            padding-#{$dlab-pos-left}: 1.875rem;
+			
+        }
+	}
+}
+
+.sm-search{
+	display: none!important;
+	.search-area-2{
+		padding: 16px 10px;
+		.input-group-text{
+			border-color: var(--primary);
+			border-#{$dlab-pos-left}: 0;
+			background: transparent;
+			a{
+				svg{
+					path{
+						fill:var(--primary);
+					}
+				}
+			}
+		}
+		.form-control{
+			border-color: var(--primary);
+			border-#{$dlab-pos-right}: 0;
+		}
+		
+	}
+	@include custommq ($max:68.75rem){
+		display: inline-flex!important;
+		.dropdown-menu{
+			&.show{
+				#{$dlab-pos-right}:-25px;
+			}
+		}
+	}
+	@include respond ('tab-port'){
+		.dropdown-menu{
+			&.show{
+				#{$dlab-pos-right}:-118px;
+			}
+		}
+
+	}
+	@include respond ('phone-land'){
+		.dropdown-menu{
+			&.show{
+				#{$dlab-pos-right}:0;
+			}
+		}
+
+	}
+	.widget-media{
+		height: 270px!important;
+	}
+	.search-p{
+		.one{
+			path{
+				fill:var(--primary);
+			}
+		}
+		.two{
+			path{
+				fill:$warning;
+			}
+		}
+		.three{
+			path{
+				fill:$success;
+			}
+		}
+		.four{
+			path{
+				fill:$danger;
+			}
+		}
+	}
+	
+	.timeline-panel{
+		padding-bottom: 0!important;
+		border-bottom: 0!important;
+	}
+}
+@keyframes headerSlideDown{
+	0% {
+		margin-top: -150px;
+	}
+	100% {
+		margin-top: 0;
+	}
+}

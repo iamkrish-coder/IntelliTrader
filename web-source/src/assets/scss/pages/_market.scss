@@ -1,0 +1,177 @@
+.market-preview{
+	border-bottom: 0.0625rem solid var(--border);
+	padding: 0.5625rem 1.875rem;
+	@include respond ('phone'){
+		padding: 0.5625rem 1.175rem;
+	}
+	&:hover{
+		background:var(--light);
+	}
+	@include respond ('phone-land'){
+		span{
+			svg{
+				width:1.875rem;
+			}
+		}
+	}
+
+}
+.market-coin{
+	display: flex;
+	justify-content:space-between;
+	align-items: center;
+    padding: 0.975rem 0.625rem;
+	.coin-search-area{
+		width: 16.875rem;
+		.form-control{
+			border-color: var(--border);
+			background:var(--body-bg);
+			border-#{$dlab-pos-right}: 0;
+		}
+		.input-group-text{
+			border-color: var(--border);
+			background:var(--body-bg);
+		}
+	}
+	.coin-box{
+		padding: 0rem 0.575rem;
+		@include custommq ($max:106.25rem){
+			svg{
+				width:2.5rem;
+			}
+		}
+		@include respond ('phone'){
+			padding: 0rem rem;
+			svg{
+				width:1.5rem;
+			}
+		}
+		@include custommq ($max:100rem){
+			padding: 0rem 1rem;
+			h4{
+				font-size:1rem;
+			}
+			margin-bottom:0.625rem;
+
+		}
+		@include respond ('phone'){
+			border:0;
+			padding: 0rem 0.1rem;
+			svg{
+				width:1.5rem;
+			}
+			h4{
+				font-size: 0.8rem;
+			}
+		}
+	}
+}
+.trade-history{
+	.table{
+		thead{
+			tr{
+				th{
+					padding-#{$dlab-pos-left}: 6px;
+					border: 0;
+				}
+			}
+		}
+		tbody{
+			border:0;	
+			tr{
+				td{
+					font-size: 0.875rem;
+					font-weight: 500;
+					padding-#{$dlab-pos-left}: 6px;
+					border: 0;
+				}
+			}
+		}
+	}
+}
+.market-overview{
+	.card-header{
+		h4{
+			padding: 0 1.25rem;
+			border-#{$dlab-pos-right}: 0.0625rem solid #D7D7D7;
+			&:not(:first-child){
+				color: $body-color;
+			}
+			&:first-child{
+				padding-#{$dlab-pos-left}: 0;
+			}	
+			@include respond ('phone'){
+				padding: 0 0.65rem;
+			}
+			
+		}
+		span{
+			svg{
+				margin-#{$dlab-pos-left}: 1.25rem;
+				width: 15px;
+			}
+		}
+	}
+	.get-report{
+		font-weight: 500;
+		border-#{$dlab-pos-left}: 0.0625rem solid #D7D7D7;
+		padding-#{$dlab-pos-left}:1.75rem;
+		margin-#{$dlab-pos-left}: 15px;
+	}
+	@include respond ('phone'){
+		h4{
+			font-size:0.8rem!important;
+			margin-bottom:0.625rem;
+		}
+		span{
+			svg{
+				display:none;
+			}
+		}
+		
+	}
+}
+.bar-chart{
+	h3{
+		font-size: 1.65rem;
+		margin: 0;
+		@include respond ('laptop'){
+			font-size: 1.65rem;
+		}
+	}
+}
+
+.my-order-ile{
+	@include respond ('tab-land'){
+		order:1;
+	}
+}
+.my-order-ile-2{
+	@include respond ('tab-land'){
+		order:1;
+	}
+}
+#revenueMap{
+	svg{
+		line{
+			stroke: var(--border);
+		}
+	}
+}
+.table{
+	&.table-sell{
+		tr{
+			&:last-child{
+				td{
+					border-bottom: 0;
+				}
+			}
+		}
+	}
+} 
+
+.drop-future {
+	.dropdown-menu {
+		z-index: 3;
+	}
+}

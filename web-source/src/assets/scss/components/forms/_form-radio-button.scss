@@ -1,0 +1,128 @@
+.form-check{
+	.form-check-input[type="radio"]{
+		top: 0.03rem;
+	}
+}
+.form-check-input{
+	&:checked {
+		background-color: var(--primary);
+		border-color: var(--primary);	
+	}
+	&:focus {
+		border-color: var(--primary);
+		box-shadow: var(--rgba-primary-1);
+	}
+	&[type="radio"]{
+		width: 1.313rem;
+		min-width: 1.313rem;
+		height: 1.313rem;
+		position: relative;
+		border-color: var(--border);
+		border-width: 0.125rem;
+		border-style: solid;
+		top: -0.125rem;
+		
+		&:focus {
+			box-shadow: none;
+		}
+		
+	}
+	&[type="radio"] + .form-check-label{
+		margin-bottom: 0;
+	}
+	&:checked[type="radio"]{
+		background-image: none;
+		background-color: var(--rgba-primary-3);
+		border-color: transparent!important;
+		&:after{
+			content: "";
+			height: 0.688rem;
+			width: 0.688rem;
+			background-color: var(--primary);
+			position: absolute;
+			top: 0.188rem;
+			#{$dlab-pos-left}: 0.188rem;
+			border-radius: 50%;
+		}
+	}
+}
+.checkbox{
+	&-info{
+		.form-check-input{
+			&[type="radio"]{
+				border-color: $info;
+			}
+			&:checked[type="radio"]{
+				background-color: $info-light;
+				&:after{
+					background-color: $info;
+				}
+			}
+		}
+	}
+	&-danger {
+		.form-check-input{
+			&[type="radio"]{
+				border-color: $danger;
+			}
+			&:checked[type="radio"]{
+				background-color: $danger-light;
+				&:after{
+					background-color: $danger;
+				}
+			}
+		}
+	}
+	&-success{
+		.form-check-input{
+			&[type="radio"]{
+				border-color: $success;
+			}
+			&:checked[type="radio"]{
+				background-color: $success-light;
+				&:after{
+					background-color: $success;
+				}
+			}
+		}
+	}
+	&-warning{
+		.form-check-input{
+			&[type="radio"]{
+				border-color: $warning;
+			}
+			&:checked[type="radio"]{
+				background-color: $warning-light;
+				&:after{
+					background-color: $warning;
+				}
+			}
+		}
+	}
+	&-dark{
+		.form-check-input{
+			&[type="radio"]{
+				border-color: $dark;
+			}
+			&:checked[type="radio"]{
+				background-color: $primary-light;
+				&:after{
+					background-color: $primary;
+				}
+			}
+		}
+	}
+	&-secondary{
+		.form-check-input{
+			&[type="radio"]{
+				border-color: $secondary;
+			}
+			&:checked[type="radio"]{
+				background-color: $secondary-light;
+				&:after{
+					background-color: $secondary;
+				}
+			}
+		}
+	}
+}

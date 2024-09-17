@@ -1,0 +1,39 @@
+.custom-ekeditor{
+	ul{
+		padding-#{$dlab-pos-left}:1.25rem;
+		li{
+			list-style:unset;
+		}
+	}
+	ol{
+		li{
+			list-style:decimal;
+		}
+	}
+}
+
+.ck.ck-toolbar{
+	&>.ck-toolbar__items{
+		flex-flow: #{$dlab-row} !important; 
+	}
+	.ck-button{
+		justify-content: #{$dlab-pos-left} !important;
+	}
+}
+.ck.ck-media-form {
+	flex-flow: #{$dlab-row} !important; 
+	.ck.ck-label,.ck.ck-input{
+		text-align: #{$dlab-pos-left} !important;
+	}
+	.ck.ck-label{
+		#{$dlab-pos-left}: 0 !important;
+		#{$dlab-pos-right}:auto !important;
+	}
+}
+.ck.ck-content{
+	text-align: #{$dlab-pos-left} !important;
+}
+.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_se {
+	#{$dlab-pos-left}: 0 !important;
+	#{$dlab-pos-right}: auto !important;
+}

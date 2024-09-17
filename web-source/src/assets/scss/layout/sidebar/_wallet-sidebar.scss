@@ -1,0 +1,122 @@
+.wallet-open{
+	.header{
+		.page-titles,
+		.header-content{
+			padding-#{$dlab-pos-right}: 40px;
+			transition: all 0.5s;
+			@include respond ('phone'){
+				padding-#{$dlab-pos-right}:12px;
+			}
+		}
+	}
+	
+	.content-body{
+		padding-#{$dlab-pos-right}: 0;
+		@include transitionMedium;
+	}
+	.wallet-bar {
+		#{$dlab-pos-right}: -26.25rem;
+	}
+
+	&.active{
+		.header{
+			.page-titles,
+			.header-content{
+				padding-#{$dlab-pos-right}: 25.75rem;
+				transition: all ease 0.5s;
+				@include custommq ($max:106.25rem){
+					padding-#{$dlab-pos-right}: 40px;
+					
+				}
+				@include respond ('phone'){
+					padding-#{$dlab-pos-right}:0;
+				}
+			}
+		}
+		.content-body{
+			padding-#{$dlab-pos-right}: calc(25.75rem - 40px);
+			@include transitionMedium;
+			@include custommq ($max:106.25rem){
+				padding-#{$dlab-pos-right}: 0;
+				
+			}
+		}
+		.wallet-bar {
+			#{$dlab-pos-right}: 0rem;
+		}
+		.wallet-bar-close{
+			display: none;
+			@include custommq($max:100rem){
+				display: block;
+				position: fixed;
+				width: 100%;
+				cursor: pointer;
+				height: 100%;
+				top: 0;
+				#{$dlab-pos-left}: 0;
+				background: rgba(0, 0, 0, 0.2);
+				z-index: 7;
+			}
+
+			@include respond ('phone-land'){
+				display:block;
+				z-index: 1;
+			}
+		}
+	}
+}
+.header-banner {
+    width: 100%;
+    height: 286px;
+    background: var(--headerbg);
+    background-blend-mode: luminosity;
+    background-size: cover;
+    background-position: top;
+    position: absolute;
+    z-index: -1;
+    #{$dlab-pos-left}: 0;
+    top: 0;
+	@include custommq ($max:100.063rem){
+		height: 262px;
+	}
+	@include respond ('laptop'){
+		height: 267px;
+	}
+	@include respond ('tab-land'){
+		height: 260px;
+	}
+	@include respond ('phone'){
+		height: 200px;
+	}
+}
+.wallet-bar {
+    position: fixed;
+	box-sizing: content-box;
+    width: 21.875rem;
+	padding: 1.875rem 25px;
+	@include transitionMedium;
+	top: -12px;
+    z-index: 10;
+    height: 100vh;
+	scrollbar-width: none;
+	@include respond ('phone-land'){
+		background:rgba(0,0,0,0.2);
+		backdrop-filter:blur(5px);
+		box-shadow:0 0 50px 0 rgba(0,0,0, 0.25);
+		height:100vh;
+		overflow-y:scroll;
+	}
+	.closed-icon{
+		height:25px;
+		width:25px;
+		color:white;
+		font-size:20px;
+		display: block;
+		margin-bottom: 17px;
+		cursor:pointer;
+		display:none;
+		@include respond ('phone'){
+			display:block;
+		}
+	}
+}

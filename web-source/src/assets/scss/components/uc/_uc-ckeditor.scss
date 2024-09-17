@@ -1,0 +1,135 @@
+// Ckeditor
+.ck.ck-editor{
+	.ck.ck-button{
+		padding: 8px 12px;
+		background-color: var(--card);
+		color: var(--text-gray);
+		font-weight: 700;
+		border-radius: 4px;	
+		cursor: pointer;
+		.ck-button__label{
+			line-height: 1.2;
+		}	
+		@include respond('laptop'){
+			padding: 6px 8px;
+			.ck-icon{
+				height: 16px;
+				width: 16px;
+			}
+			.ck-dropdown__arrow{
+				height: 10px;
+				width: 10px;
+			}
+		}
+	}
+	.ck.ck-toolbar{
+		background-color: var(--light);
+		border: 0;
+		padding: 5px 10px;
+		.ck.ck-button:not(.ck-on){
+			&:hover{
+				background-color: var(--rgba-primary-1);
+				span:not(.ck-tooltip__text){
+					color: var(--primary);
+				}
+				svg{
+					color: var(--primary);
+				}
+			}
+		}
+	}
+	.ck.ck-toolbar__separator{
+		display: none !important;
+	}
+	.ck-content{
+		background-color: #f7f7f7;
+		border-width: 1px 0 0;
+		border-color: #e7e5ef;
+	}
+	.ck-reset.ck-list {
+		.ck-list__item{
+			.ck.ck-button{
+				border-radius: 0;
+				
+			}
+			.ck-button.ck-on {
+				background: $primary;
+				
+			}
+		}
+	}
+}
+.ck.ck-button.ck-on:not(.ck-disabled):hover, a.ck.ck-button.ck-on:not(.ck-disabled):hover{
+	background-color: var(--card)!important;
+	.ck-button__label{
+		color: var(--text-dark);
+	}
+}
+.ck.ck-toolbar > .ck.ck-toolbar__grouped-dropdown > .ck.ck-button.ck-dropdown__button {
+  	padding-#{$dlab-pos-left}: 12px!important;
+  	@include respond('laptop'){
+		padding-#{$dlab-pos-left}: 8px!important;
+  	}
+}
+.ck-editor__editable{
+	background :var(--body-bg) !important;
+	
+}
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred {
+    border-color: var(--border);
+	padding: 0.865rem var(--ck-spacing-standard);
+}
+.ck.ck-toolbar .ck-toolbar__items .ck.ck-toolbar__separator {
+    background: var(--border);
+}
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred {
+	min-height: 12.375rem;
+	background: var(--body-bg) !important;
+	@include respond('phone'){
+		min-height: 8rem;
+	}
+}
+button.ck.ck-button.ck-off:hover {
+    background-color: $border-color;
+}
+.ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused{
+	min-height: 12.375rem;
+	border-color: var(--rgba-primary-4)!important;
+	@include respond('phone'){
+		min-height: 8rem;
+	}
+}
+
+.ck.ck-button.ck-on:not(.ck-disabled):hover, 
+a.ck.ck-button.ck-on:not(.ck-disabled):hover {
+    background-color: var(--primary) ;
+}
+.ck.ck-reset.ck-dropdown__panel.ck-dropdown__panel_se.ck-dropdown__panel-visible {
+    box-shadow: none;
+    border: 0;
+}
+.ck.ck-dropdown .ck-dropdown__panel .ck-list .ck-list__item:first-child .ck-button {
+    border-top-#{$dlab-pos-left}-radius: 0 !important;
+	border-top-#{$dlab-pos-right}-radius: $radius !important;
+}
+.ck.ck-dropdown .ck-dropdown__panel .ck-list .ck-list__item:last-child .ck-button {
+    border-bottom-#{$dlab-pos-left}-radius: $radius !important;
+	border-bottom-#{$dlab-pos-right}-radius: $radius !important;
+}
+
+.ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-toolbar, .ck.ck-editor__top .ck-sticky-panel .ck-toolbar.ck-rounded-corners,
+.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable, .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners{
+	--ck-border-radius : #{$radius};
+}
+.ck.ck-editor__main > .ck-editor__editable{
+	background-color: var(--body-bg)!important;
+}
+.ck.ck-toolbar{
+	
+	.ck-button{
+		justify-content: #{$dlab-pos-left} !important;
+	}
+}
+.ck.ck-editor{
+	z-index: 1;
+}

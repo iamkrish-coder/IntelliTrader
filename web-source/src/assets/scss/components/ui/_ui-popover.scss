@@ -1,0 +1,141 @@
+.popover{
+    border: 0.125rem solid $secondary;
+    min-width: 13.125rem;
+    box-shadow: 0 0 1.875rem 0 rgba(0,0,0,0.1);
+	@at-root [data-theme-version="dark"] & {
+        background-color: $d-bg;
+    }
+    &-header{
+        background: $secondary;
+        color: $white;
+        font-weight: 300;
+
+        &::before{
+            border-bottom: 0 !important;
+        }
+    }
+
+    &-body{
+        font-size: 0.75rem;
+        background-color:var(--card);
+    }
+	.popover-header{
+		@at-root [data-theme-version="dark"] & {
+			border-color: $dark-card;
+		}
+    }
+	@include respond ('phone-land'){
+		z-index:1;
+	}
+   
+    &.clockpicker-popover{
+        position:absolute;
+        border:0;
+        left: 1263px;
+         top: 560.688px;
+
+         &.left{
+            #{$dlab-pos-left}: 1263px;
+            top: 560.688px;
+         }
+
+
+
+    }
+}
+
+.bootstrap-popover-wrapper{
+    .bootstrap-popover:not(:last-child){
+        margin-right: 0.5rem;
+    }
+
+    .bootstrap-popover{
+        margin-bottom: .5rem;
+
+        button:hover,button:focus{
+            background: var(--primary);
+            color: $white;
+            box-shadow: none;
+        }
+    }
+}
+
+.clockpicker-popover .popover-title{
+    padding: 5px 0;
+    background-color: var(--card);
+}
+.clockpicker-popover .popover-content{
+    background-color: var(--body-bg);
+}
+.clockpicker-plate {
+    background-color: var(--card);
+    border-color: var(--border);
+}
+
+.bs-popover-top .arrow::after, .bs-popover-auto[x-placement^="top"] .arrow::after {
+    bottom: 0rem;
+    border-top-color: $secondary;
+}
+
+.bs-popover-left .arrow::after, .bs-popover-auto[x-placement^="left"] .arrow::after {
+    right: 0rem;
+    border-left-color: $secondary;
+}
+
+.bs-popover-right .arrow::after, .bs-popover-auto[x-placement^="right"] .arrow::after {
+    left: 0rem;
+    border-right-color: $secondary;
+}
+
+.bs-popover-bottom .arrow::after, .bs-popover-auto[x-placement^="bottom"] .arrow::after {
+    top: 0rem;
+    border-bottom-color: $secondary;
+}
+
+.note-popover{
+    display: none;
+}
+
+.clockpicker-popover{
+    border-color: var(--border);
+    .popover-title{
+        background: var(--card);
+        color: var(--text-gray);
+        border-bottom: 1px solid var(--border);
+    }
+    .popover-content{
+        background: var(--card);
+    }
+    .clockpicker-plate{
+        background: var(--card);
+        border-color: var(--border);
+        .clockpicker-tick{
+            color: var(--text-dark);
+        }
+    }
+}
+.clockpicker-button{
+    background-color: var(--light);
+    color: var(--text-dark);
+    border-radius: 0;
+}
+
+.toltip-popover{
+	.tooltip-inner{
+		background: #ffffff;    
+		padding: 0;
+		border-top-left-radius: calc(0.3rem - 1px);
+		border-top-right-radius: calc(0.3rem - 1px);
+		border: 0.125rem solid $secondary;        ;
+		strong{
+			color: #777777;
+            // padding: 10px;
+		}
+	}
+}
+.popover-header{
+    background: $secondary;
+    border-top-left-radius: 0.1rem;
+    border-top-right-radius: 0.1rem;
+    padding: 10px;
+}

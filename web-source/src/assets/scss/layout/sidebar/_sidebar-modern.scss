@@ -1,0 +1,309 @@
+@media (min-width:47.9375rem) {
+    [data-sidebar-style="modern"] {
+
+        .nav-header {
+            width: 10.625rem;
+			.brand-logo{
+				    justify-content: center;
+			}
+        }
+		.header{
+			.page-titles{
+				padding-#{$dlab-pos-left}: 3.7rem
+			}
+		}
+        .dlabnav {
+			.header-profile{
+				margin-bottom: 0.3125rem;
+				&>a.nav-link{
+					display:block;
+					text-align:center;
+					margin: 0 -0.625rem 0.9375rem;
+					padding: 0.9375rem 0.625rem;
+					border-radius: $radius;
+					img{
+						margin-bottom:0.3125rem;
+					}
+					.header-info{
+						margin-#{$dlab-pos-left}:0!important;
+						text-align:center;
+						small{
+							text-align:center!important;
+						}
+						display:none;
+					}
+				}
+			}
+			.main-menu{
+				text-align:center;
+			}
+            .metismenu {
+				
+                &>li {
+                    text-align: center;
+					
+					
+                    &>a {
+                        padding: 1.25rem 0.9375rem 1.25rem 0.9375rem;
+						margin: 0.125rem 0;
+						@include transitionMedium;
+						
+						
+                        &::after {
+                            display: none;
+                        }
+
+                        &:hover, 
+                        &:focus, 
+                        &:active, 
+                        &.mm-active {
+                            &>a {
+                                background-color: var(--primary-dark);
+                            }
+                        }
+                    }
+					&:hover,
+					&.mm-active{
+						padding:0;
+						&>a{
+							background:var(--primary);
+							color:$white;
+							border-radius: $radius;
+							i{
+								color:$white;
+							}
+						}
+						.mm-collapse{
+							li{
+								a{
+									padding: 0.3rem 1rem;
+								}
+							}
+						}
+					}
+                    li {
+                        text-align: #{$dlab-pos-left};
+
+                    }
+                }
+
+                li {
+
+                    a {
+                        padding: 0.625rem 0.9375rem 0.625rem 0.9375rem;
+						font-size:0.9375rem;
+                    }
+					ul:after{
+						content:none;
+					}
+
+                    &>ul {
+                        height: auto !important;
+                    }
+                }
+                .nav-label{
+                    display: none;
+                }
+				
+            }
+
+            .nav-label {
+                display: none;
+            }
+            
+
+            .nav-text {
+                display: block;
+                margin-top: 0.3125rem;
+            }
+			.feature-box,
+			.support-box,
+			.copyright{
+				display:none;
+			}
+        }
+
+        .footer {
+            padding-#{$dlab-pos-left}: 11.9rem;
+        }
+        .content-body {
+            margin-#{$dlab-pos-left}: 10.6rem;
+        }
+		
+		&[data-layout="horizontal"]{
+			.dlabnav {
+				.metismenu {
+					 li {
+						&>a i{
+							padding:0;
+							margin:0;
+						}
+					 }
+				}	
+			}
+		}
+    }
+
+    [data-sidebar-style="modern"][data-layout="vertical"] {
+		
+        .dlabnav {
+            width: 10.625rem;
+            #{$dlab-pos-left}: 0;
+            z-index: 3;
+			
+			
+            .slimScrollDiv, 
+            .dlabnav-scroll {
+                overflow: visible !important;
+            }
+        
+            .metismenu {
+				padding: 0.625rem 0.875rem;
+                &>li {
+                    &>a{
+						padding: 1.375rem 0.6em 0.9375rem;
+                        i{
+							padding: 0;
+							height:auto;
+							width:auto;
+							margin:0;
+							line-height:1;
+							margin-bottom: 0.3125rem;
+                        }
+                    }
+
+                    &>ul {
+                        display: none;
+                        padding: 1.875rem 0.9375rem;
+                    }
+                }
+
+                li {
+                    position: relative;
+
+                    a {
+                        padding:1rem 1rem;
+						&:before{
+							content:none;
+						}
+                    }
+
+                    ul {
+                        position: absolute;
+                        #{$dlab-pos-left}: 105%;
+                        top: 0;
+                        bottom: auto;
+                        background-color: $white;
+                        border: 0.0625rem solid var(--border);
+                        width: 12.5rem;
+						
+						@at-root [data-theme-version="dark"]#{&} {
+							background:$dark-card;
+							box-shadow: 0rem 0rem 0.8125rem 0rem rgba(0, 0, 0, 0.1);
+						}
+
+                        
+                    }
+
+                    &:hover {
+                        &>ul {
+							display: block;
+							#{$dlab-pos-left}: 100%;
+							padding: 1rem 0;
+							margin-#{$dlab-pos-left}: 0;
+							border: 0;
+							box-shadow: 0.3125rem 0.3125rem 1.875rem 0rem rgba(20, 0, 30, 0.10);
+							border-radius: $radius;
+							
+							@at-root [data-theme-version="dark"]#{&} {
+								box-shadow: 0.3125rem 0.3125rem 1.875rem 0rem rgba(20, 0, 30, 0.10);
+							}
+							
+                           
+                        }
+                    }
+                }
+            }
+            
+
+            .nav-label {
+                display: none;
+            }
+
+            .nav-text {
+                display: block;
+                margin-top: 0;
+            }
+			.header-profile2{
+				padding:0 2.5rem;	
+			}
+        }
+		
+		.nav-control{
+			#{$dlab-pos-right}: -5.75rem;
+		}
+		.header .header-content{
+			padding-#{$dlab-pos-left}: 8rem;
+			#{$dlab-pos-left}: 10.6rem;
+			width: calc(100% - 10.6rem);
+		}
+		
+        .menu-toggle {
+            .dlabnav,.nav-header {
+                #{$dlab-pos-left}: -10.625rem;
+            }
+			.header{
+				padding-#{$dlab-pos-left}:0;
+				.page-titles{
+					padding-#{$dlab-pos-left}: 2.5rem;
+				}
+			}
+            .content-body {
+                margin-#{$dlab-pos-left}: 0;
+            }
+        }
+    }
+
+    [data-sidebar-style="modern"][data-layout="horizontal"] {
+		.nav-header {
+			width: 17.05rem;
+		}
+		.header {
+			padding-#{$dlab-pos-left}: 21.75rem;
+		}
+		.footer,
+		.content-body {
+			margin-#{$dlab-pos-left}:0;
+		}
+        .dlabnav {
+            .metismenu {
+                &>li {
+                    &>a {
+                        padding: 0.9375rem 1.5625rem 0.75rem 1.5625rem;
+						margin: 0 0.125rem;
+                    }
+
+                    &>ul {
+                        top: 4.8rem;
+                    }
+                }
+            }
+			.menu-scroll{
+				height: 6.6rem;
+			}
+        }
+		
+        &[data-container="boxed"] {
+            .dlabnav {
+                .metismenu {
+    
+                    &>li {
+                        &>a {
+                            padding: 0.8125rem 1.25rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

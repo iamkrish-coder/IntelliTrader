@@ -1,0 +1,376 @@
+.breadcrumb{
+	font-size:1.1875rem;
+	.breadcrumb-item{
+		&.active{
+			a{
+				color:var(--primary);
+			}
+		}
+		svg{
+			width: 22px;
+			margin-bottom: 3px;
+		}
+	}
+	.breadcrumb-item + .breadcrumb-item::before{
+		color:var(--primary);
+	}
+}
+
+.page-titles {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+	padding: 1.25rem 0.075rem;
+    margin-top: 80.7px;
+	position:relative;
+	padding-#{$dlab-pos-left}: 18.5rem;
+	padding-#{$dlab-pos-right}: 2.4rem;
+	z-index:-1;
+	flex-flow:wrap;
+	h2{
+		margin:0;
+		font-size: 28px;
+	}
+	@include custommq ($max:100rem){
+		h2{
+			font-size: 20px;
+		}
+		padding: 1.75rem 0.075rem;
+		padding-#{$dlab-pos-left}: 18.5rem;
+		padding-#{$dlab-pos-right}: 2.4rem;
+	}
+	
+	@include custommq ($max:64rem){
+		margin-top: 77px!important;
+	}
+	 @include respond('laptop') {
+		padding: 1.75rem 2.875rem;
+		margin-top: 76.1px;
+	}
+	 @include respond('tab-land') {
+		padding: 1.75rem 2.075rem;
+		margin-top: 69px !important;
+	 }
+	
+	 @include respond('tab-port') {
+		margin-top: 76px!important;
+	 }
+	 @include respond('phone-land') {
+		margin-#{$dlab-pos-left}: -1.25rem;
+		margin-#{$dlab-pos-right}: 0rem;
+		margin-bottom: 0.9375rem;
+		padding:1.4375rem 1.25rem;
+		margin-top: 69px !important;
+    }
+	 @include respond('phone') {
+		padding: 0.6375rem 2.55rem;
+		margin-top: 5.45rem;
+		margin-#{$dlab-pos-right}: 0rem;
+		margin-bottom:0;
+		h2{
+			font-size:1rem;
+		}
+	 }
+
+    .justify-content-sm-end{
+        align-items: center;
+    }
+
+    h4 {
+        margin-bottom: 0;
+        margin-top: 0;
+        color: var(--primary);
+        font-size: 1.25rem;
+        span {
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+    }
+    .breadcrumb {
+        margin-bottom: 0;
+        padding: 0;
+        background: transparent;
+		align-items:center;
+		@include respond ('phone-land'){
+			padding-#{$dlab-pos-right}: 0px;
+		}
+		h2{
+			margin: 0;
+			font-size: 28px;	
+			font-weight: 500;
+		}
+		p{
+			margin: 0;
+			font-size: 16px;	
+			color:#fff000;
+		}
+        li {
+            margin-top: 0;
+            margin-bottom: 0;
+			padding-#{$dlab-pos-left}: 2rem;
+			align-items: center;
+			display: flex;
+			@include respond ('phone'){
+				&:first-child{
+					padding-#{$dlab-pos-left}:0;
+				}
+			}
+
+            a{
+				font-size:14px;
+				font-weight:400;
+               color: $white; 
+			   display:flex;
+			   align-items:center;
+			   @include respond ('phone'){
+					font-size:0.95rem;
+			   }
+
+            }
+
+            &.active{
+                color:var(--primary);
+				a{
+					color:$light;
+				}
+            }
+        }
+        
+        .breadcrumb-item + .breadcrumb-item {
+            &:before {
+                content: "\f105";
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 600;
+				position:absolute;
+                font-size: 14px;
+				color:$light;
+				margin-#{$dlab-pos-left}: -20px;
+            }
+        }
+
+        &-datepicker{
+            font-size: 0.75rem;
+            color: $muted;
+
+            &__icon{
+                font-size: 0.875rem;
+            }
+        }
+    }
+	.sub-dz-head{
+		display:flex;
+		align-items:center;
+		width:100%;
+		justify-content: space-between;
+		position:relative;
+		&:before{
+			content:"";
+			top:-18px;
+			#{$dlab-pos-left}:0;
+			width:100%;
+			background:rgba(255,255,255,0.12);
+			height:1px;
+			position:absolute;
+			@include respond ('phone'){
+				top:-5px;
+			}
+		}
+	}
+
+    .breadcrumb-widget{
+        .border-dark{
+            border-color: $gray-300!important;
+        }
+        h4{
+            color: $strong;
+            font-weight: 600;
+        }
+        @include respond('phone') {
+            text-align: #{$dlab-pos-left}!important;
+            margin-bottom: 0.9375rem;
+        }
+    }
+	p{
+		margin:0;
+		color:#fff000;
+	}
+}	
+.breadcrumb-title{
+	display: flex;
+	align-items: center;
+    justify-content: space-between;
+	padding: 1.125rem 1.875rem;
+    background:	$white;
+	margin-bottom: 1.875rem;
+	border-radius: $radius;
+	position:relative;
+	z-index:1;
+	flex-wrap: wrap;
+	&.style1{
+		  padding: 0.92rem 1.875rem;
+	}
+	
+	h2{
+		margin:0;
+	}
+	@include custommq ($max:100rem){
+		h2{
+			font-size: 20px;
+		}
+	}
+	@include respond('phone-land') {
+		flex-wrap: wrap;
+		
+    }
+	 @include respond('phone') {
+		padding: 0.6375rem 1rem;
+		flex-wrap: wrap;
+		h2{
+			font-size:1rem;
+		}
+	 }
+
+    .justify-content-sm-end{
+        align-items: center;
+    }
+	.left-title{
+		@include respond('phone') {
+			margin-bottom: 0.5rem;
+		}
+	}
+    h4 {
+        margin-bottom: 0;
+        margin-top: 0;
+        color: var(--primary);
+        font-size: 1.25rem;
+        span {
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+    }
+    .breadcrumb {
+        margin-bottom: 0;
+        padding: 0;
+        background: transparent;
+		align-items:center;
+		@include respond ('phone-land'){
+			padding-#{$dlab-pos-right}: 0px;
+		}
+		h2{
+			margin: 0;
+			font-size: 28px;	
+			font-weight: 500;
+		}
+		p{
+			margin: 0;
+			font-size: 16px;	
+			color:#fff000;
+		}
+        li {
+            margin-top: 0;
+            margin-bottom: 0;
+			padding-#{$dlab-pos-left}: 2rem;
+			align-items: center;
+			display: flex;
+			@include respond ('phone'){
+				&:first-child{
+					padding-#{$dlab-pos-left}:0;
+				}
+			}
+
+            a{
+				font-size:16px;
+				//font-weight:400;
+               color: #000; 
+			   display:flex;
+			   align-items:center;
+			   @include respond ('phone'){
+					font-size:0.95rem;
+			   }
+
+            }
+
+            &.active{
+                color:var(--primary);
+				font-size:1rem;
+				a{
+					color:$light;
+				}
+				@include respond ('phone'){
+					font-size:0.95rem;
+				}
+            }
+        }
+        
+        .breadcrumb-item + .breadcrumb-item {
+            &:before {
+                content: "\f105";
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 600;
+				position:absolute;
+                font-size: 14px;
+				color:var(--primary);
+				margin-#{$dlab-pos-left}: -20px;
+            }
+        }
+
+        &-datepicker{
+            font-size: 0.75rem;
+            color: $muted;
+
+            &__icon{
+                font-size: 0.875rem;
+            }
+        }
+    }
+	.sub-dz-head{
+		display:flex;
+		align-items:center;
+		width:100%;
+		justify-content: space-between;
+		position:relative;
+		&:before{
+			content:"";
+			top:-18px;
+			#{$dlab-pos-left}:0;
+			width:100%;
+			background:rgba(255,255,255,0.12);
+			height:1px;
+			position:absolute;
+		}
+	}
+
+    .breadcrumb-widget{
+        .border-dark{
+            border-color: $gray-300!important;
+        }
+        h4{
+            color: $strong;
+            font-weight: 600;
+        }
+        @include respond('phone') {
+            text-align: #{$dlab-pos-left}!important;
+            margin-bottom: 0.9375rem;
+        }
+    }
+	p{
+		margin:0;
+		color:#fff000;
+	}
+	.btn{
+		svg{
+			@include respond("tab-land"){
+				width: 18px;
+   	 			height: 18px;
+			}
+			@include respond("tab-port"){
+				width: 18px;
+   	 			height: 18px;
+			}
+			
+		}
+	}
+	
+}
+
+

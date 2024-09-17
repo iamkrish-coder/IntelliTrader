@@ -1,0 +1,38 @@
+
+.footer {
+    padding-#{$dlab-pos-left}:16.1875rem;
+    background-color:var(--card);
+    font-size: 0.875rem;
+    
+    .copyright {
+        padding: 0.5375rem;
+        margin-top: 1.875rem;
+       
+        p {
+            text-align: center;
+            margin: 0;
+			color: var(--text-dark);
+			
+        }
+
+        a{
+            color: var(--primary);
+        }
+    }
+	@include respond ('tab-port'){
+		padding-#{$dlab-pos-right}:0;
+	}
+    &.style-1{
+        .copyright {
+            width:calc(100% - 180px);
+
+            @include custommq($max:100rem){
+                width:100%;
+            }
+           
+        }
+    }
+	
+}
+
+

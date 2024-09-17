@@ -1,0 +1,20 @@
+
+
+//nav header styles
+[direction="rtl"] {
+
+    .nav-header{
+        .brand-title{
+            direction: ltr;
+        }
+    }
+    .hamburger.is-active .line:nth-child(1){
+        -webkit-transform: translateY(4px) translateX(-12px) rotate(-45deg);
+        transform: translateY(4px) translateX(-12px) rotate(-45deg);
+    }
+    .hamburger.is-active .line:nth-child(3) {
+        -webkit-transform: translateY(-4px) translateX(-12px) rotate(45deg);
+        transform: translateY(-4px) translateX(-12px) rotate(45deg);
+    }
+
+}

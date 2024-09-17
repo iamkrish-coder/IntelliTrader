@@ -1,0 +1,76 @@
+.widget-media{
+	.timeline{
+		.timeline-panel{
+			display: flex;
+			align-items: center;
+			border-bottom:1px solid var(--border);
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+			
+			.media{
+				width: 50px;
+				height: 50px;
+				background: #eee;
+				border-radius: 12px;
+				overflow: hidden;
+				font-size: 20px;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: 700;
+				align-self: start;
+					
+				&-primary{
+					background:var(--rgba-primary-1);
+					color:$primary;
+					
+				}
+				&-info{
+					background:rgba($info,0.2);
+					color:$info;
+					
+				}
+				&-warning{
+					background:rgba($warning,0.2);
+					color:$warning;
+					
+				}
+				&-danger{
+					background:rgba($danger,0.2);
+					color:$danger;
+					
+				}
+				&-success{
+					background:rgba($success,0.2);
+					color:$success;
+					
+				}
+			}
+			.media-body{
+				p{
+					font-size: 14px;
+					line-height:1.5;
+				}
+			}
+			.dropdown {
+				align-self: self-end;
+				margin-top: 5px;
+			}
+		}
+		li:last-child {
+			.timeline-panel{
+				margin-bottom:0;
+				border-bottom:0;
+				padding-bottom:0;
+			}
+		}
+	}
+}
+.card[class*="bg-"]{
+	.timeline{
+		.timeline-panel{
+			border-color:rgba(255,255,255,0.2) !important;
+		}
+	}
+}

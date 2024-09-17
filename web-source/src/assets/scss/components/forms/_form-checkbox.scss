@@ -1,0 +1,242 @@
+.form-check-label{
+    margin-#{$dlab-pos-left}: 0.3125rem;
+    margin-top: 5px;
+}
+
+
+.form-check-inline {
+    .form-check-input {
+        margin-#{$dlab-pos-right}: 0.625rem;
+    }
+}
+.form-check-input{
+	top:0.125rem;
+	border-width:0.125rem;
+	width: 1.25rem;
+	height: 1.25rem;
+	border-color: var(--border);
+	background-color: var(--body-bg);
+}
+.rtl .form-check-label{
+	&:before,
+	&:after{
+		#{$dlab-pos-right}: -1.5rem !important;
+		#{$dlab-pos-left}: inherit;
+	}
+}
+.form-check {
+    line-height: normal;
+}
+
+
+// Toggle Switch
+.toggle-switch{
+	padding-#{$dlab-pos-left}:3.125rem;
+	line-height: 1.25;
+	display:inline-block;
+	color:var(--text-dark);
+	font-weight: 600;
+	.form-check-input{
+		border: 0;
+		cursor:pointer;
+		background: #d8d8d8;
+		width: 2.2125rem;
+		border-radius: 1.25rem !important;
+		height: 0.875rem;
+		position:relative;
+		#{$dlab-pos-left}: -0.3125rem;
+		@include transitionFast;
+		background-image:none;
+		&:focus{
+			background-image:none!important;
+		}
+		&:checked{
+			background:var(--rgba-primary-1);
+			background-image:none!important;
+			&:after{
+				#{$dlab-pos-left}:1.30rem;
+				background:var(--primary);
+			}
+		}
+		&:focus{
+			box-shadow:none;
+		}
+		&:after{
+			width: 1rem;
+			background:#909090;
+			height: 1rem;
+			content:"";
+			position:absolute;
+			border-radius: 1.5rem;
+			top: -0.0475rem;
+			#{$dlab-pos-left}: 0;
+			@include transitionFast;
+		}
+	}
+	&.text-end{
+		padding-#{$dlab-pos-right}:0rem;
+		padding-#{$dlab-pos-left}:0;
+		.form-check-input{
+			#{$dlab-pos-left}: auto;
+			margin-#{$dlab-pos-left}: 0;
+			float:#{$dlab-pos-right};
+			#{$dlab-pos-right}: 0rem;
+		}
+		.form-check-label{
+			margin-#{$dlab-pos-right}: 0.9375rem;
+			margin-#{$dlab-pos-left}:0;
+		}
+	}
+	.form-check-label{
+		cursor:pointer;
+	}
+	@include respond('phone'){
+		padding-#{$dlab-pos-left}:1.925rem;
+	}
+}
+
+
+// CheckBox
+.form-check-input:focus ~ .form-check-label::before{
+	box-shadow:none !important;
+}
+.form-check-label::before{
+    background-color: transparent;
+    border-color: $light;
+	border-width: 0.125rem;
+	border-radius: 0.125rem !important;
+		
+	@at-root [data-theme-version="dark"] & {
+		background-color: transparent;
+		border-color: $d-border;
+	}
+}
+.check-xs{
+	.form-check-input{
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+}
+.check-lg{
+	.form-check-input{
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+}
+.check-xl{
+	.form-check-input{
+		width: 1.75rem;
+		height: 1.75rem;
+	}
+}
+.checkbox{
+	&-info{
+		.form-check-input{
+			&:focus{
+				border-color: $info;
+				outline: 0;
+				box-shadow: 0 0 0 0.25rem rgba($info , 0.25);
+			}
+			&:checked{
+				background-color: $info;
+				border-color: $info;
+				
+			}
+		}
+	}
+	&-danger {
+		.form-check-input{
+			&:focus{
+				border-color: $danger;
+				outline: 0;
+				box-shadow: 0 0 0 0.25rem rgba($danger , 0.25);
+			}
+			&:checked{
+				background-color: $danger;
+				border-color: $danger;
+				
+			}
+		}
+	}
+	&-success{
+		.form-check-input{
+			&:focus{
+				border-color: $success;
+				outline: 0;
+				box-shadow: 0 0 0 0.25rem rgba($success , 0.25);
+			}
+			&:checked{
+				background-color: $success;
+				border-color: $success;
+				
+			}
+		}
+	}
+	&-warning{
+		.form-check-input{
+			&:focus{
+				border-color: $warning;
+				outline: 0;
+				box-shadow: 0 0 0 0.25rem rgba($warning , 0.25);
+			}
+			&:checked{
+				background-color: $warning;
+				border-color: $warning;
+				
+			}
+		}
+	}
+	&-secondary{
+		.form-check-input{
+			&:focus{
+				border-color: $secondary;
+				outline: 0;
+				box-shadow: 0 0 0 0.25rem rgba($secondary , 0.25);
+			}
+			&:checked{
+				background-color: $secondary;
+				border-color: $secondary;
+				
+			}
+		}
+	}
+}
+
+
+
+
+//Check Switch
+.check-switch{
+	padding-#{$dlab-pos-left}: 2.5rem;
+	.form-check-label{
+		line-height: 1.875rem;
+		font-weight: 500;
+		span{
+			line-height: 1;
+		}
+		&:after,&:before{
+			height:1.5rem;
+			width:1.5rem;
+			#{$dlab-pos-left}: -2rem;
+			border-radius: 3rem!important;
+			border-color:var(--rgba-primary-3);
+		}
+	}
+	.form-check-input:checked ~ .form-check-label::after{
+		background-image:url('../images/svg/check.svg');
+	}
+	.form-check-input:checked ~ .form-check-label::before{
+		background:$white;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+
+//global styles
+[direction="rtl"] {
+    &[data-theme-version="dark"] {
+        .border, .border-left, .border-right {
+            border-color: $d-border !important;
+        }
+    }
+   
+}

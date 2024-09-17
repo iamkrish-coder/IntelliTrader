@@ -1,0 +1,30 @@
+//content body
+[direction="rtl"] {
+	
+	.bootstrap-select .dropdown-toggle .filter-option{
+		text-align: right
+	}
+	.form-check-label {
+		margin-right: 1.0125rem;
+		margin-top: 5px;
+	}
+	.authincation .login-aside:after {
+		clip-path: polygon(100% 100%, 100% 0%, 0% 0%);
+	}
+	.market-chart .market-line,
+	#marketOverview,
+	#bitcoinhChart,
+	#ethChart,
+	#dashChart,
+	#litcoinChart {
+		margin-left: -42px;
+		direction: ltr;
+	}
+	.dlabnav .metismenu > li > a {
+		padding:0.9375rem 0.9375rem 0.9375rem 2.3rem;
+	}
+	.popover.clockpicker-popover.left{
+		left: unset!important;
+	}
+}
+

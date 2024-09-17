@@ -1,0 +1,349 @@
+.coin-card{
+    background-color: $secondary;
+    overflow: hidden;
+    z-index: 1;
+    .back-image {
+        position: absolute;
+        #{$dlab-pos-right}: 0;
+        z-index: -1;
+    }
+    .title{
+        h4{
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: $white;
+        }
+        svg{
+            margin-bottom: 1.875rem ;
+            margin-top: 1.25rem;
+            @include respond('laptop'){
+                width: 48px;
+                height: 48px;
+                margin-bottom: 1rem;
+                margin-top: 1rem;
+            }
+            @include custommq($max:81.25rem){
+                width: 40px;
+                height: 38px;
+                margin-top: 0.625rem;
+            }
+            @include respond('tab-land'){
+                width: 40px;
+                height: 40px;
+                margin-bottom: 0.625rem;
+                margin-top: 0.625rem;
+            }
+        }
+    }
+    .chart-num{
+        h2{
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: $white;
+            margin-bottom: 0.5rem;
+            @include respond('laptop'){
+                font-size: 1.125rem;
+            }
+            @include custommq($max:81.25rem){
+                font-size: 1rem;
+            }
+            @include respond('tab-land'){
+                font-size: 1.125rem;
+            }
+        }
+        span{
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: $white;
+        }
+    }
+}
+.coin-card.secondary {
+    background-color: $secondary!important;
+}
+.coin-card.blue{
+    background-color: var(--primary)!important;
+}
+.coin-card.green{
+    background-color: $success!important;
+}
+.coin-card.pink{
+    background-color: $pink!important;
+}
+
+// ------market-chart--
+.market-data {
+    display: flex;
+    flex-wrap: wrap;
+   
+    .data{
+        padding: 0 1.5rem ;
+        h4{
+            font-size: 1rem;
+            font-weight: 600;
+            
+        }
+        sub{
+            font-size: 0.813rem;
+            color: $pink;
+        }
+    }
+    .data:first-child{
+        padding-#{$dlab-pos-left}: 0;
+    }
+    @include respond('phone'){
+        flex-wrap: wrap;
+		display:none;
+    }
+    
+    @include respond('phone-land'){
+        .data {
+            padding-#{$dlab-pos-left}: 0;
+        }
+    }
+    
+}
+.market-preview-3{
+	padding: 12px 0;
+}
+
+// ------Market Previews-----
+
+.previews-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem 1.8rem;
+    .pre-icon{
+        display: flex;
+        align-items: center;
+        .icon{
+            background-color: $success;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: $radius;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-#{$dlab-pos-right}: 0.625rem;
+        }
+        h6{
+            margin-bottom: 0 ;
+            font-size: 0.938rem;
+            font-weight: 500;
+        }
+    }
+    .count{
+        h6{
+            margin-bottom: 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        span{
+            color:#EB62D0;
+        }
+    }
+    &:hover{
+        background-color: #F3F3F3;
+    }
+}
+
+
+.previews-info.green{
+    .pre-icon{
+        .icon{
+            background-color: $success;
+        }
+    }
+    .count{
+       span{
+           color: $success;
+       }
+    }
+}
+.previews-info.yellow{
+    .pre-icon{
+        .icon{
+            background-color: #FFD125;
+        }
+    }  
+}
+
+.previews-info.blue{
+    .pre-icon{
+        .icon{
+            background-color: var(--primary);
+        }
+    }  
+}
+.previews-info.pink{
+    .pre-icon{
+        .icon{
+            background-color: $pink;
+        }
+    }  
+}
+
+// ----Exchange----
+.exchange {
+    .balance{
+        padding: 1rem;
+        border-radius: $radius;
+        margin-top: 0.725rem;
+        .header-content{
+            display: flex;
+            justify-content: space-between;
+            h6{
+                font-size: 0.938rem;
+                font-weight: 500;
+                color: $white;
+            }
+            span{
+                color: $white;
+            }
+        }
+        .count{
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $white;
+            margin-bottom: 0;
+        }
+    }
+   
+}
+.selling {
+    margin-bottom: 0.938rem;
+    h4{
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: $body-color;
+    }
+    .form_exchange{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+       flex-wrap: wrap;
+        .input_exchange{
+            height: 3rem;
+            flex: 0 0 50%;
+            padding-#{$dlab-pos-right}: 0.625rem;
+            .input-select{
+                height: 100%;
+                border-radius: 0.625rem;
+                width: 100%;
+                padding: 0.625rem;
+                border: 1px solid $d-border;
+                background-color: #f3f3f3;
+                font-weight: 400;
+               
+            }
+            input::placeholder{
+                font-size: 1.125rem;
+            }
+        }
+        .default-select{
+            font-size: 1.125rem;
+        }
+        .crypto-select {
+            flex: 0 0 50%;
+            padding-#{$dlab-pos-left}: 0.625rem;
+        }
+        .bootstrap-select.image-select.default-select.dashboard-select{
+            height: 3rem;
+            width: 100%; 
+            .btn{
+                align-items: center;
+                line-height: 2.813rem;
+            }
+        }
+    }
+}
+.market_chart{ 
+    .custome-tooltip{ 
+        .apexcharts-xaxistooltip {
+            color: #ffffff;
+            background: var(--primary);
+            border: 1px solid var(--rgba-primary-1);
+            border-radius: 0.625rem;
+        }
+        .apexcharts-xaxistooltip-bottom:after {
+            border-bottom-color: var(--primary);
+        }
+    }
+}
+.previews-info-list{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:0.825rem 1.9rem;
+    
+	@include respond ('phone'){
+		padding: 0.825rem 1rem;
+	}
+    .pre-icon{
+        display: flex;
+        align-items: center;
+        
+    }
+    .count{
+        h6{
+            margin-bottom: 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        span{
+            color:#EB62D0;
+			font-size: 12px;
+
+        }
+    }
+    &:hover{
+        background-color:var(--body-bg);
+		
+    }
+}
+
+//custome
+.icon-box{
+	height: 50px;
+	width: 50px;
+    min-width: 50px;
+	border-radius: $radius;
+	line-height:49px;
+    text-align: center;
+	display: inline-block;
+    position: relative;
+	svg{
+		width:25px;
+	}
+	i{
+		transform: scale(2);
+	}
+	&.icon-box-sm{
+		height: 40px;
+		width: 40px;
+        min-width:40px;
+		line-height: 40px;
+		border-radius:$radius-sm;
+		cursor:pointer;
+		i{
+			transform: scale(1.5);
+		}
+		svg{
+			width: 20px;
+		}
+		
+	}
+	&.icon-box-lg{
+		height: 60px;
+		width: 60px;
+		line-height: 60px;
+		border-radius: $radius;
+		svg{
+			width: 30px;
+		}
+		i{
+			transform: scale(2.5);
+		}
+	}
+}

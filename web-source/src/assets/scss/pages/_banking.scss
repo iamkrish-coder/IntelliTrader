@@ -1,0 +1,113 @@
+
+// --prim-card-
+// --prim-card-
+.prim-card{
+    background-color:var(--primary);
+    overflow: hidden;
+    z-index: 2;
+    .number{
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: $white;
+        font-family: monospace;
+		margin-bottom: 2rem;
+    }
+    .master-card{
+        text-align: center;
+    }
+    &::before{
+        content: '';
+        background-color: rgba(255, 255, 255, 0.9);
+        position: absolute;
+        top: 58%;
+        #{$dlab-pos-left}: 50%;
+        transform: translateX(-50%);
+        width: 23.063rem;
+        height: 23.063rem;
+        border-radius: 50%;
+        opacity: 0.14;
+     
+    }
+    &::after{
+        content: '';
+        background-color:rgba(255, 255, 255, 0.9);
+        position: absolute;
+		top: -27%;
+        #{$dlab-pos-left}: 50%;
+        width: 23.063rem;
+        height: 23.063rem;
+        border-radius: 50%;
+        z-index: -1;
+        opacity: 0.14;
+    }
+	img{
+		width:60px;
+	}
+
+}
+
+
+// ----Exchange----
+.exchange {
+    .balance{
+        padding: 1.8rem;
+        background-color:#eeee;
+        border-radius: $radius;
+        margin-top: 0.725rem;
+        .header-content{
+            display: flex;
+            justify-content: space-between;
+            h6{
+                font-size: 0.938rem;
+                font-weight: 500;
+            }
+            span{
+            }
+        }
+        .count{
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+    }
+   
+}
+.rec-design1{
+	border: 2px solid rgba(252, 252, 252, 0.5);
+    height: 114px;
+    width: 173px;
+    border-radius: 20px;
+    position: absolute;
+    top: -56px;
+    #{$dlab-pos-right}: -66px;
+}
+
+
+.rec-design2{
+	border: 2px solid rgba(252, 252, 252, 0.5);
+    height: 114px;
+    width: 173px;
+    border-radius: 20px;
+    position: absolute;
+    top: -29px;
+    #{$dlab-pos-right}: -98px;
+}
+.chart-num{
+	h2{
+		font-size:28px;
+		font-weight:600;
+	}
+	span{
+		font-size:20px;
+		font-weight:500;
+	}
+}
+.money-select{
+    width: 100px!important;
+}
+
+    .apexcharts-legend-text {
+        padding-#{$dlab-pos-left}: 15px;
+        margin-#{$dlab-pos-left}: -15px;
+    }
+

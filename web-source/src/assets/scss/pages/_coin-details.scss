@@ -1,0 +1,244 @@
+.coin-warpper{
+    padding: 0.625rem 1.5625rem;
+	background: var(--card);
+    border: 0.0625rem solid var(--border);
+    border-radius: 0.5rem;
+    margin-bottom: 1.875rem;
+    border-radius: 0.5rem;
+	.nav{
+		.nav-item{
+			border-#{$dlab-pos-right}: 0.0625rem solid var(--border);
+			@include respond ('tab-land'){
+				border-#{$dlab-pos-right}:0;
+				margin-bottom: 0;
+			}
+			.nav-link{
+				align-items: center;
+				display: flex;
+				svg{
+					margin-#{$dlab-pos-right}: 0.625rem;
+				}	
+				padding: 0.5rem 0.7rem;
+    			margin: 0 0.75rem;
+				@include respond ('tab-land'){
+					margin:0 0.15rem;
+
+					@include respond ('tab-port'){
+
+						margin:0 0.05rem;
+					}
+				}
+				&.active{
+					color: white;
+					background:var(--primary);
+					svg{
+						path{
+							fill:white;
+						}
+					}
+					&.bitcoin{
+						background:$warning;
+					}
+					&.etherum{
+						background:$info;
+					}
+					&.dash{
+						background:var(--secondary);
+					}
+					&.litcoin{
+						background:$blue;
+					}
+					&.ripple{
+						background:#ff782c;
+						svg{
+							path{
+								fill:white;
+							}
+						}
+					}
+				}
+				@include respond ('phone'){
+					padding: 0.4rem 0.8rem;
+					
+				}
+			}
+			@include respond ('phone'){
+				border-#{$dlab-pos-right}:0;
+			}	
+			
+		}
+	}
+	.search-area{
+		.form-control{
+			border-color:white;
+		}
+		.input-group-text{
+			background:white;
+			border-color:white;
+		}
+		@include respond ('phone'){
+			margin-top:8px;
+			width:100%!important;
+		}
+	}
+	@include respond ('phone'){
+		padding: 0.925rem 0.9625rem;
+	}
+	
+}
+	
+	@include respond ('laptop'){
+		.nav{
+			.nav-item{
+				margin-bottom:0.875rem;
+			}
+		}
+	}
+	@include custommq($max:1366px){
+		.nav{
+			.nav-item{
+				margin-bottom:0;
+			}
+		}
+	}
+	@include respond ('tab-land'){
+		 padding: 0.9375rem 0.625rem;
+	}
+	@include respond ('tab-port'){
+		.coin-details-search{
+			.input-group{
+				.form-control{
+					height: 2.5rem;
+				}
+				.input-group-text{
+					height: 2.5rem;
+				}
+			}
+		}
+	}
+	@include respond ('phone'){
+		.nav{
+			.nav-item{
+				border:0;
+				margin-bottom:0;
+				.nav-link{
+					font-size: 0.95rem;
+					margin: 0 0.25rem;
+					padding: 0.3rem 0.4rem;
+					svg{
+						width:1.425rem;
+					}
+					@include respond ('phone'){
+						margin:0 0.05rem;
+					}
+				}
+			}
+		}
+	}	
+.coin-content{
+	.guest-calendar{
+	    border: 0.0625rem solid var(--border);
+		padding: 0.49375rem 0.875rem;
+	    border-radius: 0.5rem;
+	    span{
+	    	svg{
+	    		margin-#{$dlab-pos-right}: 0.625rem;
+				width: 1rem;
+	    	}
+	    }
+	    .reportrange{
+	    	span{
+	    		font-weight: 400;
+	    		color:var(--text-dark);
+				font-size:0.825rem;
+	    	}
+	    }
+	}
+	.default-select{
+		padding: 0.59375rem 1.25rem;
+		background-color: transparent;
+		border-radius: 0.5rem;
+		width: 12.5rem;
+		color: #1D1B23;
+		font-size: 1rem;
+		font-weight: 400;
+		
+		@include respond ('laptop'){
+			padding:0;
+		}
+		
+		@include respond ('tab-land'){
+			padding:0;
+		}
+		@include respond ('phone'){
+			margin:5px 0;
+
+		}
+	}
+	.price-content{
+		padding-#{$dlab-pos-right}: 3.125rem;
+		@include respond ('tab-land'){
+			padding-#{$dlab-pos-right}:1.625rem;
+		}
+		h4{
+			font-size:1.25rem;
+		}
+	}
+	@include respond('laptop'){
+		.price-content{
+			margin-bottom:0.625rem;	
+		}
+	}
+}
+.digital-cash{
+	.media{
+		.media-content{
+			p{
+				border-top: 0.0625rem solid var(--border);
+				padding-top: 1.175rem;
+			}
+		}
+		@include respond ('phone-land'){
+			svg{
+				width:4.375rem;
+			}
+		}
+	}
+	
+	@include custommq ($max:106.25rem){
+		.media{
+			.media-content{
+				p{
+					width:100%;
+				}
+			}
+		}
+	}
+}
+
+.search-area{
+	&.coin-tab-search{
+		.input-group-text,
+		.form-control{
+			background-color:var(--light);
+			border-color:transparent;
+			
+		}
+	}
+}
+.form-wrapper{
+	&.trade-form{
+		.input-group{
+			.input-group-text{
+				min-width: 7.625rem;
+				background: var(--primary);
+				color: white;
+				border-color:var(--primary);
+			
+			}
+
+		}
+
+	}
+
+}  

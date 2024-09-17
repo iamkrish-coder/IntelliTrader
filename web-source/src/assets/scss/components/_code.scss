@@ -1,0 +1,67 @@
+pre {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    overflow: auto;
+    font-size: 0.875em;
+	-moz-tab-size: 16;
+    tab-size: 2;
+    padding: 0 30px;
+    padding-bottom: 30px;
+    @include custommq($max:100rem){
+        padding: 0 25.6px;
+        padding-bottom: 25.6px;
+
+    }
+    @include respond ('phone'){
+         padding: 0 15.5px;
+        padding-bottom: 15.5px;
+    }
+	code.hljs {
+		display: block;
+		overflow-x: auto;
+		color: #fff;
+		padding:20px;
+        border-radius: $radius;
+	}
+    code{
+        background-color: #1d1329!important;
+    }
+} 
+.hljs-tag .hljs-attr, 
+.hljs-tag .hljs-name {
+    color: #779de1;
+}
+.hljs-punctuation, 
+.hljs-tag {
+    color: #779de1;
+}
+.hljs-deletion, 
+.hljs-number, 
+.hljs-quote, 
+.hljs-selector-class, 
+.hljs-selector-id, 
+.hljs-string, 
+.hljs-template-tag,
+.hljs-type {
+    color:#fd7e7e;
+}
+
+.code-area{
+    position: relative;
+    
+    .btn-hover{
+        position: absolute;
+        top:10px;
+        right:28px;
+        background-color: transparent;
+        opacity: 0;
+        transition: all 0.5s;
+    }
+    &:hover{
+        .btn-hover{
+            opacity: 1;
+        }
+    }
+}
+

@@ -1,0 +1,312 @@
+[data-sidebar-style="mini"],
+[data-layout="horizontal"] {
+    .nav-control {
+        display: none;
+    }
+}
+
+[data-sidebar-style="overlay"] {
+    @include respond('phone-land') {
+        .nav-header .logo-abbr {
+            display: block;
+        }
+    }
+}
+
+[data-header-position="fixed"] {
+    .nav-header {
+        position: fixed;
+    }
+}
+
+.nav-header {
+	height: 82px;
+    width: 16.2rem;
+    display: inline-block;
+	background-color: var(--nav-headbg);
+    text-align: #{$dlab-pos-left};
+    position: absolute;
+    top:0;
+    transition: all .2s ease;
+    z-index: 5;
+	
+    .logo-abbr {
+        max-width: 2.9375rem;
+		@include respond('laptop') {
+			max-width: 2.8125rem;
+		}
+		@include respond('phone') {
+			width:2.1875rem;
+			height:2.1875rem;
+		}
+    }
+    .logo-compact {
+        display: none;
+    }
+	
+	@include respond ('laptop'){
+		height:5.5rem;
+        width: 17rem;
+	}
+    @include respond ('phone'){
+        height:4.5rem;
+    }
+    .brand-logo {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.125rem;
+        color: $white;
+        text-decoration: none;
+        padding-#{$dlab-pos-left}: 1.875rem;
+        padding-#{$dlab-pos-right}: 1.875rem;
+        font-weight: 700;
+		
+		@include respond('laptop') {
+			padding-#{$dlab-pos-left}: 1.25rem;
+			padding-#{$dlab-pos-right}:1.25rem;
+		}
+		
+        [data-sidebar-style="compact"] &,
+        [data-sidebar-style="mini"] & {
+            padding-#{$dlab-pos-left}: 0;
+            padding-#{$dlab-pos-right}: 0;
+            justify-content: center;
+        }
+        @include respond('phone-land') {
+            padding-#{$dlab-pos-left}: 0;
+            padding-#{$dlab-pos-right}: 0;
+            justify-content: center;
+        }
+    }
+    .brand-title {
+		margin-#{$dlab-pos-left}: 0.9375rem;
+		max-width: 8.75rem;
+		color: $black;
+        @at-root [data-theme-version="dark"] & {
+            background-position: 0 120%;
+        }
+		h2{
+			line-height:0;
+			font-weight:bold;
+			font-size:1.75rem;
+			margin-bottom: 12px;
+		}
+		.brand-sub-title{
+			font-size:0.875rem;	
+			font-weight:400;
+			white-space:nowrap;
+			font-family: Nunito;
+			
+		}
+    }
+	@include respond ('phone-land'){
+		top:5px;
+		background:transparent;
+	}
+	@include respond ('phone'){
+		top:0px;
+	}
+	
+	.rect-primary-rect{
+		fill:var(--primary);
+	}
+}
+
+@include custommq($max:63.9375rem) {
+    .nav-header {
+        width: 5rem;
+        .brand-title {
+            display: none;
+        }
+    }
+}
+
+.nav-control {
+    cursor: pointer;
+    position: absolute;
+    #{$dlab-pos-right}: -5.1rem;
+    text-align: center;
+    top: 46%;
+    transform: translateY(-43%);
+    z-index: 9999;
+    font-size: 1.4rem;
+	background: rgba(255, 255, 255, 0.12);
+	height: 45px;
+	width: 45px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+    border-radius: $radius;
+    @include custommq($max:100rem) {
+#{$dlab-pos-right}:-5.5rem;
+transform: translateY(-56%);
+    }
+    @include respond('laptop') {
+		#{$dlab-pos-right}: -5.956rem;
+        top: 50%;
+        width: 43px;
+        height: 43px;
+	}
+	@include respond('tab-land') {
+		top: 56%;
+        #{$dlab-pos-right}:-5.156rem;
+	}
+    @include respond('phone-land') {
+        #{$dlab-pos-right}: -3rem;
+		top: 51%;
+		height: 43px;
+		width: 43px;
+    }
+	@include respond('phone') {
+        top: 53%;
+		height: 35px;
+		width: 35px;
+		#{$dlab-pos-right}: -1.6rem;
+    }
+}
+
+////////////////////
+// Humbuger Icon
+////////////////////
+.hamburger {
+    display: inline-block;
+    #{$dlab-pos-left}: 0.2rem;
+    position: relative;
+    -webkit-transition: all 0.3s ease-in-out 0s;
+    transition: all 0.3s ease-in-out 0s;
+    width: 1.625rem;
+    z-index: 999;
+}
+
+.hamburger .line {
+    background: $white;
+    display: block;
+    height: 0.188rem;
+    border-radius: 0.1875rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    margin-#{$dlab-pos-right}: auto;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.hamburger .line:nth-child(1) {
+    width: 1.375rem;
+}
+
+.hamburger .line:nth-child(2) {
+    width: 1.375rem;
+}
+
+.hamburger .line:nth-child(3) {
+    width: 0.875rem;
+}
+
+.hamburger:hover {
+    cursor: pointer;
+}
+
+.hamburger:hover .line {
+    width: 1.625rem;
+}
+
+
+.hamburger.is-active .line:nth-child(1),
+.hamburger.is-active .line:nth-child(3) {
+    width: 0.625rem;
+    height: 0.125rem;
+}
+
+.hamburger.is-active .line:nth-child(2) {
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    width: 1.375rem;
+    height: 0.125rem;
+}
+
+.hamburger.is-active .line:nth-child(1) {
+    -webkit-transform: translateY(2px) translateX(12px) rotate(45deg);
+    transform: translateY(2px) translateX(12px) rotate(45deg);
+}
+
+.hamburger.is-active .line:nth-child(3) {
+    -webkit-transform: translateY(-2px) translateX(12px) rotate(-45deg);
+    transform: translateY(-2px) translateX(12px) rotate(-45deg);
+}
+
+@media (min-width:47.9375rem) {
+    [data-sidebar-style="compact"] {
+        .nav-control {
+            display: none;
+        }
+        .nav-header {
+            width: 11.25rem;
+        }
+    }
+}
+
+[data-sidebar-style="full"][data-layout="vertical"] {
+    .menu-toggle {
+        .brand-title {
+            display: none;
+        }
+        .nav-header {
+            .logo-abbr {
+                display: block;
+            }
+        }
+    }
+}
+
+[data-sidebar-style="full"][data-layout="horizontal"] {
+    .logo-compact {
+        display: none;
+    }
+}
+
+[data-sidebar-style="mini"] {
+    .nav-header {
+        .logo-abbr {
+            display: block;
+        }
+    }
+}
+
+[data-sidebar-style="compact"][data-layout="vertical"] {
+    .nav-header {
+        .brand-title {
+            display: none;
+        }
+        .logo-compact {
+            max-width: 4.6875rem;
+        }
+    }
+}
+[data-sidebar-style="compact"][data-layout="horizontal"] {
+    .nav-header .brand-logo {
+        padding-#{$dlab-pos-left}: 1.875rem;
+		padding-#{$dlab-pos-right}: 1.875rem;
+		justify-content: start;
+    }
+}
+[data-sidebar-style="modern"][data-layout="vertical"] {
+    .nav-header {
+        width: 10.625rem;
+        .brand-title {
+            display: none;
+        }
+        .logo-compact {
+            display: none;
+        }
+    }
+}
+[data-header-position="fixed"],
+[data-sidebar-position="fixed"][data-layout="vertical"],
+[data-sidebar-position="fixed"][data-header-position="fixed"]{
+    .nav-header{
+        position: fixed;
+    }
+}

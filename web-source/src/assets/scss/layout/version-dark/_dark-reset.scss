@@ -1,0 +1,44 @@
+
+
+[data-theme-version="dark"] {
+	
+	--nav-headbg : #{$dark-card};
+	--sidebar-bg : #{$dark-card};
+	--headerbg: #3736af;
+
+    --card : #{$dark-card};
+    --text-dark : #{$d-text-dark};
+    --text-gray : #{$d-text-gray};
+    --text : #{$d-text};
+    --body-bg : #{$d-bg};
+    --light : #{$d-bg};
+    --border : #{$d-border};
+    --bs-border-color: #{$d-border};
+    --bs-tertiary-bg:#{$d-border};
+   
+	&[data-primary="color_1"],
+	&[data-primary="color_3"]{
+		--primary:#7978ff;
+        --rgba-primary-1: rgba(121, 120, 255, 0.1);
+        --rgba-primary-2: rgba(121, 120, 255, 0.2);
+        --rgba-primary-3: rgba(121, 120, 255, 0.3);
+        --rgba-primary-4: rgba(121, 120, 255, 0.4);
+        --rgba-primary-5: rgba(121, 120, 255, 0.5);
+        --rgba-primary-6: rgba(121, 120, 255, 0.6);
+        --rgba-primary-7: rgba(121, 120, 255, 0.7);
+        --rgba-primary-8: rgba(121, 120, 255, 0.8);
+        --rgba-primary-9: rgba(121, 120, 255, 0.9);
+	}
+
+    a{
+        color:$white;
+        &:hover{
+            color:$white;
+        }
+    }
+    .form-control.custom-image-select-2.bit{
+        background-color:$d-bg;
+    }
+
+}
+

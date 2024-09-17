@@ -1,0 +1,71 @@
+[data-sidebar-position="fixed"][data-layout="vertical"] {
+    .nav-header {
+        position: fixed;
+        border-top-#{$dlab-pos-left}-radius:0;
+        border-top-#{$dlab-pos-right}-radius:0;
+    }
+
+    .dlabnav {
+       // position: fixed;
+        .dlabnav-scroll {
+            border-top-#{$dlab-pos-left}-radius: 0rem;
+            border-top-#{$dlab-pos-right}-radius: 0rem;
+        }
+		border-bottom-#{$dlab-pos-left}-radius: 0;
+		border-bottom-#{$dlab-pos-right}-radius: 0;
+    }
+
+}
+[data-layout="vertical"]{
+	.nav-header {
+        border-top-#{$dlab-pos-left}-radius: 0;
+        border-top-#{$dlab-pos-right}-radius: 0;
+    }
+
+    .dlabnav {
+		border-bottom-#{$dlab-pos-left}-radius: 0;
+		border-bottom-#{$dlab-pos-right}-radius: 0;
+       
+    }
+}
+
+[data-layout="vertical"][data-sidebar-position="fixed"] {
+    .dlabnav {
+        position: fixed;
+
+        @include respond ('tab-port'){
+            position: absolute;
+        }
+        @include respond('phone-land'){
+            position:fixed;
+        }
+    }
+}
+[data-layout="horizontal"][data-sidebar-position="static"][data-header-position="static"] {
+    .header.is-fixed .header-content{
+        position: relative;
+    }
+
+}
+[data-layout="horizontal"][data-sidebar-position="fixed"][data-header-position="static"] {
+    .header.is-fixed .header-content{
+        position: relative;
+    }
+
+}
+
+
+[data-sidebar-style="icon-hover"][data-layout="vertical"][data-container="wide-boxed"],
+[data-sidebar-style="icon-hover"][data-layout="vertical"][data-container="boxed"],
+[data-header-position="fixed"][data-sidebar-position="fixed"][data-sidebar-style="icon-hover"][data-layout="vertical"][data-container="wide-boxed"],
+[data-header-position="fixed"][data-sidebar-position="fixed"][data-sidebar-style="icon-hover"][data-layout="vertical"][data-container="boxed"],
+[data-sidebar-style="overlay"][data-layout="vertical"][data-container="wide-boxed"],
+[data-sidebar-style="overlay"][data-layout="vertical"][data-container="boxed"],
+[data-header-position="fixed"][data-sidebar-position="fixed"][data-sidebar-style="overlay"][data-layout="vertical"][data-container="wide-boxed"],
+[data-header-position="fixed"][data-sidebar-position="fixed"][data-sidebar-style="overlay"][data-layout="vertical"][data-container="boxed"] {
+    .dlabnav {
+        position: absolute;
+    }
+}
+
+

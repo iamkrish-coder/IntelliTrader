@@ -1,0 +1,194 @@
+.portofolio{
+	.my-profile{
+		.media{
+			.media-img{
+				height:100px;
+				width:100px;
+				position: relative;	
+				object-fit: cover;
+				margin:auto;
+				border:2px solid var(--primary);
+				border-radius:50%;
+				img{	
+					width: 100%;										   
+					height: 100%;										   
+					border-radius: 50%;
+					margin: 0 auto;
+					max-width: 12.5rem;
+				}
+				a{
+					background-color:var(--secondary);
+					display: block;
+					width: 2rem;
+					height: 2rem;
+					line-height: 2rem;
+					border-radius: 50%;
+					text-align: center;
+					position: absolute;
+					bottom: 0;
+					#{$dlab-pos-right}: 0;
+					border: 2px solid $white;
+					i{
+						font-size: 13px;
+						color: #fff;
+					}
+				}
+				
+			}
+			h3{
+				font-size: 18px;
+			}
+			
+			
+		}
+		.portofolio-social{
+			display: flex;
+			justify-content: center;
+			li{
+				padding-#{$dlab-pos-right}: 0.625rem;
+				a{
+					display: block;
+					width: 2.5rem;
+					height: 2.5rem;
+					line-height:  2.5rem;
+					text-align: center;
+					border: 0.0625rem solid var(--border);
+					border-radius: 50%;
+					@include transitionSlow;
+					i{
+						font-size: 1rem;
+						color: var(--secondary);
+						@include respond ('laptop'){
+							font-size:1.2625rem;
+						}
+						@include respond ('phone'){
+							font-size: 1rem;
+						}
+					}
+					&:hover{
+						border-color:$secondary;
+						background-color:$secondary;
+						i{
+							color: #fff; 
+						}
+					}
+				}
+			}
+		}
+	}
+}
+.coin-holding{
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+	flex-wrap: wrap;
+	border-bottom:0.0625rem solid var(--border);
+
+	&:last-child{
+		border-bottom: 0;
+	}
+	.coin-box-warper{
+		margin-top: 10px;
+		margin-bottom: 10px;
+		min-width: 13%;
+		a{
+			height:2.5rem;
+			width:2.5rem;
+			background:var(--light);
+			line-height: 2.8;
+			text-align:center;
+			display: block;
+			margin: 0 5px;
+			border-radius:$radius;
+			&:hover{
+				svg{
+					path{
+						fill:var(--primary);
+					}
+				}
+			}
+			
+		}
+		h4{
+			cursor:pointer;
+			font-size:1rem;
+		}
+		@include custommq ($max:100rem){
+			.coin-svg{
+				width:40px;
+				height:40px;
+			}
+				
+		}
+		@include respond ('laptop'){
+			.peity{
+				width:12.5rem;
+			}
+		}
+		@include respond('tab-port'){
+			.peity{
+				width:10.625rem;
+			}
+		}
+		@include respond ('phone-land'){
+			.peity{
+				width:7.625rem;
+			}
+		}
+		
+		
+		
+	}
+}
+.c-heading{
+	span{
+		font-size: 25px;
+	}
+}
+
+
+.portfolio-table{
+	tbody{
+		tr{
+			td{
+				white-space: nowrap;
+				&:first-child{
+					padding-left: 0;
+				}
+				svg{
+					width:40px;
+					height:40px;
+				}	
+			}
+			&:last-child{
+				td{
+
+					border-bottom: 0;
+				}
+
+			}
+		}
+	}
+}
+.card-tabs{
+	.nav-tabs{
+		border:0;
+		.nav-item{
+			.nav-link{
+				border-radius:0.5rem;
+				&.active{
+					background:$secondary-light;
+					color:$secondary;
+				}
+				
+			}
+		}
+	}
+}
+.modal-date{
+	.input-hasicon{
+		.react-datepicker-wrapper {
+			width: 100%;
+		}
+	}
+}
