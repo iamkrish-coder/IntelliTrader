@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v6.1.1...v7.0.0) (2024-09-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Added admin dashboard for managing frontend
+
+### Features
+
+* Added admin dashboard for managing frontend ([3b0fcad](https://github.com/iamkrish-coder/IntelliTrader/commit/3b0fcadf1846d1b479d5084786d6bbec912a4fbf))
+
 ## [6.1.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v6.1.0...v6.1.1) (2024-09-14)
 
 
