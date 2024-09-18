@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v7.0.1...v7.0.2) (2024-09-18)
+
+
+### Bug Fixes
+
+* Renamed files ([e5390f3](https://github.com/iamkrish-coder/IntelliTrader/commit/e5390f354dbc2d94ff6c8582342622fd2d5c52cb))
+
 ## [7.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v7.0.0...v7.0.1) (2024-09-18)
 
 
