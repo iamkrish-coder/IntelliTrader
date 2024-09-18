@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v7.0.0...v7.0.1) (2024-09-18)
+
+
+### Bug Fixes
+
+* Modified UI to keep required views and removed unnecessary elements ([c77523d](https://github.com/iamkrish-coder/IntelliTrader/commit/c77523d3bfdf34d097c143c1b8ff9bf4e6ae3a1f))
+
 ## [7.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v6.1.1...v7.0.0) (2024-09-17)
 
 
