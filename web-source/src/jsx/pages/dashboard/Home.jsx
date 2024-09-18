@@ -78,36 +78,36 @@ const Home = () => {
 	const locact = useLocation()
 	
 	const { changeBackground, 
-		changeNavigationHader,
-		chnageHaderColor,
+		changeNavigationHeader,
+		changeHeaderColor,
 		changePrimaryColor,
 		changeSideBarStyle,
 		changeSideBarLayout,
-		chnageSidebarColor
+		changeSidebarColor
 	} = useContext(ThemeContext);
 	useEffect(() => {
 
 		switch (locact.search) {
 			case "?theme=1" :
 				changeBackground({ value: "light", label: "Light" });				
-				changeNavigationHader('color_3')
-				chnageHaderColor('color_3')
+				changeNavigationHeader('color_3')
+				changeHeaderColor('color_3')
 				changePrimaryColor('color_1')
 				break;
 			case "?theme=2":
 					changeBackground({ value: "light", label: "Light" });
 					changeSideBarStyle({ value: "mini", label: "Mini" });
-					changeNavigationHader('color_13')
-					chnageHaderColor('color_13')
+					changeNavigationHeader('color_13')
+					changeHeaderColor('color_13')
 					changePrimaryColor('color_13')
 				break;
 			case "?theme=4":
 				changeBackground({ value: "light", label: "Light" });
 				changeSideBarLayout({ value: "horizontal", label: "Horizontal" });
 				changeSideBarStyle({ value: "full", label: "Full" });
-				changeNavigationHader('color_1')
-				chnageHaderColor('color_1')
-				chnageSidebarColor('color_7')
+				changeNavigationHeader('color_1')
+				changeHeaderColor('color_1')
+				changeSidebarColor('color_7')
 				changePrimaryColor('color_7')
 				break;
 
@@ -115,22 +115,22 @@ const Home = () => {
 				changeBackground({ value: "light", label: "Light" });
 				changeSideBarLayout({ value: "horizontal", label: "Horizontal" });
 				changeSideBarStyle({ value: "full", label: "Full" });
-				changeNavigationHader('color_3')
-				chnageHaderColor('color_3')
-				chnageSidebarColor('color_1')
+				changeNavigationHeader('color_3')
+				changeHeaderColor('color_3')
+				changeSidebarColor('color_1')
 				changePrimaryColor('color_1')
 				break;
 			case "?theme=6":
 				changeBackground({ value: "light", label: "Light" });				
-				changeNavigationHader('color_10')
-				chnageHaderColor('color_13')
-				chnageSidebarColor('color_10')
+				changeNavigationHeader('color_10')
+				changeHeaderColor('color_13')
+				changeSidebarColor('color_10')
 				changePrimaryColor('color_13')
 			break;
 			default:
 				changeBackground({ value: "light", label: "Light" });				
-				changeNavigationHader('color_3')
-				chnageHaderColor('color_3')
+				changeNavigationHeader('color_3')
+				changeHeaderColor('color_3')
 				changePrimaryColor('color_1')
 				break;
 		}

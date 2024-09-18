@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import SideBar from "./SideBar";
-import NavHader from "./NavHader";
+import NavHeader from "./NavHeader";
 import Header from "./Header";
 import ChatBox from "../ChatBox";
 
@@ -21,7 +21,7 @@ const JobieNav = ({ title, onClick: ClickToAddEvent, onClick2, onClick3 }) => {
             :
             ""
        }
-      <NavHader />
+      <NavHeader />
       <ChatBox onClick={() => onClick("chatbox")} toggle={toggle} />
       <Header
         onNote={() => onClick("chatbox")}

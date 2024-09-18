@@ -8,7 +8,7 @@ import './../step.css'
 
 /// Layout
 import Nav from './../layouts/nav'
-import Footer from './../layouts/Footer'
+import Footer from '../layouts/nav/Footer.jsx'
 import { ThemeContext } from "../../context/ThemeContext";
 //Scroll To Top
 import ScrollToTop from './../layouts/ScrollToTop';
