@@ -10482,7 +10482,7 @@ h1, .h1, .h1, h2, .h2, .h2, h3, .h3, .h3, h4, .h4, .h4, h5, .h5, .h5, h6, .h6, .
   .nav-header .brand-title {
     margin-left: 0.9375rem;
     max-width: 8.75rem;
-    color: #000; }
+    color: #ffffff; }
     [data-theme-version="dark"] .nav-header .brand-title {
       background-position: 0 120%; }
     .nav-header .brand-title h2, .nav-header .brand-title .h2 {

@@ -126,7 +126,6 @@ import Error403 from './../pages/error/Error403'
 import Error404 from './../pages/error/Error404'
 import Error500 from './../pages/error/Error500'
 import Error503 from './../pages/error/Error503'
-import RightWalletBar from "../layouts/nav/RightWalletBar";
 
 
 const Markup = () => {
@@ -274,7 +273,6 @@ function MainLayout() {
         className={`show wallet-open ${headWallet ? "" : 'active'} ${sidebariconHover ? "iconhover-toggle" : ""} ${sideMenu ? "menu-toggle" : ""}`}
       >
         <Nav />
-        <RightWalletBar />
         <div className="content-body" >
           <div className="container-fluid" style={{ minHeight: window.screen.height - 45 }}>
             <Outlet />
