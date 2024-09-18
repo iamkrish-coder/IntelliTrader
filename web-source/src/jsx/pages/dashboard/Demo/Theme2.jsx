@@ -5,11 +5,11 @@ import { ThemeContext } from '../../../../context/ThemeContext';
 
 const Theme2 = () => {
 	const { changeBackground,		
-		changeNavigationHader
+		changeNavigationHeader
 	} = useContext(ThemeContext);
 	useEffect(() => {
 		changeBackground({ value: "dark", label: "Dark" });
-		changeNavigationHader('color_1');	
+		changeNavigationHeader('color_1');
 	}, []);
 	
 	return(

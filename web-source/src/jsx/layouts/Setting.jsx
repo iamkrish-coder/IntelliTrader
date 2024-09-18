@@ -24,7 +24,7 @@ const Setting = () => {
     containerPosition,
     fontFamily,
     changePrimaryColor,
-	changeNavigationHader,
+	changeNavigationHeader,
     sideBarStyle,
     changeSideBarStyle,
     changeSideBarPostion,
@@ -34,8 +34,8 @@ const Setting = () => {
     changeSideBarLayout,
     sidebarLayout,
     colors,
-	chnageHaderColor,
-    chnageSidebarColor,
+	changeHeaderColor,
+    changeSidebarColor,
     changeBackground,
     background,
     changeContainerPosition,
@@ -111,7 +111,7 @@ const Setting = () => {
 												defaultValue={color}
 												className="filled-in chk-col-primary"
 												id={`nav_header_${color}`}
-												onClick={() => changeNavigationHader(color)}
+												onClick={() => changeNavigationHeader(color)}
 											/>
 												<label htmlFor={`nav_header_${color}`} />{" "}
 											</span>
@@ -125,7 +125,7 @@ const Setting = () => {
 												<span key={i}>
 													<input type="radio" name="header_bg" defaultValue={color} className="filled-in chk-col-primary"
 														id={`header_${color}`}
-														onClick={() => chnageHaderColor(color)}
+														onClick={() => changeHeaderColor(color)}
 													/>
 													<label htmlFor={`header_${color}`} />{" "}
 												</span>
@@ -139,7 +139,7 @@ const Setting = () => {
 												<span key={i}>
 													<input type="radio" name="navigation_header" defaultValue={color} className="filled-in chk-col-primary"
 														id={`sidebar_${color}`}
-														onClick={() => chnageSidebarColor(color)}
+														onClick={() => changeSidebarColor(color)}
 													/>
 													<label htmlFor={`sidebar_${color}`} />
 												</span>

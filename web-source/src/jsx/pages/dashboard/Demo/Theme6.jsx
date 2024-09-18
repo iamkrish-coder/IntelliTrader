@@ -5,7 +5,7 @@ import { ThemeContext } from '../../../../context/ThemeContext';
 
 const Theme6 = () => {
 	const { changeBackground,
-		changeNavigationHader,
+		changeNavigationHeader,
 		changePrimaryColor,
 		changeSideBarStyle,
 		changeSideBarPostion,		
@@ -13,7 +13,7 @@ const Theme6 = () => {
 	useEffect(() => {
 		changeBackground({ value: "light", label: "Light" });
 		changeSideBarStyle({ value: "modern", label: "Modern" });
-		changeNavigationHader('color_1');		
+		changeNavigationHeader('color_1');
 		changePrimaryColor('color_11');
 		changeSideBarPostion({ value: "static", label: "Static" });		
 	}, []);	

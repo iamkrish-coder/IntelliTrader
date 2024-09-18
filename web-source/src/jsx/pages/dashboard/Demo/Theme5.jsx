@@ -5,19 +5,19 @@ import { ThemeContext } from '../../../../context/ThemeContext';
 
 const Theme5 = () => {
 	const { changeBackground,
-		changeNavigationHader,
+		changeNavigationHeader,
 		changePrimaryColor,
 		changeSideBarStyle,
-		chnageHaderColor,
-		chnageSidebarColor,
+		changeHeaderColor,
+		changeSidebarColor,
 	} = useContext(ThemeContext);
 	useEffect(() => {
 		changeBackground({ value: "light", label: "Light" });
 		changeSideBarStyle({ value: "compact", label: "Compact" });
-		changeNavigationHader('color_13');
-		chnageHaderColor('color_13');
+		changeNavigationHeader('color_13');
+		changeHeaderColor('color_13');
 		changePrimaryColor('color_11');
-		chnageSidebarColor('color_13');				
+		changeSidebarColor('color_13');
 	}, []);	
 	return(
 		<>

@@ -5,7 +5,7 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { navtoggle } from "../../../store/actions/AuthActions";
 import { useDispatch, useSelector } from "react-redux";
 
-const NavHader = () => {
+const NavHeader = () => {
   const { openMenuToggle } = useContext(
     ThemeContext
   );
@@ -58,4 +58,4 @@ const NavHader = () => {
   );
 };
 
-export default NavHader;
+export default NavHeader;

@@ -8,19 +8,19 @@ const Theme1 = () => {
 	const locact = useLocation().search
 
 	const { changeBackground, 
-		changeNavigationHader,
-		chnageHaderColor,
+		changeNavigationHeader,
+		changeHeaderColor,
 		changePrimaryColor,
 	} = useContext(ThemeContext);
 	useEffect(() => {
 		if(locact==='theme=2'){
 			changeBackground({ value: "light", label: "Light" });
-			changeNavigationHader('color_13')
-			chnageHaderColor('color_13')
+			changeNavigationHeader('color_13')
+			changeHeaderColor('color_13')
 			changePrimaryColor('color_13')
 		}else{
-			changeNavigationHader('color_3')
-			chnageHaderColor('color_3')
+			changeNavigationHeader('color_3')
+			changeHeaderColor('color_3')
 			changePrimaryColor('color_1')
 		}
 	}, []);	

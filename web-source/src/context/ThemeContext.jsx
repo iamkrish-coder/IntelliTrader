@@ -6,8 +6,8 @@ const ThemeContextProvider = (props) => {
   const body = document.querySelector("body");
   const [background, setBackground] = useState({ value: "light", label: "Light", });
   const [sidebarLayout, setSidebarLayout] = useState({ value: "vertical", label: "Vertical", });
-  const [navigationHader, setNavigationHader] = useState("color_3");
-  const [haderColor, setHaderColor] = useState("color_3");
+  const [navigationHeader, setNavigationHeader] = useState("color_3");
+  const [headerColor, setHeaderColor] = useState("color_3");
   const [sideBarStyle, setSideBarStyle] = useState({ value: "full", label: "Full", });
   const [sidebarColor, setSidebarColor] = useState("color_1");
   const [sidebarposition, setSidebarposition] = useState({ value: "fixed", label: "Fixed", });
@@ -82,15 +82,15 @@ const ThemeContextProvider = (props) => {
     setPrimaryColor(name);
     body.setAttribute("data-primary", name);
   };
-  const changeNavigationHader = (name) => {
-    setNavigationHader(name);
+  const changeNavigationHeader = (name) => {
+    setNavigationHeader(name);
     body.setAttribute("data-nav-headerbg", name);
   };
-  const chnageHaderColor = (name) => {
-    setHaderColor(name);
+  const changeHeaderColor = (name) => {
+    setHeaderColor(name);
     body.setAttribute("data-headerbg", name);
   };
-  const chnageSidebarColor = (name) => {
+  const changeSidebarColor = (name) => {
     setSidebarColor(name);
     body.setAttribute("data-sidebarbg", name);
   };
@@ -213,11 +213,11 @@ const ThemeContextProvider = (props) => {
         directionPosition,
         fontFamily,
         primaryColor,
-        navigationHader,
+        navigationHeader,
         windowWidth,
         windowHeight,
         changePrimaryColor,
-        changeNavigationHader,
+        changeNavigationHeader,
         changeSideBarStyle,
         sideBarStyle,
         changeSideBarPostion,
@@ -230,9 +230,9 @@ const ThemeContextProvider = (props) => {
         changeContainerPosition,
         direction,
         colors,
-        haderColor,
-        chnageHaderColor,
-        chnageSidebarColor,
+        headerColor,
+        changeHeaderColor,
+        changeSidebarColor,
         sidebarColor,
         iconHover,
         ChangeIconSidebar,

@@ -16,9 +16,9 @@ function Register(props) {
     let errorsObj = { email: '', password: '' };
     const [errors, setErrors] = useState(errorsObj);
     const [password, setPassword] = useState('');
-
     const dispatch = useDispatch();
     const navigate = useNavigate()
+
     function onSignUp(e) {
         e.preventDefault();
         let error = false;
@@ -46,6 +46,7 @@ function Register(props) {
         dispatch(loadingToggleAction(true));
         dispatch(signupAction(email, password, navigate));
     }
+
   return (
     <div className="fix-wrapper">
       <div className="container ">
