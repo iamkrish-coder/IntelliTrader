@@ -44,7 +44,7 @@ function Login (props) {
   	return (
 		
 		<>
-			<div className="authincation d-flex flex-column flex-lg-row flex-column-fluid">
+			<div className="authentication d-flex flex-column flex-lg-row flex-column-fluid">
 				<div className="login-aside text-center  d-flex flex-column flex-row-auto">
 					<div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
 						<div className="text-center mb-lg-4 mb-2 pt-5 logo">
@@ -58,7 +58,7 @@ function Login (props) {
 				</div>
 				<div className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
 					<div className="d-flex justify-content-center h-100 align-items-center">
-						<div className="authincation-content style-2">
+						<div className="authentication-content style-2">
 							<div className="row no-gutters">
 								<div className="col-xl-12 tab-content">
 									<div id="sign-up" className="auth-form tab-pane fade show active  form-validation">

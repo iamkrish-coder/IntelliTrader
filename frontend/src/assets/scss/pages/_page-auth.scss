@@ -7,7 +7,7 @@
 }
 
 
-.authincation{
+.authentication{
 	background:var(--card);
 	display:flex;
 	min-height: 100vh;
@@ -134,7 +134,8 @@
 			@include respond ('phone'){
 				width:120px;
 			}
-			
+			background: #e3e3e3;
+			border-radius: 32px;
 		}
 	}
 }
@@ -197,7 +198,7 @@
     transform: translate(0, 0); } }
 
 
-.authincation-content{
+.authentication-content{
     background: $white;
     box-shadow: 0 0 2.1875rem 0 rgba(154, 161, 171, 0.15);
     border-radius: 0.3125rem;

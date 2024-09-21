@@ -9438,7 +9438,7 @@ label {
   .nav-header .brand-title {
     margin-left: 0.9375rem;
     max-width: 8.75rem;
-    color: #000;
+    color: #e3e3e3;
     margin-top: 1rem; }
     [data-theme-version="dark"] .nav-header .brand-title {
       background-position: 0 120%; }
@@ -22856,18 +22856,18 @@ table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.
   -ms-flex: 1 0 0rem;
   min-width: 0; }
 
-.authincation {
+.authentication {
   background: var(--rgba-primary-1);
   display: flex;
   min-height: 100vh; }
-  .authincation .login-aside {
+  .authentication .login-aside {
     background: #fff;
     padding-top: 5rem;
     max-width: 35rem;
     width: 100%;
     z-index: 1;
     position: relative; }
-    .authincation .login-aside:after {
+    .authentication .login-aside:after {
       content: "";
       clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
       width: 8.75rem;
@@ -22878,7 +22878,7 @@ table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.
       top: 0;
       background: #fff;
       box-shadow: 0.125rem 0rem 1.875rem rgba(0, 0, 0, 0.15); }
-    .authincation .login-aside .aside-image {
+    .authentication .login-aside .aside-image {
       min-height: 28.125rem;
       margin: auto 0;
       min-width: 0;
@@ -22886,32 +22886,32 @@ table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.
       background-repeat: no-repeat;
       background-position: center; }
   @media only screen and (max-width: 87.5rem) {
-    .authincation .login-aside {
+    .authentication .login-aside {
       max-width: 22.5rem; } }
   @media only screen and (max-width: 61.9375rem) {
-    .authincation .login-aside {
+    .authentication .login-aside {
       max-width: 100%;
       padding-top: 0; }
-      .authincation .login-aside:after {
+      .authentication .login-aside:after {
         content: none; } }
   @media only screen and (max-width: 35.9375rem) {
-    .authincation .login-aside .aside-image {
+    .authentication .login-aside .aside-image {
       min-height: 18.75rem; } }
 
-.authincation-content {
+.authentication-content {
   background: #fff;
   box-shadow: 0 0 2.1875rem 0 rgba(154, 161, 171, 0.15);
   border-radius: 0.3125rem; }
-  [data-theme-version="dark"] .authincation-content {
+  [data-theme-version="dark"] .authentication-content {
     background: #26273b;
     box-shadow: none; }
-  .authincation-content.style-1 {
+  .authentication-content.style-1 {
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(1.25rem); }
-    .authincation-content.style-1 .form-control {
+    .authentication-content.style-1 .form-control {
       background: rgba(255, 255, 255, 0.6);
       border-radius: 0.3125rem; }
-    .authincation-content.style-1 .user-icon {
+    .authentication-content.style-1 .user-icon {
       height: 6.25rem;
       background: var(--primary);
       width: 6.25rem;
@@ -22925,17 +22925,17 @@ table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.
       margin-right: auto;
       margin-top: -6.25rem;
       margin-bottom: 1.25rem; }
-  .authincation-content.style-2 {
+  .authentication-content.style-2 {
     background: transparent;
     box-shadow: none;
     max-width: 33.125rem;
     width: 100%; }
-    .authincation-content.style-2 .form-control {
+    .authentication-content.style-2 .form-control {
       border: 0;
       border-radius: 0.3125rem;
       box-shadow: 0rem 0rem 0.9375rem rgba(0, 0, 0, 0.08); }
     @media only screen and (max-width: 35.9375rem) {
-      .authincation-content.style-2 .auth-form {
+      .authentication-content.style-2 .auth-form {
         padding: 1.875rem 0rem; } }
 
 .welcome-content {

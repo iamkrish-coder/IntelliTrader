@@ -35,7 +35,7 @@ function Register(props) {
         if (password === '') {
             errorObj.password = 'Password is Required';
             error = true;
-			      Swal.fire({
+            Swal.fire({
               icon: 'error',
               title: 'Oops',
               text: errorObj.password,                      
@@ -52,8 +52,7 @@ function Register(props) {
       <div className="container ">
         <div className="row justify-content-center">
           <div className="col-lg-5 col-md-6">
-           
-             
+
                 <div className="card mb-0 h-auto">
                   <div className="card-body">
                     <div className="text-center mb-2">

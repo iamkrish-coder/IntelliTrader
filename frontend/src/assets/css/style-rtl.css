@@ -25546,18 +25546,18 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
   -ms-flex: 1 0 0rem;
   min-width: 0; }
 
-.authincation {
+.authentication {
   background: var(--card);
   display: flex;
   min-height: 100vh; }
-  .authincation .login-aside {
+  .authentication .login-aside {
     background: var(--primary);
     padding-top: 5rem;
     max-width: 35rem;
     width: 100%;
     z-index: 1;
     position: relative; }
-    .authincation .login-aside:after {
+    .authentication .login-aside:after {
       content: "";
       clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
       width: 8.75rem;
@@ -25568,7 +25568,7 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
       top: 0;
       background-color: var(--primary);
       box-shadow: 0.125rem 0rem 1.875rem rgba(0, 0, 0, 0.15); }
-    .authincation .login-aside .aside-image {
+    .authentication .login-aside .aside-image {
       min-height: 28.125rem;
       margin: auto 0;
       min-width: 0;
@@ -25576,9 +25576,9 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
       background-repeat: no-repeat;
       background-position: center; }
       @media only screen and (max-width: 61.9375rem) {
-        .authincation .login-aside .aside-image {
+        .authentication .login-aside .aside-image {
           display: none; } }
-      .authincation .login-aside .aside-image .img1 {
+      .authentication .login-aside .aside-image .img1 {
         position: absolute;
         top: 0;
         left: 0;
@@ -25586,12 +25586,12 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
         border-radius: 0.5rem;
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; }
         @media only screen and (max-width: 85.375rem) {
-          .authincation .login-aside .aside-image .img1 {
+          .authentication .login-aside .aside-image .img1 {
             width: 82px; } }
         @media only screen and (max-width: 61.9375rem) {
-          .authincation .login-aside .aside-image .img1 {
+          .authentication .login-aside .aside-image .img1 {
             width: 150px; } }
-      .authincation .login-aside .aside-image .img2 {
+      .authentication .login-aside .aside-image .img2 {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -25600,14 +25600,14 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
         border-radius: 0.5rem;
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; }
         @media only screen and (max-width: 85.375rem) {
-          .authincation .login-aside .aside-image .img2 {
+          .authentication .login-aside .aside-image .img2 {
             width: 100px;
             right: 21px; } }
         @media only screen and (max-width: 61.9375rem) {
-          .authincation .login-aside .aside-image .img2 {
+          .authentication .login-aside .aside-image .img2 {
             width: 150px;
             right: 35px; } }
-      .authincation .login-aside .aside-image .img3 {
+      .authentication .login-aside .aside-image .img3 {
         position: absolute;
         border-radius: 0.5rem;
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -25615,25 +25615,25 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
         left: 32px;
         bottom: 19px; }
         @media only screen and (max-width: 85.375rem) {
-          .authincation .login-aside .aside-image .img3 {
+          .authentication .login-aside .aside-image .img3 {
             width: 82px; } }
         @media only screen and (max-width: 61.9375rem) {
-          .authincation .login-aside .aside-image .img3 {
+          .authentication .login-aside .aside-image .img3 {
             width: 125px;
             left: 94px; } }
-    .authincation .login-aside p {
+    .authentication .login-aside p {
       color: rgba(255, 255, 255, 0.7); }
   @media only screen and (max-width: 87.5rem) {
-    .authincation .login-aside {
+    .authentication .login-aside {
       max-width: 22.5rem; } }
   @media only screen and (max-width: 61.9375rem) {
-    .authincation .login-aside {
+    .authentication .login-aside {
       max-width: 100%;
       padding-top: 0; }
-      .authincation .login-aside:after {
+      .authentication .login-aside:after {
         content: none; } }
   @media only screen and (max-width: 35.9375rem) {
-    .authincation .login-aside .aside-image {
+    .authentication .login-aside .aside-image {
       min-height: 18.75rem; } }
 
 @media only screen and (max-width: 61.9375rem) {
@@ -25703,20 +25703,20 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
   100% {
     transform: translate(0, 0); } }
 
-.authincation-content {
+.authentication-content {
   background: #fff;
   box-shadow: 0 0 2.1875rem 0 rgba(154, 161, 171, 0.15);
   border-radius: 0.3125rem; }
-  [data-theme-version="dark"] .authincation-content {
+  [data-theme-version="dark"] .authentication-content {
     background: #18254f;
     box-shadow: none; }
-  .authincation-content.style-1 {
+  .authentication-content.style-1 {
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(1.25rem); }
-    .authincation-content.style-1 .form-control {
+    .authentication-content.style-1 .form-control {
       background: rgba(255, 255, 255, 0.6);
       border-radius: 0.3125rem; }
-    .authincation-content.style-1 .user-icon {
+    .authentication-content.style-1 .user-icon {
       height: 6.25rem;
       background: var(--primary);
       width: 6.25rem;
@@ -25730,13 +25730,13 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
       margin-left: auto;
       margin-top: -6.25rem;
       margin-bottom: 1.25rem; }
-  .authincation-content.style-2 {
+  .authentication-content.style-2 {
     background: transparent;
     box-shadow: none;
     max-width: 33.125rem;
     width: 100%; }
     @media only screen and (max-width: 35.9375rem) {
-      .authincation-content.style-2 .auth-form {
+      .authentication-content.style-2 .auth-form {
         padding: 1.875rem 0rem; } }
 
 .welcome-content {
@@ -29314,7 +29314,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-right: 1.0125rem;
   margin-top: 5px; }
 
-[direction="rtl"] .authincation .login-aside:after {
+[direction="rtl"] .authentication .login-aside:after {
   clip-path: polygon(100% 100%, 100% 0%, 0% 0%); }
 
 [direction="rtl"] .market-chart .market-line,

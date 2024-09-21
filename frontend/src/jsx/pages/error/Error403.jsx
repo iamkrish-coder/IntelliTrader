@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Error403 = () => {
    return (
-      <div className="authincation fix-wrapper">
+      <div className="authentication fix-wrapper">
          <div className="container">
             <div className="row justify-content-center h-100 align-items-center">
                <div className="col-md-6">
