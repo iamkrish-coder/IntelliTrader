@@ -15,7 +15,7 @@ import "./assets/css/style.css";
 const SignUp = lazy(() => import('./jsx/pages/authentication/Registration'));
 const Login = lazy(() => {
     return new Promise(resolve => {
-        setTimeout(() => resolve(import('./jsx/pages/authentication/Login')), 200);
+        setTimeout(() => resolve(import('./jsx/pages/authentication/Login')), 500);
     });
 });
 
@@ -60,7 +60,8 @@ function App(props) {
                             <div className="sk-child sk-bounce3"></div>
                         </div>
                     </div>
-                }>
+                }
+                >
                     <Index />
                 </Suspense>
             </>
@@ -77,7 +78,8 @@ function App(props) {
                             <div className="sk-child sk-bounce3"></div>
                         </div>
                     </div>
-                }>
+                }
+                >
                     {routeblog}
                 </Suspense>
             </div>

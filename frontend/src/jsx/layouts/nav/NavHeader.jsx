@@ -22,7 +22,7 @@ const NavHeader = () => {
                  preserveAspectRatio="xMidYMid meet">
 
                 <g transform="translate(0.000000,180.000000) scale(0.100000,-0.100000)"
-                   fill="#ffd500" stroke="none">
+                   fill="#4d97ff" stroke="none">
                     <path d="M105 1781 c-48 -22 -69 -44 -90 -94 -13 -32 -15 -134 -15 -789 0
 -709 2 -755 19 -793 22 -48 44 -69 94 -90 32 -13 134 -15 789 -15 709 0 755 2
 793 19 48 22 69 44 90 94 13 32 15 134 15 787 0 653 -2 755 -15 787 -21 50

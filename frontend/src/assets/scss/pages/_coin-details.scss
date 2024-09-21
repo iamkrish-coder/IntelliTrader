@@ -102,7 +102,7 @@
 		}
 	}
 	@include respond ('tab-land'){
-		 padding: 0.9375rem 0.625rem;
+		//  padding: 0.9375rem 0.625rem;
 	}
 	@include respond ('tab-port'){
 		.coin-details-search{

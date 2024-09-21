@@ -77,7 +77,7 @@
 @mixin circle($circleSize) {
     width: $circleSize;
     height: $circleSize;
-    border-radius: $circleSize/2;
+    // border-radius: $circleSize/2;
 }
 @for $i from 2 through 15{
 	[data-headerbg="color_#{$i}"] .header:not(.home){
