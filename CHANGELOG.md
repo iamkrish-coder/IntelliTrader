@@ -1,5 +1,16 @@
 # Changelog
 
+## [8.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v7.0.2...v8.0.0) (2024-09-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* Refactored backend and frontend source code
+
+### Features
+
+* Refactored backend and frontend source code ([11adcb7](https://github.com/iamkrish-coder/IntelliTrader/commit/11adcb7aa092ea132033a4085519a460bbf39d6f))
+
 ## [7.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v7.0.1...v7.0.2) (2024-09-18)
 
 
