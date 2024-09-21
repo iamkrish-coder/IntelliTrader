@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.0.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.0.0...v8.0.1) (2024-09-21)
+
+
+### Bug Fixes
+
+* removed residual files ([91ae3d5](https://github.com/iamkrish-coder/IntelliTrader/commit/91ae3d54dfda65c3eee592df14aa38450a71a329))
+
 ## [8.0.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v7.0.2...v8.0.0) (2024-09-21)
 
 
