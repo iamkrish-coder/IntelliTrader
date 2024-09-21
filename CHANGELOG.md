@@ -1,5 +1,13 @@
 # Changelog
 
+## [8.0.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.0.2...v8.0.3) (2024-09-21)
+
+
+### Bug Fixes
+
+* prepare frontend project package for development ([b40d4c8](https://github.com/iamkrish-coder/IntelliTrader/commit/b40d4c8c030b31d4035b18dbfc3db223eb76f3c8))
+* Updated css ([d62d69e](https://github.com/iamkrish-coder/IntelliTrader/commit/d62d69e55bcb275519eb8bb5e56614e948a45cf5))
+
 ## [8.0.2](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.0.1...v8.0.2) (2024-09-21)
 
 
