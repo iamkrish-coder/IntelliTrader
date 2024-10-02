@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.1.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.0.3...v8.1.0) (2024-10-02)
+
+
+### Features
+
+* Implemented User Registration ([33d77fb](https://github.com/iamkrish-coder/IntelliTrader/commit/33d77fb7b9a6c4c1c64e79440aa34260bdca52ed))
+
 ## [8.0.3](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.0.2...v8.0.3) (2024-09-21)
 
 
