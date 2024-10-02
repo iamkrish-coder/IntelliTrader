@@ -20,10 +20,7 @@ from backend.modules.database.database_fetch_record import DatabaseFetchRecord
 
 class DatabaseController:
 
-    def __init__(self, connection, modules, app_configuration, table_configuration):
-        self.connection = connection
-        self.modules = modules
-        self.app_configuration = app_configuration
+    def __init__(self, table_configuration):
         self.table_configuration = table_configuration
 
     ###########################################

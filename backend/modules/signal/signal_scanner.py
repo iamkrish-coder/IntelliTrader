@@ -5,12 +5,12 @@ from backend.constants.const import *
 from backend.enumerations.enums import *
 from backend.utils.logging_utils import *
 from .BaseSignal import BaseSignal
+from ...controllers.BaseController import BaseController
 
 
-class SignalScanner(BaseSignal):
-    def __init__(self, connection, modules, parameters, candlesticks_data_list, candles_timeframe=None):
-        super().__init__(connection, modules)
-        self.modules = modules
+class SignalScanner(BaseController, BaseSignal):
+    def __init__(self, _base_, parameters, candlesticks_data_list, candles_timeframe=None):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
         self.candlesticks_data_list = candlesticks_data_list
         self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']

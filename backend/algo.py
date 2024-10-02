@@ -22,18 +22,22 @@ from backend.utils.logging_utils import *
 
 class Algo:
     def __init__(self):
-        self.connection = None
-        self.modules = None
-        self.configuration = None
-        self.database = None
-        self.cloud = None
         self.strategy_controller_instance = None
         self.signal_controller_instance = None
         self.trade_controller_instance = None
         self.scheduler_instance = None
         self.cancelled = False
         self.initialize_logging()
-        self.controller = self.initialize_components()
+        self.app_configuration = Configuration().read_app_configuration()
+        self.table_configuration = Configuration().read_table_configuration()
+        self.database = DatabaseController(self.table_configuration)
+        self.connection = Connection().connect_to_broker()
+        self.modules = BaseModules(self.connection).get_all_modules()
+        self.components = self.initialize_components()
+        self.cloud = CloudController(self.components)
+
+    def get_configuration(self):
+        return self.app_configuration
 
     def initialize_logging(self):
         """Prepares logging for the application."""
@@ -42,33 +46,15 @@ class Algo:
 
     def initialize_components(self):
         """Establishes connection, initializes modules and configuration."""
-        self.connection = Connection().connect_to_broker()
-        self.modules = BaseModules(self.connection).get_all_modules()
-        self.app_configuration = Configuration().read_app_configuration()
-        self.table_configuration = Configuration().read_table_configuration()
+        try:
+            if self.app_configuration is not None and self.table_configuration is not None:
+                return BaseController(self.connection, self.modules, self.app_configuration, self.database)
+            else:
+                log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
+        except Exception as error:
+            log_error(f"Failed to initialize components: {error}")
 
-        if self.app_configuration is not None and self.table_configuration is not None:
-            self.database = DatabaseController(
-                self.connection,
-                self.modules,
-                self.app_configuration,
-                self.table_configuration,
-            )
-            self.cloud = CloudController(
-                self.connection,
-                self.modules,
-                self.app_configuration,
-                self.table_configuration,
-            )
-            return BaseController(
-                self.connection, self.modules, self.app_configuration, self.database
-            )
-        else:
-            log_error("Incomplete configuration: App or Table configuration is missing. Please verify the setup...")
-            return None
-
-    def get_configuration(self):
-        return self.app_configuration
+        return None
 
 
     ###########################################
@@ -81,12 +67,7 @@ class Algo:
         # Restore Factory Settings if Reset App is requested
         reset_application = self.app_configuration.get("reset_app")
         if reset_application is True:
-            factory_reset_object = FactoryReset(
-                self.connection,
-                self.modules,
-                self.app_configuration,
-                self.table_configuration,
-            )
+            factory_reset_object = FactoryReset(self.cloud, self.database)
             factory_reset_object.initialize()
 
         # Establishes Database Connection
@@ -98,6 +79,41 @@ class Algo:
             return False
 
         return True
+
+    #################################################
+    #################################################
+    #                RUN ALWAYS ON                  #
+    #################################################
+    #################################################
+
+    async def autorun(self):
+
+        if self.components is not None:
+            try:
+                """Initialize database connection and module prerequisites"""
+                if not self.initialize_module_prerequisites():
+                    log_error(f"Application failed to initialize required modules. Please check the setup.")
+                    return False
+                else:
+                    """Initialize controllers only if all module initialization succeeded"""
+                    self.strategy_controller_instance = StrategyController(self.components)
+                    self.signal_controller_instance = SignalController(self.components)
+                    self.trade_controller_instance = TradeController(self.components)
+
+                    # Concurrent Run
+                    tasks = [
+                        self.strategy_controller(),
+                        self.signal_controller(),
+                        self.trade_controller()
+                    ]
+                    await asyncio.gather(*tasks)
+            except Exception as error:
+                log_error(f"Error running autorun: {error}")
+                return False
+        else:
+            log_error(f"Application failed to initialize controller. Please check the setup.")
+            return False
+
 
     ###########################################
     ###########################################
@@ -149,40 +165,6 @@ class Algo:
         # # Start Scheduler
         # scheduler_instance.start_scheduler()
         # await asyncio.sleep(6000)
-
-    #################################################
-    #################################################
-    #                RUN ALWAYS ON                  #
-    #################################################
-    #################################################
-
-    async def autorun(self):
-
-        if self.controller is not None:
-            try:
-                """Initialize database connection and module prerequisites"""
-                if not self.initialize_module_prerequisites():
-                    log_error(f"Application failed to initialize required modules. Please check the setup.")
-                    return False
-                else:
-                    """Initialize controllers only if all module initialization succeeded"""
-                    self.strategy_controller_instance = StrategyController(self.controller)
-                    self.signal_controller_instance = SignalController(self.controller)
-                    self.trade_controller_instance = TradeController(self.controller)
-
-                    # Concurrent Run
-                    tasks = [
-                        self.strategy_controller(),
-                        # self.signal_controller(),
-                        # self.trade_controller()
-                    ]
-                    await asyncio.gather(*tasks)
-            except Exception as error:
-                log_error(f"Error running autorun: {error}")
-                return False
-        else:
-            log_error(f"Application failed to initialize controller. Please check the setup.")
-            return False
 
 if __name__ == "__main__":
     try:

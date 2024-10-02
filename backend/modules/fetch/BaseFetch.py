@@ -8,5 +8,8 @@ from backend.utils.logging_utils import *
 
 
 class BaseFetch(ABC, SharedFunctions):
-    def __init__(self):
-        pass
+    def __init__(self, modules, database):
+        super().__init__(self, modules)
+        self.modules = modules
+        self.database = database
+

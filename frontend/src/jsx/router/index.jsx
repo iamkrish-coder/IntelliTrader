@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
+
 /// Css
 import './../index.css'
 import './../chart.css'
@@ -10,7 +11,6 @@ import './../step.css'
 import Nav from './../layouts/nav'
 import Footer from '../layouts/nav/Footer.jsx'
 import { ThemeContext } from "../../context/ThemeContext";
-//Scroll To Top
 import ScrollToTop from './../layouts/ScrollToTop';
 
 /// Dashboard
@@ -19,21 +19,20 @@ import DashboardDark from "./../pages/dashboard/DashboardDark";
 import Market from "./../pages/dashboard/Market";
 import CoinDetails from "./../pages/dashboard/CoinDetails";
 import Portofolio from "./../pages/dashboard/Portofolio";
-
 import EmptyPage from "./../pages/dashboard/EmptyPage";
 
-//trading
+/// Trading
 import TradingMarket from "../pages/trading/TradingMarket";
 import IcoListing from "../pages/trading/IcoListing";
 import P2P from "../pages/trading/P2P";
 import FutureTrading from "../pages/trading/FutureTrading";
 
-//Crypto
+/// Crypto
 import MarketWatch from "../pages/crypto/MarketWatch";
 import Exchange from "../pages/crypto/Exchange";
 import Banking from "../pages/crypto/Banking";
 
-//Reports
+/// Reports
 import History from "../pages/report/History";
 import Orders from "../pages/report/Orders";
 import Reports from "../pages/report/Reports";
@@ -98,19 +97,16 @@ import MainSweetAlert from "./../pages/plugins/SweetAlert";
 import Toastr from "./../pages/plugins/Toastr";
 import Lightgallery from "./../pages/plugins/Lightgallery";
 
-
 /// Widget
 import WidgetCard from "./../pages/widget/WidgetCard";
 import WidgetChart from "./../pages/widget/WidgetChart";
 import WidgetList from "./../pages/widget/WidgetList";
-
 
 /// Table
 import DataTable from './../pages/table/DataTable'
 import BootstrapTable from './../pages/table/BootstrapTable'
 import SortingTable from "./../pages/table/SortingTable/SortingTable";
 import FilteringTable from "./../pages/table/FilteringTable/FilteringTable";
-
 
 /// Form
 import Element from "./../pages/forms/Element/Element";
@@ -127,25 +123,24 @@ import Error404 from './../pages/error/Error404'
 import Error500 from './../pages/error/Error500'
 import Error503 from './../pages/error/Error503'
 
-
 const Markup = () => {
   const allroutes = [
     { url: "market", component: <Market /> },
     { url: "coin-details", component: <CoinDetails /> },
     { url: "portofolio", component: <Portofolio /> },
 
-    //Trading
+    /// Trading
     { url: "trading-market", component: <TradingMarket /> },
     { url: "ico-listing", component: <IcoListing /> },
     { url: "p2p", component: <P2P /> },
     { url: "future", component: <FutureTrading /> },
 
-    //Cryoti
+    /// Cryoti
     { url: "market-watch", component: <MarketWatch /> },
     { url: "exchange", component: <Exchange /> },
     { url: "banking", component: <Banking /> },
 
-    //Reports
+    /// Reports
     { url: "history", component: <History /> },
     { url: "orders", component: <Orders /> },
     { url: "reports", component: <Reports /> },
@@ -159,6 +154,7 @@ const Markup = () => {
     { url: "email-inbox", component: <Inbox /> },
     { url: "email-read", component: <Read /> },
     { url: "app-calender", component: <Calendar /> },
+
     /// Shop
     { url: "ecom-product-grid", component: <ProductGrid /> },
     { url: "ecom-product-list", component: <ProductList /> },
@@ -168,7 +164,7 @@ const Markup = () => {
     { url: "ecom-invoice", component: <Invoice /> },
     { url: "ecom-customers", component: <EcomCustomers /> },
 
-    ///Cms
+    /// Cms
     { url: 'content', component: <Content /> },
     { url: 'menu', component: <Menu /> },
     { url: 'email-template', component: <EmailTemplate /> },
@@ -245,7 +241,7 @@ const Markup = () => {
         <Route element={<MainLayout />} >
           <Route path='/' element={<Home />} />
           <Route path='/dashboard' element={<Home />} />
-          <Route path='/index-2' element={<DashboardDark />} />
+          <Route path='/dashboard-dark' element={<DashboardDark />} />
         </Route>
         <Route element={<MainLayout2 />} >
           {allroutes.map((data, i) => (

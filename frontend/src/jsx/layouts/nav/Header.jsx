@@ -79,7 +79,7 @@ const Header = ({ onNote }) => {
   
   return (
     <>
-      <div className={`header ${path ==="dashboard" || path ==="index-2" ? 'home' : '' } ${headerFix ? 'is-fixed' : '' }`}>
+      <div className={`header ${path ==="dashboard" || path ==="dashboard-dark" ? 'home' : '' } ${headerFix ? 'is-fixed' : '' }`}>
         <div className="header-content">
           <nav className="navbar navbar-expand">
             <div className="collapse navbar-collapse justify-content-between">
@@ -132,7 +132,7 @@ const Header = ({ onNote }) => {
             </div>
           </nav>
         </div>
-         {path === "dashboard" || path=== "index-2" ? 
+         {path === "dashboard" || path=== "dashboard-dark" ? 
             <div className="page-titles">
               <div className="sub-dz-head">
                   <div className="d-flex align-items-center dz-head-title">

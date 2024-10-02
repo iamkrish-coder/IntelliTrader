@@ -6,9 +6,8 @@ from sys import modules
 
 
 class BaseDatabase(ABC, SharedFunctions):
-    def __init__(self, connection, modules):
-        super().__init__(connection, modules)
-        self.connection = connection
+    def __init__(self, modules):
+        super().__init__(modules)
         self.modules = modules
 
     @abstractmethod

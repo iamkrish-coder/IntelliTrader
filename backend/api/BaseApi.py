@@ -1,18 +1,21 @@
-# backend/controllers/BaseController.py
+# backend/controllers/BaseApi.py
 
 from abc import ABC, abstractmethod
+
+from backend.configurations.configuration import Configuration
+from backend.controllers.database_controller import DatabaseController
 from backend.modules.shared.shared_functions import SharedFunctions
 from backend.constants.const import *
 from backend.enumerations.enums import *
 from backend.utils.logging_utils import *
 
-class BaseController(ABC, SharedFunctions):
-    def __init__(self, connection, modules, configuration, database):
-        super().__init__(modules)
-        self.connection = connection
-        self.modules = modules
-        self.configuration = configuration
-        self.database = database
+
+class BaseApi(ABC, SharedFunctions):
+    def __init__(self):
+        super().__init__()
+        self.app_configuration = Configuration().read_app_configuration()
+        self.table_configuration = Configuration().read_table_configuration()
+        self.database = DatabaseController(self.table_configuration)
 
     def prepare_request_parameters(self, event, table, model, dataset, projection=[], filters={}):
         attributes = None

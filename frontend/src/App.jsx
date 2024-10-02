@@ -46,7 +46,7 @@ function App(props) {
     let routeblog = (
         <Routes>
             <Route path='/login' element={<Login />} />
-            <Route path='/page-register' element={<SignUp />} />
+            <Route path='/register' element={<SignUp />} />
         </Routes>
     );
     if (props.isAuthenticated) {

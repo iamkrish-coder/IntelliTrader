@@ -3,14 +3,15 @@
 import math
 import asyncio
 from backend.constants.const import *
+from backend.controllers.BaseController import BaseController
 from backend.enumerations.enums import *
+from backend.modules.signal.BaseSignal import BaseSignal
 from backend.utils.logging_utils import *
 
 
-class SignalCandlesticks:
-    def __init__(self, connection, modules, parameters, watchlist):
-        self.connection = connection
-        self.modules = modules
+class SignalCandlesticks(BaseController, BaseSignal):
+    def __init__(self, _base_, parameters, watchlist):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
         self.trading_watchlist = watchlist
         self.trading_exchange = None

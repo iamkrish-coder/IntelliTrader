@@ -77,7 +77,7 @@ const SideBar = () => {
     <div
       onMouseEnter={() => ChangeIconSidebar(true)}
       onMouseLeave={() => ChangeIconSidebar(false)}
-      className={`dlabnav ${path === "dashboard" || path === "index-2" ? 'follow-info' : ''} ${iconHover} ${sidebarposition.value === "fixed" &&
+      className={`dlabnav ${path === "dashboard" || path === "dashboard-dark" ? 'follow-info' : ''} ${iconHover} ${sidebarposition.value === "fixed" &&
         sidebarLayout.value === "horizontal" &&
         headerposition.value === "static"
         ? hideOnScroll > 120

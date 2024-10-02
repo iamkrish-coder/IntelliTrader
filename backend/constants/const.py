@@ -1,9 +1,9 @@
 # Constants
 import datetime
+import os
 
 now = datetime.datetime.now()
 CURRENT_DATE = now.strftime("%Y-%m-%d")
-
 SECRET_NAME = 'IntelliTrader'
 REGION_NAME = 'ap-south-1'
 HOST = '127.0.0.1'
@@ -12,12 +12,12 @@ ARN = 'arn'
 AWS = 'aws'
 SNS = 'sns'
 SQS = 'sqs'
-SOURCE_PATH = './backend'
-ALGORITHM_PATH = './backend/algorithms'
-CONFIGURATION_PATH = './backend/configurations'
-OUTPUT_PATH = './backend/output'
-DATA_PATH = './backend/data'
-CACHE_PATH = './backend/cache'
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../IntelliTrader'))
+ALGORITHM_PATH = os.path.join(BASE_DIR, 'backend', 'algorithms')
+CONFIGURATION_PATH = os.path.join(BASE_DIR, 'backend', 'configurations')
+OUTPUT_PATH = os.path.join(BASE_DIR, 'backend', 'output')
+DATA_PATH = os.path.join(BASE_DIR, 'backend', 'data')
+CACHE_PATH = os.path.join(BASE_DIR, 'backend', 'cache')
 TEMPLATES_PATH = './frontend/templates'
 STATIC_FILE_PATH = './frontend/static'
 CACHE_CONNECTION_PATH = f'./backend/cache/{CURRENT_DATE}/connection'
@@ -36,8 +36,8 @@ HISTORICAL_DATA_PATH_15M = './backend/data/historical/15minute'
 HISTORICAL_DATA_PATH_30M = './backend/data/historical/30minute'
 HISTORICAL_DATA_PATH_60M = './backend/data/historical/60minute'
 HISTORICAL_DATA_PATH_1D = './backend/data/historical/1day'
-APP_CONFIGURATION_FILE = 'app_config.json'
-TABLE_CONFIGURATION_FILE = 'table_config.json'
+APP_CONFIGURATION_FILE = 'app_configuration.json'
+TABLE_CONFIGURATION_FILE = 'table_configuration.json'
 MINUTE_1M = '1minute'
 MINUTE_2M = '2minute'
 MINUTE_3M = '3minute'
@@ -75,6 +75,7 @@ TABLE_QUEUES = 'queues'
 TABLE_STRATEGIES = 'strategies'
 TABLE_TRADES = "trades"
 TABLE_SIGNAL = "signal"
+TABLE_USERS = "users"
 CACHE_STRATEGIES_DIR = "strategies"
 CACHE_TOPICS_DIR = "topics"
 CACHE_CANDLESTICKS_DIR = "candlesticks"
@@ -143,5 +144,5 @@ ORDER_VALIDITY_THRESHOLD_MINUTES = 5
 ORDER_IS_OPEN = "OPEN"
 ORDER_IS_PENDING = "PENDING"
 ORDER_IS_ACTIVE = "ACTIVE"
-NFO_CE = "CE"
-NFO_PE = "PE"
+FO_CE = "CE"
+FO_PE = "PE"

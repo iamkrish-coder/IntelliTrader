@@ -5,15 +5,13 @@ from backend.constants.const import *
 from backend.enumerations.enums import *
 from backend.utils.logging_utils import *
 from .BaseStrategy import BaseStrategy
+from ...controllers.BaseController import BaseController
 import re
 
 
-class StrategyScanner(BaseStrategy):
-    def __init__(self, connection, modules, parameters, candlesticks_data_list, indicators_data_list,
-                 candles_timeframe=None):
-        super().__init__(connection, modules)
-        self.connection = connection
-        self.modules = modules
+class StrategyScanner(BaseController, BaseStrategy):
+    def __init__(self, _base_, parameters, candlesticks_data_list, indicators_data_list, candles_timeframe=None):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
         self.candlesticks_data_list = candlesticks_data_list
         self.indicators_data_list = indicators_data_list
