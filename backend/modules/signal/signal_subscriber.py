@@ -10,20 +10,18 @@ from backend.utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import SQSManager
 from ...aws.sns.aws_sns_manager import SNSManager
 from .BaseSignal import BaseSignal
+from ...controllers.BaseController import BaseController
 
 
-class SignalSubscriber(BaseSignal):
-    def __init__(self, connection, modules, parameters, database, subscriber):
-        super().__init__(connection, modules)
-        self.strategy_queue = None
-        self.connection = connection
-        self.modules = modules
+class SignalSubscriber(BaseController, BaseSignal):
+    def __init__(self, _base_, parameters, subscriber):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
         self.subscriber = subscriber
         self.object_sns_manager = SNSManager()
         self.object_sqs_manager = SQSManager()
         self.alerts = None
+        self.strategy_queue = None
         self.queue_type = self.parameters.get('runtime_params.queue_type')
         self.topic_type = self.parameters.get('runtime_params.topic_type')
         self.strategy_id = self.parameters.get('strategy_params.strategy_id')

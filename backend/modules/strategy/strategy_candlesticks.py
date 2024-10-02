@@ -7,14 +7,16 @@ import os
 
 from concurrent.futures import ThreadPoolExecutor
 from backend.constants.const import *
+from backend.controllers.BaseController import BaseController
 from backend.enumerations.enums import *
+from backend.modules.strategy.BaseStrategy import BaseStrategy
 from backend.utils.logging_utils import *
 from diskcache import Cache
 
 
-class StrategyCandlesticks:
-    def __init__(self, modules, parameters, watchlist):
-        self.modules = modules
+class StrategyCandlesticks(BaseController, BaseStrategy):
+    def __init__(self, _base_, parameters, watchlist):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
         self.trading_watchlist = watchlist
         self.trading_exchange = None

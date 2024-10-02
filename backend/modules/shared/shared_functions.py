@@ -15,9 +15,8 @@ from backend.utils.logging_utils import *
 
 
 class SharedFunctions:
-    def __init__(self, connection, modules):
+    def __init__(self, modules=None):
         self.cache_path = CACHE_PATH
-        self.connection = connection
         self.modules = modules
 
     def generate_table_uid(self, table_name):
@@ -395,6 +394,10 @@ class SharedFunctions:
             return None
 
     def set_quantity(self, exchange, symbol, max_quantity, position_size_type, max_allocation, max_risk, lot_size=1):
+        if self.modules is None:
+            log_error("Error: Modules is not initialized")
+            return None
+
         if exchange is None or symbol is None:
             log_error("Error: Exchange and Symbol cannot be None")
             return None
@@ -431,6 +434,10 @@ class SharedFunctions:
         Returns:
             float: The calculated limit price.
         """
+        if self.modules is None:
+            log_error("Error: Modules is not initialized")
+            return None
+
         # Fetch the stock value based on the enum value
         if default_price_enum == Default_Price_Limit.LTP.value:
             stock_value = self.modules['fetch'].fetch_ltp(exchange, symbol)

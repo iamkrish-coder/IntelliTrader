@@ -5,12 +5,13 @@ from backend.enumerations.enums import *
 from backend.utils.logging_utils import *
 from .BaseTrade import BaseTrade
 from datetime import datetime, timedelta
+from ...controllers.BaseController import BaseController
 
-class TradeCancellations(BaseTrade):
-    def __init__(self, modules, parameters, database):
-        self.modules = modules
+
+class TradeCancellations(BaseController, BaseTrade):
+    def __init__(self, _base_, parameters):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
 
     def initialize(self):
         return self.cancel_aging_trades()

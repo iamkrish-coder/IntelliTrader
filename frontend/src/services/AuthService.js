@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axiosInstance from '../services/AxiosInstance';
+
 // import swal from "sweetalert";
 import Swal from "sweetalert2";
 import {
@@ -6,15 +7,18 @@ import {
     Logout,
 } from '../store/actions/AuthActions';
 
-export function signUp(email, password) {
+export function signUp(userName, userEmail, userPassword, userConfirmPassword, userIam) {
     //axios call
     const postData = {
-        email,
-        password,
+        userName,
+        userEmail,
+        userPassword,
+        userConfirmPassword,
+        userIam,
         returnSecureToken: true,
     };
-    return axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyD3RPAp3nuETDn9OQimqn_YF6zdzqWITII`,
+        return axiosInstance.post(
+        `/api/register`,
         postData,
     );
 }
@@ -25,14 +29,14 @@ export function login(email, password) {
         password,
         returnSecureToken: true,
     };
-    return axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyD3RPAp3nuETDn9OQimqn_YF6zdzqWITII`,
+    return axiosInstance.post(
+        `/login`,
         postData,
     );
 }
 
 export function formatError(errorResponse) {
-    switch (errorResponse.error.message) {
+    switch (errorResponse.error) {
         case 'EMAIL_EXISTS':
             //return 'Email already exists';
             // swal("Oops", "Email already exists", "error");
@@ -62,17 +66,36 @@ export function formatError(errorResponse) {
             break;
         case 'USER_DISABLED':
             return 'User Disabled';
-
+        case 'JWT_TOKEN_GENERATION_FAILED':
+            Swal.fire({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: 'JWT Token Failure',
+            })
+            break;
         default:
             return '';
     }
 }
 
 export function saveTokenInLocalStorage(tokenDetails) {
+    if (typeof tokenDetails === 'string') {
+        // For JWT tokens, assume the token is the entire object
+        const jwtToken = tokenDetails;
+        tokenDetails = {
+            token: jwtToken,
+            expiresIn: 60 * 60
+        };
+    }
     tokenDetails.expireDate = new Date(
         new Date().getTime() + tokenDetails.expiresIn * 1000,
     );
     localStorage.setItem('userDetails', JSON.stringify(tokenDetails));
+    Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful',
+        text: '',
+    })
 }
 
 export function runLogoutTimer(dispatch, timer, navigate) {

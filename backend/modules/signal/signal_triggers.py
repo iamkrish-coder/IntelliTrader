@@ -7,15 +7,14 @@ from backend.constants.const import *
 from backend.enumerations.enums import *
 from backend.utils.logging_utils import *
 from backend.utils.caching_utils import *
+from ...controllers.BaseController import BaseController
 from ...models.signals_model import SignalsModel
 
 
-class SignalTriggers(BaseSignal):
-    def __init__(self, connection, modules, parameters, database, alerts):
-        self.connection = connection
-        self.modules = modules
+class SignalTriggers(BaseController, BaseSignal):
+    def __init__(self, _base_, parameters, alerts):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
         self.alerts = alerts
 
     def initialize(self):

@@ -19,7 +19,8 @@
     "@fullcalendar/timegrid": "^6.1.11",
     "@loadable/component": "^5.16.4",
     "@n8tb1t/use-scroll-position": "^2.0.3",
-    "axios": "^1.6.8",
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
     "formik": "^2.4.6",
     "lightgallery": "^2.7.2",
     "p-min-delay": "^4.0.2",
@@ -65,7 +66,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "sass": "^1.79.1",
+    "sass": "^1.79.3",
     "vite": "^5.0.8"
   }
 }

@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom';
 const SidebarExtraContent = () => {	
 	const location = useLocation();
 	const { pathname } = location;
-	const compare = ['/dashboard', '/index-2'];
+	const compare = ['/dashboard', '/dashboard-dark'];
 
     return (
         <>            

@@ -4,6 +4,7 @@ import uuid
 
 from backend.constants.const import *
 from backend.enumerations.enums import *
+from ...controllers.BaseController import BaseController
 from ...models.trades_model import TradesModel
 from backend.utils.logging_utils import *
 from .BaseTrade import BaseTrade
@@ -11,11 +12,10 @@ from .trade_execute import ExecuteTrade
 from ..orders.orders_module import Orders
 
 
-class TradeOrders(BaseTrade):
-    def __init__(self, modules, parameters, database, signals):
-        self.modules = modules
+class TradeOrders(BaseController, BaseTrade):
+    def __init__(self, _base_, parameters, signals):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
         self.signals = signals
 
     def initialize(self):

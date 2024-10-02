@@ -32,6 +32,7 @@ class SignalController(BaseController):
 
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
+        self.base_properties = _base_
         self.run_count = 0
         self.parameters = None
         self.watchlist = None
@@ -67,22 +68,22 @@ class SignalController(BaseController):
 
         # 2. Poll for messages in Queue
         self.subscriber = SNS
-        object_subscriber_handler = SignalSubscriber(self.connection, self.modules, self.parameters, self.database, self.subscriber)
+        object_subscriber_handler = SignalSubscriber(self.base_properties, self.parameters, self.subscriber)
         self.messages = object_subscriber_handler.initialize()
 
         if self.messages is not None:
             # 3. Add Stock Alerts to Watchlist
-            alert_handlers = SignalProcessAlerts(self.connection, self.modules, self.parameters, self.database, self.messages, self.dnd)
+            alert_handlers = SignalProcessAlerts(self.base_properties, self.parameters, self.messages, self.dnd)
             self.watchlist = alert_handlers.initialize()
 
             # 4. Get Micro Candlesticks Data for Secondary Checks
-            object_candlesticks_handler = SignalCandlesticks(self.connection, self.modules, self.parameters, self.watchlist)
+            object_candlesticks_handler = SignalCandlesticks(self.base_properties, self.parameters, self.watchlist)
             try:
                 candlestick_data_fetch_task = asyncio.create_task(
                     object_candlesticks_handler.initialize()
                 )
-                candlestick_data_list = await candlestick_data_fetch_task
-                if not candlestick_data_list:
+                self.candlestick_data_list = await candlestick_data_fetch_task
+                if not self.candlestick_data_list:
                     log_info("No candlestick data found for secondary checks.")
 
             except Exception as error:
@@ -90,12 +91,12 @@ class SignalController(BaseController):
 
             else:
                 # 5. Get Final Trade signals
-                object_scanner_handler = SignalScanner(self.connection, self.modules, self.parameters, candlestick_data_list)
+                object_scanner_handler = SignalScanner(self.base_properties, self.parameters, self.candlestick_data_list)
                 self.alert_signals = object_scanner_handler.initialize()
 
                 # 6. Store Trade signals
                 if self.alert_signals is not None and len(self.alert_signals) > 0:
-                    object_trigger_handler = SignalTriggers(self.connection, self.modules, self.parameters, self.database, self.alert_signals)
+                    object_trigger_handler = SignalTriggers(self.base_properties, self.parameters, self.alert_signals)
                     object_trigger_handler.initialize()
         else:
             log_info("No messages available in the subscribed queue.")

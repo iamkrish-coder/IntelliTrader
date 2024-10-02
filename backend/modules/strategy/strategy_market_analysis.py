@@ -1,16 +1,18 @@
 # handlers/strategy
 
 from backend.constants.const import *
+from backend.controllers.BaseController import BaseController
 from backend.enumerations.enums import *
+from backend.modules.strategy.BaseStrategy import BaseStrategy
 from backend.utils.logging_utils import *
 
 
-class StrategyMarketAnalysis:
-    def __init__(self, modules, parameters):
+class StrategyMarketAnalysis(BaseController, BaseStrategy):
+    def __init__(self, _base_, parameters):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.trend = None
         self.global_market_sentiment = None
         self.local_market_sentiment = None
-        self.modules = modules
         self.parameters = parameters
         self.global_params = self.parameters.get('runtime_params.global_trade')
         self.market_indices = self.parameters.get('global_params.market_indices')

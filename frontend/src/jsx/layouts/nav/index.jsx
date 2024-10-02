@@ -16,7 +16,7 @@ const JobieNav = ({ title, onClick: ClickToAddEvent, onClick2, onClick3 }) => {
   return (
     <Fragment>
         {
-          path === "dashboard" || path === "index-2" ? 
+          path === "dashboard" || path === "dashboard-dark" ? 
             <div className="header-banner" style={{backgroundImage:`url(${bgimg})`}}></div>
             :
             ""

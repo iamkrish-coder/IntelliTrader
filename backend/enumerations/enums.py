@@ -44,6 +44,7 @@ class Tables(Enum):
     TABLE_SIGNALS = 'signals'
     TABLE_TRADES = 'trades'
     TABLE_STRATEGIES = 'strategies'
+    TABLE_USERS = 'users'
 
 
 class Events(Enum):

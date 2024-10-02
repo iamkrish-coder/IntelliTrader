@@ -15,12 +15,17 @@ from backend.utils.logging_utils import *
 
 
 class StrategyController(BaseController):
+
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
+        self.base_properties = _base_
         self.run_count = 0
         self.parameters = None
         self.alerts = None
         self.publisher = None
+        self.watchlist = None
+        self.indicators_data_list = None
+        self.candlestick_data_list = None
 
     async def initialize(self):
         log_info(f"Running Strategy...{self.run_count} Times")
@@ -49,21 +54,21 @@ class StrategyController(BaseController):
         self.parameters = object_parameters_handler.get_parameters()
 
         # 2. Perform market analysis
-        object_market_analysis_handler = StrategyMarketAnalysis(self.modules, self.parameters)
+        object_market_analysis_handler = StrategyMarketAnalysis(self.base_properties, self.parameters)
         trend = object_market_analysis_handler.initialize()
 
         # 3. Manage watchlist
-        object_watchlist_handler = StrategyWatchlist(self.modules, self.parameters)
-        watchlist = object_watchlist_handler.initialize()
+        object_watchlist_handler = StrategyWatchlist(self.base_properties, self.parameters)
+        self.watchlist = object_watchlist_handler.initialize()
 
         # 4. Fetch candlestick data
-        object_candlesticks_handler = StrategyCandlesticks(self.modules, self.parameters, watchlist)
+        object_candlesticks_handler = StrategyCandlesticks(self.base_properties, self.parameters, self.watchlist)
         try:
             candlestick_data_fetch_task = asyncio.create_task(
                 object_candlesticks_handler.initialize()
             )
-            candlestick_data_list = await candlestick_data_fetch_task
-            if not candlestick_data_list:
+            self.candlestick_data_list = await candlestick_data_fetch_task
+            if not self.candlestick_data_list:
                 log_info("No candlestick data returned. Skipping indicator calculation.")
 
         except Exception as error:
@@ -71,16 +76,16 @@ class StrategyController(BaseController):
 
         else:
             # 5. Calculate indicators
-            object_indicators_handler = StrategyIndicators(self.modules, self.parameters, candlestick_data_list)
-            indicators_data_list = object_indicators_handler.initialize()
+            object_indicators_handler = StrategyIndicators(self.base_properties, self.parameters, self.candlestick_data_list)
+            self.indicators_data_list = object_indicators_handler.initialize()
 
             # 6. Scan for trading signals
-            object_scanner_handler = StrategyScanner(self.connection, self.modules, self.parameters, candlestick_data_list, indicators_data_list)
+            object_scanner_handler = StrategyScanner(self.base_properties, self.parameters, self.candlestick_data_list, self.indicators_data_list)
             self.alerts = object_scanner_handler.initialize()
 
             # 7. Publish alerts
             self.publisher = SNS
-            object_publisher_handler = StrategyPublisher(self.connection, self.modules, self.parameters, self.database, self.alerts, self.publisher)
+            object_publisher_handler = StrategyPublisher(self.base_properties, self.parameters, self.alerts, self.publisher)
             object_publisher_handler.initialize()
 
             self.run_count += 1

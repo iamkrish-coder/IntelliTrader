@@ -10,27 +10,33 @@ import {
 export const SIGNUP_CONFIRMED_ACTION = '[signup action] confirmed signup';  
 export const SIGNUP_FAILED_ACTION = '[signup action] failed signup';
 export const LOGIN_CONFIRMED_ACTION = '[login action] confirmed login';
-export const LOGIN_FAILED_ACTION = '[login action] failed login';
+export const LOGIN_FAILED_ACTION = '[login action] failed loin';
 export const LOADING_TOGGLE_ACTION = '[Loading action] toggle loading';
 export const LOGOUT_ACTION = '[Logout action] logout action';
 export const NAVTOGGLE = 'NAVTOGGLE';
 
-
-
-export function signupAction(email, password, navigate) {
+export function signupAction(userName, userEmail, userPassword, userConfirmPassword, userIam, navigate) {
 	
     return (dispatch) => {
-        signUp(email, password)
+        signUp(userName, userEmail, userPassword, userConfirmPassword, userIam)
         .then((response) => {
-            saveTokenInLocalStorage(response.data);
-            runLogoutTimer(
-                dispatch,
-                response.data.expiresIn * 1000,
-                //history,
-            );
-            dispatch(confirmedSignupAction(response.data));
-            navigate('/dashboard');
-			//history.push('/dashboard');
+            if(response.data.token) {
+                saveTokenInLocalStorage(response.data.token);
+                runLogoutTimer(
+                    dispatch,
+                    response.data.token.expiresIn * 1000,
+                    //history,
+                );
+                dispatch(confirmedSignupAction(response.data));
+                navigate('/login');
+                //history.push('/dashboard');
+            }
+            else {
+                //No token found in the response
+                response.data['error'] = 'JWT_TOKEN_GENERATION_FAILED';
+                const errorMessage = formatError(response.data);
+                dispatch(signupFailedAction(errorMessage));
+            }
         })
         .catch((error) => {
             const errorMessage = formatError(error.response.data);

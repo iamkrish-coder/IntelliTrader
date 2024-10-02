@@ -13,13 +13,13 @@ from backend.utils.logging_utils import *
 from backend.utils.caching_utils import *
 from ...aws.sqs.aws_sqs_manager import SQSManager
 from .BaseSignal import BaseSignal
+from ...controllers.BaseController import BaseController
 
-class SignalProcessAlerts(BaseSignal):
-    def __init__(self, connection, modules, parameters, database, alerts, dnd=False):
-        super().__init__(connection, modules)
-        self.modules = modules
+
+class SignalProcessAlerts(BaseController, BaseSignal):
+    def __init__(self, _base_, parameters, alerts, dnd=False):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
         self.alerts = alerts
         self.object_sqs_manager = SQSManager()
         self.queue_type = self.parameters.get('runtime_params.queue_type')

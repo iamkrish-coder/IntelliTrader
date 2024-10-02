@@ -1,13 +1,15 @@
 # handlers/strategy
 
 from backend.constants.const import *
+from backend.controllers.BaseController import BaseController
 from backend.enumerations.enums import *
+from backend.modules.strategy.BaseStrategy import BaseStrategy
 from backend.utils.logging_utils import *
 
 
-class StrategyIndicators:
-    def __init__(self, modules, parameters, candlestick_data, candles_timeframe=None):
-        self.modules = modules
+class StrategyIndicators(BaseController, BaseStrategy):
+    def __init__(self, _base_, parameters, candlestick_data, candles_timeframe=None):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
         self.candlesticks_data = candlestick_data
         self.candles_timeframe = candles_timeframe or self.parameters['strategy_params.timeframe']

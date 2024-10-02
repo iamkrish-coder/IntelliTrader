@@ -8,17 +8,15 @@ from backend.utils.logging_utils import *
 from backend.utils.caching_utils import *
 from ...aws.sns.aws_sns_manager import SNSManager
 from ...aws.sqs.aws_sqs_manager import SQSManager
+from ...controllers.BaseController import BaseController
 from ...models.topics_model import TopicsModel
 from .BaseStrategy import BaseStrategy
 
 
-class StrategyPublisher(BaseStrategy):
-    def __init__(self, connection, modules, parameters, database, alerts, publisher):
-        super().__init__(connection, modules)
-        self.connection = connection
-        self.modules = modules
+class StrategyPublisher(BaseController, BaseStrategy):
+    def __init__(self, _base_, parameters, alerts, publisher):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
         self.alerts = alerts
         self.publisher = publisher
         self.object_sns_manager = SNSManager()

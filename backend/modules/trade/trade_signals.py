@@ -5,15 +5,15 @@ from datetime import datetime, timedelta
 from .BaseTrade import BaseTrade
 from backend.constants.const import *
 from backend.enumerations.enums import *
+from ...controllers.BaseController import BaseController
 from ...models.signals_model import SignalsModel
 from backend.utils.logging_utils import *
 
 
-class TradeSignals(BaseTrade):
-    def __init__(self, modules, parameters, database, event, signals=None):
-        self.modules = modules
+class TradeSignals(BaseController, BaseTrade):
+    def __init__(self, _base_, parameters, event, signals=None):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
-        self.database = database
         self.event = event
         self.signals = signals
 

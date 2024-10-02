@@ -25796,10 +25796,10 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
     display: inline-block;
     margin-bottom: 0.9375rem; }
 
-.sepertor {
+.separator {
   position: relative;
   text-align: center; }
-  .sepertor:before, .sepertor:after {
+  .separator:before, .separator:after {
     position: absolute;
     content: "";
     width: 157px;
@@ -25807,15 +25807,15 @@ table.dataTable > tfoot > tr > th, table.dataTable > tfoot > tr > td {
     background-color: var(--light);
     top: 10px; }
     @media only screen and (max-width: 100rem) {
-      .sepertor:before, .sepertor:after {
+      .separator:before, .separator:after {
         width: 140px;
         top: 9px; } }
     @media only screen and (max-width: 35.9375rem) {
-      .sepertor:before, .sepertor:after {
+      .separator:before, .separator:after {
         width: 116px; } }
-  .sepertor:before {
+  .separator:before {
     right: 0; }
-  .sepertor:after {
+  .separator:after {
     left: 0; }
 
 .social-bx span {

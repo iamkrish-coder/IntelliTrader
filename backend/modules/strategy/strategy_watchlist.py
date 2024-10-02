@@ -3,18 +3,18 @@ from asyncio import current_task
 
 import numpy as np
 import pandas as pd
-from pyasn1_modules.rfc2985 import certTypes
 
-from .BaseStrategy import BaseStrategy
 from backend.constants.const import *
 from backend.enumerations.enums import *
 from backend.utils.logging_utils import *
 from backend.utils.logging_utils import *
+from ...controllers.BaseController import BaseController
+from .BaseStrategy import BaseStrategy
 
 
-class StrategyWatchlist(BaseStrategy):
-    def __init__(self, modules, parameters):
-        self.modules = modules
+class StrategyWatchlist(BaseController, BaseStrategy):
+    def __init__(self, _base_, parameters):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.parameters = parameters
         self.exchange = self.parameters.get('strategy_params.exchange')
         self.symbol = self.parameters.get('strategy_params.symbol')
@@ -68,11 +68,11 @@ class StrategyWatchlist(BaseStrategy):
 
         option_instrument_type = self.parameters['strategy_params.option_instrument_type']
         if option_instrument_type == Option_Type.CE.value:
-            option_type = NFO_CE
+            option_type = FO_CE
         elif option_instrument_type == Option_Type.PE.value:
-            option_type = NFO_PE
+            option_type = FO_PE
         else:
-            option_type = [NFO_CE, NFO_PE]
+            option_type = [FO_CE, FO_PE]
 
         for instrument in instruments_list:
             if (instrument['name'] in stock_basket or instrument['tradingsymbol'] in stock_basket) and instrument['instrument_type'] in option_type:

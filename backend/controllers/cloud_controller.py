@@ -16,19 +16,14 @@ from backend.controllers.BaseController import BaseController
 
 class CloudController(BaseController):
 
-    def __init__(self, connection, modules, app_configuration, table_configuration):
-        super().__init__(connection, modules, app_configuration, table_configuration)
-        self.selected_strategy = None
-        self.connection = connection
-        self.modules = modules
-        self.app_configuration = app_configuration
-        self.table_configuration = table_configuration
-        self.database = DatabaseController(connection, modules, app_configuration, table_configuration)
+    def __init__(self, _base_):
+        super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
         self.object_sns_manager = SNSManager()
         self.object_sqs_manager = SQSManager()
-        self.topic_mode = self.app_configuration.get("topic_type")
-        self.queue_mode = self.app_configuration.get("queue_type")
+        self.topic_mode = self.configuration.get("topic_type")
+        self.queue_mode = self.configuration.get("queue_type")
         self.strategy_list = []
+        self.selected_strategy = None
 
     ###########################################
     # Initialize Strategy Module
@@ -104,8 +99,8 @@ class CloudController(BaseController):
                 self.database.database_request(save_strategies)
 
             # Select strategy for further use
-            strategy = self.app_configuration.get("strategy")
-            self.selected_strategy = self.app_configuration.get(f"strategy_{strategy}_params").get("strategy_id")
+            strategy = self.configuration.get("strategy")
+            self.selected_strategy = self.configuration.get(f"strategy_{strategy}_params").get("strategy_id")
             return True
         except Exception as error:
             log_error(f"Error setting up strategies: {str(error)}")
@@ -237,7 +232,7 @@ class CloudController(BaseController):
                 try:
                     """ Access Policy """
                     object_access_policy = AccessPolicy(SQS)
-                    object_access_policy.set_policy_statement(aws_queue_resource=queue_arn,                      aws_topic_resource=topic_arn)
+                    object_access_policy.set_policy_statement(aws_queue_resource=queue_arn, aws_topic_resource=topic_arn)
                     access_policy = object_access_policy.get_policy()
 
                     arguments = {

@@ -23,5 +23,10 @@
         "table_key": "trades",
         "partition_key": "trade_id",
         "sort_key": ""
+    },
+    "users": {
+        "table_key": "users",
+        "partition_key": "user_email",
+        "sort_key": ""
     }
 }

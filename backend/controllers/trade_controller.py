@@ -12,8 +12,10 @@ from backend.utils.logging_utils import *
 
 
 class TradeController(BaseController):
+
     def __init__(self, _base_):
         super().__init__(_base_.connection, _base_.modules, _base_.configuration, _base_.database)
+        self.base_properties = _base_
         self.run_count = 0
         self.parameters = None
         self.alerts = None
@@ -47,24 +49,24 @@ class TradeController(BaseController):
 
         # 2. Manage Signals - retrieve signals from database
         self.signal_event = SIGNAL_EVENT_GET
-        object_signal_handler = TradeSignals(self.modules, self.parameters, self.database, self.signal_event)
+        object_signal_handler = TradeSignals(self.base_properties, self.parameters, self.signal_event)
         self.signals = object_signal_handler.initialize()
 
         if self.signals is not None:
             # 3. Trade placement - Place Order and store trade in database
-            object_order_handler = TradeOrders(self.modules, self.parameters, self.database, self.signals)
+            object_order_handler = TradeOrders(self.base_properties, self.parameters, self.signals)
             self.orders = object_order_handler.initialize()
 
             # 4. Update Signals - Update completed signals in database
             self.signal_event = SIGNAL_EVENT_POST
-            object_signal_handler = TradeSignals(self.modules, self.parameters, self.database, self.signal_event, self.signals)
+            object_signal_handler = TradeSignals(self.base_properties, self.parameters, self.signal_event, self.signals)
             # object_signal_handler.initialize()
 
         else:
             log_info("No trade signals available at this moment")
 
         # 5. Cancel Aging Orders
-        object_cancel_handler = TradeCancellations(self.modules, self.parameters, self.database)
+        object_cancel_handler = TradeCancellations(self.base_properties, self.parameters)
         object_cancel_handler.initialize()
 
         self.run_count += 1
