@@ -1,0 +1,31 @@
+/// **IntelliTrader Styling**
+///
+/// This Sass file houses the global styles for the IntelliTrader project.
+///
+/// **Author:** Srikrishnan
+/// **Date:** October 13, 2024
+/// **Version:** 1.0.0
+///
+/// **Description:**
+/// - Imports necessary fonts and Bootstrap styles.
+/// - Defines project-specific variables and mixins.
+/// - Includes styles for individual pages.
+///
+/// **Usage:**
+/// - Import this file into your main HTML file or other relevant Sass files.
+ 
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+// Variables & Mixins
+@import "variables";
+
+// Pages
+@import "home";
+@import "auth";
+
+

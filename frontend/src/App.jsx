@@ -1,96 +1,29 @@
-import { lazy, Suspense, useEffect } from 'react';
-/// Components
-import Index from './jsx/router/index';
-import { connect, useDispatch } from 'react-redux';
-import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
-// action
-import { checkAutoLogin } from './services/AuthService';
-import { isAuthenticated } from './store/selectors/AuthSelectors';
-/// Style
+import React from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './assets/scss/style.scss';
+import Home from './pages/Home'
+import PageNotFound from './pages/PageNotFound';
+import ApplicationRoutes from './router/ApplicationRoutes.jsx';
+import IMAGES from './constants/Images.js';
+import ICONS from './constants/Icons.js';
 
-import 'rsuite/dist/rsuite-no-reset.min.css';
-import "./assets/css/style.css";
-
-
-const SignUp = lazy(() => import('./jsx/pages/authentication/Registration'));
-const Login = lazy(() => {
-    return new Promise(resolve => {
-        setTimeout(() => resolve(import('./jsx/pages/authentication/Login')), 500);
-    });
-});
-
-function withRouter(Component) {
-    function ComponentWithRouterProp(props) {
-        let location = useLocation();
-        let navigate = useNavigate();
-        let params = useParams();
-
-        return (
-            <Component
-                {...props}
-                router={{ location, navigate, params }}
-            />
-        );
-    }
-
-    return ComponentWithRouterProp;
+const constants = {
+    IMAGES : IMAGES,
+    ICONS: ICONS
 }
 
-function App(props) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    useEffect(() => {
-        checkAutoLogin(dispatch, navigate);
-    }, []);
-
-    let routeblog = (
-        <Routes>
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<SignUp />} />
-        </Routes>
+function App() {
+    return (
+        <React.Fragment>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Home assets={constants}/>} />
+                    <Route path="/*" element={<ApplicationRoutes />} />
+                    <Route path="*" element={<PageNotFound />} />
+                </Routes>
+            </BrowserRouter>
+        </React.Fragment>
     );
-    if (props.isAuthenticated) {
-        return (
-            <>
-                <Suspense fallback={
-                    <div id="preloader">
-                        <div className="sk-three-bounce">
-                            <div className="sk-child sk-bounce1"></div>
-                            <div className="sk-child sk-bounce2"></div>
-                            <div className="sk-child sk-bounce3"></div>
-                        </div>
-                    </div>
-                }
-                >
-                    <Index />
-                </Suspense>
-            </>
-        );
+}
 
-    } else {
-        return (
-            <div className="vh-100">
-                <Suspense fallback={
-                    <div id="preloader">
-                        <div className="sk-three-bounce">
-                            <div className="sk-child sk-bounce1"></div>
-                            <div className="sk-child sk-bounce2"></div>
-                            <div className="sk-child sk-bounce3"></div>
-                        </div>
-                    </div>
-                }
-                >
-                    {routeblog}
-                </Suspense>
-            </div>
-        );
-    }
-};
-
-const mapStateToProps = (state) => {
-    return {
-        isAuthenticated: isAuthenticated(state),
-    };
-};
-
-export default withRouter(connect(mapStateToProps)(App)); 
+export default App;
