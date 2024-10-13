@@ -10,6 +10,7 @@ class UsersModel(BaseModel):
         user_name=None,
         user_email=None,
         user_password=None,
+        user_password_salt=None,
         user_iam=None,
         created_date=None,
         modified_date=None,
@@ -19,6 +20,7 @@ class UsersModel(BaseModel):
         self.user_name = user_name
         self.user_email = user_email
         self.user_password = user_password
+        self.user_password_salt = user_password_salt
         self.user_iam = user_iam
         self.created_date = created_date
         self.modified_date = modified_date
