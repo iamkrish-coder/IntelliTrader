@@ -1,3 +1,4 @@
+// _variables.scss
 
 // Fonts 
 $primary-font: 'Ubuntu Mono', monospace;
@@ -5,3 +6,32 @@ $secondary-font: 'IBM Plex Mono', monospace;
 $title-font: 'Chakra Petch';
 $heading-font: 'Anton';
 $subheading-font: 'Anton';
+
+// Bootstrap colors
+$primary: #362ec4;
+$secondary: #8f5325;
+$success: #3e8d63;
+$info: #7854e4;
+$warning: #b8c924;
+$danger: #d62518;
+$light: #f8f9fa;
+$dark: #343a40;
+
+//custom colors 
+$accent : #da6d25;
+$parisgreen: #adff2f;
+$parisgreendark: #ebebeb;
+
+$theme-colors: (
+  primary: $primary,
+  secondary: $secondary,
+  success: $success,
+  info: $info,
+  warning: $warning,
+  danger: $danger,
+  light: $light,
+  dark: $dark,
+  accent: $accent,
+  parisgreen: $parisgreen,
+  parisgreendark: $parisgreendark
+);

@@ -1,0 +1,27 @@
+/// **IntelliTrader Styling**
+///
+/// This Sass file houses the Custom styles and overrides for the IntelliTrader project.
+///
+/// **Author:** Srikrishnan
+/// **Date:** October 13, 2024
+/// **Version:** 1.0.0
+///
+/// **Description:**
+/// - Imports necessary fonts and Bootstrap styles.
+/// - Defines project-specific variables and mixins.
+/// - Includes styles for individual pages.
+///
+/// **Usage:**
+/// - Import this file into your main HTML file or other relevant Sass files.
+ 
+
+// Variables & Mixins
+@import "variables";
+
+// Bootstrap 
+@import "bootstrap/scss/bootstrap";
+
+// Pages
+@import "home";
+@import "login";
+

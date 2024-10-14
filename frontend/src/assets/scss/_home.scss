@@ -1,5 +1,6 @@
 // Home Page SCSS
 
+
 .home-container {
     height: 100vh;
     display: flex;
@@ -42,3 +43,50 @@
     color:azure;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+.home-title {
+    font-family: $title-font;
+    font-size: 6rem;
+    font-weight: 600;
+    color:azure;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.home-container .btn-primary {
+    background-color: $parisgreen;
+    border-color: $dark;
+    color: $dark;
+
+    &:hover {
+        background-color: $parisgreendark;
+        border-color: $dark;
+        color: $dark;
+    }
+
+}
+
+.home-container .btn-primary span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+  
+.home-container .btn-primary span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+  
+.home-container .btn-primary:hover span {
+    padding-right: 15px;
+}
+
+.home-container .btn-primary:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
