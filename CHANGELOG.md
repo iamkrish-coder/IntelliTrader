@@ -1,5 +1,18 @@
 # Changelog
 
+## [8.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.2.0...v8.3.0) (2024-10-17)
+
+
+### Features
+
+* Added a landing page, login and signup page UI ([d05d9bb](https://github.com/iamkrish-coder/IntelliTrader/commit/d05d9bb5b1f65e39908f84b42ef20edd82e26c53))
+* Added Home Page, Login Page, Signup Page, Page Not Found Page ([fc55872](https://github.com/iamkrish-coder/IntelliTrader/commit/fc558728878a9efbd609f45b59a2e911ef98c14b))
+
+
+### Bug Fixes
+
+* improved landing page ([004d800](https://github.com/iamkrish-coder/IntelliTrader/commit/004d800a39069880879bc9ec679a33c306582bee))
+
 ## [8.2.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.1.0...v8.2.0) (2024-10-13)
 
 
