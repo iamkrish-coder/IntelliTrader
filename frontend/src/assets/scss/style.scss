@@ -16,11 +16,11 @@
 
 // Fonts
 /* Global Styles  */
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 // Variables & Mixins
 @import "variables";
@@ -29,12 +29,83 @@
 // Bootstrap Framework
 @import "bootstrap/scss/bootstrap";
 
+// Components
+@import "components/accordion";
+@import "components/alerts";
+@import "components/avatars";
+@import "components/badge";
+@import "components/breadcrumbs";
+@import "components/buttons";
+@import "components/card";
+@import "components/dropdown";
+@import "components/images";
+@import "components/list-group";
+@import "components/markers";
+@import "components/modal";
+@import "components/nav";
+@import "components/offcanvas";
+@import "components/pagination";
+@import "components/popovers";
+@import "components/progress";
+@import "components/toasts";
+@import "components/tables";
+@import "components/forms";
+
+// Panels
+@import "panels/header";
+@import "panels/sidebar";
+@import "panels/sidebar-prime";
+@import "panels/sidebar-dark";
+@import "panels/main";
+
+// Dashboard
+@import "dashboard/sales";
+@import "dashboard/analytics";
+@import "dashboard/crypto";
+@import "dashboard/finance";
+@import "dashboard/helpdesk";
+@import "dashboard/events";
+@import "dashboard/storage";
+@import "dashboard/product";
+
+// Apps
+@import "apps/app";
+@import "apps/file-manager";
+@import "apps/email";
+@import "apps/chat";
+@import "apps/contact";
+@import "apps/calendar";
+@import "apps/tasks";
+@import "apps/music";
+@import "apps/video";
+
 // Pages
 @import "pages/home";
+@import "pages/user";
 @import "pages/auth";
+@import "pages/error";
+@import "pages/other";
+@import "pages/docs";
+@import "pages/landing";
+
+// Plugins
+@import "plugins/scrollbar";
+@import "plugins/gridjs";
+@import "plugins/select2";
+@import "plugins/tagsinput";
+@import "plugins/rangeslider";
+@import "plugins/jqueryui";
+@import "plugins/colorpicker";
+@import "plugins/wizards";
+@import "plugins/parsley";
+@import "plugins/prismjs";
+@import "plugins/quill";
+@import "plugins/leaflet";
+@import "plugins/vmap";
+@import "plugins/react-datepicker";
 
 // Utilities
 @import "utils";
 
-
-
+// Skin
+@import "dark";
