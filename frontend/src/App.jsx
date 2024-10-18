@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from 'sonner';
 import PageNotFound from './pages/PageNotFound';
 import ApplicationRoutes from './router/ApplicationRoutes.jsx';
 import IMAGES from './constants/Images.js';
@@ -20,6 +21,7 @@ function App() {
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>
             </BrowserRouter>
+            <Toaster position="top-center" className='p-0.5' richColors />
         </React.Fragment>
     );
 }
