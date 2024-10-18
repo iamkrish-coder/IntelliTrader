@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.3.1](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.3.0...v8.3.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* updated login and registration pages with react form validations ([ace8a5b](https://github.com/iamkrish-coder/IntelliTrader/commit/ace8a5b8e9c41e8fc15699d69f3bfc2574b86b75))
+
 ## [8.3.0](https://github.com/iamkrish-coder/IntelliTrader/compare/v8.2.0...v8.3.0) (2024-10-17)
 
 
