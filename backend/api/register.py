@@ -35,7 +35,6 @@ class Register(BaseApi):
                 "user_email": self.request_parameters.get('userEmail'),
                 "user_password": self.request_parameters.get('userPassword'),
                 "user_password_salt": self.request_parameters.get('userPasswordSalt'),
-                "user_iam": self.request_parameters.get('userIam'),
                 "created_date": time.strftime("%Y-%m-%d %H:%M:%S")
             }
             save_user = self.prepare_request_parameters(
